@@ -42,6 +42,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrParticles", "..\xrParticles\xrParticles.vcxproj", "{94A1C366-3D19-48E6-8170-4ADC2E70DF97}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrNetServer", "..\xrNetServer\xrNetServer.vcxproj", "{435BAC9A-B225-457D-AB40-C9BD0CC8838C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CCCA7859-EB86-493E-9B53-C4235F45B3C5} = {CCCA7859-EB86-493E-9B53-C4235F45B3C5}
+		{6FDBCDB3-D190-486D-BDAC-3C4AC527DA3B} = {6FDBCDB3-D190-486D-BDAC-3C4AC527DA3B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrD3D9-Null", "xrGame\xrD3D9-Null\xrD3D9-Null.vcxproj", "{0899B131-F1D4-4876-9BA1-67AC821DB9E1}"
 EndProject
