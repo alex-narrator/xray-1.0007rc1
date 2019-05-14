@@ -133,7 +133,7 @@ void CScriptGameObject::script_register(lua_State *L)
 					value("on_attach_vehicle", int(GameObject::eAttachVehicle)),
 					value("on_detach_vehicle", int(GameObject::eDetachVehicle)),
 					value("on_use_vehicle", int(GameObject::eUseVehicle)),
-					value("on_before_save", int(GameObject::ePostSave)),
+					value("on_before_save", int(GameObject::eBeforeSave)),
 					value("on_postsave", int(GameObject::ePostSave)),
 					value("on_inv_box_item_take", int(GameObject::eOnInvBoxItemTake) ),
 					value("on_inv_box_item_drop", int(GameObject::eOnInvBoxItemDrop) ),
