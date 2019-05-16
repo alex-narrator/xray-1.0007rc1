@@ -147,7 +147,7 @@ void	CCustomOutfit::OnMoveToSlot		()
 	}
 };
 
-void	CCustomOutfit::OnMoveToRuck		()
+void	CCustomOutfit::OnMoveToRuck		(const int prev)
 {
 	if (m_pCurrentInventory)
 	{
