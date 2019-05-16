@@ -152,7 +152,7 @@ void	CCustomOutfit::OnMoveToRuck		()
 	if (m_pCurrentInventory)
 	{
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
-		if (pActor)
+		if (pActor && prev == eItemPlaceSlot)
 		{
 			CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
 			if(pTorch)
