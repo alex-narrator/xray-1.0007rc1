@@ -337,7 +337,12 @@ void CGrenade::Deactivate()
 void CGrenade::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)
 {
 	str_name				= NameShort();
+	#if defined(FIX_FOR_GRENADE_FROM_BELT)
+	u32 ThisGrenadeCount	= m_pCurrentInventory->dwfGetGrenadeCount(*cNameSect(), true) +1; /*xer-urg: тут +1 т.к. обсчет кол-ва гранат для показа на худе ведется по кол-ву на поясе, а есть еще граната в слоте. 
+	                                                                                          а написать расчет слот+пояс я не умею*/
+	#else
 	u32 ThisGrenadeCount	= m_pCurrentInventory->dwfGetSameItemCount(*cNameSect(), true);
+	#endif
 	string16				stmp;
 	sprintf_s					(stmp, "%d", ThisGrenadeCount);
 	str_count				= stmp;
