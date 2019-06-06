@@ -962,19 +962,24 @@ u32 CInventory::dwfGetSameItemCount(LPCSTR caSection, bool SearchAll)
 }
 
 /*xer-urg: считаем гранаты. почти как считаем одинаковые предметы в слоте (см. выше), но с поправкой на наши гранатные особенности. 
-если я правильно понял то используется только для худового счетчика гранат и поломать ничего не должно*/
+если я правильно понял то используется только для худового счетчика гранат и поломать ничего не должно.
+по сути превратилось в dwfGetSameItemCount, но как написать там "if граната then считаем с пояса else считаем как обычно" я не умею*/
 u32		CInventory::dwfGetGrenadeCount(LPCSTR caSection, bool SearchAll)
 {
 	u32			l_dwCount = 0;
 	#if defined(FIX_FOR_GRENADE_FROM_BELT)
-	TIItemContainer	&l_list = SearchAll ? m_belt : m_ruck;
+	TIItemContainer	&l_list = m_belt;
 	#else
 	TIItemContainer	&l_list = SearchAll ? m_all : m_ruck;
 	#endif
 	for(TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it) 
 	{
 		PIItem	l_pIItem = *l_it;
+		#if defined(FIX_FOR_GRENADE_FROM_BELT)
+		if (l_pIItem && !xr_strcmp(l_pIItem->object().cNameSect(), caSection))
+        #else
 		if (l_pIItem && l_pIItem->object().CLS_ID == CLSID_GRENADE_F1 || l_pIItem->object().CLS_ID == CLSID_GRENADE_RGD5)
+        #endif
 			++l_dwCount;
 	}
 
