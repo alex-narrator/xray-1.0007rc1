@@ -30,7 +30,7 @@ public:
 
 
 	virtual void					OnMoveToSlot		();
-	virtual void					OnMoveToRuck		(const int prev);
+	virtual void					OnMoveToRuck		();
 
 protected:
 	HitImmunity::HitTypeSVec		m_HitTypeProtection;

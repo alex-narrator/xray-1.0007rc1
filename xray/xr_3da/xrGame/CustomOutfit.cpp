@@ -147,13 +147,18 @@ void	CCustomOutfit::OnMoveToSlot		()
 	}
 };
 
-void	CCustomOutfit::OnMoveToRuck		(const int prev)
+void	CCustomOutfit::OnMoveToRuck		()
 {
 	if (m_pCurrentInventory)
 	{
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
-		if (pActor && prev == eItemPlaceSlot)
+		if (pActor)
 		{
+			// т.к. родительский инвентарь у предмета меняется раньше вызова этой функции, не будем ничего ломать, а просто проверим, есть ли в слоте бронька. Если есть - уходим.
+			CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(pActor->inventory().ItemFromSlot(OUTFIT_SLOT));
+			if (pOutfit)
+			return;
+
 			CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
 			if(pTorch)
 			{
