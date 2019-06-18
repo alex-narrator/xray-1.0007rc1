@@ -63,7 +63,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	CSilencer*			pSilencer			= smart_cast<CSilencer*>		(CurrentIItem());
 	CGrenadeLauncher*	pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>	(CurrentIItem());
 	CBottleItem*		pBottleItem			= smart_cast<CBottleItem*>		(CurrentIItem());
-    
+
 	bool	b_show			= false;
 
 
@@ -103,7 +103,6 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		UIPropertiesBox.AddItem("st_move_on_belt",  NULL, INVENTORY_TO_BELT_ACTION);
 		b_show			= true;
 	}
-
 #if defined(GRENADE_FROM_BELT)
 	if (CurrentIItem()->GetSlot() == GRENADE_SLOT && CurrentIItem()->m_eItemPlace != eItemPlaceRuck)
 	{

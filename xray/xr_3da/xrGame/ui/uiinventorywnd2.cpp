@@ -177,9 +177,13 @@ void CUIInventoryWnd::InitInventory()
 	if(_itm)
 	{
 		CUICellItem* itm				= create_cell_item(_itm);
-#if defined(GRENADE_FROM_BELT)
+#if defined(GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
+		m_pUIGrenadeList->SetItem			(itm);
+#endif
+#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
 		m_pUIBeltList->SetItem			(itm);
-#else
+#endif
+#if !defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
 		m_pUIBagList->SetItem			(itm);
 #endif
 	}
@@ -719,5 +723,8 @@ if (IsGameTypeSingle()) {
 	m_pUISlotQuickAccessList_2->ClearAll	(true);
 	m_pUISlotQuickAccessList_3->ClearAll	(true);
 }
+#endif
+#if defined(SHOW_GRENADE_SLOT)
+m_pUIGrenadeList->ClearAll				(true);
 #endif
 }
