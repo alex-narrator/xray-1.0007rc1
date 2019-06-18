@@ -147,6 +147,15 @@ void CUIInventoryWnd::InitInventory()
 	}
 #endif
 
+#if defined(SHOW_ARTEFACT_SLOT)
+			_itm								= m_pInv->m_slots[ARTEFACT_SLOT].m_pIItem;
+			if(_itm)
+			{
+				CUICellItem* itm				= create_cell_item(_itm);
+				m_pUIArtefactList->SetItem		(itm);
+			}
+#endif
+
 	PIItem _outfit						= m_pInv->m_slots[OUTFIT_SLOT].m_pIItem;
 	CUICellItem* outfit					= (_outfit)?create_cell_item(_outfit):NULL;
 #if defined(INV_OUTFIT_FULL_ICON_HIDE)
@@ -726,5 +735,8 @@ if (IsGameTypeSingle()) {
 #endif
 #if defined(SHOW_GRENADE_SLOT)
 m_pUIGrenadeList->ClearAll				(true);
+#endif
+#if defined(SHOW_ARTEFACT_SLOT)
+m_pUIArtefactList->ClearAll				(true);
 #endif
 }

@@ -49,3 +49,4 @@
     #define GRENADE_FROM_BELT_COUNT //фикс для правильного отображения худового счетчика кол-ва гранат на поясе
     #define SHOW_GRENADE_SLOT //отображение гранатного слота в инвентаре
 #endif
+#define SHOW_ARTEFACT_SLOT //отображение слота артефакта в инвентаре

@@ -236,7 +236,7 @@ void CUIInventoryWnd::Init()
 	BindDragDropListEnents(m_pUIAutomaticList);
 #endif	
 #if defined(SHOW_GRENADE_SLOT)
-	m_pUIGrenadeList						= xr_new<CUIDragDropListEx>(); AttachChild(m_pUIGrenadeList); m_pUIKnifeList->SetAutoDelete(true);
+	m_pUIGrenadeList						= xr_new<CUIDragDropListEx>(); AttachChild(m_pUIGrenadeList); m_pUIGrenadeList->SetAutoDelete(true);
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_slot_grenade", 0, m_pUIGrenadeList);
 	BindDragDropListEnents				(m_pUIGrenadeList);
 
@@ -244,12 +244,21 @@ void CUIInventoryWnd::Init()
 #else
 	m_slots_array[GRENADE_SLOT]				= NULL;	
 #endif
+#if defined(SHOW_ARTEFACT_SLOT)
+	m_pUIArtefactList						= xr_new<CUIDragDropListEx>(); AttachChild(m_pUIArtefactList); m_pUIArtefactList->SetAutoDelete(true);
+	xml_init.InitDragDropListEx			(uiXml, "dragdrop_slot_artefact", 0, m_pUIArtefactList);
+	BindDragDropListEnents				(m_pUIArtefactList);
+
+	m_slots_array[ARTEFACT_SLOT]				= m_pUIArtefactList;	
+#else
+	m_slots_array[ARTEFACT_SLOT]				= NULL;	
+#endif
 	m_slots_array[PISTOL_SLOT]				= m_pUIPistolList;
 	m_slots_array[RIFLE_SLOT]				= m_pUIAutomaticList;
 	m_slots_array[OUTFIT_SLOT]				= m_pUIOutfitList;
 	//m_slots_array[GRENADE_SLOT]				= NULL;	
 	m_slots_array[BOLT_SLOT]				= NULL;		
-	m_slots_array[ARTEFACT_SLOT]		    = NULL; // m_pUIBeltList;
+	//m_slots_array[ARTEFACT_SLOT]		    = NULL; // m_pUIBeltList;
 
 	//pop-up menu
 	AttachChild							(&UIPropertiesBox);
