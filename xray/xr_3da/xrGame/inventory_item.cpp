@@ -164,7 +164,7 @@ void CInventoryItem::Load(LPCSTR section)
 				m_slots.push_back(slot);			
 		}
 	}	
-	
+#if !defined(NO_QUICK_FOOD)
 	// alpet: разрешение некоторым объектам попадать в слоты быстрого доступа независимо от настроек
 	if ( smart_cast<CEatableItem*>(&object()) &&
 		 GetGridWidth () <= SLOT_QUICK_CELLS_X && 
@@ -175,6 +175,7 @@ void CInventoryItem::Load(LPCSTR section)
 		m_slots.push_back(SLOT_QUICK_ACCESS_2);
 		m_slots.push_back(SLOT_QUICK_ACCESS_3);
 	}
+#endif
 #else
 	m_slot				= READ_IF_EXISTS(pSettings,r_u32,section,"slot", NO_ACTIVE_SLOT);
 #endif

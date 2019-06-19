@@ -46,7 +46,11 @@
 
 // ==================================== Правки от xer-urg =======================================
 #ifdef GRENADE_FROM_BELT
-    #define GRENADE_FROM_BELT_COUNT //фикс для правильного отображения худового счетчика кол-ва гранат на поясе
-    #define SHOW_GRENADE_SLOT //отображение гранатного слота в инвентаре
+       #define GRENADE_FROM_BELT_COUNT //фикс для правильного отображения худового счетчика кол-ва гранат на поясе
+       #define SHOW_GRENADE_SLOT //отображение гранатного слота в инвентаре
 #endif
-#define SHOW_ARTEFACT_SLOT //отображение слота артефакта в инвентаре
+
+#ifdef INV_NEW_SLOTS_SYSTEM
+       #define SHOW_ARTEFACT_SLOT //отображение слота артефакта в инвентаре
+       #define NO_QUICK_FOOD //еде не назначаются быстрые слоты по умолчанию
+#endif
