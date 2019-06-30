@@ -92,9 +92,11 @@ _action  actions[]		= {
 	{ "speech_menu_6",		kSPEECH_MENU_6			,_mp},		
 	{ "speech_menu_7",		kSPEECH_MENU_7			,_mp},		
 	{ "speech_menu_8",		kSPEECH_MENU_8			,_mp},		
-	{ "speech_menu_9",		kSPEECH_MENU_9			,_mp},																	
+	{ "speech_menu_9",		kSPEECH_MENU_9			,_mp},
+#ifndef INV_NEW_SLOTS_SYSTEM
 	{ "use_bandage",		kUSE_BANDAGE			,_sp},		
 	{ "use_medkit",			kUSE_MEDKIT				,_sp},		
+#endif
 	{ "quick_save",			kQUICK_SAVE				,_sp},		
 	{ "quick_load",			kQUICK_LOAD				,_sp},		
 #ifdef INV_NEW_SLOTS_SYSTEM
