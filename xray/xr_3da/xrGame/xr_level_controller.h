@@ -84,9 +84,10 @@ enum	EGameActions
 	kSPEECH_MENU_7,		
 	kSPEECH_MENU_8,		
 	kSPEECH_MENU_9,
-						
+#ifndef INV_NEW_SLOTS_SYSTEM						
 	kUSE_BANDAGE,
 	kUSE_MEDKIT,		
+#endif
 	kQUICK_SAVE,
 	kQUICK_LOAD,
 

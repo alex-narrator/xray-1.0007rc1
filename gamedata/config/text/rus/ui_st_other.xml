@@ -24,6 +24,9 @@
 	<string id="ui_mm_r2_sun_details">
 		<text>Тень травы</text>
 	</string>
+	<string id="ui_mm_r__actor_shadow">
+		<text>Тень главного героя</text>
+	</string>
 	<string id="ui_mm_render_2">
 		<text>Рендер-2</text>
 	</string>

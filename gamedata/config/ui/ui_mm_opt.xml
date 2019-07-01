@@ -210,14 +210,23 @@
 		<check_r2_sun_details x="194" y="0" width="30" height="21">
 			<options_item entry="r2_sun_details" group="mm_opt_video"/>
 		</check_r2_sun_details>
-
+		
 		<cap_light_distance x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_light_distance</text>
 		</cap_light_distance>
 		<track_light_distance x="194" y="0" width="245" height="21">
 			<options_item entry="r2_slight_fade" group="mm_opt_video_adv"/>
 		</track_light_distance>
-		
+
+<!-- BEGIN Тень ГГ от первого лица на втором рендере -->>
+		<cap_r__actor_shadow x="20" y="0" width="143" height="21">
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_r__actor_shadow</text>
+		</cap_r__actor_shadow>
+		<check_r__actor_shadow x="194" y="0" width="30" height="21">
+			<options_item entry="r__actor_shadow" group="mm_opt_video"/>
+		</check_r__actor_shadow>
+<!-- END Тень ГГ от первого лица на втором рендере -->>	
+	
 		<cap_npc_torch x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_npc_torch</text>
 		</cap_npc_torch>

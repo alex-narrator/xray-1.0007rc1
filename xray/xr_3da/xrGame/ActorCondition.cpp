@@ -270,12 +270,13 @@ bool CActorCondition::IsCantWalkWeight()
 		CCustomOutfit* outfit	= m_object->GetOutfit();
 		if(outfit)
 			max_w += outfit->m_additional_weight;
-
+#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
 		if( object().inventory().TotalWeight() > max_w )
 		{
 			m_condition_flags.set			(eCantWalkWeight, TRUE);
 			return true;
 		}
+#endif
 	}
 	m_condition_flags.set					(eCantWalkWeight, FALSE);
 	return false;

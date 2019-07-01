@@ -51,6 +51,11 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic								("video_adv:cap_r2_sun_details",		_st)
 	ctl			= xml:InitCheck		("video_adv:check_r2_sun_details",		_st)
 	handler.m_preconditions[ctl]		= only_2_mode
+	
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_r__actor_shadow",		_st)
+	ctl			= xml:InitCheck		("video_adv:check_r__actor_shadow",		_st)
+	handler.m_preconditions[ctl]		= only_2_mode
 
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_r2_sun",				_st)

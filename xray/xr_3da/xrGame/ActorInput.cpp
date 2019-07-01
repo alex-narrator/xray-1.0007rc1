@@ -158,7 +158,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		{
 			OnPrevWeaponSlot();
 		}break;
-
+#ifndef INV_NEW_SLOTS_SYSTEM
 	case kUSE_BANDAGE:
 	case kUSE_MEDKIT:
 		{
@@ -176,6 +176,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				}
 			}
 		}break;
+#endif
 #ifdef INV_NEW_SLOTS_SYSTEM
 	case kUSE_SLOT_QUICK_ACCESS_0:
 	case kUSE_SLOT_QUICK_ACCESS_1:
