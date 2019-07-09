@@ -66,8 +66,9 @@ void CCustomOutfit::Load(LPCSTR section)
 		m_fPowerLoss = pSettings->r_float(section, "power_loss");
 	else
 		m_fPowerLoss = 1.0f;	
-
+#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
 	m_additional_weight				= pSettings->r_float(section,"additional_inventory_weight");
+#endif
 	m_additional_weight2			= pSettings->r_float(section,"additional_inventory_weight2");
 
 	if (pSettings->line_exist(section, "nightvision_sect"))

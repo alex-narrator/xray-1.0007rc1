@@ -93,8 +93,9 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_Satiety				= pSettings->r_float(section,"satiety_v");		
 	m_fV_SatietyPower			= pSettings->r_float(section,"satiety_power_v");
 	m_fV_SatietyHealth			= pSettings->r_float(section,"satiety_health_v");
-	
+#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
 	m_MaxWalkWeight					= pSettings->r_float(section,"max_walk_weight");
+#endif
 }
 
 
@@ -261,6 +262,7 @@ bool CActorCondition::IsCantWalk() const
 
 #include "CustomOutfit.h"
 
+#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
 bool CActorCondition::IsCantWalkWeight()
 {
 	if(IsGameTypeSingle() && !GodMode())
@@ -270,17 +272,18 @@ bool CActorCondition::IsCantWalkWeight()
 		CCustomOutfit* outfit	= m_object->GetOutfit();
 		if(outfit)
 			max_w += outfit->m_additional_weight;
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+
 		if( object().inventory().TotalWeight() > max_w )
 		{
 			m_condition_flags.set			(eCantWalkWeight, TRUE);
 			return true;
 		}
-#endif
+
 	}
 	m_condition_flags.set					(eCantWalkWeight, FALSE);
 	return false;
 }
+#endif
 
 bool CActorCondition::IsCantSprint() const
 {
@@ -384,13 +387,13 @@ void CActorCondition::UpdateTutorialThresholds()
 		b=false;
 		strcpy_s(cb_name,"_G.on_actor_psy");
 	}
-
+#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
 	if(b && !m_condition_flags.test(eCantWalkWeight)){
 //.		m_condition_flags.set			(eCantWalkWeight, TRUE);
 		b=false;
 		strcpy_s(cb_name,"_G.on_actor_cant_walk_weight");
 	}
-
+#endif
 	if(b && !m_condition_flags.test(eWeaponJammedReached)&&m_object->inventory().GetActiveSlot()!=NO_ACTIVE_SLOT){
 		PIItem item							= m_object->inventory().ItemFromSlot(m_object->inventory().GetActiveSlot());
 		CWeapon* pWeapon					= smart_cast<CWeapon*>(item); 

@@ -293,7 +293,9 @@ void COutfitScript::script_register(lua_State *L)
 	module(L)
 		[
 			class_<CCustomOutfit, CInventoryItemObject>("CCustomOutfit")
+#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
 			.def_readwrite("additional_inventory_weight"		,		&CCustomOutfit::m_additional_weight)
+#endif
 			.def_readwrite("additional_inventory_weight2"		,		&CCustomOutfit::m_additional_weight2)
 			.def_readwrite("power_loss"							,		&CCustomOutfit::m_fPowerLoss)			
 			.property("burn_protection"					,			&get_protection<ALife::eHitTypeBurn>					, 	&set_protection<ALife::eHitTypeBurn>)			

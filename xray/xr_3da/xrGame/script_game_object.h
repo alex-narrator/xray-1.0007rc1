@@ -571,12 +571,16 @@ public:
 			// инвентарь
 			float				GetActorMaxWeight					() const;
 			void				SetActorMaxWeight					(float max_weight);
+#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
 			float				GetActorMaxWalkWeight				() const;
 			void				SetActorMaxWalkWeight				(float max_walk_weight);
+#endif
 			float				GetAdditionalMaxWeight				() const;
 			void				SetAdditionalMaxWeight				(float add_max_weight);
+#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
 			float				GetAdditionalMaxWalkWeight			() const;
 			void				SetAdditionalMaxWalkWeight			(float add_max_walk_weight);
+#endif
 			float				GetTotalWeight						() const;
 			float				Weight								() const;
 			/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/

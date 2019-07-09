@@ -555,7 +555,9 @@ bool	CActor::CanMove				()
 			HUD().GetUI()->AddInfoMessage("cant_walk");
 		}
 		return false;
-	}else
+	}
+#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+	else
 	if( conditions().IsCantWalkWeight() )
 	{
 		if(mstate_wishful&mcAnyMove)
@@ -565,7 +567,7 @@ bool	CActor::CanMove				()
 		return false;
 	
 	}
-
+#endif
 	if(IsTalking())
 		return false;
 	else
