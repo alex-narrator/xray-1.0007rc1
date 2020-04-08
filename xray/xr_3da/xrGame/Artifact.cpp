@@ -11,6 +11,7 @@
 #include "phworld.h"
 #include "restriction_space.h"
 #include "../IGame_Persistent.h"
+#include "../../build_config_defines.h"
 
 #define	FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
 
@@ -66,7 +67,9 @@ CArtefact::CArtefact(void)
 	m_pTrailLight				= NULL;
 	m_activationObj				= NULL;
 	m_class_name				= get_class_name<CArtefact>(this);
+#ifdef SHOW_ARTEFACT_SLOT
 	SetSlot (ARTEFACT_SLOT);
+#endif
 }
 
 
@@ -248,7 +251,7 @@ void CArtefact::StartLights()
 	VERIFY(!ph_world->Processing());
 	if(!m_bLightsEnabled) return;
 
-	//âêëþ÷èòü ñâåòîâóþ ïîäñâåòêó îò äâèãàòåëÿ
+	//Ã¢ÃªÃ«Ã¾Ã·Ã¨Ã²Ã¼ Ã±Ã¢Ã¥Ã²Ã®Ã¢Ã³Ã¾ Ã¯Ã®Ã¤Ã±Ã¢Ã¥Ã²ÃªÃ³ Ã®Ã² Ã¤Ã¢Ã¨Ã£Ã Ã²Ã¥Ã«Ã¿
 	m_pTrailLight->set_color(m_TrailLightColor.r, 
 		m_TrailLightColor.g, 
 		m_TrailLightColor.b);
