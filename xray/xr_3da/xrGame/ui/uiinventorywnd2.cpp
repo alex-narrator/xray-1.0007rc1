@@ -192,6 +192,9 @@ void CUIInventoryWnd::InitInventory()
 #if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
 		m_pUIBeltList->SetItem			(itm);
 #endif
+#if !defined(GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
+		m_pUIGrenadeList->SetItem(itm);
+#endif
 #if !defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
 		m_pUIBagList->SetItem			(itm);
 #endif
