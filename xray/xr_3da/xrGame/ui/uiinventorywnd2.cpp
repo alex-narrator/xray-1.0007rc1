@@ -186,16 +186,10 @@ void CUIInventoryWnd::InitInventory()
 	if(_itm)
 	{
 		CUICellItem* itm				= create_cell_item(_itm);
-#if defined(GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
-		m_pUIGrenadeList->SetItem			(itm);
-#endif
-#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
-		m_pUIBeltList->SetItem			(itm);
-#endif
-#if !defined(GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
-		m_pUIGrenadeList->SetItem(itm);
-#endif
-#if !defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
+
+#if defined(GRENADE_FROM_BELT)
+		m_pUIBeltList->SetItem          (itm);
+#else
 		m_pUIBagList->SetItem			(itm);
 #endif
 	}
@@ -430,7 +424,7 @@ bool CUIInventoryWnd::ToBelt(CUICellItem* itm, bool b_use_cursor_pos)
 		VERIFY								(result);
 		CUICellItem* i						= old_owner->RemoveItem(itm, (old_owner==new_owner) );
 
-#ifdef INV_RUCK_UNLIMITED_FIX
+#ifdef GRENADE_FROM_BELT //чтобы не вылетало при генерации ячейки слота гранаты на поясе - xer-urg
 		result = new_owner->CanSetItem(i);
 		if (result || new_owner->IsAutoGrow())
 		{
@@ -448,12 +442,13 @@ bool CUIInventoryWnd::ToBelt(CUICellItem* itm, bool b_use_cursor_pos)
 		// îáíîâëÿåì ñòàòèê âåñà â èíâåíòàðå
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
-#ifdef INV_RUCK_UNLIMITED_FIX
+
+#ifdef GRENADE_FROM_BELT //чтобы не вылетало при генерации ячейки слота гранаты на поясе - xer-urg
 		}
 		else
 		{
 			NET_Packet					P;
-			iitem->object().u_EventGen	(P, GE_OWNERSHIP_REJECT, iitem->object().H_Parent()->ID());
+			iitem->object().u_EventGen	(P, GEG_PLAYER_ITEM2RUCK, iitem->object().H_Parent()->ID()); //сброс не поместившегося айтема в рюкзак - xer-urg (GE_OWNERSHIP_REJECT - сброс на пол)
 			P.w_u16						(u16(iitem->object().ID()));
 			iitem->object().u_EventSend(P);
 		}
@@ -757,9 +752,7 @@ if (IsGameTypeSingle()) {
 	m_pUISlotQuickAccessList_3->ClearAll	(true);
 }
 #endif
-#if defined(SHOW_GRENADE_SLOT)
-m_pUIGrenadeList->ClearAll				(true);
-#endif
+
 #if defined(SHOW_ARTEFACT_SLOT)
 m_pUIArtefactList->ClearAll				(true);
 #endif
