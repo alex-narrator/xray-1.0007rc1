@@ -23,6 +23,8 @@
 #include "object_broker.h"
 #include "../igame_persistent.h"
 #include "eatable_item.h"
+#include "medkit.h"
+#include "antirad.h"
 
 #ifdef DEBUG
 #	include "debug_renderer.h"
@@ -164,9 +166,13 @@ void CInventoryItem::Load(LPCSTR section)
 				m_slots.push_back(slot);			
 		}
 	}	
-#if !defined(NO_QUICK_FOOD)
+
 	// alpet: разрешение некоторым объектам попадать в слоты быстрого доступа независимо от настроек
+#if defined(QUICK_MEDICINE)
+	if (smart_cast<CMedkit*>(&object()) || smart_cast<CAntirad*>(&object()) &&
+#else
 	if ( smart_cast<CEatableItem*>(&object()) &&
+#endif
 		 GetGridWidth () <= SLOT_QUICK_CELLS_X && 
 		 GetGridHeight() <= SLOT_QUICK_CELLS_Y) 
 	{
@@ -175,7 +181,7 @@ void CInventoryItem::Load(LPCSTR section)
 		m_slots.push_back(SLOT_QUICK_ACCESS_2);
 		m_slots.push_back(SLOT_QUICK_ACCESS_3);
 	}
-#endif
+
 #else
 	m_slot				= READ_IF_EXISTS(pSettings,r_u32,section,"slot", NO_ACTIVE_SLOT);
 #endif

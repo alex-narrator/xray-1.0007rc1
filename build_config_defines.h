@@ -52,7 +52,7 @@
 
 #ifdef INV_NEW_SLOTS_SYSTEM
        #define SHOW_ARTEFACT_SLOT     //отображение слота артефакта в инвентаре
-       #define NO_QUICK_FOOD          //еде не назначаются быстрые слоты по умолчанию
+       #define QUICK_MEDICINE         //быстрые слоты назначаются аптечке, бинту и антираду по умолчанию (а не любой еде, как в оригинальном репозитории)
 #endif
 
 #define NO_MAX_WALK_WEIGHT_CANT_MOVE  //отключает обездвиживание при превышении max_walk_weight	
