@@ -38,7 +38,7 @@ void CGrenade::Load(LPCSTR section)
 	HUD_SOUND::LoadSound(section,"snd_checkout",sndCheckout,m_eSoundCheckout);
 
 	//////////////////////////////////////
-	//время убирания оружия с уровня
+	//ГўГ°ГҐГ¬Гї ГіГЎГЁГ°Г Г­ГЁГї Г®Г°ГіГ¦ГЁГї Г± ГіГ°Г®ГўГ­Гї
 	if(pSettings->line_exist(section,"grenade_remove_time"))
 		m_dwGrenadeRemoveTime = pSettings->r_u32(section,"grenade_remove_time");
 	else
@@ -139,7 +139,7 @@ void CGrenade::Throw()
 	
 	if (pGrenade) {
 		pGrenade->set_destroy_time(m_dwDestroyTimeMax);
-		//установить ID того кто кинул гранату
+		//ГіГ±ГІГ Г­Г®ГўГЁГІГј ID ГІГ®ГЈГ® ГЄГІГ® ГЄГЁГ­ГіГ« ГЈГ°Г Г­Г ГІГі
 		pGrenade->SetInitiator( H_Parent()->ID() );
 	}
 	inherited::Throw			();
@@ -187,7 +187,7 @@ void CGrenade::PutNextToSlot()
     if (OnClient()) return;
     VERIFY                                    (!getDestroy());
 
-    //выкинуть гранату из инвентаря
+    //РІС‹РєРёРЅСѓС‚СЊ РіСЂР°РЅР°С‚Сѓ РёР· РёРЅРІРµРЅС‚Р°СЂСЏ
     if (m_pCurrentInventory)
     {
         NET_Packet                        P;
@@ -199,7 +199,7 @@ void CGrenade::PutNextToSlot()
         this->u_EventSend                (P);
         //GRENADE_FROM_BELT
         CGrenade *pNext                = smart_cast<CGrenade*>(    m_pCurrentInventory->Same(this, !Belt())    );
-        if(!pNext) 
+        if(!pNext)
             pNext                    = smart_cast<CGrenade*>(    m_pCurrentInventory->SameSlot(GRENADE_SLOT, this, !Belt()));
 
         VERIFY                            (pNext != this);
@@ -235,25 +235,25 @@ void CGrenade::UpdateCL()
 }
 
 
-bool CGrenade::Action(s32 cmd, u32 flags) 
+bool CGrenade::Action(s32 cmd, u32 flags)
 {
     if(inherited::Action(cmd, flags)) return true;
 
-    switch(cmd) 
+    switch(cmd)
     {
-    //переключение типа гранаты
+    //РїРµСЂРµРєР»СЋС‡РµРЅРёРµ С‚РёРїР° РіСЂР°РЅР°С‚С‹
     case kWPN_NEXT:
         {
-            if(flags&CMD_START) 
+            if(flags&CMD_START)
             {
                 if(m_pCurrentInventory)
                 {
                     // (c) NanoBot
-                    xr_vector<shared_str>    types_sect_grn;        // текущий список секций гранат
-                    // Находим список секций гранат разных типов в активе
-                    // в m_belt или m_ruck нет гранаты которую актор держит в руках, т.е. this
+                    xr_vector<shared_str>    types_sect_grn;        // С‚РµРєСѓС‰РёР№ СЃРїРёСЃРѕРє СЃРµРєС†РёР№ РіСЂР°РЅР°С‚
+                    // РќР°С…РѕРґРёРј СЃРїРёСЃРѕРє СЃРµРєС†РёР№ РіСЂР°РЅР°С‚ СЂР°Р·РЅС‹С… С‚РёРїРѕРІ РІ Р°РєС‚РёРІРµ
+                    // РІ m_belt РёР»Рё m_ruck РЅРµС‚ РіСЂР°РЅР°С‚С‹ РєРѕС‚РѕСЂСѓСЋ Р°РєС‚РѕСЂ РґРµСЂР¶РёС‚ РІ СЂСѓРєР°С…, С‚.Рµ. this
                     types_sect_grn.push_back(this->cNameSect());
-                    int        count_types = 1;    // текущие количество типов гранат в активе
+                    int        count_types = 1;    // С‚РµРєСѓС‰РёРµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РёРїРѕРІ РіСЂР°РЅР°С‚ РІ Р°РєС‚РёРІРµ
                     //GRENADE_FROM_BELT
                     TIItemContainer::iterator    it, it_e;
                     if(Belt())
@@ -266,45 +266,45 @@ bool CGrenade::Action(s32 cmd, u32 flags)
                         it        = m_pCurrentInventory->m_ruck.begin();
                         it_e    = m_pCurrentInventory->m_ruck.end();
                     }
-                    for(;it!=it_e;++it) 
+                    for(;it!=it_e;++it)
                     {
                         CGrenade *pGrenade = smart_cast<CGrenade*>(*it);
                         if(pGrenade)
                         {
-                            // составляем список типов гранат (с) НаноБот
+                            // СЃРѕСЃС‚Р°РІР»СЏРµРј СЃРїРёСЃРѕРє С‚РёРїРѕРІ РіСЂР°РЅР°С‚ (СЃ) РќР°РЅРѕР‘РѕС‚
                             xr_vector<shared_str>::const_iterator    I = types_sect_grn.begin();
                             xr_vector<shared_str>::const_iterator    E = types_sect_grn.end();
                             bool    new_type = true;
-                            for (; I != E; ++I) 
+                            for (; I != E; ++I)
                             {
-                                if(!xr_strcmp(pGrenade->cNameSect(), *I)) // если совпадают
+                                if(!xr_strcmp(pGrenade->cNameSect(), *I)) // РµСЃР»Рё СЃРѕРІРїР°РґР°СЋС‚
                                     new_type = false;
                             }
-                            if(new_type)    // новый тип гранаты?, добавляем
+                            if(new_type)    // РЅРѕРІС‹Р№ С‚РёРї РіСЂР°РЅР°С‚С‹?, РґРѕР±Р°РІР»СЏРµРј
                             {
                                 types_sect_grn.push_back(pGrenade->cNameSect());
                                 count_types++;
                             }
                         }
                     }
-                    // Если типов больше 1 то, сортируем список по алфавиту
-                    // и находим номер текущей гранаты в списке.
+                    // Р•СЃР»Рё С‚РёРїРѕРІ Р±РѕР»СЊС€Рµ 1 С‚Рѕ, СЃРѕСЂС‚РёСЂСѓРµРј СЃРїРёСЃРѕРє РїРѕ Р°Р»С„Р°РІРёС‚Сѓ
+                    // Рё РЅР°С…РѕРґРёРј РЅРѕРјРµСЂ С‚РµРєСѓС‰РµР№ РіСЂР°РЅР°С‚С‹ РІ СЃРїРёСЃРєРµ.
                     if(count_types>1)
                     {
-                        int        curr_num = 0;        // номер типа текущей гранаты
+                        int        curr_num = 0;        // РЅРѕРјРµСЂ С‚РёРїР° С‚РµРєСѓС‰РµР№ РіСЂР°РЅР°С‚С‹
                         std::sort(types_sect_grn.begin(), types_sect_grn.end());
                         xr_vector<shared_str>::const_iterator    I = types_sect_grn.begin();
                         xr_vector<shared_str>::const_iterator    E = types_sect_grn.end();
                         for (; I != E; ++I)
                         {
-                            if(!xr_strcmp(this->cNameSect(), *I)) // если совпадают
+                            if(!xr_strcmp(this->cNameSect(), *I)) // РµСЃР»Рё СЃРѕРІРїР°РґР°СЋС‚
                                 break;
                             curr_num++;
                         }
-                        int        next_num = curr_num+1;    // номер секции следующей гранаты
+                        int        next_num = curr_num+1;    // РЅРѕРјРµСЂ СЃРµРєС†РёРё СЃР»РµРґСѓСЋС‰РµР№ РіСЂР°РЅР°С‚С‹
                         if(next_num>=count_types)    next_num = 0;
-                        shared_str    sect_next_grn = types_sect_grn[next_num];    // секция следущей гранаты
-                        // Ищем в активе гранату с секцией следущего типа
+                        shared_str    sect_next_grn = types_sect_grn[next_num];    // СЃРµРєС†РёСЏ СЃР»РµРґСѓС‰РµР№ РіСЂР°РЅР°С‚С‹
+                        // РС‰РµРј РІ Р°РєС‚РёРІРµ РіСЂР°РЅР°С‚Сѓ СЃ СЃРµРєС†РёРµР№ СЃР»РµРґСѓС‰РµРіРѕ С‚РёРїР°
                         //GRENADE_FROM_BELT
                         TIItemContainer::iterator    it, it_e;
                         if(Belt())
@@ -327,7 +327,7 @@ bool CGrenade::Action(s32 cmd, u32 flags)
                                 m_pCurrentInventory->Slot(pGrenade);
                                 //GRENADE_FROM_BELT
                                 if(Belt())
-                                    m_pCurrentInventory->Belt(this);                    // текущую гранату, обратно в пояс.
+                                    m_pCurrentInventory->Belt(this);                    // С‚РµРєСѓС‰СѓСЋ РіСЂР°РЅР°С‚Сѓ, РѕР±СЂР°С‚РЅРѕ РІ РїРѕСЏСЃ.
                                 return true;
                             }
                         }
@@ -401,13 +401,11 @@ void CGrenade::Deactivate()
 void CGrenade::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)
 {
 	str_name				= NameShort();
-	#if defined(GRENADE_FROM_BELT_COUNT)
-	/*xer-urg: Тут +1 в конце, т.к. обсчет кол-ва гранат для показа на худе ведется по кол-ву на поясе, 
-	а есть еще граната в слоте. А написать расчет слот+пояс я не умею*/
-	u32 ThisGrenadeCount	= m_pCurrentInventory->dwfGetGrenadeCount(*cNameSect(), true) +1; 
-	#else
+#if defined(GRENADE_FROM_BELT_COUNT)
+	u32 ThisGrenadeCount = m_pCurrentInventory->GrenadeOnBeltCount(*cNameSect());
+#else
 	u32 ThisGrenadeCount	= m_pCurrentInventory->dwfGetSameItemCount(*cNameSect(), true);
-	#endif
+#endif
 	string16				stmp;
 	sprintf_s					(stmp, "%d", ThisGrenadeCount);
 	str_count				= stmp;

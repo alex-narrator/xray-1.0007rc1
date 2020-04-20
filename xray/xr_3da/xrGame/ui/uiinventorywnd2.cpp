@@ -186,13 +186,10 @@ void CUIInventoryWnd::InitInventory()
 	if(_itm)
 	{
 		CUICellItem* itm				= create_cell_item(_itm);
-#if defined(GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
-		m_pUIGrenadeList->SetItem			(itm);
-#endif
-#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
-		m_pUIBeltList->SetItem			(itm);
-#endif
-#if !defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
+
+#if defined(GRENADE_FROM_BELT)
+		m_pUIBeltList->SetItem          (itm);
+#else
 		m_pUIBagList->SetItem			(itm);
 #endif
 	}
@@ -317,7 +314,7 @@ bool CUIInventoryWnd::ToSlot(CUICellItem* itm, bool force_place)
 #endif
 
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-		// îáíîâëÿåì ñòàòèê âåñà â èíâåíòàðå
+		// Ã®Ã¡Ã­Ã®Ã¢Ã«Ã¿Ã¥Ã¬ Ã±Ã²Ã Ã²Ã¨Ãª Ã¢Ã¥Ã±Ã  Ã¢ Ã¨Ã­Ã¢Ã¥Ã­Ã²Ã Ã°Ã¥
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 		m_b_need_reinit = true;
@@ -369,7 +366,7 @@ bool CUIInventoryWnd::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 		CUICellItem* i						= old_owner->RemoveItem(itm, (old_owner==new_owner) );
 
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-		// îáíîâëÿåì ñòàòèê âåñà â èíâåíòàðå
+		// Ã®Ã¡Ã­Ã®Ã¢Ã«Ã¿Ã¥Ã¬ Ã±Ã²Ã Ã²Ã¨Ãª Ã¢Ã¥Ã±Ã  Ã¢ Ã¨Ã­Ã¢Ã¥Ã­Ã²Ã Ã°Ã¥
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 
@@ -426,6 +423,12 @@ bool CUIInventoryWnd::ToBelt(CUICellItem* itm, bool b_use_cursor_pos)
 		bool result							= GetInventory()->Belt(iitem);
 		VERIFY								(result);
 		CUICellItem* i						= old_owner->RemoveItem(itm, (old_owner==new_owner) );
+
+#ifdef GRENADE_FROM_BELT //Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð½Ðµ Ð²Ñ‹Ð»ÐµÑ‚Ð°Ð»Ð¾ Ð¿Ñ€Ð¸ Ð³ÐµÐ½ÐµÑ€Ð°Ñ†Ð¸Ð¸ ÑÑ‡ÐµÐ¹ÐºÐ¸ ÑÐ»Ð¾Ñ‚Ð° Ð³Ñ€Ð°Ð½Ð°Ñ‚Ñ‹ Ð½Ð° Ð¿Ð¾ÑÑÐµ - xer-urg
+		result = new_owner->CanSetItem(i);
+		if (result || new_owner->IsAutoGrow())
+		{
+#endif
 		
 	//.	UIBeltList.RearrangeItems();
 		if(b_use_cursor_pos)
@@ -436,14 +439,30 @@ bool CUIInventoryWnd::ToBelt(CUICellItem* itm, bool b_use_cursor_pos)
 		SendEvent_Item2Belt					(iitem);
 
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-		// îáíîâëÿåì ñòàòèê âåñà â èíâåíòàðå
+		// Ã®Ã¡Ã­Ã®Ã¢Ã«Ã¿Ã¥Ã¬ Ã±Ã²Ã Ã²Ã¨Ãª Ã¢Ã¥Ã±Ã  Ã¢ Ã¨Ã­Ã¢Ã¥Ã­Ã²Ã Ã°Ã¥
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
+
+#ifdef GRENADE_FROM_BELT //Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð½Ðµ Ð²Ñ‹Ð»ÐµÑ‚Ð°Ð»Ð¾ Ð¿Ñ€Ð¸ Ð³ÐµÐ½ÐµÑ€Ð°Ñ†Ð¸Ð¸ ÑÑ‡ÐµÐ¹ÐºÐ¸ ÑÐ»Ð¾Ñ‚Ð° Ð³Ñ€Ð°Ð½Ð°Ñ‚Ñ‹ Ð½Ð° Ð¿Ð¾ÑÑÐµ - xer-urg
+		}
+		else
+		{
+			NET_Packet					P;
+			iitem->object().u_EventGen	(P, GEG_PLAYER_ITEM2RUCK, iitem->object().H_Parent()->ID()); //ÑÐ±Ñ€Ð¾Ñ Ð½Ðµ Ð¿Ð¾Ð¼ÐµÑÑ‚Ð¸Ð²ÑˆÐµÐ³Ð¾ÑÑ Ð°Ð¹Ñ‚ÐµÐ¼Ð° Ð² Ñ€ÑŽÐºÐ·Ð°Ðº - xer-urg (GE_OWNERSHIP_REJECT - ÑÐ±Ñ€Ð¾Ñ Ð½Ð° Ð¿Ð¾Ð»)
+			P.w_u16						(u16(iitem->object().ID()));
+			iitem->object().u_EventSend(P);
+		}
+
+		m_b_need_reinit = true;
+		
+		return result;
+#else
 		m_b_need_reinit = true;
 		
 		return true;
+#endif
 	}
-	return									false;
+	return	false;
 }
 
 void CUIInventoryWnd::AddItemToBag(PIItem pItem)
@@ -539,7 +558,7 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 	EListType t_old		= GetType(old_owner);
 
 #if defined(INV_NEW_SLOTS_SYSTEM)
-	// Äëÿ ñëîòîâ ïðîâåðèì íèæå. Real Wolf.
+	// Ã„Ã«Ã¿ Ã±Ã«Ã®Ã²Ã®Ã¢ Ã¯Ã°Ã®Ã¢Ã¥Ã°Ã¨Ã¬ Ã­Ã¨Ã¦Ã¥. Real Wolf.
 	if(t_new == t_old && t_new != iwSlot) return true;
 #else
 	if(t_new == t_old) return true;
@@ -591,15 +610,15 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 			Msg("!#ERROR: item %s to large for slot: (%d x %d) vs (%d x %d) ", name, item_w, item_h, max_size.x, max_size.y );
 
 			
-		if( !can_put // ïðè íåâîçìîæíîñòè ïîìåñòèòü â âûáðàííûé ñëîò
+		if( !can_put // Ã¯Ã°Ã¨ Ã­Ã¥Ã¢Ã®Ã§Ã¬Ã®Ã¦Ã­Ã®Ã±Ã²Ã¨ Ã¯Ã®Ã¬Ã¥Ã±Ã²Ã¨Ã²Ã¼ Ã¢ Ã¢Ã»Ã¡Ã°Ã Ã­Ã­Ã»Ã© Ã±Ã«Ã®Ã²
 		#if defined(INV_MOVE_ITM_INTO_QUICK_SLOTS)
 			) 
-			break; // íå ïîìåùàòü â ñëîò, ïðîñòî äðîïíóòü èç ñëîòà èñòî÷íèêà?
+			break; // Ã­Ã¥ Ã¯Ã®Ã¬Ã¥Ã¹Ã Ã²Ã¼ Ã¢ Ã±Ã«Ã®Ã², Ã¯Ã°Ã®Ã±Ã²Ã® Ã¤Ã°Ã®Ã¯Ã­Ã³Ã²Ã¼ Ã¨Ã§ Ã±Ã«Ã®Ã²Ã  Ã¨Ã±Ã²Ã®Ã·Ã­Ã¨ÃªÃ ?
 		#else
 			// ||	!is_quick_slot(item->GetSlot(), item, m_pInv) 
 			) 
 			{
-				// âîññòàíîâëåíèå íå òðåáóåòñÿ, ñëîò íå áûë íàçíà÷åí
+				// Ã¢Ã®Ã±Ã±Ã²Ã Ã­Ã®Ã¢Ã«Ã¥Ã­Ã¨Ã¥ Ã­Ã¥ Ã²Ã°Ã¥Ã¡Ã³Ã¥Ã²Ã±Ã¿, Ã±Ã«Ã®Ã² Ã­Ã¥ Ã¡Ã»Ã« Ã­Ã Ã§Ã­Ã Ã·Ã¥Ã­
 				// item->SetSlot(old_slot); 
 				return true;
 			}
@@ -657,8 +676,8 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 		case iwBag:
 		{
 #ifdef INV_NEW_SLOTS_SYSTEM
-			// Ïûòàåìñÿ íàéòè ñâîáîäíûé ñëîò èç ñïèñêà ðàçðåøåííûõ.
-			// Åñëè åãî íåòó, òî ïðèíóäèòåëüíî çàéìåò ïåðâûé ñëîò, óêàçàííûé â ñïèñêå.
+			// ÃÃ»Ã²Ã Ã¥Ã¬Ã±Ã¿ Ã­Ã Ã©Ã²Ã¨ Ã±Ã¢Ã®Ã¡Ã®Ã¤Ã­Ã»Ã© Ã±Ã«Ã®Ã² Ã¨Ã§ Ã±Ã¯Ã¨Ã±ÃªÃ  Ã°Ã Ã§Ã°Ã¥Ã¸Ã¥Ã­Ã­Ã»Ãµ.
+			// Ã…Ã±Ã«Ã¨ Ã¥Ã£Ã® Ã­Ã¥Ã²Ã³, Ã²Ã® Ã¯Ã°Ã¨Ã­Ã³Ã¤Ã¨Ã²Ã¥Ã«Ã¼Ã­Ã® Ã§Ã Ã©Ã¬Ã¥Ã² Ã¯Ã¥Ã°Ã¢Ã»Ã© Ã±Ã«Ã®Ã², Ã³ÃªÃ Ã§Ã Ã­Ã­Ã»Ã© Ã¢ Ã±Ã¯Ã¨Ã±ÃªÃ¥.
 			auto slots = __item->GetSlots();
 			#if !defined(INV_MOVE_ITM_INTO_QUICK_SLOTS)
 			bool is_eat = __item->cast_eatable_item() != NULL;
@@ -733,9 +752,7 @@ if (IsGameTypeSingle()) {
 	m_pUISlotQuickAccessList_3->ClearAll	(true);
 }
 #endif
-#if defined(SHOW_GRENADE_SLOT)
-m_pUIGrenadeList->ClearAll				(true);
-#endif
+
 #if defined(SHOW_ARTEFACT_SLOT)
 m_pUIArtefactList->ClearAll				(true);
 #endif

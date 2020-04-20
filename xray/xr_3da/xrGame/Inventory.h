@@ -78,12 +78,15 @@ public:
 	// Ищет на поясе или в рюкзаке IItem с указанным CLS_ID
 	PIItem					Get					(CLASS_ID cls_id,  bool bSearchRuck) const;
 	PIItem					GetAny				(const char *name) const;//search both (ruck and belt)
-	PIItem					GetAmmoOnBelt				(const char *name) const;
+	PIItem					GetAmmoOnBelt		(const char *name) const;
 	PIItem					item				(CLASS_ID cls_id) const;
 	
 	// get all the items with the same section name
 	virtual u32				dwfGetSameItemCount	(LPCSTR caSection, bool SearchAll = false);	
 	virtual u32				dwfGetGrenadeCount	(LPCSTR caSection, bool SearchAll);	
+#if defined(GRENADE_FROM_BELT_COUNT)
+	virtual u32				GrenadeOnBeltCount  (LPCSTR caSection);
+#endif
 	// get all the items with the same object id
 	virtual bool			bfCheckForObject	(ALife::_OBJECT_ID tObjectID);	
 	PIItem					get_object_by_id	(ALife::_OBJECT_ID tObjectID);

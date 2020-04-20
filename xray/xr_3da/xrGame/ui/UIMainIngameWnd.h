@@ -126,7 +126,7 @@ protected:
 	CUIStatic			UIStarvationIcon;
 	CUIStatic			UIPsyHealthIcon;
 	CUIStatic			UIInvincibleIcon;
-//	CUIStatic			UISleepIcon;
+	CUIStatic			UISleepIcon;
 	CUIStatic			UIArtefactIcon;
 
 	CUIScrollView*		m_UIIcons;
@@ -134,8 +134,10 @@ protected:
 	CUIWindow*			m_pMPLogWnd;
 public:	
 	CUIArtefactPanel*    m_artefactPanel;
+#ifdef INV_QUICK_SLOT_PANEL
 	CUIQuickSlotPanel*	 m_quickSlotPanel;
-	
+#endif
+
 public:
 	
 	// ≈нумы соответсвующие предупреждающим иконкам 

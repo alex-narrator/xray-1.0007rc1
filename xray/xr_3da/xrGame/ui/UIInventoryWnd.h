@@ -108,9 +108,7 @@ protected:
 	CUIDragDropListEx*			m_pUISlotQuickAccessList_3;
 	CUIProgressBar				UIProgressBarSatiety;
 #endif
-#if defined(SHOW_GRENADE_SLOT)
-	CUIDragDropListEx*			m_pUIGrenadeList;
-#endif
+
 #if defined(SHOW_ARTEFACT_SLOT)
 	CUIDragDropListEx*			m_pUIArtefactList;
 #endif
