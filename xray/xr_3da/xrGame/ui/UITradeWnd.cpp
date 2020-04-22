@@ -50,17 +50,17 @@ struct CUITradeInternal{
 	CUIDragDropListEx	UIOurTradeList;
 	CUIDragDropListEx	UIOthersTradeList;
 
-	//êíîïêè
+	//ÃªÃ­Ã®Ã¯ÃªÃ¨
 	CUI3tButton			UIPerformTradeButton;
 	CUI3tButton			UIToTalkButton;
 
-	//èíôîðìàöèÿ î ïåðñîíàæàõ 
+	//Ã¨Ã­Ã´Ã®Ã°Ã¬Ã Ã¶Ã¨Ã¿ Ã® Ã¯Ã¥Ã°Ã±Ã®Ã­Ã Ã¦Ã Ãµ 
 	CUIStatic			UIOurIcon;
 	CUIStatic			UIOthersIcon;
 	CUICharacterInfo	UICharacterInfoLeft;
 	CUICharacterInfo	UICharacterInfoRight;
 
-	//èíôîðìàöèÿ î ïåðåòàñêèâàåìîì ïðåäìåòå
+	//Ã¨Ã­Ã´Ã®Ã°Ã¬Ã Ã¶Ã¨Ã¿ Ã® Ã¯Ã¥Ã°Ã¥Ã²Ã Ã±ÃªÃ¨Ã¢Ã Ã¥Ã¬Ã®Ã¬ Ã¯Ã°Ã¥Ã¤Ã¬Ã¥Ã²Ã¥
 	CUIStatic			UIDescWnd;
 	CUIItemInfo			UIItemInfo;
 
@@ -97,13 +97,13 @@ void CUITradeWnd::Init()
 
 	xml_init.InitWindow					(uiXml, "main", 0, this);
 
-	//ñòàòè÷åñêèå ýëåìåíòû èíòåðôåéñà
+	//Ã±Ã²Ã Ã²Ã¨Ã·Ã¥Ã±ÃªÃ¨Ã¥ Ã½Ã«Ã¥Ã¬Ã¥Ã­Ã²Ã» Ã¨Ã­Ã²Ã¥Ã°Ã´Ã¥Ã©Ã±Ã 
 	AttachChild							(&m_uidata->UIStaticTop);
 	xml_init.InitStatic					(uiXml, "top_background", 0, &m_uidata->UIStaticTop);
 	AttachChild							(&m_uidata->UIStaticBottom);
 	xml_init.InitStatic					(uiXml, "bottom_background", 0, &m_uidata->UIStaticBottom);
 
-	//èêîíêè ñ èçîáðàæåíèå íàñ è ïàðòíåðà ïî òîðãîâëå
+	//Ã¨ÃªÃ®Ã­ÃªÃ¨ Ã± Ã¨Ã§Ã®Ã¡Ã°Ã Ã¦Ã¥Ã­Ã¨Ã¥ Ã­Ã Ã± Ã¨ Ã¯Ã Ã°Ã²Ã­Ã¥Ã°Ã  Ã¯Ã® Ã²Ã®Ã°Ã£Ã®Ã¢Ã«Ã¥
 	AttachChild							(&m_uidata->UIOurIcon);
 	xml_init.InitStatic					(uiXml, "static_icon", 0, &m_uidata->UIOurIcon);
 	AttachChild							(&m_uidata->UIOthersIcon);
@@ -114,7 +114,7 @@ void CUITradeWnd::Init()
 	m_uidata->UICharacterInfoRight.Init	(0,0, m_uidata->UIOthersIcon.GetWidth(), m_uidata->UIOthersIcon.GetHeight(), TRADE_CHARACTER_XML);
 
 
-	//Ñïèñêè òîðãîâëè
+	//Ã‘Ã¯Ã¨Ã±ÃªÃ¨ Ã²Ã®Ã°Ã£Ã®Ã¢Ã«Ã¨
 	AttachChild							(&m_uidata->UIOurBagWnd);
 	xml_init.InitStatic					(uiXml, "our_bag_static", 0, &m_uidata->UIOurBagWnd);
 	AttachChild							(&m_uidata->UIOthersBagWnd);
@@ -137,7 +137,7 @@ void CUITradeWnd::Init()
 	m_uidata->UIOthersTradeWnd.AttachChild(&m_uidata->UIOthersPriceCaption);
 	xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &m_uidata->UIOthersPriceCaption);
 
-	//Ñïèñêè Drag&Drop
+	//Ã‘Ã¯Ã¨Ã±ÃªÃ¨ Drag&Drop
 	m_uidata->UIOurBagWnd.AttachChild	(&m_uidata->UIOurBagList);	
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_list", 0, &m_uidata->UIOurBagList);
 
@@ -632,6 +632,8 @@ void CUITradeWnd::ColorizeItem(CUICellItem* itm, bool b)
 	PIItem iitem		= (PIItem)itm->m_pData;
 	if(!b)
 		itm->SetTextureColor		(color_rgba(255,100,100,255));
+#ifdef INV_COLORIZE
 	else if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
 		itm->SetTextureColor		(color_rgba(100,255,100,255));
+#endif
 }
