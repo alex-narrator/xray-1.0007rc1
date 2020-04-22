@@ -99,7 +99,7 @@ void CUICarBodyWnd::Init()
 	xml_init.InitDragDropListEx		(uiXml, "dragdrop_list_other", 0, m_pUIOthersBagList);
 
 
-	//информация о предмете
+	//ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГї Г® ГЇГ°ГҐГ¤Г¬ГҐГІГҐ
 	m_pUIDescWnd					= xr_new<CUIFrameWindow>(); m_pUIDescWnd->SetAutoDelete(true);
 	AttachChild						(m_pUIDescWnd);
 	xml_init.InitFrameWindow		(uiXml, "frame_window", 0, m_pUIDescWnd);
@@ -148,7 +148,7 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryBox* pInvBox)
 	EnableAll										();
 	UpdateLists										();
 
-	// Real Wolf: колбек на открытие ящика. 02.08.2014.
+	// Real Wolf: ГЄГ®Г«ГЎГҐГЄ Г­Г  Г®ГІГЄГ°Г»ГІГЁГҐ ГїГ№ГЁГЄГ . 02.08.2014.
 	pInvBox->callback(GameObject::eOnInvBoxOpen)();
 }
 
@@ -198,8 +198,8 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 			NET_Packet		P;
 			CGameObject::u_EventGen		(P,GE_INFO_TRANSFER, our_id);
 			P.w_u16						(0);//not used
-			P.w_stringZ					((*it).info_id);			//сообщение
-			P.w_u8						(1);						//добавление сообщения
+			P.w_stringZ					((*it).info_id);			//Г±Г®Г®ГЎГ№ГҐГ­ГЁГҐ
+			P.w_u8						(1);						//Г¤Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ Г±Г®Г®ГЎГ№ГҐГ­ГЁГї
 			CGameObject::u_EventSend	(P);
 		}
 		known_info.clear	();
@@ -235,7 +235,7 @@ void CUICarBodyWnd::UpdateLists()
 	m_pOurObject->inventory().AddAvailableItems	(ruck_list, true);
 	std::sort									(ruck_list.begin(),ruck_list.end(),InventoryUtilities::GreaterRoomInRuck);
 
-	//Наш рюкзак
+	//ГЌГ Гё Г°ГѕГЄГ§Г ГЄ
 	TIItemContainer::iterator it;
 	for(it =  ruck_list.begin(); ruck_list.end() != it; ++it) 
 	{
@@ -252,7 +252,7 @@ void CUICarBodyWnd::UpdateLists()
 
 	std::sort										(ruck_list.begin(),ruck_list.end(),InventoryUtilities::GreaterRoomInRuck);
 
-	//Чужой рюкзак
+	//Г—ГіГ¦Г®Г© Г°ГѕГЄГ§Г ГЄ
 	for(it =  ruck_list.begin(); ruck_list.end() != it; ++it) 
 	{
 		CUICellItem* itm							= create_cell_item(*it);
@@ -278,7 +278,7 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 		{
 			switch(m_pUIPropertiesBox->GetClickedItem()->GetTAG())
 			{
-			case INVENTORY_EAT_ACTION:	//съесть объект
+			case INVENTORY_EAT_ACTION:	//Г±ГєГҐГ±ГІГј Г®ГЎГєГҐГЄГІ
 				EatItem();
 				break;
 			case INVENTORY_UNLOAD_MAGAZINE:
@@ -583,7 +583,7 @@ void move_item (u16 from_id, u16 to_id, u16 what_id)
 	P.w_u16									(what_id);
 	CGameObject::u_EventSend				(P);
 
-	//другому инвентарю - взять вещь 
+	//Г¤Г°ГіГЈГ®Г¬Гі ГЁГ­ГўГҐГ­ГІГ Г°Гѕ - ГўГ§ГїГІГј ГўГҐГ№Гј 
 	CGameObject::u_EventGen					(	P,
 												GE_OWNERSHIP_TAKE,
 												to_id
@@ -621,3 +621,12 @@ void CUICarBodyWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemSelected);
 	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemRButtonClick);
 }
+
+void CUICarBodyWnd::ColorizeItem(CUICellItem* itm)
+{
+	#ifdef INV_COLORIZE
+	PIItem iitem		= (PIItem)itm->m_pData;
+	if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
+		itm->SetTextureColor				(color_rgba(100,255,100,255));
+	#endif
+} 
