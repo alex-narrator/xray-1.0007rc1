@@ -211,17 +211,15 @@ void CActor::IR_OnKeyboardPress(int cmd)
 					
 					if(pMedkit || pAntirad || pEatableItem || pBottleItem)
 					{
-#ifdef QUICK_SLOT_POCKET
-						PIItem iitm = inventory().Same(itm, false);
-#else
+#ifndef QUICK_SLOT_POCKET_LOGIC
 						PIItem iitm = inventory().Same(itm, true);
-#endif
 						if(iitm)
 						{
 							inventory().Eat(iitm);
 							strconcat(sizeof(str),str,*CStringTable().translate("st_item_used"),": ", iitm->Name());
 						}
 						else
+#endif
 						{
 							inventory().Eat(itm);
 							strconcat(sizeof(str),str,*CStringTable().translate("st_item_used"),": ", itm->Name());

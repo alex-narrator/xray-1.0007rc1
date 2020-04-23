@@ -11,7 +11,6 @@
 #define SCRIPT_VARS_STORAGE				// включает хранилище скриптовых переменных в сейвы
 //#define RUCK_FLAG_PREFERRED             // позволяет всем предметам реагировать на флаг FRuckDefault. Если флаг установлен, хабар будет подбираться в рюкзак, а не в слот по умолчанию.
 
-
 // ==================================== Правки от K.D. =======================================
 #define KD_DETAIL_RADIUS				// alpet: включает правку дистанции отрисовки травы и плотности. Может влиять на производительность для слабых систем.
 
@@ -35,7 +34,7 @@
 // ==================================== Правки от Red Virus ======================================= 
 #define WPN_BOBBING						// Red Virus: bobbing effect from lost alpha
 #define INV_COLORIZE_AMMO				// Red Virus: colorize ammo from lost alpha
-
+//
 #ifdef INV_NEW_SLOTS_SYSTEM
 	#define INV_NO_ACTIVATE_APPARATUS_SLOT  // Red Virus: убирает невозможность сменить оружие клавишами при активных слотах:  фонарика, детектора и тд
 	#define INV_MOVE_ITM_INTO_QUICK_SLOTS	// Red Virus: позволяет менять местами предметы в быстрых слотах
@@ -49,11 +48,12 @@
 #ifdef GRENADE_FROM_BELT
        #define GRENADE_FROM_BELT_COUNT //фикс для правильного отображения худового счетчика кол-ва гранат на поясе
 #endif
-
+//
 #ifdef INV_NEW_SLOTS_SYSTEM
        #define SHOW_ARTEFACT_SLOT     //отображение слота артефакта в инвентаре
        #define QUICK_MEDICINE         //быстрые слоты назначаются аптечке, бинту и антираду по умолчанию (а не любой еде, как в оригинальном репозитории)
-       #define QUICK_SLOT_POCKET  // после использования предмета в быстром слоте следующий аналогичный предмет не встаёт в слот из инвентаря
+       #define QUICK_SLOT_POCKET_LOGIC  // после использования предмета в быстром слоте следующий аналогичный предмет не встаёт в слот из инвентаря
 #endif
-
+//
 #define NO_MAX_WALK_WEIGHT_CANT_MOVE  //отключает обездвиживание при превышении max_walk_weight	
+#define NO_DBCLICK_USE //отключает юзание предметов в инвентаре по даблклику (поедание еды, использование аптечек, бинтов, антирада)

@@ -1623,6 +1623,7 @@ void CUIQuickSlotPanel::Init()
     m_QuickSlot_3_Icon->ClipperOn			();
     m_QuickSlot_3_Icon_Size.set	(m_QuickSlot_3_Icon->GetWidth(),m_QuickSlot_3_Icon->GetHeight());
 	//
+#ifndef QUICK_SLOT_POCKET_LOGIC
     m_CountItemQuickSlot_0_Text		= xr_new<CUIStatic>();
     m_CountItemQuickSlot_0_Text->SetAutoDelete(true);
     m_QuickSlotPanelBackground->AttachChild				(m_CountItemQuickSlot_0_Text);
@@ -1642,6 +1643,7 @@ void CUIQuickSlotPanel::Init()
     m_CountItemQuickSlot_3_Text->SetAutoDelete(true);
     m_QuickSlotPanelBackground->AttachChild				(m_CountItemQuickSlot_3_Text);
     xml_init.InitStatic		(uiXml, "quick_slot_panel:count_item_quick_slot_3_text", 0, m_CountItemQuickSlot_3_Text);
+#endif
 	//
     m_UseQuickSlot_0_Text		= xr_new<CUIStatic>();
     m_UseQuickSlot_0_Text->SetAutoDelete(true);
@@ -1718,17 +1720,19 @@ void CUIQuickSlotPanel::Update()
 
 			itm_name = itm->object().cNameSect();
             count = pActor->inventory().dwfGetSameItemCount(itm_name.c_str(), true);
-
+#ifndef QUICK_SLOT_POCKET_LOGIC
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_0_Text->SetText(str);
             m_CountItemQuickSlot_0_Text->Show(true);
-
+#endif
 			DrawItemInSlot(itm, m_QuickSlot_0_Icon, m_QuickSlot_0_Icon_Size );
         }
         else
         {
             m_UseQuickSlot_0_Text->Show(false);
+#ifndef QUICK_SLOT_POCKET_LOGIC
             m_CountItemQuickSlot_0_Text->Show(false);
+#endif
             m_QuickSlot_0_Icon->Show(false);
         }
 
@@ -1742,17 +1746,19 @@ void CUIQuickSlotPanel::Update()
 
 			itm_name = itm->object().cNameSect();
             count = pActor->inventory().dwfGetSameItemCount(itm_name.c_str(), true);
-
+#ifndef QUICK_SLOT_POCKET_LOGIC
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_1_Text->SetText(str);
             m_CountItemQuickSlot_1_Text->Show(true);
-
+#endif
 			DrawItemInSlot(itm, m_QuickSlot_1_Icon, m_QuickSlot_1_Icon_Size );
         }
         else
         {
             m_UseQuickSlot_1_Text->Show(false);
+#ifndef QUICK_SLOT_POCKET_LOGIC
             m_CountItemQuickSlot_1_Text->Show(false);
+#endif
             m_QuickSlot_1_Icon->Show(false);
         }
 
@@ -1766,17 +1772,19 @@ void CUIQuickSlotPanel::Update()
 
 			itm_name = itm->object().cNameSect();
             count = pActor->inventory().dwfGetSameItemCount(itm_name.c_str(), true);
-
+#ifndef QUICK_SLOT_POCKET_LOGIC
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_2_Text->SetText(str);
             m_CountItemQuickSlot_2_Text->Show(true);
-
+#endif
 			DrawItemInSlot(itm, m_QuickSlot_2_Icon, m_QuickSlot_2_Icon_Size );
         }
         else
         {
             m_UseQuickSlot_2_Text->Show(false);
+#ifndef QUICK_SLOT_POCKET_LOGIC
             m_CountItemQuickSlot_2_Text->Show(false);
+#endif
             m_QuickSlot_2_Icon->Show(false);
         }
 
@@ -1790,17 +1798,19 @@ void CUIQuickSlotPanel::Update()
 
 			itm_name = itm->object().cNameSect();
             count = pActor->inventory().dwfGetSameItemCount(itm_name.c_str(), true);
-
+#ifndef QUICK_SLOT_POCKET_LOGIC
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_3_Text->SetText(str);
             m_CountItemQuickSlot_3_Text->Show(true);
-
+#endif
 			DrawItemInSlot(itm, m_QuickSlot_3_Icon, m_QuickSlot_3_Icon_Size );
         }
         else
         {
             m_UseQuickSlot_3_Text->Show(false);
+#ifndef QUICK_SLOT_POCKET_LOGIC
             m_CountItemQuickSlot_3_Text->Show(false);
+#endif
             m_QuickSlot_3_Icon->Show(false);
         }
     }

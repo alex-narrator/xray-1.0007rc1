@@ -646,7 +646,10 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 	PIItem	__item		= (PIItem)itm->m_pData;
 	u32		__slot		= __item->GetSlot();
 	auto	old_owner	= itm->OwnerList();
-#if  defined(INV_NEW_SLOTS_SYSTEM)
+
+#ifndef NO_DBCLICK_USE
+
+#if  defined(INV_NEW_SLOTS_SYSTEM) && !defined (QUICK_SLOT_POCKET_LOGIC)
 	if (__slot < SLOT_QUICK_ACCESS_0 || __slot > SLOT_QUICK_ACCESS_3)
 	{
 		if(TryUseItem(__item))
@@ -654,11 +657,8 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 	}
 	else
 	{
-#ifdef QUICK_SLOT_POCKET
-		PIItem iitem = GetInventory()->Same(__item, false);
-#else
 		PIItem iitem = GetInventory()->Same(__item, true);
-#endif
+
 		if(iitem)
 		{
 			if(TryUseItem(iitem))
@@ -675,6 +675,7 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 		return true;
 #endif
 
+#endif
 	
 	EListType t_old						= GetType(old_owner);
 
