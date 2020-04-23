@@ -80,12 +80,13 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 				// Для еды разрешены только быстрые слоты.
 #ifndef QUICK_SLOT_POCKET_LOGIC
 				if (!eat || is_quick_slot(u32(slots[i]), CurrentIItem(), m_pInv) )
+#endif
 				{
 					sprintf_s(temp, "st_move_to_slot%d", slots[i]);
 					UIPropertiesBox.AddItem(temp,  NULL, INVENTORY_TO_SLOT0_ACTION + slots[i]);
 					b_show = true;
 				}
-#endif
+
 			}
 	};
 #else
