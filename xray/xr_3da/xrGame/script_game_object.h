@@ -571,13 +571,13 @@ public:
 			// инвентарь
 			float				GetActorMaxWeight					() const;
 			void				SetActorMaxWeight					(float max_weight);
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 			float				GetActorMaxWalkWeight				() const;
 			void				SetActorMaxWalkWeight				(float max_walk_weight);
 #endif
 			float				GetAdditionalMaxWeight				() const;
 			void				SetAdditionalMaxWeight				(float add_max_weight);
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 			float				GetAdditionalMaxWalkWeight			() const;
 			void				SetAdditionalMaxWalkWeight			(float add_max_walk_weight);
 #endif

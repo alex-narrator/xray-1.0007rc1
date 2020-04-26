@@ -401,7 +401,7 @@ void CGrenade::Deactivate()
 void CGrenade::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)
 {
 	str_name				= NameShort();
-#if defined(GRENADE_FROM_BELT_COUNT)
+#if defined(GRENADE_FROM_BELT)
 	u32 ThisGrenadeCount = m_pCurrentInventory->GrenadeOnBeltCount(*cNameSect());
 #else
 	u32 ThisGrenadeCount	= m_pCurrentInventory->dwfGetSameItemCount(*cNameSect(), true);

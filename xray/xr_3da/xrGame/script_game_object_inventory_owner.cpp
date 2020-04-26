@@ -896,7 +896,7 @@ void CScriptGameObject::SetActorMaxWeight(float max_weight)
 	pActor->inventory().SetMaxWeight(max_weight);
 }
 // получить и задать максимальный вес при котором можно ходить
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 float CScriptGameObject::GetActorMaxWalkWeight() const
 {
 	CActor* pActor = smart_cast<CActor*>(&object());
@@ -927,7 +927,7 @@ float CScriptGameObject::GetAdditionalMaxWeight() const
 	}
 	return				(outfit->m_additional_weight2);
 }
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 float CScriptGameObject::GetAdditionalMaxWalkWeight() const
 {
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(&object());
@@ -947,7 +947,7 @@ void CScriptGameObject::SetAdditionalMaxWeight(float add_max_weight)
 	}
 	outfit->m_additional_weight2 = add_max_weight;
 }
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 void CScriptGameObject::SetAdditionalMaxWalkWeight(float add_max_walk_weight)
 {
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(&object());

@@ -25,7 +25,7 @@ private:
 			eCriticalRadiationReached		=(1<<4),
 			eWeaponJammedReached			=(1<<5),
 			ePhyHealthMinReached			=(1<<6),
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 			eCantWalkWeight					=(1<<7),
 #endif
 			};
@@ -50,7 +50,7 @@ public:
 	// хромание при потере сил и здоровья
 	virtual	bool		IsLimping					() const;
 	virtual bool		IsCantWalk					() const;
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 	virtual bool		IsCantWalkWeight			();
 #endif
 	virtual bool		IsCantSprint				() const;
@@ -93,7 +93,7 @@ protected:
 	float m_fAccelK;
 	float m_fSprintK;
 public:
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 	float	m_MaxWalkWeight;
 #endif
 protected:

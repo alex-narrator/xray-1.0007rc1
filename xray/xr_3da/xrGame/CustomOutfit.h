@@ -43,7 +43,7 @@ protected:
 	u32								m_ef_equipment_type;
 
 public:
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 	float							m_additional_weight;
 #endif
 	float							m_additional_weight2;

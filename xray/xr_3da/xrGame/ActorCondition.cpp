@@ -93,7 +93,7 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_Satiety				= pSettings->r_float(section,"satiety_v");		
 	m_fV_SatietyPower			= pSettings->r_float(section,"satiety_power_v");
 	m_fV_SatietyHealth			= pSettings->r_float(section,"satiety_health_v");
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 	m_MaxWalkWeight					= pSettings->r_float(section,"max_walk_weight");
 #endif
 }
@@ -262,7 +262,7 @@ bool CActorCondition::IsCantWalk() const
 
 #include "CustomOutfit.h"
 
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 bool CActorCondition::IsCantWalkWeight()
 {
 	if(IsGameTypeSingle() && !GodMode())
@@ -387,7 +387,7 @@ void CActorCondition::UpdateTutorialThresholds()
 		b=false;
 		strcpy_s(cb_name,"_G.on_actor_psy");
 	}
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 	if(b && !m_condition_flags.test(eCantWalkWeight)){
 //.		m_condition_flags.set			(eCantWalkWeight, TRUE);
 		b=false;

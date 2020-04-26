@@ -976,7 +976,7 @@ u32		CInventory::dwfGetGrenadeCount(LPCSTR caSection, bool SearchAll)
 	return		(l_dwCount);
 }
 
-#if defined(GRENADE_FROM_BELT_COUNT)
+#if defined(GRENADE_FROM_BELT)
 u32 CInventory::GrenadeOnBeltCount(LPCSTR caSection)
 {
 	u32			l_dwCount = 1; //xer-urg: 1, т.к. первая граната на поясе находится, по факту в слоте гранат

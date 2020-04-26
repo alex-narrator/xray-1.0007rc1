@@ -556,7 +556,7 @@ bool	CActor::CanMove				()
 		}
 		return false;
 	}
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 	else
 	if( conditions().IsCantWalkWeight() )
 	{

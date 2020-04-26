@@ -276,13 +276,13 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 		// инвентарь
 		.def("get_actor_max_weight",			&CScriptGameObject::GetActorMaxWeight)
 		.def("set_actor_max_weight",			&CScriptGameObject::SetActorMaxWeight)
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 		.def("get_actor_max_walk_weight",		&CScriptGameObject::GetActorMaxWalkWeight)
 		.def("set_actor_max_walk_weight",		&CScriptGameObject::SetActorMaxWalkWeight)
 #endif
 		.def("get_additional_max_weight",		&CScriptGameObject::GetAdditionalMaxWeight)
 		.def("set_additional_max_weight",		&CScriptGameObject::SetAdditionalMaxWeight)
-#ifndef NO_MAX_WALK_WEIGHT_CANT_MOVE
+#ifndef DISABLE_MAX_WALK_WEIGHT
 		.def("get_additional_max_walk_weight",	&CScriptGameObject::GetAdditionalMaxWalkWeight)
 		.def("set_additional_max_walk_weight",	&CScriptGameObject::SetAdditionalMaxWalkWeight)
 #endif
