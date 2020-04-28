@@ -191,11 +191,10 @@ void CGrenade::PutNextToSlot()
 	if (m_pCurrentInventory)
 	{
 		NET_Packet						P;
+		m_pCurrentInventory->Ruck		(this);
 #if defined(GRENADE_FROM_BELT)
-		m_pCurrentInventory->Belt		(this);
 		this->u_EventGen				(P, GEG_PLAYER_ITEM2BELT, this->H_Parent()->ID());
 #else
-		m_pCurrentInventory->Ruck		(this);
 		this->u_EventGen				(P, GEG_PLAYER_ITEM2RUCK, this->H_Parent()->ID());
 #endif
 		P.w_u16							(this->ID());
@@ -249,7 +248,7 @@ bool CGrenade::Action(s32 cmd, u32 flags)
 
 	switch(cmd) 
 	{
-	//ïåðåêëþ÷åíèå òèïà ãðàíàòû
+	//переключение типа гранаты
 	case kWPN_NEXT:
 		{
             if(flags&CMD_START) 
@@ -268,16 +267,12 @@ bool CGrenade::Action(s32 cmd, u32 flags)
 						CGrenade *pGrenade = smart_cast<CGrenade*>(*it);
 						if(pGrenade && xr_strcmp(pGrenade->cNameSect(), cNameSect())) 
 						{
-#if defined(GRENADE_FROM_BELT)
-							m_pCurrentInventory->Belt(this);
-#else
 							m_pCurrentInventory->Ruck(this);
-#endif
 							m_pCurrentInventory->SetActiveSlot(NO_ACTIVE_SLOT);
 							m_pCurrentInventory->Slot(pGrenade);
-/*#if defined(GRENADE_FROM_BELT)
+#if defined(GRENADE_FROM_BELT)
 							m_pCurrentInventory->Belt(this);
-#else*/ //-можно и так попробовать
+#endif
 
 							return true;
 						}
