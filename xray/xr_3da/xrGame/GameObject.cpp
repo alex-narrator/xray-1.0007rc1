@@ -30,6 +30,7 @@
 #include "game_object_space.h"
 #include "alife_simulator.h"
 #include "alife_object_registry.h"
+#include "../../build_config_defines.h"
 
 
 #ifdef DEBUG

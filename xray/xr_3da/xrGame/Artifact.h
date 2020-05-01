@@ -4,6 +4,7 @@
 #include "hit_immunity.h"
 #include "PHObject.h"
 #include "script_export_space.h"
+#include "../../build_config_defines.h"
 
 struct SArtefactActivation;
 

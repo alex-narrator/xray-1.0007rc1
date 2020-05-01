@@ -13,6 +13,7 @@
 #include "phworld.h"
 #include "phactivationshape.h"
 #include "phvalide.h"
+#include "../../build_config_defines.h"
 CPhysicsShellHolder::CPhysicsShellHolder()
 {
 	init();

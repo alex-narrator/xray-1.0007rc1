@@ -13,6 +13,7 @@
 #include "UsableScriptObject.h"
 #include "script_binder.h"
 #include "Hit.h"
+#include "../../build_config_defines.h"
 
 class CPhysicsShell;
 class CSE_Abstract;
