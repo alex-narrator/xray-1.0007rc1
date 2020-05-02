@@ -49,5 +49,10 @@ protected:
 	virtual void			net_Import(NET_Packet&);
 public:
 	int						GetPortionsNum() const	{ return m_iPortionsNum; }
+#ifdef EAT_PORTIONS_INFLUENCE
+	int    GetStartPortionsNum() const { return m_iStartPortionsNum; };  // <--- // Не используется, но может пригодится. //
+	float  GetOnePortionWeight();                    // <--- //
+	u32    GetOnePortionCost();                      // <--- //
+#endif
 };
 

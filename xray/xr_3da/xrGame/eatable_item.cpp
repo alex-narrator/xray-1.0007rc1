@@ -64,8 +64,16 @@ BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
 	{
 		m_iPortionsNum = se_eat->m_portions_num;
 #if defined(EAT_PORTIONS_INFLUENCE)
-		m_weight	-= m_weight / m_iStartPortionsNum * m_iPortionsNum;
-		m_cost		-= m_cost	/ m_iStartPortionsNum * m_iPortionsNum;
+		/*m_weight	-= m_weight / m_iStartPortionsNum * m_iPortionsNum;
+		m_cost		-= m_cost	/ m_iStartPortionsNum * m_iPortionsNum;*/
+		if (m_iPortionsNum > 0){
+			float   w = GetOnePortionWeight();
+			float   weight = w * m_iPortionsNum;
+			u32     c = GetOnePortionCost();
+			u32     cost = c * m_iPortionsNum;
+			SetWeight(weight);
+			SetCost(cost);
+		}
 #endif
 	}
 	else
@@ -125,12 +133,18 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 
 #if defined(EAT_PORTIONS_INFLUENCE)
 	// Real Wolf: ”меньшаем вес и цену после использовани€.
-	auto sect	= object().cNameSect().c_str();
+	/*auto sect	= object().cNameSect().c_str();
 	auto weight = READ_IF_EXISTS(pSettings, r_float, sect, "inv_weight",	0.0f);
 	auto cost	= READ_IF_EXISTS(pSettings, r_float, sect, "cost",			0.0f);
 
 	m_weight	-= weight / m_iStartPortionsNum;
-	m_cost		-= cost / m_iStartPortionsNum;
+	m_cost		-= cost / m_iStartPortionsNum;*/
+	float   w = GetOnePortionWeight();
+	float   weight = m_weight - w;
+	u32     c = GetOnePortionCost();
+	u32     cost = m_cost - c;
+	SetWeight(weight);
+	SetCost(cost);
 #endif
 
 	/* Real Wolf: ѕосле использовани€ предмета, удал€ем его иконку и добавл€ем заново.
@@ -168,3 +182,38 @@ void CEatableItem::net_Import(NET_Packet& P)
 	inherited::net_Import(P);
 	m_iPortionsNum = P.r_s32();
 }
+
+#ifdef EAT_PORTIONS_INFLUENCE
+float CEatableItem::GetOnePortionWeight()
+{
+	float   rest = 0.0f;
+	LPCSTR  sect = object().cNameSect().c_str();
+	float   weight = READ_IF_EXISTS(pSettings, r_float, sect, "inv_weight", 0.100f);
+	s32     portions = pSettings->r_s32(sect, "eat_portions_num");
+
+	if (portions > 0){
+		rest = weight / portions;
+	}
+	else{
+		rest = weight;
+	}
+	return rest;
+}
+
+u32 CEatableItem::GetOnePortionCost()
+{
+	u32     rest = 0;
+	LPCSTR  sect = object().cNameSect().c_str();
+	u32     cost = READ_IF_EXISTS(pSettings, r_u32, sect, "cost", 1);
+	s32     portions = pSettings->r_s32(sect, "eat_portions_num");
+
+	if (portions > 0){
+		rest = cost / portions;
+	}
+	else{
+		rest = cost;
+	}
+
+	return rest;
+}
+#endif
