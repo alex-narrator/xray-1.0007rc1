@@ -1796,9 +1796,9 @@ void CActor::unblock_action(EGameActions cmd)
 #ifdef MODIFY_ACTOR_CONFIG_PARAMS
 void CActor::UpdateConfigParams()
 {
-	health_k = Actor()->GetHealth(); //текущее здоровье (максимум единица)
-	power_k  = Actor()->conditions().GetPower(); //текущая выносливость (максимум единица)
-	hp_k = 0.5*health_k + 0.5*power_k; //коефициент соотношения здоровья и выносливости
+	health_k = GetHealth(); //текущее здоровье (максимум единица)
+	power_k  = conditions().GetPower(); //текущая выносливость (максимум единица)
+	hp_k = 0.5+(0.25*health_k + 0.25*power_k); //коефициент соотношения здоровья и выносливости
 	//clamp(hp_k, 0.5f, 1.0f); //ограничение коефициента здоровье*выносливость в пределах от 0,5 до 1, при текущей формуле не требуется
 
 	//скорость ходьбы
@@ -1809,7 +1809,7 @@ void CActor::UpdateConfigParams()
 	character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed); //пришлось добавить на апдейт т.к. высота прыжка рассчитывается именно здесь
 
 	//дисперсия оружия
-	m_fDispBase = m_fDispBaseCfg * 1 / hp_k; //конфиговое значение дисперсии * 1/коефициент (чем меньше коеф тем больше разброс)
+	m_fDispBase = m_fDispBaseCfg * 1 / (0.75+0.25*hp_k); //конфиговое значение дисперсии * 1/коефициент (чем меньше коеф тем больше разброс)
 	m_fDispAim = m_fDispAimCfg * 1 / hp_k; //конфиговое значение дисперсии в прицеливании * 1/коефициент (чем меньше коеф тем больше разброс)
 
 #ifdef MODIFY_ACTOR_CONFIG_PARAMS_DEBUG
@@ -1817,6 +1817,7 @@ void CActor::UpdateConfigParams()
 	Msg("power_k = %.2f", power_k);
 	Msg("hp_k = %.2f", hp_k);
 	Msg("1/hp_k = %.2f", 1 / hp_k);
+	Msg("1 / (0.75+0.25*hp_k) = %.2f", 1 / (0.75+0.25*hp_k));
 
 	Msg("m_fWalkAccel = %.2f", m_fWalkAccel);
 	Msg("m_fJumpSpeed = %.2f", m_fJumpSpeed);

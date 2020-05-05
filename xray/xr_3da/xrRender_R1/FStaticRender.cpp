@@ -11,6 +11,8 @@
 #include "..\fmesh.h"
 #include "..\SkeletonCustom.h"
 #include "..\xrRender\lighttrack.h"
+#include "../../build_config_defines.h"
+
  
 using	namespace		R_dsgraph;
 
