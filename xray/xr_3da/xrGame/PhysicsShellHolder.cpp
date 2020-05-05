@@ -77,6 +77,12 @@ void	CPhysicsShellHolder::Hit					(SHit* pHDS)
 	{
 		m_fRadiationRestoreSpeed += m_fRadiationAccumFactor * pHDS->power;
 		clamp<float> (m_fRadiationRestoreSpeed, -m_fRadiationAccumLimit, m_fRadiationAccumLimit);
+
+		/*Msg("hit_power = %.5f", pHDS->power);
+		Msg("m_fRadiationRestoreSpeed = %.5f", m_fRadiationRestoreSpeed);
+		Msg("m_fRadiationAccumFactor = %.5f", m_fRadiationAccumFactor);
+		Msg("m_fRadiationAccumLimit = %.5f", m_fRadiationAccumLimit);
+		Msg("additional radiation = %.5f", m_fRadiationAccumFactor * pHDS->power);*/
 	}
 #endif
 }

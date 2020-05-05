@@ -466,6 +466,17 @@ protected:
 
 	float					m_fWalk_StrafeFactor;
 	float					m_fRun_StrafeFactor;
+
+#ifdef MODIFY_ACTOR_CONFIG_PARAMS
+	void CActor::UpdateConfigParams();
+	float m_fWalkAccelCfg; //конфиговое значение скорости ходьбы для дальнейшего манипулирования базовым параметром
+	float m_fJumpSpeedCfg; //конфиговое значение высоты прыжка для дальнейшего манипулирования базовым параметром
+	float m_fDispBaseCfg; //конфиговое значение дисперсии для дальнейшего манипулирования базовым параметром
+	float m_fDispAimCfg; //конфиговое значение дисперсии в прицеливании для дальнейшего манипулирования базовым параметром
+	float health_k;
+	float power_k;
+	float hp_k;
+#endif
 	//////////////////////////////////////////////////////////////////////////
 	// User input/output
 	//////////////////////////////////////////////////////////////////////////

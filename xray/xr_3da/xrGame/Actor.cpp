@@ -317,9 +317,14 @@ void CActor::Load	(LPCSTR section )
 	character_physics_support()->movement()->Load(section);
 
 	
-
-	m_fWalkAccel				= pSettings->r_float(section,"walk_accel");	
-	m_fJumpSpeed				= pSettings->r_float(section,"jump_speed");
+	m_fWalkAccel    = pSettings->r_float(section, "walk_accel");
+#ifdef MODIFY_ACTOR_CONFIG_PARAMS
+	m_fWalkAccelCfg = pSettings->r_float(section, "walk_accel");
+#endif
+	m_fJumpSpeed    = pSettings->r_float(section, "jump_speed");
+#ifdef MODIFY_ACTOR_CONFIG_PARAMS
+	m_fJumpSpeedCfg = pSettings->r_float(section, "jump_speed");
+#endif
 	m_fRunFactor				= pSettings->r_float(section,"run_coef");
 	m_fRunBackFactor			= pSettings->r_float(section,"run_back_coef");
 	m_fWalkBackFactor			= pSettings->r_float(section,"walk_back_coef");
@@ -333,7 +338,7 @@ void CActor::Load	(LPCSTR section )
 
 	m_fCamHeightFactor			= pSettings->r_float(section,"camera_height_factor");
 	character_physics_support()->movement()		->SetJumpUpVelocity(m_fJumpSpeed);
-	float AirControlParam		= pSettings->r_float	(section,"air_control_param"	);
+	float AirControlParam		= pSettings->r_float	(section,"air_control_param");
 	character_physics_support()->movement()		->SetAirControlParam(AirControlParam);
 
 	m_fPickupInfoRadius	= pSettings->r_float(section,"pickup_info_radius");
@@ -390,10 +395,17 @@ if(!g_dedicated_server)
 #endif
 
 	// настройки дисперсии стрельбы
-	m_fDispBase					= pSettings->r_float		(section,"disp_base"		 );
+
+	m_fDispBase					    = pSettings->r_float		(section, "disp_base");
+#ifdef MODIFY_ACTOR_CONFIG_PARAMS
+	m_fDispBaseCfg					= pSettings->r_float		(section, "disp_base");
+#endif
 	m_fDispBase					= deg2rad(m_fDispBase);
 
-	m_fDispAim					= pSettings->r_float		(section,"disp_aim"		 );
+	m_fDispAim					= pSettings->r_float		(section, "disp_aim");
+#ifdef MODIFY_ACTOR_CONFIG_PARAMS
+	m_fDispAimCfg               = pSettings->r_float        (section, "disp_aim");
+#endif
 	m_fDispAim					= deg2rad(m_fDispAim);
 
 	m_fDispVelFactor			= pSettings->r_float		(section,"disp_vel_factor"	 );
@@ -1219,6 +1231,9 @@ void CActor::shedule_Update	(u32 DT)
 	UpdateArtefactsOnBelt						();
 	m_pPhysics_support->in_shedule_Update		(DT);
 	Check_for_AutoPickUp						();
+#ifdef MODIFY_ACTOR_CONFIG_PARAMS
+	UpdateConfigParams();
+#endif
 };
 #include "debug_renderer.h"
 void CActor::renderable_Render	()
@@ -1777,3 +1792,43 @@ void CActor::unblock_action(EGameActions cmd)
 		m_blocked_actions.erase(iter);
 	}
 }
+
+#ifdef MODIFY_ACTOR_CONFIG_PARAMS
+void CActor::UpdateConfigParams()
+{
+	health_k = Actor()->GetHealth(); //текущее здоровье (максимум единица)
+	power_k  = Actor()->conditions().GetPower(); //текущая выносливость (максимум единица)
+	hp_k = 0.5*health_k + 0.5*power_k; //коефициент соотношения здоровья и выносливости
+	//clamp(hp_k, 0.5f, 1.0f); //ограничение коефициента здоровье*выносливость в пределах от 0,5 до 1, при текущей формуле не требуется
+
+	//скорость ходьбы
+	m_fWalkAccel = m_fWalkAccelCfg * hp_k; //конфиговое значение скорости ходьбы * коефициент
+
+	//высота прыжка
+	m_fJumpSpeed = m_fJumpSpeedCfg * hp_k; //конфиговое значение высоты прыжка * коефициент
+	character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed); //пришлось добавить на апдейт т.к. высота прыжка рассчитывается именно здесь
+
+	//дисперсия оружия
+	m_fDispBase = m_fDispBaseCfg * 1 / hp_k; //конфиговое значение дисперсии * 1/коефициент (чем меньше коеф тем больше разброс)
+	m_fDispAim = m_fDispAimCfg * 1 / hp_k; //конфиговое значение дисперсии в прицеливании * 1/коефициент (чем меньше коеф тем больше разброс)
+
+#ifdef MODIFY_ACTOR_CONFIG_PARAMS_DEBUG
+	Msg("health_k = %.2f", health_k);
+	Msg("power_k = %.2f", power_k);
+	Msg("hp_k = %.2f", hp_k);
+	Msg("1/hp_k = %.2f", 1 / hp_k);
+
+	Msg("m_fWalkAccel = %.2f", m_fWalkAccel);
+	Msg("m_fJumpSpeed = %.2f", m_fJumpSpeed);
+
+	Msg("new param m_fWalkAccelCfg = %.2f", m_fWalkAccelCfg);
+	Msg("new param  m_fJumpSpeedCfg = %.2f", m_fJumpSpeedCfg);
+
+	Msg("m_fDispBase = %.2f", m_fDispBase);
+	Msg("m_fDispAim = %.2f", m_fDispAim);
+
+	Msg("new param m_fDispBaseCfg = %.2f", m_fDispBaseCfg);
+	Msg("new param  m_fDispAimCfg = %.2f", m_fDispAimCfg);
+#endif
+}
+#endif
