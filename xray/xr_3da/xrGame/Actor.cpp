@@ -1799,37 +1799,40 @@ void CActor::UpdateConfigParams()
 	health_k = GetHealth(); //текущее здоровье (максимум единица)
 	power_k  = conditions().GetPower(); //текущая выносливость (максимум единица)
 	hp_k = 0.5+(0.25*health_k + 0.25*power_k); //коефициент соотношения здоровья и выносливости
+	tw_k = (0.99 + 0.01*inventory().TotalWeight()); //коефициент влияния суммарного веса
 	//clamp(hp_k, 0.5f, 1.0f); //ограничение коефициента здоровье*выносливость в пределах от 0,5 до 1, при текущей формуле не требуется
 
 	//скорость ходьбы
-	m_fWalkAccel = m_fWalkAccelCfg * hp_k; //конфиговое значение скорости ходьбы * коефициент
+	m_fWalkAccel = (m_fWalkAccelCfg / tw_k) * hp_k;
 
 	//высота прыжка
-	m_fJumpSpeed = m_fJumpSpeedCfg * hp_k; //конфиговое значение высоты прыжка * коефициент
-	character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed); //пришлось добавить на апдейт т.к. высота прыжка рассчитывается именно здесь
+	m_fJumpSpeed = (m_fJumpSpeedCfg / tw_k) * hp_k;
+	character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed);
 
 	//дисперсия оружия
-	m_fDispBase = m_fDispBaseCfg * 1 / (0.75+0.25*hp_k); //конфиговое значение дисперсии * 1/коефициент (чем меньше коеф тем больше разброс)
-	m_fDispAim = m_fDispAimCfg * 1 / hp_k; //конфиговое значение дисперсии в прицеливании * 1/коефициент (чем меньше коеф тем больше разброс)
+	m_fDispBase = m_fDispBaseCfg / ((0.5 + 0.5 * hp_k) * tw_k);
+	m_fDispAim = m_fDispAimCfg / (hp_k * tw_k);
 
 #ifdef MODIFY_ACTOR_CONFIG_PARAMS_DEBUG
-	Msg("health_k = %.2f", health_k);
-	Msg("power_k = %.2f", power_k);
+	//Msg("health_k = %.2f", health_k);
+	//Msg("power_k = %.2f", power_k);
 	Msg("hp_k = %.2f", hp_k);
 	Msg("1/hp_k = %.2f", 1 / hp_k);
-	Msg("1 / (0.75+0.25*hp_k) = %.2f", 1 / (0.75+0.25*hp_k));
+	Msg("tw_k = %.2f", tw_k);
+	
+	Msg("total weight = %.2f", inventory().TotalWeight());
 
 	Msg("m_fWalkAccel = %.2f", m_fWalkAccel);
 	Msg("m_fJumpSpeed = %.2f", m_fJumpSpeed);
 
-	Msg("new param m_fWalkAccelCfg = %.2f", m_fWalkAccelCfg);
-	Msg("new param  m_fJumpSpeedCfg = %.2f", m_fJumpSpeedCfg);
+	//Msg("new param m_fWalkAccelCfg = %.2f", m_fWalkAccelCfg);
+	//Msg("new param  m_fJumpSpeedCfg = %.2f", m_fJumpSpeedCfg);
 
 	Msg("m_fDispBase = %.2f", m_fDispBase);
 	Msg("m_fDispAim = %.2f", m_fDispAim);
 
-	Msg("new param m_fDispBaseCfg = %.2f", m_fDispBaseCfg);
-	Msg("new param  m_fDispAimCfg = %.2f", m_fDispAimCfg);
+	//Msg("new param m_fDispBaseCfg = %.2f", m_fDispBaseCfg);
+	//Msg("new param  m_fDispAimCfg = %.2f", m_fDispAimCfg);
 #endif
 }
 #endif

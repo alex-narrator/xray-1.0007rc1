@@ -188,7 +188,8 @@ void CActorCondition::UpdateCondition()
 		UpdateTutorialThresholds();
 
 #ifdef SATIETY_SET_MAX_POWER
-	m_fPowerMax = m_fSatiety; //максимальная выносливость равна текущей сытости
+	float sat_k = m_fSatiety;
+	m_fPowerMax = 0.25 + 0.75*sat_k; //сытость не опустит выносливость ниже 25%
 #ifdef SATIETY_SET_MAX_POWER_DEBUG
 	Msg("get satiety = %.2f", GetSatiety());
 	Msg("m_fSatiety = %.2f", m_fSatiety);

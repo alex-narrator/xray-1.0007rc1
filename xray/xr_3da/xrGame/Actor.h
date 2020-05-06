@@ -469,13 +469,14 @@ protected:
 
 #ifdef MODIFY_ACTOR_CONFIG_PARAMS
 	void CActor::UpdateConfigParams();
-	float m_fWalkAccelCfg; //конфиговое значение скорости ходьбы для дальнейшего манипулирования базовым параметром
-	float m_fJumpSpeedCfg; //конфиговое значение высоты прыжка для дальнейшего манипулирования базовым параметром
-	float m_fDispBaseCfg; //конфиговое значение дисперсии для дальнейшего манипулирования базовым параметром
-	float m_fDispAimCfg; //конфиговое значение дисперсии в прицеливании для дальнейшего манипулирования базовым параметром
+	float m_fWalkAccelCfg; //конфиговое значение скорости ходьбы
+	float m_fJumpSpeedCfg; //конфиговое значение высоты прыжка
+	float m_fDispBaseCfg; //конфиговое значение дисперсии
+	float m_fDispAimCfg; //конфиговое значение дисперсии в прицеливании
 	float health_k;
 	float power_k;
 	float hp_k;
+	float tw_k;
 #endif
 	//////////////////////////////////////////////////////////////////////////
 	// User input/output
