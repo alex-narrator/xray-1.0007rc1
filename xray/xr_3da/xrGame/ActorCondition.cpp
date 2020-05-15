@@ -189,12 +189,11 @@ void CActorCondition::UpdateCondition()
 
 #ifdef SATIETY_SET_MAX_POWER
 	float sat_k = m_fSatiety;
-	m_fPowerMax = 0.25 + 0.75*sat_k; //сытость не опустит выносливость ниже 25%
-#ifdef SATIETY_SET_MAX_POWER_DEBUG
-	Msg("get satiety = %.2f", GetSatiety());
-	Msg("m_fSatiety = %.2f", m_fSatiety);
-	Msg("m_fPowerMax = %.2f", m_fPowerMax);
-#endif
+	m_fPowerMax = 0.2f + 0.8f*sat_k; //сытость не опустит выносливость ниже 20%
+
+	//Msg("m_fSatiety = %.2f", m_fSatiety);
+	//Msg("m_fPowerMax = %.2f", m_fPowerMax);
+
 #endif
 }
 

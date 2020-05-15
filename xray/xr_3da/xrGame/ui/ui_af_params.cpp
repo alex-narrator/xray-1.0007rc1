@@ -27,7 +27,10 @@ LPCSTR af_item_sect_names[] = {
 	"satiety_restore_speed",
 	"power_restore_speed",
 	"bleeding_restore_speed",
-	
+#ifdef AF_JUMP_WALK
+	"additional_walk_accel",
+	"additional_jump_speed",
+#endif
 	"burn_immunity",
 	"strike_immunity",
 	"shock_immunity",
@@ -37,6 +40,7 @@ LPCSTR af_item_sect_names[] = {
 	"chemical_burn_immunity",
 	"explosion_immunity",
 	"fire_wound_immunity",
+
 };
 
 LPCSTR af_item_param_names[] = {
@@ -45,7 +49,10 @@ LPCSTR af_item_param_names[] = {
 	"ui_inv_satiety",
 	"ui_inv_power",
 	"ui_inv_bleeding",
-
+#ifdef AF_JUMP_WALK
+	"ui_inv_walk_accel",
+	"ui_inv_jump_speed",
+#endif
 	"ui_inv_outfit_burn_protection",			// "(burn_imm)",
 	"ui_inv_outfit_strike_protection",			// "(strike_imm)",
 	"ui_inv_outfit_shock_protection",			// "(shock_imm)",
@@ -63,7 +70,12 @@ LPCSTR af_actor_param_names[]={
 	"satiety_v",
 	"satiety_power_v",
 	"wound_incarnation_v",
+#ifdef AF_JUMP_WALK
+	"walk_accel",
+	"jump_speed",
+#endif
 };
+
 #ifdef AF_SHOW_DYNAMIC_PARAMS
 float CArtefact::* af_prop_offsets[] = {
 	&CArtefact::m_fHealthRestoreSpeed,
@@ -115,6 +127,16 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 		CUIStatic* _s			= m_info_items[i];
 
 		float					_val;
+#ifdef AF_JUMP_WALK
+		if (i == _item_additional_walk_accel || i == _item_additional_jump_speed)
+		{
+			_val = READ_IF_EXISTS(pSettings, r_float, af_section, af_item_sect_names[i], 0.f);
+			float _actor_val = pSettings->r_float("actor", af_actor_param_names[i]);
+			if (fis_zero(_val))				continue;
+			_val = (_val / _actor_val)*100.0f;
+	}
+		else
+#endif
 		if(i<_max_item_index1)
 		{
 #ifdef AF_SHOW_DYNAMIC_PARAMS
@@ -122,13 +144,14 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			float CArtefact::* pRestoreSpeed = af_prop_offsets[i];
 			_val = (art->*pRestoreSpeed); // alpet: используется указатель на данные класса
 #else
-			_val				= pSettings->r_float	(af_section, af_item_sect_names[i]);
+			_val = READ_IF_EXISTS(pSettings, r_float, af_section, af_item_sect_names[i], 0.f);
 			float _actor_val	= pSettings->r_float	("actor_condition", af_actor_param_names[i]);
 #endif
 			if					(fis_zero(_val))				continue;
 			
 			_val				= (_val/_actor_val)*100.0f;
-		}else
+		}
+		else
 		{
 #ifdef AF_SHOW_DYNAMIC_PARAMS			
 			u32 idx = i - _max_item_index1;  // absorbation index			 

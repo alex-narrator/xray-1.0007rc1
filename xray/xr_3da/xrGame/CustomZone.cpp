@@ -87,9 +87,9 @@ void CCustomZone::Load(LPCSTR section)
 	m_zone_flags.set(eIgnoreSmall,		pSettings->r_bool(section,	"ignore_small"));
 	m_zone_flags.set(eIgnoreArtefact,	pSettings->r_bool(section,	"ignore_artefacts"));
 	m_zone_flags.set(eVisibleByDetector,pSettings->r_bool(section,	"visible_by_detector"));
-	
-
-
+#ifdef SHORT_LIVED_ANOMS
+	m_zone_ttl = READ_IF_EXISTS(pSettings, r_u32, section, "time_to_live", 40);
+#endif
 
 	//загрузить времена для зоны
 	m_StateTime[eZoneStateIdle]			= -1;
@@ -326,7 +326,11 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	m_dwPeriod					= pSettings->r_u32(cNameSect(),"period");
 	m_owner_id					= Z->m_owner_id;
 	if(m_owner_id != u32(-1))
+#ifdef SHORT_LIVED_ANOMS
+		m_ttl                   = Device.dwTimeGlobal + 1000 * m_zone_ttl;// m_zone_ttl in seconds
+#else
 		m_ttl					= Device.dwTimeGlobal + 40000;// 40 sec
+#endif
 	else
 		m_ttl					= u32(-1);
 
