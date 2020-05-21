@@ -867,7 +867,9 @@ void CActor::g_Physics(Fvector& _accel, float jump, float dt)
 }
 
 DLL_API float g_fov = 67.5f;
+#ifndef SIMPLE_ZOOM_SETTINGS
 DLL_API float wpn_fov_ratio = 0.75f;
+#endif
 
 float CActor::currentFOV()
 {
@@ -877,7 +879,11 @@ float CActor::currentFOV()
 	if (eacFirstEye == cam_active && pWeapon &&
 		pWeapon->IsZoomed() && (!pWeapon->ZoomTexture() ||
 		(!pWeapon->IsRotatingToZoom() && pWeapon->ZoomTexture())))
-		return pWeapon->GetZoomFactor() * (wpn_fov_ratio);
+		return pWeapon->GetZoomFactor()
+#ifndef SIMPLE_ZOOM_SETTINGS
+		* (wpn_fov_ratio)
+#endif
+		;
 	else
 		return g_fov; // cam_Active()->f_fov;
 }
@@ -1786,11 +1792,11 @@ void CActor::unblock_action(EGameActions cmd)
 #if defined (AF_JUMP_WALK) || defined (ACTOR_PARAMS_DEPENDECY)
 void CActor::UpdateConfigParams()
 {
-	m_fAdditionalWalkAccel = 0.f;
-	m_fAdditionalJumpSpeed = 0.f;
+	m_fAdditionalWalkAccel = 0.0f;
+	m_fAdditionalJumpSpeed = 0.0f;
 
-	float hs_k = 1.f;
-	float ow_k = 1.f;
+	float hs_k = 1.0f;
+	float ow_k = 1.0f;
 
 #ifdef AF_JUMP_WALK
 #if defined(ARTEFACTS_FROM_RUCK)
@@ -1813,7 +1819,7 @@ void CActor::UpdateConfigParams()
 	float overweight_k = overweight / inventory().GetMaxWeight();
 	if (overweight > 0.f)
 	{
-		ow_k = 1.f + overweight_k;
+		ow_k = 1.0f + overweight_k;
 	}
 #endif
 

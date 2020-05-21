@@ -946,8 +946,11 @@ void CWeaponMagazined::InitAddons()
 {
 	//////////////////////////////////////////////////////////////////////////
 	// Прицел
+#ifndef SIMPLE_ZOOM_SETTINGS
 	m_fIronSightZoomFactor = READ_IF_EXISTS(pSettings, r_float, cNameSect(), "ironsight_zoom_factor", 50.0f);
-
+#else
+	m_fIronSightZoomFactor = g_fov / READ_IF_EXISTS(pSettings, r_float, cNameSect(), "ironsight_zoom_factor", 1.0f);
+#endif
 	if (IsScopeAttached())
 	{
 		if (m_eScopeStatus == ALife::eAddonAttachable)
@@ -958,8 +961,11 @@ void CWeaponMagazined::InitAddons()
 
 			shared_str scope_tex_name;
 			scope_tex_name = pSettings->r_string(*m_sScopeName, "scope_texture");
+#ifndef SIMPLE_ZOOM_SETTINGS
 			m_fScopeZoomFactor = pSettings->r_float(*m_sScopeName, "scope_zoom_factor");
-
+#else
+			m_fScopeZoomFactor = g_fov / pSettings->r_float(*m_sScopeName, "scope_zoom_factor");
+#endif
 			if (m_UIScope) xr_delete(m_UIScope);
 			m_UIScope = xr_new<CUIStaticItem>();
 
@@ -968,7 +974,11 @@ void CWeaponMagazined::InitAddons()
 		}
 		else if (m_eScopeStatus == ALife::eAddonPermanent)
 		{
+#ifndef SIMPLE_ZOOM_SETTINGS
 			m_fScopeZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
+#else
+			m_fScopeZoomFactor = g_fov / pSettings->r_float(cNameSect(), "scope_zoom_factor");
+#endif
 			shared_str scope_tex_name;
 			scope_tex_name = pSettings->r_string(cNameSect(), "scope_texture");
 
@@ -981,9 +991,10 @@ void CWeaponMagazined::InitAddons()
 	else
 	{
 		if (m_UIScope) xr_delete(m_UIScope);
-
+#ifndef SIMPLE_ZOOM_SETTINGS
 		if (IsZoomEnabled())
 			m_fIronSightZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
+#endif
 	}
 
 	if (IsSilencerAttached() && SilencerAttachable())

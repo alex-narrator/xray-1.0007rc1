@@ -60,7 +60,6 @@ void CWeaponBinoculars::OnZoomIn		()
 
 	inherited::OnZoomIn();
 	m_fZoomFactor = m_fRTZoomFactor;
-
 }
 
 void CWeaponBinoculars::OnZoomOut		()
@@ -82,7 +81,11 @@ void CWeaponBinoculars::OnZoomOut		()
 
 BOOL	CWeaponBinoculars::net_Spawn			(CSE_Abstract* DC)
 {
+#ifndef SIMPLE_ZOOM_SETTINGS
 	m_fRTZoomFactor = m_fScopeZoomFactor;
+#else
+	m_fRTZoomFactor = g_fov;
+#endif
 	inherited::net_Spawn(DC);
 	return TRUE;
 }
