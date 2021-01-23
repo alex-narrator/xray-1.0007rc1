@@ -96,6 +96,9 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 #ifndef DISABLE_MAX_WALK_WEIGHT
 	m_MaxWalkWeight					= pSettings->r_float(section,"max_walk_weight");
 #endif
+#ifdef SATIETY_SET_MAX_POWER
+	m_fMinPowerSatiety = READ_IF_EXISTS(pSettings, r_float, section, "min_power_satiety", 1);
+#endif
 }
 
 
@@ -188,12 +191,11 @@ void CActorCondition::UpdateCondition()
 		UpdateTutorialThresholds();
 
 #ifdef SATIETY_SET_MAX_POWER
-	float sat_k = m_fSatiety;
-	m_fPowerMax = 0.2f + 0.8f*sat_k; //сытость не опустит выносливость ниже 20%
+	m_fPowerMax = m_fMinPowerSatiety + (1 - m_fMinPowerSatiety) * m_fSatiety; //сытость влияет на максимальную выносливость
 
-	//Msg("m_fSatiety = %.2f", m_fSatiety);
-	//Msg("m_fPowerMax = %.2f", m_fPowerMax);
-
+	/*Msg("m_fSatiety = %.2f", m_fSatiety);
+	Msg("m_fPowerMax = %.2f", m_fPowerMax);
+	Msg("m_fMinPowerSatiety = %.2f", m_fMinPowerSatiety);*/
 #endif
 }
 

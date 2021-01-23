@@ -96,6 +96,9 @@ public:
 #ifndef DISABLE_MAX_WALK_WEIGHT
 	float	m_MaxWalkWeight;
 #endif
+#ifdef SATIETY_SET_MAX_POWER
+	float m_fMinPowerSatiety;
+#endif
 protected:
 	mutable bool m_bLimping;
 	mutable bool m_bCantWalk;

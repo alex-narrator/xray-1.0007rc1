@@ -5,15 +5,6 @@
 
 #include "../artifact.h"
 
-using namespace InventoryUtilities;
-
-CUIArtefactPanel::CUIArtefactPanel()
-{		
-}
-
-CUIArtefactPanel::~CUIArtefactPanel()
-{
-}
 
 void CUIArtefactPanel::InitFromXML	(CUIXml& xml, LPCSTR path, int index)
 {
@@ -23,21 +14,26 @@ void CUIArtefactPanel::InitFromXML	(CUIXml& xml, LPCSTR path, int index)
 	m_fScale					= xml.ReadAttribFlt(path, index, "scale");
 }
 
-void CUIArtefactPanel::InitIcons(const xr_vector<const CArtefact*>& artefacts)
+void CUIArtefactPanel::InitIcons(const TIItemContainer& artefacts)
 {
-	m_si.SetShader(GetEquipmentIconsShader());
-	m_vRects.clear();
-	
-	for(xr_vector<const CArtefact*>::const_iterator it = artefacts.begin();
-		it != artefacts.end(); it++)
+	m_si.SetShader(InventoryUtilities::GetEquipmentIconsShader());
+	m_vRects.clear_and_free();
+
+	for (const auto& art : artefacts)
 	{
-		const CArtefact* artefact = *it;
-		Frect rect;
-		rect.left = float(artefact->GetXPos()*INV_GRID_WIDTH);
-		rect.top = float(artefact->GetYPos()*INV_GRID_HEIGHT);
-		rect.right = rect.left + artefact->GetGridWidth()*INV_GRID_WIDTH;
-		rect.bottom = rect.top + artefact->GetGridHeight()*INV_GRID_HEIGHT;
-		m_vRects.push_back(rect);
+#ifdef ITEMS_ON_AF_PANEL
+		const auto artefact = smart_cast<CInventoryItem*>(art);
+#else
+		const auto artefact = smart_cast<CArtefact*>(art);
+#endif
+		if (artefact) {
+			Frect rect;
+			rect.left = float(artefact->GetXPos()*INV_GRID_WIDTH);
+			rect.top = float(artefact->GetYPos()*INV_GRID_HEIGHT);
+			rect.right = rect.left + artefact->GetGridWidth()*INV_GRID_WIDTH;
+			rect.bottom = rect.top + artefact->GetGridHeight()*INV_GRID_HEIGHT;
+			m_vRects.push_back(rect);
+		}
 	}
 }
 
@@ -55,10 +51,9 @@ void CUIArtefactPanel::Draw(){
 	
 	float _s			= m_cell_size.x/m_cell_size.y;
 
-	for (ITr it = m_vRects.begin(); it != m_vRects.end(); ++it)
+	for (const auto& r : m_vRects)
 	{
-		const Frect& r = *it;		
-
+		
 		iHeight = m_fScale*(r.bottom - r.top);
 		iWidth  = _s*m_fScale*(r.right - r.left);
 

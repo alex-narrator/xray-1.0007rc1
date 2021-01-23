@@ -1,4 +1,4 @@
-#include "pch_script.h"
+п»ї#include "pch_script.h"
 #include "Actor_Flags.h"
 #include "hudmanager.h"
 #ifdef DEBUG
@@ -115,7 +115,7 @@ CActor::CActor() : CEntityAlive()
 	fPrevCamPos				= 0.0f;
 	vPrevCamDir.set			(0.f,0.f,1.f);
 	fCurAVelocity			= 0.0f;
-	// эффекторы
+	// СЌС„С„РµРєС‚РѕСЂС‹
 	pCamBobbing				= 0;
 	m_pSleepEffector		= NULL;
 	m_pSleepEffectorPP		= NULL;
@@ -152,7 +152,7 @@ CActor::CActor() : CEntityAlive()
 	Device.seqRender.Add	(this,REG_PRIORITY_LOW);
 #endif
 
-	//разрешить использование пояса в inventory
+	//СЂР°Р·СЂРµС€РёС‚СЊ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РїРѕСЏСЃР° РІ inventory
 	inventory().SetBeltUseful(true);
 
 	m_pPersonWeLookingAt	= NULL;
@@ -344,11 +344,11 @@ void CActor::Load	(LPCSTR section )
 
 	character_physics_support()->in_Load		(section);
 	
-	//загрузить параметры эффектора
+	//Р·Р°РіСЂСѓР·РёС‚СЊ РїР°СЂР°РјРµС‚СЂС‹ СЌС„С„РµРєС‚РѕСЂР°
 //	LoadShootingEffector	("shooting_effector");
 	LoadSleepEffector		("sleep_effector");
 
-	//загрузить параметры смещения firepoint
+	//Р·Р°РіСЂСѓР·РёС‚СЊ РїР°СЂР°РјРµС‚СЂС‹ СЃРјРµС‰РµРЅРёСЏ firepoint
 	m_vMissileOffset	= pSettings->r_fvector3(section,"missile_throw_offset");
 
 	//Weapons				= xr_new<CWeaponList> (this);
@@ -385,14 +385,14 @@ if(!g_dedicated_server)
 		cam_Set					(eacFirstEye);
 
 	// sheduler
-#ifdef LUAICP_COMPAT // для подстройки производительности на разных платформах
+#ifdef LUAICP_COMPAT // РґР»СЏ РїРѕРґСЃС‚СЂРѕР№РєРё РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЊРЅРѕСЃС‚Рё РЅР° СЂР°Р·РЅС‹С… РїР»Р°С‚С„РѕСЂРјР°С…
 	shedule.t_min				= max ((u32)1, (u32)pSettings->r_u8 ("actor_schedule", "t_min" ));
 	shedule.t_max				= max ((u32)1, (u32)pSettings->r_u8 ("actor_schedule", "t_max" ));
 #else
 	shedule.t_min				= shedule.t_max = 1;
 #endif
 
-	// настройки дисперсии стрельбы
+	// РЅР°СЃС‚СЂРѕР№РєРё РґРёСЃРїРµСЂСЃРёРё СЃС‚СЂРµР»СЊР±С‹
 
 	m_fDispBase				    = pSettings->r_float		(section, "disp_base");
 	m_fDispBase					= deg2rad(m_fDispBase);
@@ -471,12 +471,12 @@ void	CActor::Hit							(SHit* pHDS)
 			if (Device.dwFrame != last_hit_frame &&
 				HDS.bone() != BI_NONE)
 			{		
-				// вычислить позицию и направленность партикла
+				// РІС‹С‡РёСЃР»РёС‚СЊ РїРѕР·РёС†РёСЋ Рё РЅР°РїСЂР°РІР»РµРЅРЅРѕСЃС‚СЊ РїР°СЂС‚РёРєР»Р°
 				Fmatrix pos; 
 
 				CParticlesPlayer::MakeXFORM(this,HDS.bone(),HDS.dir,HDS.p_in_bone_space,pos);
 
-				// установить particles
+				// СѓСЃС‚Р°РЅРѕРІРёС‚СЊ particles
 				CParticlesObject* ps = NULL;
 
 				if (eacFirstEye == cam_active && this == Level().CurrentEntity())
@@ -704,8 +704,8 @@ void CActor::HitSignal(float perc, Fvector& vLocalDir, CObject* who, s16 element
 		tpKinematics->PlayFX(motion_ID,power_factor);
 
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-		// Колбек на хит актора
-		// Колбек вызывается только когда актор жив, у остальных объектов пыс вызывали также. При необходимости переместить ниже.
+		// РљРѕР»Р±РµРє РЅР° С…РёС‚ Р°РєС‚РѕСЂР°
+		// РљРѕР»Р±РµРє РІС‹Р·С‹РІР°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РєРѕРіРґР° Р°РєС‚РѕСЂ Р¶РёРІ, Сѓ РѕСЃС‚Р°Р»СЊРЅС‹С… РѕР±СЉРµРєС‚РѕРІ РїС‹СЃ РІС‹Р·С‹РІР°Р»Рё С‚Р°РєР¶Рµ. РџСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РїРµСЂРµРјРµСЃС‚РёС‚СЊ РЅРёР¶Рµ.
 		callback(GameObject::eHit)(
 			lua_game_object(),
 			perc,
@@ -755,7 +755,7 @@ void CActor::Die(CObject* who)
 		};
 
 
-		///!!! чистка пояса
+		///!!! С‡РёСЃС‚РєР° РїРѕСЏСЃР°
 		TIItemContainer &l_blist = inventory().m_belt;
 		while (!l_blist.empty())	
 			inventory().Ruck(l_blist.front());
@@ -988,12 +988,12 @@ void CActor::shedule_Update	(u32 DT)
 {
 	setSVU(OnServer());
 
-	//установить режим показа HUD для текущего активного слота
+	//СѓСЃС‚Р°РЅРѕРІРёС‚СЊ СЂРµР¶РёРј РїРѕРєР°Р·Р° HUD РґР»СЏ С‚РµРєСѓС‰РµРіРѕ Р°РєС‚РёРІРЅРѕРіРѕ СЃР»РѕС‚Р°
 	CHudItem* pHudItem = smart_cast<CHudItem*>(inventory().ActiveItem());	
 	if(pHudItem) 
 		pHudItem->SetHUDmode(HUDview());
 
-	//обновление инвентаря
+	//РѕР±РЅРѕРІР»РµРЅРёРµ РёРЅРІРµРЅС‚Р°СЂСЏ
 	UpdateInventoryOwner			(DT);
 	if (GameID() == GAME_SINGLE)
 		GameTaskManager().UpdateTasks	();
@@ -1114,7 +1114,7 @@ void CActor::shedule_Update	(u32 DT)
 
 	inherited::shedule_Update	(DT);
 
-	//эффектор включаемый при ходьбе
+	//СЌС„С„РµРєС‚РѕСЂ РІРєР»СЋС‡Р°РµРјС‹Р№ РїСЂРё С…РѕРґСЊР±Рµ
 	if (!pCamBobbing)
 	{
 		pCamBobbing = xr_new<CEffectorBobbing>	();
@@ -1122,7 +1122,7 @@ void CActor::shedule_Update	(u32 DT)
 	}
 	pCamBobbing->SetState						(mstate_real, conditions().IsLimping(), IsZoomAimingMode());
 
-	//звук тяжелого дыхания при уталости и хромании
+	//Р·РІСѓРє С‚СЏР¶РµР»РѕРіРѕ РґС‹С…Р°РЅРёСЏ РїСЂРё СѓС‚Р°Р»РѕСЃС‚Рё Рё С…СЂРѕРјР°РЅРёРё
 	if(this==Level().CurrentControlEntity() && !g_dedicated_server )
 	{
 		if(conditions().IsLimping() && g_Alive())
@@ -1159,10 +1159,10 @@ void CActor::shedule_Update	(u32 DT)
 				m_BloodSnd.stop();
 	}
 	
-	//если в режиме HUD, то сама модель актера не рисуется
+	//РµСЃР»Рё РІ СЂРµР¶РёРјРµ HUD, С‚Рѕ СЃР°РјР° РјРѕРґРµР»СЊ Р°РєС‚РµСЂР° РЅРµ СЂРёСЃСѓРµС‚СЃСЏ
 	if(!character_physics_support()->IsRemoved())
 										setVisible				(!HUDview	());
-	//что актер видит перед собой
+	//С‡С‚Рѕ Р°РєС‚РµСЂ РІРёРґРёС‚ РїРµСЂРµРґ СЃРѕР±РѕР№
 	collide::rq_result& RQ = HUD().GetCurrentRayQuery();
 	
 
@@ -1223,7 +1223,7 @@ void CActor::shedule_Update	(u32 DT)
 
 //	UpdateSleep									();
 
-	//для свойст артефактов, находящихся на поясе
+	//РґР»СЏ СЃРІРѕР№СЃС‚ Р°СЂС‚РµС„Р°РєС‚РѕРІ, РЅР°С…РѕРґСЏС‰РёС…СЃСЏ РЅР° РїРѕСЏСЃРµ
 	UpdateArtefactsOnBelt						();
 	m_pPhysics_support->in_shedule_Update		(DT);
 	Check_for_AutoPickUp						();
@@ -1473,9 +1473,7 @@ void CActor::OnItemDrop			(CInventoryItem *inventory_item)
 {
 	CInventoryOwner::OnItemDrop(inventory_item);
 
-	CArtefact* artefact = smart_cast<CArtefact*>(inventory_item);
-	if(artefact && artefact->m_eItemPlace == eItemPlaceBelt)
-		MoveArtefactBelt(artefact, false);
+	UpdateArtefactPanel();
 }
 
 
@@ -1496,38 +1494,21 @@ void CActor::OnItemRuck		(CInventoryItem *inventory_item, EItemPlace previous_pl
 {
 	CInventoryOwner::OnItemRuck(inventory_item, previous_place);
 
-	CArtefact* artefact = smart_cast<CArtefact*>(inventory_item);
-	if(artefact && previous_place == eItemPlaceBelt)
-		MoveArtefactBelt(artefact, false);
+	UpdateArtefactPanel();
 }
 void CActor::OnItemBelt		(CInventoryItem *inventory_item, EItemPlace previous_place)
 {
 	CInventoryOwner::OnItemBelt(inventory_item, previous_place);
 
-	CArtefact* artefact = smart_cast<CArtefact*>(inventory_item);
-	if(artefact)
-		MoveArtefactBelt(artefact, true);
+	UpdateArtefactPanel();
 }
 
 
-void CActor::MoveArtefactBelt(const CArtefact* artefact, bool on_belt)
+void CActor::UpdateArtefactPanel()
 {
-	VERIFY(artefact);
+	if (Level().CurrentViewEntity() && Level().CurrentViewEntity() == this) //ГЋГ­Г® Г­Г Г¤Г® ГўГ®Г®ГЎГ№ГҐ ГЎГҐГ§ Г¬ГіГ«ГјГІГЁГЇГ«ГҐГҐГ°Г ?
 
-	//повесить артефакт на пояс
-	if(on_belt)
-	{
-		VERIFY(m_ArtefactsOnBelt.end() == std::find(m_ArtefactsOnBelt.begin(), m_ArtefactsOnBelt.end(), artefact));
-		m_ArtefactsOnBelt.push_back(artefact);
-	}
-	else
-	{
-		xr_vector<const CArtefact*>::iterator it = std::remove(m_ArtefactsOnBelt.begin(), m_ArtefactsOnBelt.end(), artefact);
-		VERIFY(it != m_ArtefactsOnBelt.end());
-		m_ArtefactsOnBelt.erase(it);
-	}	
-	if (Level().CurrentViewEntity() && Level().CurrentViewEntity() == this)
-		HUD().GetUI()->UIMainIngameWnd->m_artefactPanel->InitIcons(m_ArtefactsOnBelt);
+		HUD().GetUI()->UIMainIngameWnd->m_artefactPanel->InitIcons(inventory().m_belt);
 }
 
 #define ARTEFACTS_UPDATE_TIME 0.100f
@@ -1562,7 +1543,7 @@ void CActor::UpdateArtefactsOnBelt()
 			conditions().ChangeHealth(artefact->m_fHealthRestoreSpeed*f_update_time);
 			conditions().ChangePower(artefact->m_fPowerRestoreSpeed*f_update_time);
 			conditions().ChangeSatiety(artefact->m_fSatietyRestoreSpeed*f_update_time);
-#ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
+#ifndef OBJECTS_RADIOACTIVE // alpet: РѕС‚РєР»СЋС‡Р°РµС‚СЃСЏ РґР»СЏ РёР·Р±РµР¶Р°РЅРёСЏ РґРІРѕР№РЅРѕРіРѕ С…РёС‚Р°
 			conditions().ChangeRadiation		(artefact->m_fRadiationRestoreSpeed*f_update_time);
 #endif
 		}
@@ -1726,11 +1707,11 @@ bool CActor::can_attach(const CInventoryItem *inventory_item) const
 		return			(false);
 	
 
-	//можно ли присоединять объекты такого типа
+	//РјРѕР¶РЅРѕ Р»Рё РїСЂРёСЃРѕРµРґРёРЅСЏС‚СЊ РѕР±СЉРµРєС‚С‹ С‚Р°РєРѕРіРѕ С‚РёРїР°
 	if( m_attach_item_sections.end() == std::find(m_attach_item_sections.begin(),m_attach_item_sections.end(),inventory_item->object().cNameSect()) )
 		return false;
 
-	//если уже есть присоединненый объет такого типа 
+	//РµСЃР»Рё СѓР¶Рµ РµСЃС‚СЊ РїСЂРёСЃРѕРµРґРёРЅРЅРµРЅС‹Р№ РѕР±СЉРµС‚ С‚Р°РєРѕРіРѕ С‚РёРїР° 
 	if(attached(inventory_item->object().cNameSect()))
 		return false;
 
@@ -1823,10 +1804,10 @@ void CActor::UpdateConfigParams()
 	}
 #endif
 
-	//скорость ходьбы
+	//СЃРєРѕСЂРѕСЃС‚СЊ С…РѕРґСЊР±С‹
 	m_fWalkAccel = (m_fWalkAccelCfg + m_fAdditionalWalkAccel) / ow_k * hs_k;
 
-	//высота прыжка
+	//РІС‹СЃРѕС‚Р° РїСЂС‹Р¶РєР°
 	m_fJumpSpeed = (m_fJumpSpeedCfg + m_fAdditionalJumpSpeed) / ow_k * hs_k;
 	character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed);
 
