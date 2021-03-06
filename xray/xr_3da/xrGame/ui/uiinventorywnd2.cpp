@@ -187,11 +187,17 @@ void CUIInventoryWnd::InitInventory()
 	{
 		CUICellItem* itm				= create_cell_item(_itm);
 
-#if defined(GRENADE_FROM_BELT)
-		m_pUIBeltList->SetItem          (itm);
-#else
+//вариации отображения и использования слота гранаты - конец		
+#if defined(GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
+		m_pUIGrenadeList->SetItem(itm);
+#endif
+#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
+		m_pUIBeltList->SetItem(itm);
+#endif
+#if !defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
 		m_pUIBagList->SetItem			(itm);
 #endif
+//вариации отображения и использования слота гранаты - конец
 	}
 	
 //#ifdef INV_NEW_SLOTS_SYSTEM
@@ -763,7 +769,9 @@ if (IsGameTypeSingle()) {
 	m_pUISlotQuickAccessList_3->ClearAll	(true);
 }
 #endif
-
+#ifdef SHOW_GRENADE_SLOT
+m_pUIGrenadeList->ClearAll(true);
+#endif
 #if defined(SHOW_ARTEFACT_SLOT)
 m_pUIArtefactList->ClearAll				(true);
 #endif
