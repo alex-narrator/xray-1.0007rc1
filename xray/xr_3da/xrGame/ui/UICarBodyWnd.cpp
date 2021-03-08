@@ -241,6 +241,12 @@ void CUICarBodyWnd::UpdateLists()
 	{
 		CUICellItem* itm				= create_cell_item(*it);
 		m_pUIOurBagList->SetItem		(itm);
+#ifdef CARBODY_COLORIZE_ITEM
+		u32 color = pSettings->r_color("colorize_item", "equiped");
+		PIItem iitem = (PIItem)itm->m_pData;
+		if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
+			itm->SetTextureColor(color);
+#endif
 	}
 
 

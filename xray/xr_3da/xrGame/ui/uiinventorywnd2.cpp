@@ -187,7 +187,7 @@ void CUIInventoryWnd::InitInventory()
 	{
 		CUICellItem* itm				= create_cell_item(_itm);
 
-//вариации отображения и использования слота гранаты - конец		
+//вариации отображения и использования слота гранаты - начало		
 #if defined(GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
 		m_pUIGrenadeList->SetItem(itm);
 #endif
@@ -520,7 +520,7 @@ void CUIInventoryWnd::ColorizeAmmo(CUICellItem* itm)
 
 	xr_vector<shared_str> ammo_types = weapon->m_ammoTypes;
 	
-	u32 color = pSettings->r_color("inventory_color_ammo","color");
+	u32 color = pSettings->r_color("colorize_item","ammo");
 
 	//for bag
 	for (size_t id = 0;id<ammo_types.size();++id) {

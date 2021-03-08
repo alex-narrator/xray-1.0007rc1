@@ -215,7 +215,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		bool def_to_slot = true;
 #endif
 
-#if defined(GRENADE_FROM_BELT)
+#if defined(GRENADE_FROM_BELT) && !defined (SHOW_GRENADE_SLOT)
 		if (CanPutInSlot(pIItem) && pIItem->GetSlot() != GRENADE_SLOT && def_to_slot)
 #else
 		if (CanPutInSlot(pIItem) && def_to_slot)
