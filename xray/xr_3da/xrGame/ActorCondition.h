@@ -58,7 +58,7 @@ public:
 			void		ConditionJump				(float weight);
 			void		ConditionWalk				(float weight, bool accel, bool sprint);
 			void		ConditionStand				(float weight);
-			
+
 			float	xr_stdcall	GetAlcohol			()	{return m_fAlcohol;}
 			float	xr_stdcall	GetPsy				()	{return 1.0f-GetPsyHealth();}
 			float				GetSatiety			()  {return m_fSatiety;}
@@ -80,6 +80,7 @@ protected:
 	float m_fV_Satiety;
 	float m_fV_SatietyPower;
 	float m_fV_SatietyHealth;
+	float m_fSatietyCritical;
 //--
 	float m_fPowerLeakSpeed;
 
@@ -98,6 +99,11 @@ public:
 #endif
 #ifdef SATIETY_SET_MAX_POWER
 	float m_fMinPowerSatiety;
+#endif
+#ifdef RADIATION_PARAMS_DEPENDECY
+	float m_fMinHealthRadiation;
+	float m_fRadiationBlocksRestore;
+	float m_fRadiationMinimizeHealth;
 #endif
 protected:
 	mutable bool m_bLimping;

@@ -242,10 +242,7 @@ void CUICarBodyWnd::UpdateLists()
 		CUICellItem* itm				= create_cell_item(*it);
 		m_pUIOurBagList->SetItem		(itm);
 #ifdef CARBODY_COLORIZE_ITEM
-		u32 color = pSettings->r_color("colorize_item", "equiped");
-		PIItem iitem = (PIItem)itm->m_pData;
-		if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
-			itm->SetTextureColor(color);
+		ColorizeItem(itm);
 #endif
 	}
 
@@ -627,3 +624,13 @@ void CUICarBodyWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemSelected);
 	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemRButtonClick);
 }
+
+#ifdef CARBODY_COLORIZE_ITEM
+void                    CUICarBodyWnd::ColorizeItem(CUICellItem* itm)
+{
+	u32 color = pSettings->r_color("colorize_item", "equiped");
+	PIItem iitem = (PIItem)itm->m_pData;
+	if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
+		itm->SetTextureColor(color);
+}
+#endif

@@ -89,7 +89,7 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	
 	m_fV_Alcohol				= pSettings->r_float(section,"alcohol_v");
 
-//. ???	m_fSatietyCritical			= pSettings->r_float(section,"satiety_critical");
+	m_fSatietyCritical			= pSettings->r_float(section,"satiety_critical");
 	m_fV_Satiety				= pSettings->r_float(section,"satiety_v");		
 	m_fV_SatietyPower			= pSettings->r_float(section,"satiety_power_v");
 	m_fV_SatietyHealth			= pSettings->r_float(section,"satiety_health_v");
@@ -98,6 +98,11 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 #endif
 #ifdef SATIETY_SET_MAX_POWER
 	m_fMinPowerSatiety = READ_IF_EXISTS(pSettings, r_float, section, "min_power_satiety", 1);
+#endif
+#ifdef RADIATION_PARAMS_DEPENDECY
+	m_fMinHealthRadiation = READ_IF_EXISTS(pSettings, r_float, section, "min_health_radiation", 1);
+	m_fRadiationBlocksRestore = READ_IF_EXISTS(pSettings, r_float, section, "radiation_blocks_restore", 0);
+	m_fRadiationMinimizeHealth = READ_IF_EXISTS(pSettings, r_float, section, "radiation_minimize_health", 0);
 #endif
 }
 
@@ -119,7 +124,6 @@ void CActorCondition::UpdateCondition()
 	else {
 		ConditionStand(object().inventory().TotalWeight()/object().inventory().GetMaxWeight());
 	};
-	
 	if( IsGameTypeSingle() ){
 
 		float k_max_power = 1.0f;
@@ -193,9 +197,22 @@ void CActorCondition::UpdateCondition()
 #ifdef SATIETY_SET_MAX_POWER
 	m_fPowerMax = m_fMinPowerSatiety + (1 - m_fMinPowerSatiety) * m_fSatiety; //сытость влияет на максимальную выносливость
 
-	/*Msg("m_fSatiety = %.2f", m_fSatiety);
+#ifdef MY_DEBUG
+	Msg("m_fSatiety = %.2f", m_fSatiety);
 	Msg("m_fPowerMax = %.2f", m_fPowerMax);
-	Msg("m_fMinPowerSatiety = %.2f", m_fMinPowerSatiety);*/
+#endif //MY_DEBUG
+
+#endif
+
+#ifdef RADIATION_PARAMS_DEPENDECY
+	if (m_fRadiation > m_fRadiationMinimizeHealth)
+		SetMaxHealth(1 - (1 - m_fMinHealthRadiation) * m_fRadiation); //радиация влияет на максимальное здоровье
+	
+#ifdef MY_DEBUG
+	Msg("GetMaxHealth = %.2f", GetMaxHealth());
+	Msg("m_fRadiation = %.2f", m_fRadiation);
+#endif //MY_DEBUG
+
 #endif
 }
 
@@ -218,19 +235,30 @@ void CActorCondition::UpdateSatiety()
 	//сытость увеличивает здоровье только если нет открытых ран
 	if(!m_bIsBleeding)
 	{
+#ifndef RADIATION_PARAMS_DEPENDECY
 		m_fDeltaHealth += CanBeHarmed() ? 
-					(m_fV_SatietyHealth*(m_fSatiety>0.0f?1.f:-1.f)*m_fDeltaTime)
+					(m_fV_SatietyHealth*(m_fSatiety>m_fSatietyCritical?1.f:-1.f)*m_fDeltaTime) //по идее тут надо сравнить с m_fSatietyCritical
 					: 0;
+#else
+		m_fDeltaHealth += CanBeHarmed() ?
+			(m_fV_SatietyHealth*(m_fRadiation>m_fRadiationBlocksRestore ? 0.f : 1.f)*m_fDeltaTime) //сытость увеличивает здоровье только если радиация меньше среднего уровня
+			: 0;
+#endif
 	}
 
 	//коэффициенты уменьшения восстановления силы от сытоти и радиации
 	float radiation_power_k		= 1.f;
-	float satiety_power_k		= 1.f;
-			
+	float satiety_power_k       = 1.f;
+
 	m_fDeltaPower += m_fV_SatietyPower*
 				radiation_power_k*
 				satiety_power_k*
 				m_fDeltaTime;
+
+#ifdef MY_DEBUG
+	Msg("m_fDeltaHealth = %.10f", m_fDeltaHealth);
+	Msg("m_fDeltaPower = %.10f", m_fDeltaPower);
+#endif //MY_DEBUG
 }
 
 
@@ -257,11 +285,21 @@ void CActorCondition::ConditionWalk(float weight, bool accel, bool sprint)
 
 void CActorCondition::ConditionStand(float weight)
 {	
-	float power			= m_fStandPower;
-	power				*= m_fDeltaTime;
-	m_fPower			-= power;
-}
+#ifdef RADIATION_PARAMS_DEPENDECY
+	if (m_fRadiation < m_fRadiationBlocksRestore)
+	{
+#endif
+		float power = m_fStandPower;
+		power *= m_fDeltaTime;
+		m_fPower -= power;
+#ifdef RADIATION_PARAMS_DEPENDECY
 
+#ifdef MY_DEBUG
+		Msg("power = %.10f", power);
+#endif //MY_DEBUG
+	}
+#endif
+}
 
 bool CActorCondition::IsCantWalk() const
 {

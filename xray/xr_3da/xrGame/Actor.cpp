@@ -319,9 +319,8 @@ void CActor::Load	(LPCSTR section )
 	
 	m_fWalkAccel    = pSettings->r_float(section, "walk_accel");
 	m_fJumpSpeed    = pSettings->r_float(section, "jump_speed");
-#if defined (AF_JUMP_WALK) || defined (ACTOR_PARAMS_DEPENDECY)
-	m_fWalkAccelCfg = pSettings->r_float(section, "walk_accel");
-	m_fJumpSpeedCfg = pSettings->r_float(section, "jump_speed");
+#ifdef ACTOR_PARAMS_DEPENDECY
+	m_fMinHealthWalkJump = pSettings->r_float(section, "min_health_walk_jump");
 #endif
 	m_fRunFactor				= pSettings->r_float(section,"run_coef");
 	m_fRunBackFactor			= pSettings->r_float(section,"run_back_coef");
@@ -1795,27 +1794,26 @@ void CActor::UpdateConfigParams()
 	}
 #endif
 #ifdef ACTOR_PARAMS_DEPENDECY
-	hs_k = 0.4f + (0.3f*GetHealth() + 0.3f*conditions().GetSatiety());
-	float overweight = inventory().TotalWeight() - inventory().GetMaxWeight();
-	float overweight_k = overweight / inventory().GetMaxWeight();
-	if (overweight > 0.f)
-	{
-		ow_k = 1.0f + overweight_k;
-	}
+	hs_k = m_fMinHealthWalkJump + (1 - m_fMinHealthWalkJump) * GetHealth();
+
+	if (inventory().TotalWeight() > inventory().GetMaxWeight())
+		ow_k = inventory().GetMaxWeight() / inventory().TotalWeight();
 #endif
-
-	//скорость ходьбы
-	m_fWalkAccel = (m_fWalkAccelCfg + m_fAdditionalWalkAccel) / ow_k * hs_k;
-
-	//высота прыжка
-	m_fJumpSpeed = (m_fJumpSpeedCfg + m_fAdditionalJumpSpeed) / ow_k * hs_k;
+		//скорость ходьбы
+	m_fWalkAccel = (m_fWalkAccelCfg + m_fAdditionalWalkAccel) * ow_k * hs_k;
+		//высота прыжка
+	m_fJumpSpeed = (m_fJumpSpeedCfg + m_fAdditionalJumpSpeed) * ow_k * hs_k;
 	character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed);
 
-	//Msg("m_fWalkAccel = %.2f", m_fWalkAccel);
-	//Msg("m_fJumpSpeed = %.2f", m_fJumpSpeed);
-	//Msg("m_fAdditionalWalkAccel = %.2f", m_fAdditionalWalkAccel);
-	//Msg("m_fAdditionalJumpSpeed = %.2f", m_fAdditionalJumpSpeed);
-	//Msg("hs_k = %.2f", hs_k);
-	//Msg("ow_k = %.2f", ow_k);
+#ifdef MY_DEBUG
+	Msg("m_fWalkAccel = %.2f", m_fWalkAccel);
+	Msg("m_fJumpSpeed = %.2f", m_fJumpSpeed);
+	Msg("m_fWalkAccelCfg = %.2f", m_fWalkAccelCfg);
+	Msg("m_fJumpSpeedCfg = %.2f", m_fJumpSpeedCfg);
+	Msg("m_fAdditionalWalkAccel = %.2f", m_fAdditionalWalkAccel);
+	Msg("m_fAdditionalJumpSpeed = %.2f", m_fAdditionalJumpSpeed);
+	Msg("hs_k = %.2f", hs_k);
+	Msg("ow_k = %.2f", ow_k);
+#endif //MY_DEBUG
 }
 #endif

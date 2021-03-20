@@ -447,7 +447,21 @@ public:
 
 	bool					AnyAction				()	{return (mstate_real & mcAnyAction) != 0;};
 
-	bool					is_jump					();		
+	bool					is_jump					();	
+
+#if defined (AF_JUMP_WALK) || defined (ACTOR_PARAMS_DEPENDECY)
+	void                    UpdateConfigParams      ();
+    //IC void					SetWalkAccel            (float val)			{ m_fWalkAccel = val; };
+    //IC void					SetJumpSpeed            (float val)			{ m_fJumpSpeed = val; };
+	float                   m_fWalkAccelCfg         = pSettings->r_float("actor", "walk_accel"); //конфиговое значение скорости ходьбы
+	float                   m_fJumpSpeedCfg         = pSettings->r_float("actor", "jump_speed"); //конфиговое значение высоты прыжка
+	float                   m_fAdditionalWalkAccel;
+	float                   m_fAdditionalJumpSpeed;
+#endif
+#ifdef ACTOR_PARAMS_DEPENDECY
+	float                   m_fMinHealthWalkJump;
+#endif
+
 protected:
 	u32						mstate_wishful;
 	u32						mstate_old;
@@ -467,13 +481,6 @@ protected:
 	float					m_fWalk_StrafeFactor;
 	float					m_fRun_StrafeFactor;
 
-#if defined (AF_JUMP_WALK) || defined (ACTOR_PARAMS_DEPENDECY)
-	void CActor::UpdateConfigParams();
-	float m_fWalkAccelCfg; //конфиговое значение скорости ходьбы
-	float m_fJumpSpeedCfg; //конфиговое значение высоты прыжка
-	float m_fAdditionalWalkAccel;
-	float m_fAdditionalJumpSpeed;
-#endif
 	//////////////////////////////////////////////////////////////////////////
 	// User input/output
 	//////////////////////////////////////////////////////////////////////////
