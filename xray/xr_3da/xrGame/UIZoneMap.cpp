@@ -14,7 +14,7 @@
 #include "actor.h"
 #include "ai_space.h"
 #include "game_graph.h"
-
+#include "inventory.h"
 #include "ui/UIMap.h"
 #include "ui/UIXmlInit.h"
 //////////////////////////////////////////////////////////////////////////
@@ -64,9 +64,17 @@ void CUIZoneMap::Init()
 
 void CUIZoneMap::Render			()
 {
-	m_clipFrame.Draw	();
-	m_background.Draw	();
-	m_compass.Draw		();
+#ifdef UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
+	{
+#endif
+		m_clipFrame.Draw();
+		m_background.Draw();
+		m_compass.Draw();
+#ifdef UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+	}
+#endif
 }
 
 void CUIZoneMap::SetHeading		(float angle)

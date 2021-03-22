@@ -115,83 +115,86 @@ void CActorCondition::UpdateCondition()
 {
 	if (GodMode())				return;
 	if (!object().g_Alive())	return;
-	if (!object().Local() && m_object != Level().CurrentViewEntity())		return;	
-	
+	if (!object().Local() && m_object != Level().CurrentViewEntity())		return;
+
 
 	if ((object().mstate_real&mcAnyMove)) {
-		ConditionWalk(object().inventory().TotalWeight()/object().inventory().GetMaxWeight(), isActorAccelerated(object().mstate_real,object().IsZoomAimingMode()), (object().mstate_real&mcSprint) != 0);
+		ConditionWalk(object().inventory().TotalWeight() / object().inventory().GetMaxWeight(), isActorAccelerated(object().mstate_real, object().IsZoomAimingMode()), (object().mstate_real&mcSprint) != 0);
 	}
 	else {
-		ConditionStand(object().inventory().TotalWeight()/object().inventory().GetMaxWeight());
+		ConditionStand(object().inventory().TotalWeight() / object().inventory().GetMaxWeight());
 	};
-	if( IsGameTypeSingle() ){
+	if (IsGameTypeSingle()){
 
 		float k_max_power = 1.0f;
 
-		if( true )
+		if (true)
 		{
 			float weight = object().inventory().TotalWeight();
 
 			float base_w = object().MaxCarryWeight();
-/*
-			CCustomOutfit* outfit	= m_object->GetOutfit();
-			if(outfit)
-				base_w += outfit->m_additional_weight2;
-*/
+			/*
+						CCustomOutfit* outfit	= m_object->GetOutfit();
+						if(outfit)
+						base_w += outfit->m_additional_weight2;
+						*/
 
 			k_max_power = 1.0f + _min(weight, base_w) / base_w + _max(0.0f, (weight - base_w) / 10.0f);
 
-		}else
+		}
+		else
 			k_max_power = 1.0f;
-		
-		SetMaxPower		(GetMaxPower() - m_fPowerLeakSpeed*m_fDeltaTime*k_max_power);
+
+		SetMaxPower(GetMaxPower() - m_fPowerLeakSpeed*m_fDeltaTime*k_max_power);
 	}
 
 
-	m_fAlcohol		+= m_fV_Alcohol*m_fDeltaTime;
-	clamp			(m_fAlcohol,			0.0f,		1.0f);
+	m_fAlcohol += m_fV_Alcohol*m_fDeltaTime;
+	clamp(m_fAlcohol, 0.0f, 1.0f);
 
-	if ( IsGameTypeSingle() )
-	{	
+	if (IsGameTypeSingle())
+	{
 		CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effAlcohol);
-		if	((m_fAlcohol>0.0001f) ){
-			if(!ce){
-				AddEffector(m_object,effAlcohol, "effector_alcohol", GET_KOEFF_FUNC(this, &CActorCondition::GetAlcohol));
+		if ((m_fAlcohol > 0.0001f)){
+			if (!ce){
+				AddEffector(m_object, effAlcohol, "effector_alcohol", GET_KOEFF_FUNC(this, &CActorCondition::GetAlcohol));
 			}
-		}else{
-			if(ce)
-				RemoveEffector(m_object,effAlcohol);
+		}
+		else{
+			if (ce)
+				RemoveEffector(m_object, effAlcohol);
 		}
 
-		
+
 		CEffectorPP* ppe = object().Cameras().GetPPEffector((EEffectorPPType)effPsyHealth);
-		
-		string64			pp_sect_name;
-		shared_str ln		= Level().name();
-		strconcat			(sizeof(pp_sect_name),pp_sect_name, "effector_psy_health", "_", *ln);
-		if(!pSettings->section_exist(pp_sect_name))
-			strcpy_s			(pp_sect_name, "effector_psy_health");
 
-		if	( !fsimilar(GetPsyHealth(), 1.0f, 0.05f) )
+		string64			pp_sect_name;
+		shared_str ln = Level().name();
+		strconcat(sizeof(pp_sect_name), pp_sect_name, "effector_psy_health", "_", *ln);
+		if (!pSettings->section_exist(pp_sect_name))
+			strcpy_s(pp_sect_name, "effector_psy_health");
+
+		if (!fsimilar(GetPsyHealth(), 1.0f, 0.05f))
 		{
-			if(!ppe)
+			if (!ppe)
 			{
-				AddEffector(m_object,effPsyHealth, pp_sect_name, GET_KOEFF_FUNC(this, &CActorCondition::GetPsy));
+				AddEffector(m_object, effPsyHealth, pp_sect_name, GET_KOEFF_FUNC(this, &CActorCondition::GetPsy));
 			}
-		}else
-		{
-			if(ppe)
-				RemoveEffector(m_object,effPsyHealth);
 		}
-		if(fis_zero(GetPsyHealth()))
-			health() =0.0f;
+		else
+		{
+			if (ppe)
+				RemoveEffector(m_object, effPsyHealth);
+		}
+		if (fis_zero(GetPsyHealth()))
+			health() = 0.0f;
 	};
 
-	UpdateSatiety				();
+	UpdateSatiety();
 
-	inherited::UpdateCondition	();
+	inherited::UpdateCondition();
 
-	if( IsGameTypeSingle() )
+	if (IsGameTypeSingle())
 		UpdateTutorialThresholds();
 
 #ifdef SATIETY_SET_MAX_POWER
@@ -206,8 +209,10 @@ void CActorCondition::UpdateCondition()
 
 #ifdef RADIATION_PARAMS_DEPENDECY
 	if (m_fRadiation > m_fRadiationMinimizeHealth)
+	{
 		SetMaxHealth(1 - (1 - m_fMinHealthRadiation) * m_fRadiation); //радиация влияет на максимальное здоровье
-	
+	}
+
 #ifdef MY_DEBUG
 	Msg("GetMaxHealth = %.2f", GetMaxHealth());
 	Msg("m_fRadiation = %.2f", m_fRadiation);
@@ -241,7 +246,7 @@ void CActorCondition::UpdateSatiety()
 					: 0;
 #else
 		m_fDeltaHealth += CanBeHarmed() ?
-			(m_fV_SatietyHealth*(m_fRadiation>m_fRadiationBlocksRestore ? 0.f : 1.f)*m_fDeltaTime) //сытость увеличивает здоровье только если радиация меньше среднего уровня
+			(m_fV_SatietyHealth*(m_fRadiation>m_fRadiationBlocksRestore ? 0.f : 1.f)*m_fDeltaTime) //сытость увеличивает здоровье только если радиация меньше заданного уровня
 			: 0;
 #endif
 	}

@@ -32,7 +32,7 @@
 #define UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT // Real Wolf: блокировать работу ПДА, если самого предмета нету в слоте.
 #define CAR_SAVE_FUEL					// Real Wolf: сохранение текущего объема топлива, максимального объема и потребления машины.
 //#define R1_EXCLUDE					// Real Wolf: отключает первый рендер, оставляя только полное динамическое освещение.
-#define EAT_PORTIONS_INFLUENCE          //Real Wolf: Уменьшаем вес и цену после использования.
+#define EAT_PORTIONS_INFLUENCE          // Real Wolf: Уменьшаем вес и цену после использования.
 
 // ==================================== Правки от Red Virus ======================================= 
 #define WPN_BOBBING						// Red Virus: bobbing effect from lost alpha

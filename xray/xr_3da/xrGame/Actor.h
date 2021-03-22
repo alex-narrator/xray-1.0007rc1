@@ -451,8 +451,6 @@ public:
 
 #if defined (AF_JUMP_WALK) || defined (ACTOR_PARAMS_DEPENDECY)
 	void                    UpdateConfigParams      ();
-    //IC void					SetWalkAccel            (float val)			{ m_fWalkAccel = val; };
-    //IC void					SetJumpSpeed            (float val)			{ m_fJumpSpeed = val; };
 	float                   m_fWalkAccelCfg         = pSettings->r_float("actor", "walk_accel"); //конфиговое значение скорости ходьбы
 	float                   m_fJumpSpeedCfg         = pSettings->r_float("actor", "jump_speed"); //конфиговое значение высоты прыжка
 	float                   m_fAdditionalWalkAccel;

@@ -11,6 +11,8 @@
 #include "..\SkeletonCustom.h"
 #include "object_broker.h"
 
+#include "actor.h"
+
 #define MAX_HEALTH 1.0f
 #define MIN_HEALTH -0.01f
 
@@ -448,7 +450,6 @@ float CEntityCondition::BleedingSpeed()
 	return (m_WoundVector.empty() ? 0.f : bleeding_speed / m_WoundVector.size());
 }
 
-
 void CEntityCondition::UpdateHealth()
 {
 	float bleeding_speed		= BleedingSpeed() * m_fDeltaTime * m_change_v.m_fV_Bleeding;
@@ -457,7 +458,15 @@ void CEntityCondition::UpdateHealth()
 	m_fDeltaHealth				+= m_fDeltaTime * m_change_v.m_fV_HealthRestore;
 	
 	VERIFY						(_valid(m_fDeltaHealth));
-	ChangeBleeding				(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime);
+#ifndef RADIATION_PARAMS_DEPENDECY
+	ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime);
+#else
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (!pActor || m_fRadiation < m_fRadiationBlocksRestore)
+	{
+		ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime);
+	}
+#endif
 }
 
 void CEntityCondition::UpdatePower()

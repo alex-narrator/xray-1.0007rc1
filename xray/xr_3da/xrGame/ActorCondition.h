@@ -100,11 +100,6 @@ public:
 #ifdef SATIETY_SET_MAX_POWER
 	float m_fMinPowerSatiety;
 #endif
-#ifdef RADIATION_PARAMS_DEPENDECY
-	float m_fMinHealthRadiation;
-	float m_fRadiationBlocksRestore;
-	float m_fRadiationMinimizeHealth;
-#endif
 protected:
 	mutable bool m_bLimping;
 	mutable bool m_bCantWalk;
