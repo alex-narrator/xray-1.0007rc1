@@ -353,38 +353,43 @@ void CUIMainIngameWnd::Draw()
 	test_draw				();
 #endif
 	// show IO icon
-	bool IOActive	= (FS.dwOpenCounter>0);
-	if	(IOActive)	UIStaticDiskIO_start_time = Device.fTimeGlobal;
+	bool IOActive = (FS.dwOpenCounter > 0);
+	if (IOActive)	UIStaticDiskIO_start_time = Device.fTimeGlobal;
 
-	if ((UIStaticDiskIO_start_time+1.0f) < Device.fTimeGlobal)	UIStaticDiskIO.Show(false); 
+	if ((UIStaticDiskIO_start_time + 1.0f) < Device.fTimeGlobal)	UIStaticDiskIO.Show(false);
 	else {
-		u32		alpha			= clampr(iFloor(255.f*(1.f-(Device.fTimeGlobal-UIStaticDiskIO_start_time)/1.f)),0,255);
-		UIStaticDiskIO.Show		( true  ); 
-		UIStaticDiskIO.SetColor	(color_rgba(255,255,255,alpha));
+		u32		alpha = clampr(iFloor(255.f*(1.f - (Device.fTimeGlobal - UIStaticDiskIO_start_time) / 1.f)), 0, 255);
+		UIStaticDiskIO.Show(true);
+		UIStaticDiskIO.SetColor(color_rgba(255, 255, 255, alpha));
 	}
 	FS.dwOpenCounter = 0;
 
+#ifndef LUMINOSITY_UI_INDICATOR
 	if(!IsGameTypeSingle())
 	{
 		float		luminocity = smart_cast<CGameObject*>(Level().CurrentEntity())->ROS()->get_luminocity();
 		float		power = log(luminocity > .001f ? luminocity : .001f)*(1.f/*luminocity_factor*/);
-		luminocity	= exp(power);
+		luminocity = exp(power);
 
 		static float cur_lum = luminocity;
 		cur_lum = luminocity*0.01f + cur_lum*0.99f;
 		UIMotionIcon.SetLuminosity((s16)iFloor(cur_lum*100.0f));
 	}
-	if(!m_pActor) return;
+	if (!m_pActor) return;
+#endif
 
-	UIMotionIcon.SetNoise		((s16)(0xffff&iFloor(m_pActor->m_snd_noise*100.0f)));
-	#ifdef INV_QUICK_SLOT_PANEL
+	UIMotionIcon.SetNoise((s16)(0xffff & iFloor(m_pActor->m_snd_noise*100.0f)));
+#ifdef INV_QUICK_SLOT_PANEL
 	m_quickSlotPanel->Draw();
-	#endif
-	CUIWindow::Draw				();
-	UIZoneMap->Render			();			
-
-	RenderQuickInfos			();		
-
+#endif
+	CUIWindow::Draw();
+#ifdef UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT 
+	UpdateFlashingIcons(); //обновляем состояние мигающих иконок
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem) //не рисум миникарту UIZoneMap->Render(); если ПДА нет в слоте 
+#endif
+	UIZoneMap->Render();
+	RenderQuickInfos();
 #ifdef DEBUG
 	draw_adjust_mode			();
 #endif
@@ -508,8 +513,9 @@ void CUIMainIngameWnd::Update()
 		}
 
 		UpdateActiveItemInfo				();
-
-
+#ifdef NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
+		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+#endif
 		EWarningIcons i					= ewiWeaponJammed;		
 		while (!external_icon_ctrl && i < ewiInvincible)
 		{
@@ -517,8 +523,15 @@ void CUIMainIngameWnd::Update()
 			switch (i)
 			{
 				//radiation
-			case ewiRadiation:
+			case ewiRadiation: 
+#ifdef NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT //обнуляем значение радиации для иконки на худе если ПДА нет в слоте
+			if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem)
+#endif
 				value = m_pActor->conditions().GetRadiation();
+#ifdef NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
+			else
+				value = 0;
+#endif
 				break;
 			case ewiWound:
 				value = m_pActor->conditions().BleedingSpeed();
@@ -575,6 +588,7 @@ void CUIMainIngameWnd::Update()
 	#ifdef INV_QUICK_SLOT_PANEL
 	m_quickSlotPanel->Update();
 	#endif
+
 	CUIWindow::Update				();
 }
 
@@ -984,7 +998,10 @@ void CUIMainIngameWnd::RenderQuickInfos()
 void CUIMainIngameWnd::ReceiveNews(GAME_NEWS_DATA* news)
 {
 	VERIFY(news->texture_name.size());
-
+#ifdef UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT //не показываем сообщения на худе если нет ПДА в слоте
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
+#endif
 	HUD().GetUI()->m_pMessagesWnd->AddIconedPdaMessage(*(news->texture_name), news->tex_rect, news->SingleLineText(), news->show_time);
 }
 
@@ -1076,7 +1093,6 @@ void CUIMainIngameWnd::SetWarningIconColor(CUIStatic* s, const u32 cl)
 void CUIMainIngameWnd::SetWarningIconColor(EWarningIcons icon, const u32 cl)
 {
 	bool bMagicFlag = true;
-
 	// Задаем цвет требуемой иконки
 	switch (icon)
 	{
@@ -1086,7 +1102,7 @@ void CUIMainIngameWnd::SetWarningIconColor(EWarningIcons icon, const u32 cl)
 		SetWarningIconColor(&UIWeaponJammedIcon, cl);
 		if (bMagicFlag) break;
 	case ewiRadiation:
-		SetWarningIconColor(&UIRadiaitionIcon, cl);
+		SetWarningIconColor(&UIRadiaitionIcon, cl); //NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT можно реализовать и тут, через окрашивание иконки в прозрачность SetWarningIconColor(&UIRadiaitionIcon, 0x00ffffff);
 		if (bMagicFlag) break;
 	case ewiWound:
 		SetWarningIconColor(&UIWoundIcon, cl);
@@ -1172,16 +1188,27 @@ void CUIMainIngameWnd::UpdateFlashingIcons()
 	for (FlashingIcons_it it = m_FlashingIcons.begin(); it != m_FlashingIcons.end(); ++it)
 	{
 		it->second->Update();
+#ifdef UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT //убираем мигающие иконки если ПДА нет в слоте
+		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+		if (!pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
+			it->second->Show(false);
+#endif
 	}
 }
 
 void CUIMainIngameWnd::AnimateContacts(bool b_snd)
 {
-	UIPdaOnline.ResetClrAnimation	();
-
-	if(b_snd)
-		HUD_SOUND::PlaySound	(m_contactSnd, Fvector().set(0,0,0), 0, true );
-
+#ifdef UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT //не играем звук нового контакта если ПДА нет в слоте (а также для перезапуска иконки кол-ва контактов рядом)
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
+	{
+#endif
+		UIPdaOnline.ResetClrAnimation();
+	if (b_snd)
+		HUD_SOUND::PlaySound(m_contactSnd, Fvector().set(0, 0, 0), 0, true);
+#ifdef UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+    }
+#endif
 }
 
 void CUIMainIngameWnd::SetPickUpItem	(CInventoryItem* PickUpItem)

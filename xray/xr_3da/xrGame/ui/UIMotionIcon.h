@@ -45,4 +45,7 @@ public:
 			void			SetLuminosity		(float Pos);
 			void			SetActorVisibility	(u16 who_id, float value);
 			void			ResetVisibility		();
+#ifdef LUMINOSITY_UI_INDICATOR
+			bool            b_use_luminosity;
+#endif
 };

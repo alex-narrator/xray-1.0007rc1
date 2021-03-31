@@ -125,11 +125,13 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 		{
 			SDrawStaticStruct* ss	= AddCustomStatic("main_task", true);
 			SGameTaskObjective* o	= pActor->GameTaskManager().ActiveObjective();
+#if defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT) //не показываем активную задачу по гор€чей клавише без ѕƒј в слоте
+			if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
+#endif
 			if(!o)
 				ss->m_static->SetTextST	("st_no_active_task");
 			else
 				ss->m_static->SetTextST	(*(o->description));
-
 		}break;
 	}
 	return false;
