@@ -383,10 +383,16 @@ void CUIMainIngameWnd::Draw()
 	m_quickSlotPanel->Draw();
 #endif
 	CUIWindow::Draw();
-#ifdef UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT 
-	UpdateFlashingIcons(); //обновляем состояние мигающих иконок
+#if defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT) && !defined(MINIMAP_ON_TAB)
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem) //не рисум миникарту UIZoneMap->Render(); если ПДА нет в слоте 
+	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem) //не рисум миникарту UIZoneMap->Render(); если ПДА нет в слоте
+#endif
+#if !defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT) && defined(MINIMAP_ON_TAB)
+	if (Level().IR_GetKeyState(DIK_TAB)) //не рисум миникарту UIZoneMap->Render(); если не нажата кнопка TAB
+#endif
+#if defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT) && defined(MINIMAP_ON_TAB)
+		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem && Level().IR_GetKeyState(DIK_TAB)) //не рисум миникарту UIZoneMap->Render(); если ПДА нет в слоте и не нажата кнопка TAB
 #endif
 	UIZoneMap->Render();
 	RenderQuickInfos();
@@ -588,7 +594,9 @@ void CUIMainIngameWnd::Update()
 	#ifdef INV_QUICK_SLOT_PANEL
 	m_quickSlotPanel->Update();
 	#endif
-
+#ifdef UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT 
+	UpdateFlashingIcons(); //обновляем состояние мигающих иконок
+#endif
 	CUIWindow::Update				();
 }
 
@@ -968,7 +976,6 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 			break;
 		}
 	}
-
 	return false;
 }
 
