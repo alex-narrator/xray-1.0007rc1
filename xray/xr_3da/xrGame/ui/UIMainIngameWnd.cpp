@@ -364,19 +364,17 @@ void CUIMainIngameWnd::Draw()
 	}
 	FS.dwOpenCounter = 0;
 
-#ifndef LUMINOSITY_UI_INDICATOR
-	if(!IsGameTypeSingle())
-	{
-		float		luminocity = smart_cast<CGameObject*>(Level().CurrentEntity())->ROS()->get_luminocity();
-		float		power = log(luminocity > .001f ? luminocity : .001f)*(1.f/*luminocity_factor*/);
-		luminocity = exp(power);
-
-		static float cur_lum = luminocity;
-		cur_lum = luminocity*0.01f + cur_lum*0.99f;
-		UIMotionIcon.SetLuminosity((s16)iFloor(cur_lum*100.0f));
-	}
-	if (!m_pActor) return;
-#endif
+//	if(!IsGameTypeSingle()) //перенсенено в UIMotionIcon.cpp, управление командой hud_use_luminosity = 1/0
+//	{
+//		float		luminocity = smart_cast<CGameObject*>(Level().CurrentEntity())->ROS()->get_luminocity();
+//		float		power = log(luminocity > .001f ? luminocity : .001f)*(1.f/*luminocity_factor*/);
+//		luminocity = exp(power);
+//
+//		static float cur_lum = luminocity;
+//		cur_lum = luminocity*0.01f + cur_lum*0.99f;
+//		UIMotionIcon.SetLuminosity((s16)iFloor(cur_lum*100.0f));
+//	}
+//	if (!m_pActor) return;
 
 	UIMotionIcon.SetNoise((s16)(0xffff & iFloor(m_pActor->m_snd_noise*100.0f)));
 #ifdef INV_QUICK_SLOT_PANEL
@@ -388,11 +386,11 @@ void CUIMainIngameWnd::Draw()
 	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem) //не рисум миникарту UIZoneMap->Render(); если ПДА нет в слоте
 #endif
 #if !defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT) && defined(MINIMAP_ON_TAB)
-	if (Level().IR_GetKeyState(DIK_TAB)) //не рисум миникарту UIZoneMap->Render(); если не нажата кнопка TAB
+		if (Level().IR_GetKeyState(get_action_dik(kSCORES))) //не рисум миникарту UIZoneMap->Render(); если не нажата кнопка TAB
 #endif
 #if defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT) && defined(MINIMAP_ON_TAB)
 		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem && Level().IR_GetKeyState(DIK_TAB)) //не рисум миникарту UIZoneMap->Render(); если ПДА нет в слоте и не нажата кнопка TAB
+		if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem && Level().IR_GetKeyState(get_action_dik(kSCORES))) //не рисум миникарту UIZoneMap->Render(); если ПДА нет в слоте и не нажата кнопка TAB
 #endif
 	UIZoneMap->Render();
 	RenderQuickInfos();

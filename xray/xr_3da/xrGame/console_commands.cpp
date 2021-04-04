@@ -1400,6 +1400,7 @@ void CCC_RegisterCommands()
 
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
+	CMD3(CCC_Mask,              "hud_use_luminosity",   &psHUD_Flags,   HUD_USE_LUMINOSITY); //использование освещённости вместо заметности на худовой шкале
 
 #ifdef DEBUG
 	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV,		0.1f,	1.0f);

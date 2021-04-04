@@ -2,10 +2,11 @@
 #include "UIMainIngameWnd.h"
 #include "UIMotionIcon.h"
 #include "UIXmlInit.h"
-#ifdef LUMINOSITY_UI_INDICATOR
+//added for hud_use_luminosity
 #include "../game_cl_base.h"
 #include "../level.h"
-#endif
+#include "../../CustomHUD.h"
+
 const LPCSTR MOTION_ICON_XML = "motion_icon.xml";
 
 CUIMotionIcon::CUIMotionIcon()
@@ -70,9 +71,6 @@ void CUIMotionIcon::Init()
 	m_states[stSprint].Show		(false);
 
 	ShowState					(stNormal);
-#ifdef LUMINOSITY_UI_INDICATOR
-	b_use_luminosity = READ_IF_EXISTS(pSettings, r_bool, "hud_luminosity_bar", "use_luminosity", false);
-#endif
 }
 
 void CUIMotionIcon::ShowState(EState state)
@@ -109,10 +107,8 @@ void CUIMotionIcon::SetLuminosity(float Pos)
 
 void CUIMotionIcon::Update()
 {
-#ifdef LUMINOSITY_UI_INDICATOR
-	if (!b_use_luminosity)
+	if (!psHUD_Flags.test(HUD_USE_LUMINOSITY)) //использование освещённости вместо заметности на худовой шкале
 	{
-#endif
 		if (m_bchanged)
 		{
 			m_bchanged = false;
@@ -124,9 +120,8 @@ void CUIMotionIcon::Update()
 			else
 				SetLuminosity(m_luminosity_progress.GetRange_min());
 		}
-#ifdef LUMINOSITY_UI_INDICATOR
 	}
-	else
+	else //ранее этот код был в UIMainIngameWnd, использовался в мультиплеере
 	{
 		float		luminocity = smart_cast<CGameObject*>(Level().CurrentEntity())->ROS()->get_luminocity();
 		float		power = log(luminocity > .001f ? luminocity : .001f)*(1.f/*luminocity_factor*/);
@@ -136,7 +131,6 @@ void CUIMotionIcon::Update()
 		cur_lum = luminocity*0.01f + cur_lum*0.99f;
 		SetLuminosity((s16)iFloor(cur_lum*100.0f));
 	}
-#endif
 	inherited::Update();
 	
 	//m_luminosity_progress 

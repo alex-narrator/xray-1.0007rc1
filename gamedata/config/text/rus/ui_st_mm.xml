@@ -159,6 +159,9 @@
 	<string id="ui_mm_dyn_crosshair">
 		<text>Динамический прицел</text>
 	</string>
+	<string id="ui_mm_use_luminosity">
+		<text>Освещённость вместо заметности</text>
+	</string>
 	<string id="ui_mm_eax">
 		<text>EAX</text>
 	</string>
