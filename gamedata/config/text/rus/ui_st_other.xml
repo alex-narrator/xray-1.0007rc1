@@ -156,6 +156,9 @@
 	<string id="st_client_synchronising">
 		<text>Клиент: Синхронизация</text>
 	</string>
+	<string id="st_actor_netspawn">
+		<text>Клиент: Загрузка ГГ</text>
+	</string>
 	<string id="st_server_starting">
 		<text>Сервер: Старт</text>
 	</string>

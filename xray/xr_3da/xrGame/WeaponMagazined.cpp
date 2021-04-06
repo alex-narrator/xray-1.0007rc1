@@ -190,14 +190,15 @@ void CWeaponMagazined::Reload()
 // Real Wolf: Одна реализация на все участки кода.20.01.15
 bool CWeaponMagazined::TryToGetAmmo(u32 id)
 {
-#if defined(AMMO_FROM_BELT)
-	if (smart_cast<CActor*>(H_Parent()) != NULL)
+	if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
 	{
-		m_pAmmo		= smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmoOnBelt(*m_ammoTypes[id]));
-		Msg("Try reload for actor");
+		if (smart_cast<CActor*>(H_Parent()) != NULL)
+		{
+			m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmoOnBelt(*m_ammoTypes[id]));
+			Msg("Try reload for actor");
+		}
 	}
 	else
-#endif
 	{
 		Msg("Try reload for npc");
 		m_pAmmo		= smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[id]));
@@ -334,28 +335,32 @@ void CWeaponMagazined::ReloadMagazine()
 	if (!unlimited_ammo())
 	{
 		//попытаться найти в инвентаре патроны текущего типа
-		#if defined(AMMO_FROM_BELT)
-		if (ParentIsActor())
-			m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmoOnBelt(*m_ammoTypes[m_ammoType]));
+		if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
+		{
+			if (ParentIsActor())
+				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmoOnBelt(*m_ammoTypes[m_ammoType]));
+			else
+				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[m_ammoType]));
+		}
 		else
+		{
 			m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[m_ammoType]));
-		#else
-		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[m_ammoType]));
-		#endif
-
+		}
+		
 		if (!m_pAmmo && !m_bLockType)
 		{
 			for (u32 i = 0; i < m_ammoTypes.size(); ++i)
 			{
 				//проверить патроны всех подходящих типов
-		#if defined(AMMO_FROM_BELT)
-		if (ParentIsActor())
-			m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmoOnBelt(*m_ammoTypes[i]));
-		else
-			m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[i]));
-		#else
+				if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
+				{
+					if (ParentIsActor())
+						m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmoOnBelt(*m_ammoTypes[i]));
+					else
+						m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[i]));
+				}
 		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[i]));
-		#endif
+
 				if (m_pAmmo)
 				{
 					m_ammoType = i;

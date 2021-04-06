@@ -388,6 +388,11 @@
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_use_luminosity</text>
 		</check_use_luminosity>
 
+		<check_ammo_from_belt x="20" y="230" width="243" height="21">
+			<options_item entry="g_ammo_from_belt" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_ammo_from_belt</text>
+		</check_ammo_from_belt>
+
 		<btn_check_updates x="342" y="290" width="111" height="29">
 			<text align="c" font="letterica16" r="227" g="199" b="178">ui_mm_check_updates</text>	
 			<texture>ui_button_ordinary</texture>			
