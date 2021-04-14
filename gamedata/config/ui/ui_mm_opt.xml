@@ -218,14 +218,14 @@
 			<options_item entry="r2_slight_fade" group="mm_opt_video_adv"/>
 		</track_light_distance>
 
-<!-- BEGIN Òåíü ÃÃ îò ïåðâîãî ëèöà íà âòîðîì ðåíäåðå -->>
+<!-- BEGIN Ã’Ã¥Ã­Ã¼ ÃƒÃƒ Ã®Ã² Ã¯Ã¥Ã°Ã¢Ã®Ã£Ã® Ã«Ã¨Ã¶Ã  Ã­Ã  Ã¢Ã²Ã®Ã°Ã®Ã¬ Ã°Ã¥Ã­Ã¤Ã¥Ã°Ã¥ -->>
 		<cap_r__actor_shadow x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_r__actor_shadow</text>
 		</cap_r__actor_shadow>
 		<check_r__actor_shadow x="194" y="0" width="30" height="21">
 			<options_item entry="r__actor_shadow" group="mm_opt_video"/>
 		</check_r__actor_shadow>
-<!-- END Òåíü ÃÃ îò ïåðâîãî ëèöà íà âòîðîì ðåíäåðå -->>	
+<!-- END Ã’Ã¥Ã­Ã¼ ÃƒÃƒ Ã®Ã² Ã¯Ã¥Ã°Ã¢Ã®Ã£Ã® Ã«Ã¨Ã¶Ã  Ã­Ã  Ã¢Ã²Ã®Ã°Ã®Ã¬ Ã°Ã¥Ã­Ã¤Ã¥Ã°Ã¥ -->>	
 	
 		<cap_npc_torch x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_npc_torch</text>
@@ -345,10 +345,6 @@
 	</tab_sound>
 
 	<tab_gameplay>
-		<scroll_v	x="0" y="10" width="457" height="313" 
-					right_ident="0" left_ident="0" top_indent="0" bottom_indent="0" 
-					vert_interval="0" always_show_scroll="0" flip_vert="1" group="mm_opt_gameplay"/>
-
 		<cap_difficulty x="20" y="20" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_difficulty</text>			
 		</cap_difficulty>
@@ -387,7 +383,7 @@
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_tips</text>
 		</check_tips>
 
-<!-- BEGIN Íîâûå îïöèè ãåéìïëåÿ -->>
+<!-- BEGIN ÃÃ®Ã¢Ã»Ã¥ Ã®Ã¯Ã¶Ã¨Ã¨ Ã£Ã¥Ã©Ã¬Ã¯Ã«Ã¥Ã¿ -->>
 		<check_use_luminosity x="20" y="150" width="243" height="21">
 			<options_item entry="hud_use_luminosity" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_use_luminosity</text>
@@ -417,13 +413,12 @@
 			<options_item entry="hud_round_crosshair" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_round_crosshair</text>
 		</check_round_crosshair>
-<!-- END Íîâûå îïöèè ãåéìïëåÿ -->>
+<!-- END ÃÃ®Ã¢Ã»Ã¥ Ã®Ã¯Ã¶Ã¨Ã¨ Ã£Ã¥Ã©Ã¬Ã¯Ã«Ã¥Ã¿ -->>
 
 		<btn_check_updates x="342" y="330" width="111" height="29">
 			<text align="c" font="letterica16" r="227" g="199" b="178">ui_mm_check_updates</text>	
 			<texture>ui_button_ordinary</texture>			
 		</btn_check_updates>
-		
 	</tab_gameplay>
 	<tab_controls>
 		<cap_mousesens x="20" y="20" width="150" height="21">
