@@ -89,7 +89,7 @@ void CUIInventoryWnd::Init()
 	if (GameID() == GAME_SINGLE){
 		AttachChild							(&UISleepWnd);
 		UISleepWnd.Init();
-		UISleepWnd.SetWindowName("sleep_wnd");  // для лучшего нахождения через GetStatic
+		UISleepWnd.SetWindowName("sleep_wnd");  // Г¤Г«Гї Г«ГіГ·ГёГҐГЈГ® Г­Г ГµГ®Г¦Г¤ГҐГ­ГЁГї Г·ГҐГ°ГҐГ§ GetStatic
 	}
 #endif
 	
@@ -134,7 +134,7 @@ void CUIInventoryWnd::Init()
 	UIOutfitInfo.InitFromXml			(uiXml);
 //.	xml_init.InitStatic					(uiXml, "outfit_info_window",0, &UIOutfitInfo);
 
-	//Элементы автоматического добавления
+	//ГќГ«ГҐГ¬ГҐГ­ГІГ» Г ГўГІГ®Г¬Г ГІГЁГ·ГҐГ±ГЄГ®ГЈГ® Г¤Г®ГЎГ ГўГ«ГҐГ­ГЁГї
 	xml_init.InitAutoStatic				(uiXml, "auto_static", this);
 
 
@@ -240,7 +240,7 @@ void CUIInventoryWnd::Init()
 	m_slots_array[RIFLE_SLOT]				= m_pUIAutomaticList;
 	m_slots_array[OUTFIT_SLOT]				= m_pUIOutfitList;
 
-//вариации отображения и использования слота гранаты - начало
+//ГўГ Г°ГЁГ Г¶ГЁГЁ Г®ГІГ®ГЎГ°Г Г¦ГҐГ­ГЁГї ГЁ ГЁГ±ГЇГ®Г«ГјГ§Г®ГўГ Г­ГЁГї Г±Г«Г®ГІГ  ГЈГ°Г Г­Г ГІГ» - Г­Г Г·Г Г«Г®
 #if defined (GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
 m_pUIGrenadeList = xr_new<CUIDragDropListEx>(); AttachChild(m_pUIGrenadeList); m_pUIGrenadeList->SetAutoDelete(true);
 xml_init.InitDragDropListEx(uiXml, "dragdrop_slot_grenade", 0, m_pUIGrenadeList);
@@ -255,7 +255,7 @@ m_slots_array[GRENADE_SLOT] = m_pUIGrenadeList;
 #if !defined (GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
 	m_slots_array[GRENADE_SLOT]				= NULL;	
 #endif
-//вариации отображения и использования слота гранаты - конец
+//ГўГ Г°ГЁГ Г¶ГЁГЁ Г®ГІГ®ГЎГ°Г Г¦ГҐГ­ГЁГї ГЁ ГЁГ±ГЇГ®Г«ГјГ§Г®ГўГ Г­ГЁГї Г±Г«Г®ГІГ  ГЈГ°Г Г­Г ГІГ» - ГЄГ®Г­ГҐГ¶
 
 	m_slots_array[BOLT_SLOT]				= NULL;		
 #if defined(SHOW_ARTEFACT_SLOT)
@@ -309,7 +309,7 @@ EListType CUIInventoryWnd::GetType(CUIDragDropListEx* l)
 	for (u32 i = 0; i < SLOTS_TOTAL; i++)
 		if (m_slots_array[i] == l)
 			return iwSlot;
-#pragma todo("alpet: после теста удалить")
+#pragma todo("alpet: ГЇГ®Г±Г«ГҐ ГІГҐГ±ГІГ  ГіГ¤Г Г«ГЁГІГј")
 /* 
 	if(l==m_pUIAutomaticList)	return iwSlot;
 	if(l==m_pUIPistolList)		return iwSlot;
@@ -351,7 +351,7 @@ bool CUIInventoryWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 	if(m_b_need_reinit)
 		return true;
 
-	//вызов дополнительного меню по правой кнопке
+	//ГўГ»Г§Г®Гў Г¤Г®ГЇГ®Г«Г­ГЁГІГҐГ«ГјГ­Г®ГЈГ® Г¬ГҐГ­Гѕ ГЇГ® ГЇГ°Г ГўГ®Г© ГЄГ­Г®ГЇГЄГҐ
 	if(mouse_action == WINDOW_RBUTTON_DOWN)
 	{
 		if(UIPropertiesBox.IsShown())
@@ -371,7 +371,6 @@ void CUIInventoryWnd::Draw()
 	CUIWindow::Draw						();
 }
 
-#include "UIMainIngameWnd.h"
 void CUIInventoryWnd::Update()
 {
 	if(m_b_need_reinit)
@@ -391,7 +390,7 @@ void CUIInventoryWnd::Update()
 
 		v = pEntityAlive->conditions().GetRadiation()*100.0f;
 		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-		if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem) //обнуляем значение радиации для прогрессбара в инвентаре если не экипирован детектор -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
+		if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem) //Г®ГЎГ­ГіГ«ГїГҐГ¬ Г§Г­Г Г·ГҐГ­ГЁГҐ Г°Г Г¤ГЁГ Г¶ГЁГЁ Г¤Г«Гї ГЇГ°Г®ГЈГ°ГҐГ±Г±ГЎГ Г°Г  Гў ГЁГ­ГўГҐГ­ГІГ Г°ГҐ ГҐГ±Г«ГЁ Г­ГҐ ГЅГЄГЁГЇГЁГ°Г®ГўГ Г­ Г¤ГҐГІГҐГЄГІГ®Г° -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
 		{
 			UIProgressBarRadiation.SetProgressPos(v); 
 		}
@@ -480,7 +479,7 @@ void CUIInventoryWnd::Hide()
 	SendInfoToActor						("ui_inventory_hide");
 	ClearAllLists						();
 
-	//достать вещь в активный слот
+	//Г¤Г®Г±ГІГ ГІГј ГўГҐГ№Гј Гў Г ГЄГІГЁГўГ­Г»Г© Г±Г«Г®ГІ
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if(pActor && m_iCurrentActiveSlot != NO_ACTIVE_SLOT && 
 		pActor->inventory().m_slots[m_iCurrentActiveSlot].m_pIItem)
@@ -513,7 +512,7 @@ void CUIInventoryWnd::AttachAddon(PIItem item_to_upgrade)
 	item_to_upgrade->Attach						(CurrentIItem(), true);
 
 
-	//спрятать вещь из активного слота в инвентарь на время вызова менюшки
+	//Г±ГЇГ°ГїГІГ ГІГј ГўГҐГ№Гј ГЁГ§ Г ГЄГІГЁГўГ­Г®ГЈГ® Г±Г«Г®ГІГ  Гў ГЁГ­ГўГҐГ­ГІГ Г°Гј Г­Г  ГўГ°ГҐГ¬Гї ГўГ»Г§Г®ГўГ  Г¬ГҐГ­ГѕГёГЄГЁ
 	CActor *pActor								= smart_cast<CActor*>(Level().CurrentEntity());
 	if(pActor && item_to_upgrade == pActor->inventory().ActiveItem())
 	{
@@ -535,7 +534,7 @@ void CUIInventoryWnd::DetachAddon(const char* addon_name)
 	};
 	CurrentIItem()->Detach						(addon_name, true);
 
-	//спрятать вещь из активного слота в инвентарь на время вызова менюшки
+	//Г±ГЇГ°ГїГІГ ГІГј ГўГҐГ№Гј ГЁГ§ Г ГЄГІГЁГўГ­Г®ГЈГ® Г±Г«Г®ГІГ  Гў ГЁГ­ГўГҐГ­ГІГ Г°Гј Г­Г  ГўГ°ГҐГ¬Гї ГўГ»Г§Г®ГўГ  Г¬ГҐГ­ГѕГёГЄГЁ
 	CActor *pActor								= smart_cast<CActor*>(Level().CurrentEntity());
 	if(pActor && CurrentIItem() == pActor->inventory().ActiveItem())
 	{
