@@ -371,7 +371,7 @@ void CUIInventoryWnd::Draw()
 	CUIWindow::Draw						();
 }
 
-
+#include "UIMainIngameWnd.h"
 void CUIInventoryWnd::Update()
 {
 	if(m_b_need_reinit)
@@ -390,15 +390,14 @@ void CUIInventoryWnd::Update()
 
 
 		v = pEntityAlive->conditions().GetRadiation()*100.0f;
-#ifdef NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT //обнуляем значение радиации для прогрессбара в инвентаре
 		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-		if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem)
-#endif
-			UIProgressBarRadiation.SetProgressPos(v);
-#ifdef NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
+		if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem) //обнуляем значение радиации для прогрессбара в инвентаре если не экипирован детектор -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
+		{
+			UIProgressBarRadiation.SetProgressPos(v); 
+		}
 		else
 			UIProgressBarRadiation.SetProgressPos(0);
-#endif
+//#endif
 
 #ifdef INV_NEW_SLOTS_SYSTEM
 		if (GameID() == GAME_SINGLE){
@@ -434,7 +433,6 @@ void CUIInventoryWnd::Update()
 	}
 
 	UIStaticTimeString.SetText(*InventoryUtilities::GetGameTimeAsString(InventoryUtilities::etpTimeToMinutes));
-
 	CUIWindow::Update					();
 }
 

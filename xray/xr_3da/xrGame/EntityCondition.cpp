@@ -462,7 +462,7 @@ void CEntityCondition::UpdateHealth()
 	ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime);
 #else
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if (!pActor || m_fRadiation < m_fRadiationBlocksRestore)
+	if (!pActor || m_fRadiation < m_fRadiationBlocksRestore) //раны заживают только если радиация меньше заданного уровня
 	{
 		ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime);
 	}

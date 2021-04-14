@@ -99,6 +99,7 @@ public:
 #endif
 #ifdef SATIETY_SET_MAX_POWER
 	float m_fMinPowerSatiety;
+	float m_fMinPowerSatietyTreshold;
 #endif
 protected:
 	mutable bool m_bLimping;

@@ -14,6 +14,10 @@ ENGINE_API extern Flags32		psHUD_Flags;
 #define HUD_CROSSHAIR_RT2		(1<<9)
 #define HUD_DRAW_RT				(1<<10)
 #define HUD_USE_LUMINOSITY		(1<<11) //использование освещённости вместо заметности на худовой шкале
+#define HUD_MINIMAP_ON_KEY		(1<<12) //миникарта по клавише
+#define HUD_RADIATION_ON_KEY	(1<<13) //худ-иконка радиации по клавише
+#define HUD_WEAPON_INFO_ON_KEY	(1<<14) //инфо об активом оружии по клавише
+#define HUD_ROUND_CROSSHAIR  	(1<<15) //билдовый круглый курсор
 
 class ENGINE_API IRender_Visual;
 class CUI;

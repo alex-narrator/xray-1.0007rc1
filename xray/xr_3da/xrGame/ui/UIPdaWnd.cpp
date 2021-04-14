@@ -191,10 +191,10 @@ void CUIPdaWnd::UpdateDateTime()
 }
 
 #include "../../build_config_defines.h"
-#if defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT)
+//#if defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT)
 	#include "../Actor.h"
-	#include "../Inventory.h"
-#endif
+	//#include "../Inventory.h"
+//#endif
 
 void CUIPdaWnd::Update()
 {
@@ -202,10 +202,8 @@ void CUIPdaWnd::Update()
 	UpdateDateTime			();
 
 	// Real Wolf: если предмет убрали, когда окно было открыто, то закрываем его. 07.08.2014.
-#if defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT)
 	if (!g_actor->inventory().m_slots[PDA_SLOT].m_pIItem && IsShown() )
 		GetHolder()->StartStopMenu(this, true);
-#endif
 }
 
 void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)

@@ -90,49 +90,40 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 			m_game->StartStopMenu(InventoryMenu,true);
 			return true;
 		}break;
-
+if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem) //провер€ем есть ли PDA в слоте - UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+{
 	case kACTIVE_JOBS:
-#if defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT)
-		if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
-#endif
-		if( !MainInputReceiver() || MainInputReceiver()==PdaMenu){
+		if (!MainInputReceiver() || MainInputReceiver() == PdaMenu){
 			PdaMenu->SetActiveSubdialog(eptQuests);
-			m_game->StartStopMenu(PdaMenu,true);
+			m_game->StartStopMenu(PdaMenu, true);
 			return true;
 		}break;
 
 	case kMAP:
-#if defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT)
-		if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
-#endif
-		if( !MainInputReceiver() || MainInputReceiver()==PdaMenu){
+		if (!MainInputReceiver() || MainInputReceiver() == PdaMenu){
 			PdaMenu->SetActiveSubdialog(eptMap);
-			m_game->StartStopMenu(PdaMenu,true);
+			m_game->StartStopMenu(PdaMenu, true);
 			return true;
 		}break;
 
 	case kCONTACTS:
-#if defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT)
-		if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
-#endif
-		if( !MainInputReceiver() || MainInputReceiver()==PdaMenu){
+		if (!MainInputReceiver() || MainInputReceiver() == PdaMenu){
 			PdaMenu->SetActiveSubdialog(eptContacts);
-			m_game->StartStopMenu(PdaMenu,true);
+			m_game->StartStopMenu(PdaMenu, true);
 			return true;
 		}break;
 
 	case kSCORES:
-		{
-			SDrawStaticStruct* ss	= AddCustomStatic("main_task", true);
-			SGameTaskObjective* o	= pActor->GameTaskManager().ActiveObjective();
-#if defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT) //не показываем активную задачу по гор€чей клавише без ѕƒј в слоте
-			if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
-#endif
-			if(!o)
-				ss->m_static->SetTextST	("st_no_active_task");
-			else
-				ss->m_static->SetTextST	(*(o->description));
-		}break;
+	{
+		SDrawStaticStruct* ss = AddCustomStatic("main_task", true);
+		SGameTaskObjective* o = pActor->GameTaskManager().ActiveObjective();
+		if (!o)
+			ss->m_static->SetTextST("st_no_active_task");
+		else
+			ss->m_static->SetTextST(*(o->description));
+	}
+	break;
+}
 	}
 	return false;
 }

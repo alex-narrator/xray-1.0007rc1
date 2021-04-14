@@ -86,6 +86,10 @@ public:
 	virtual void Draw();
 	virtual void Update();
 
+	bool ShowMimimapHud();
+	bool ShowRadiationHud();
+	bool ShowWeaponInfo();
+
 	bool OnKeyboardPress(int dik);
 	void HudAdjustMode(int);
 

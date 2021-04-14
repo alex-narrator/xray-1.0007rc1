@@ -165,6 +165,18 @@
 	<string id="ui_mm_ammo_from_belt">
 		<text>Боеприпасы с пояса</text>
 	</string>
+	<string id="ui_mm_minimap_on_key">
+		<text>Отображать миникарту при удержании кнопки ($$ACTION_SCORES$$)</text>
+	</string>
+	<string id="ui_mm_radiation_on_key">
+		<text>Отображать HUD-индикатор радиации при удержании кнопки ($$ACTION_SCORES$$)</text>
+	</string>
+	<string id="ui_mm_wpn_info_on_key">
+		<text>Отображать информацию о текущем оружии при удержании кнопки ($$ACTION_WPN_RELOAD$$)</text>
+	</string>
+	<string id="ui_mm_round_crosshair">
+		<text>Использовать круглый (билдовый) курсор вместо перекрестия прицела</text>
+	</string>
 	<string id="ui_mm_eax">
 		<text>EAX</text>
 	</string>
