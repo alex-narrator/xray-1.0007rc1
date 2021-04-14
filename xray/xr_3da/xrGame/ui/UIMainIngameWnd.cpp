@@ -1389,15 +1389,13 @@ void CUIMainIngameWnd::UpdateActiveItemInfo()
 		SetAmmoIcon					(icon_sect_name.c_str	()	);
 
 		//-------------------
-		//m_pWeapon = smart_cast<CWeapon*> (item);		
-		m_pItem = smart_cast<CInventoryItem*> (item);
+		m_pWeapon = smart_cast<CWeapon*> (item);
 	}else
 	{
 		UIWeaponIcon.Show			(false);
 		UIWeaponSignAmmo.Show		(false);
 		UIWeaponBack.SetText		("");
-		//m_pWeapon					= NULL;
-		m_pItem = NULL;
+		m_pWeapon					= NULL;
 	}
 }
 
