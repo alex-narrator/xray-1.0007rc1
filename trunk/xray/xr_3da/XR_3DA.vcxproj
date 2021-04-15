@@ -228,68 +228,68 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">x:\binaries\Debug\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">x:\binaries\x64\Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\binaries\Debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\binaries\x64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
     <ExtensionsToDeleteOnClean Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">*.idb%3b*.obj%3b*.ilk%3b*.pdb%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.bat%3b$(TargetPath)</ExtensionsToDeleteOnClean>
     <ExtensionsToDeleteOnClean Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">*.idb%3b*.obj%3b*.ilk%3b*.pdb%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.bat%3b$(TargetPath)</ExtensionsToDeleteOnClean>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</IgnoreImportLibrary>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">x:\binaries\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">x:\binaries\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(SolutionDir)\binaries\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(SolutionDir)\binaries\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">x:\binaries\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|Win32'">x:\binaries\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">x:\binaries\x64\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|x64'">x:\binaries\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|Win32'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|x64'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\binaries\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|Win32'">$(SolutionDir)\binaries\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\binaries\x64\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|x64'">$(SolutionDir)\binaries\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|Win32'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|x64'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|x64'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|Win32'">x:\binaries\dedicated\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|x64'">x:\binaries\dedicated\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|Win32'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|x64'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|Win32'">$(SolutionDir)\binaries\dedicated\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|x64'">$(SolutionDir)\binaries\dedicated\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|Win32'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|x64'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
     <ExtensionsToDeleteOnClean Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|Win32'">*.idb%3b*.obj%3b*.ilk%3b*.pdb%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.bat%3b$(TargetPath)</ExtensionsToDeleteOnClean>
     <ExtensionsToDeleteOnClean Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|x64'">*.idb%3b*.obj%3b*.ilk%3b*.pdb%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.bat%3b$(TargetPath)</ExtensionsToDeleteOnClean>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|Win32'">true</IgnoreImportLibrary>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|x64'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug_Dedicated|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Mixed_Dedicated|Win32'">x:\binaries\dedicated\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Mixed_Dedicated|x64'">x:\binaries\dedicated\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Mixed_Dedicated|Win32'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Mixed_Dedicated|x64'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Mixed_Dedicated|Win32'">$(SolutionDir)\binaries\dedicated\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Mixed_Dedicated|x64'">$(SolutionDir)\binaries\dedicated\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Mixed_Dedicated|Win32'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Mixed_Dedicated|x64'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Mixed_Dedicated|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Mixed_Dedicated|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|Win32'">x:\binaries\dedicated\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|x64'">x:\binaries\dedicated\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|Win32'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|x64'">x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|Win32'">$(SolutionDir)\binaries\dedicated\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|x64'">$(SolutionDir)\binaries\dedicated\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|Win32'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|x64'">$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_Dedicated|x64'">false</LinkIncremental>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">X:\trunk\xray\xrLua\src;X:\trunk\3rd party\FreeImage\FreeImage\Source;X:\trunk\xray\xrCore;X:\trunk\3rd party\MagicSoftware\FreeMagic\Include;X:\trunk\3rd party\OpenAL\Include;X:\trunk\3rd party\luabind_old\luabind;X:\trunk\3rd party\loki;X:\trunk\3rd party\eax\Include;X:\trunk\3rd party\boost;$(WindowsSdkDir)include;X:\trunk\3rd party\DXSDK_old\Include;$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|Win32'">X:\3rd party\stlport\stlport;X:\xray\xrLua\src;X:\3rd party\FreeImage\FreeImage\Source;X:\xray\xrCore;X:\3rd party\MagicSoftware\FreeMagic\Include;X:\3rd party\OpenAL\Include;X:\3rd party\luabind_old\luabind;X:\3rd party\loki;X:\3rd party\eax\Include;X:\3rd party\boost;$(WindowsSdkDir)include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">X:\trunk\xray\xrLua\src;X:\trunk\3rd party\FreeImage\FreeImage\Source;X:\trunk\xray\xrCore;X:\trunk\3rd party\MagicSoftware\FreeMagic\Include;X:\trunk\3rd party\OpenAL\Include;X:\trunk\3rd party\luabind_old\luabind;X:\trunk\3rd party\loki;X:\trunk\3rd party\eax\Include;X:\trunk\3rd party\boost;$(WindowsSdkDir)include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|x64'">X:\xray\xrLua\src;X:\3rd party\FreeImage;X:\xray\xrCore;X:\3rd party\MagicSoftware\FreeMagic\Include;C:\Program Files %28x86%29\OpenAL 1.1 SDK\include;X:\3rd party\luabind_old\luabind;X:\3rd party\loki;X:\3rd party\eax\Include;X:\3rd party\Xiph\Include;X:\3rd party\boost;$(WindowsSdkDir)include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">X:\trunk\3rd party\DXSDK_old\Lib\x86;X:\trunk\3rd party\OpenAL\libs\Win32;X:\trunk\3rd party\eax;X:\libraries;$(LibraryPath)</LibraryPath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|Win32'">X:\3rd party\stlport\lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;X:\3rd party\OpenAL\libs\Win32;X:\3rd party\eax;X:\libraries;$(LibraryPath)</LibraryPath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;X:\3rd party\OpenAL\libs\Win64;X:\3rd party\eax;X:\libraries\x64\;$(VCInstallDir)lib\amd64;$(VCInstallDir)atlmfc\lib\amd64;$(WindowsSdkDir)lib\x64</LibraryPath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|x64'">X:\3rd party\MagicSoftware\FreeMagic\Library\ReleaseDLL;X:\3rd party\FreeImage;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;X:\3rd party\Xiph\Libs;C:\Program Files %28x86%29\OpenAL 1.1 SDK\libs\Win32;X:\3rd party\eax;X:\libraries;$(LibraryPath)</LibraryPath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">X:\trunk\xray\xrLua\src;X:\trunk\3rd party\FreeImage\FreeImage\Source;X:\trunk\xray\xrCore;X:\trunk\3rd party\MagicSoftware\FreeMagic\Include;X:\trunk\3rd party\OpenAL\Include;X:\trunk\3rd party\luabind_old\luabind;X:\trunk\3rd party\loki;X:\trunk\3rd party\eax\Include;X:\trunk\3rd party\boost;$(WindowsSdkDir)include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;X:\trunk\3rd party\OpenAL\libs\Win32;X:\trunk\3rd party\eax;X:\libraries\Debug;$(LibraryPath);$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">X:\trunk\xray\xrLua\src;X:\trunk\3rd party\FreeImage\FreeImage\Source;X:\trunk\xray\xrCore;X:\trunk\3rd party\MagicSoftware\FreeMagic\Include;X:\trunk\3rd party\OpenAL\Include;X:\trunk\3rd party\luabind_old\luabind;X:\trunk\3rd party\loki;X:\trunk\3rd party\eax\Include;X:\trunk\3rd party\boost;$(WindowsSdkDir)include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(FrameworkSDKDir)\include</IncludePath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;X:\3rd party\OpenAL\libs\Win64;X:\3rd party\eax;X:\libraries\x64\Debug\;$(VCInstallDir)lib\amd64;$(VCInstallDir)atlmfc\lib\amd64;$(WindowsSdkDir)lib\x64</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\trunk\xray\xrLua\src;$(SolutionDir)\trunk\3rd party\FreeImage\FreeImage\Source;$(SolutionDir)\trunk\xray\xrCore;$(SolutionDir)\trunk\3rd party\MagicSoftware\FreeMagic\Include;$(SolutionDir)\trunk\3rd party\OpenAL\Include;$(SolutionDir)\trunk\3rd party\luabind_old\luabind;$(SolutionDir)\trunk\3rd party\loki;$(SolutionDir)\trunk\3rd party\eax\Include;$(SolutionDir)\trunk\3rd party\boost;$(WindowsSdkDir)include;$(SolutionDir)\trunk\3rd party\DXSDK_old\Include;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|Win32'">$(SolutionDir)\3rd party\stlport\stlport;$(SolutionDir)\xray\xrLua\src;$(SolutionDir)\3rd party\FreeImage\FreeImage\Source;$(SolutionDir)\xray\xrCore;$(SolutionDir)\3rd party\MagicSoftware\FreeMagic\Include;$(SolutionDir)\3rd party\OpenAL\Include;$(SolutionDir)\3rd party\luabind_old\luabind;$(SolutionDir)\3rd party\loki;$(SolutionDir)\3rd party\eax\Include;$(SolutionDir)\3rd party\boost;$(WindowsSdkDir)include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\trunk\xray\xrLua\src;$(SolutionDir)\trunk\3rd party\FreeImage\FreeImage\Source;$(SolutionDir)\trunk\xray\xrCore;$(SolutionDir)\trunk\3rd party\MagicSoftware\FreeMagic\Include;$(SolutionDir)\trunk\3rd party\OpenAL\Include;$(SolutionDir)\trunk\3rd party\luabind_old\luabind;$(SolutionDir)\trunk\3rd party\loki;$(SolutionDir)\trunk\3rd party\eax\Include;$(SolutionDir)\trunk\3rd party\boost;$(WindowsSdkDir)include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|x64'">$(SolutionDir)\xray\xrLua\src;$(SolutionDir)\3rd party\FreeImage;$(SolutionDir)\xray\xrCore;$(SolutionDir)\3rd party\MagicSoftware\FreeMagic\Include;C:\Program Files %28x86%29\OpenAL 1.1 SDK\include;$(SolutionDir)\3rd party\luabind_old\luabind;$(SolutionDir)\3rd party\loki;$(SolutionDir)\3rd party\eax\Include;$(SolutionDir)\3rd party\Xiph\Include;$(SolutionDir)\3rd party\boost;$(WindowsSdkDir)include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\trunk\3rd party\DXSDK_old\Lib\x86;$(SolutionDir)\trunk\3rd party\OpenAL\libs\Win32;$(SolutionDir)\trunk\3rd party\eax;$(SolutionDir)\libraries;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|Win32'">$(SolutionDir)\3rd party\stlport\lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(SolutionDir)\3rd party\OpenAL\libs\Win32;$(SolutionDir)\3rd party\eax;$(SolutionDir)\libraries;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(SolutionDir)\3rd party\OpenAL\libs\Win64;$(SolutionDir)\3rd party\eax;$(SolutionDir)\libraries\x64\;$(VCInstallDir)lib\amd64;$(VCInstallDir)atlmfc\lib\amd64;$(WindowsSdkDir)lib\x64</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release_w_STLPORT|x64'">$(SolutionDir)\3rd party\MagicSoftware\FreeMagic\Library\ReleaseDLL;$(SolutionDir)\3rd party\FreeImage;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(SolutionDir)\3rd party\Xiph\Libs;C:\Program Files %28x86%29\OpenAL 1.1 SDK\libs\Win32;$(SolutionDir)\3rd party\eax;$(SolutionDir)\libraries;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\trunk\xray\xrLua\src;$(SolutionDir)\trunk\3rd party\FreeImage\FreeImage\Source;$(SolutionDir)\trunk\xray\xrCore;$(SolutionDir)\trunk\3rd party\MagicSoftware\FreeMagic\Include;$(SolutionDir)\trunk\3rd party\OpenAL\Include;$(SolutionDir)\trunk\3rd party\luabind_old\luabind;$(SolutionDir)\trunk\3rd party\loki;$(SolutionDir)\trunk\3rd party\eax\Include;$(SolutionDir)\trunk\3rd party\boost;$(WindowsSdkDir)include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(SolutionDir)\trunk\3rd party\OpenAL\libs\Win32;$(SolutionDir)\trunk\3rd party\eax;$(SolutionDir)\libraries\Debug;$(LibraryPath);$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\trunk\xray\xrLua\src;$(SolutionDir)\trunk\3rd party\FreeImage\FreeImage\Source;$(SolutionDir)\trunk\xray\xrCore;$(SolutionDir)\trunk\3rd party\MagicSoftware\FreeMagic\Include;$(SolutionDir)\trunk\3rd party\OpenAL\Include;$(SolutionDir)\trunk\3rd party\luabind_old\luabind;$(SolutionDir)\trunk\3rd party\loki;$(SolutionDir)\trunk\3rd party\eax\Include;$(SolutionDir)\trunk\3rd party\boost;$(WindowsSdkDir)include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(FrameworkSDKDir)\include</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(SolutionDir)\3rd party\OpenAL\libs\Win64;$(SolutionDir)\3rd party\eax;$(SolutionDir)\libraries\x64\Debug\;$(VCInstallDir)lib\amd64;$(VCInstallDir)atlmfc\lib\amd64;$(WindowsSdkDir)lib\x64</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -297,7 +297,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <AdditionalOptions>/Zm200  %(AdditionalOptions)</AdditionalOptions>
@@ -305,7 +305,7 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <AdditionalIncludeDirectories>X:\trunk\xray\Luabind;X:\trunk\xray\LuaJIT\src;..\..\3rd party\Xiph\libogg\include;..\..\3rd party\Xiph\libtheora\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\trunk\xray\Luabind;$(SolutionDir)\trunk\xray\LuaJIT\src;..\..\3rd party\Xiph\libogg\include;..\..\3rd party\Xiph\libtheora\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG;WIN32;_WINDOWS;ENGINE_BUILD;SECURE_GAMEDATA;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
@@ -348,7 +348,7 @@
       <MapExports>false</MapExports>
       <SubSystem>Windows</SubSystem>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>x:\libraries\Debug\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\libraries\Debug\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -356,7 +356,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <AdditionalOptions>/Zm200  %(AdditionalOptions)</AdditionalOptions>
@@ -405,7 +405,7 @@
       <MapExports>false</MapExports>
       <SubSystem>Windows</SubSystem>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>x:\libraries\x64\Debug\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\libraries\x64\Debug\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">
@@ -414,7 +414,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -458,7 +458,7 @@
       <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
       <SubSystem>Windows</SubSystem>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>x:\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\libraries\$(ProjectName).lib</ImportLibrary>
       <TargetMachine>NotSet</TargetMachine>
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
@@ -468,7 +468,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -512,7 +512,7 @@
       <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
       <SubSystem>Windows</SubSystem>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>x:\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\libraries\$(ProjectName).lib</ImportLibrary>
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
@@ -522,7 +522,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
@@ -532,7 +532,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>X:\trunk\xray\Luabind;X:\trunk\xray\LuaJIT\src;..\..\3rd party\Xiph\libogg\include;..\..\3rd party\Xiph\libtheora\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\trunk\xray\Luabind;$(SolutionDir)\trunk\xray\LuaJIT\src;..\..\3rd party\Xiph\libogg\include;..\..\3rd party\Xiph\libtheora\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;ENGINE_BUILD;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>
@@ -577,7 +577,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>x:\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\libraries\$(ProjectName).lib</ImportLibrary>
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
@@ -587,7 +587,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
@@ -642,7 +642,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>x:\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\libraries\$(ProjectName).lib</ImportLibrary>
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
@@ -651,7 +651,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
@@ -705,7 +705,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>x:\libraries\x64\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\libraries\x64\$(ProjectName).lib</ImportLibrary>
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
@@ -714,7 +714,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
@@ -769,7 +769,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ImportLibrary>x:\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\libraries\$(ProjectName).lib</ImportLibrary>
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
@@ -779,7 +779,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <AdditionalOptions>/Zm200  %(AdditionalOptions)</AdditionalOptions>
@@ -835,7 +835,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <AdditionalOptions>/Zm200  %(AdditionalOptions)</AdditionalOptions>
@@ -891,7 +891,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
@@ -945,7 +945,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
@@ -999,7 +999,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
@@ -1055,7 +1055,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TypeLibraryName>x:\XR_3DA.tlb</TypeLibraryName>
+      <TypeLibraryName>$(SolutionDir)\XR_3DA.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>

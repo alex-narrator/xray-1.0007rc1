@@ -15,8 +15,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="x:\binaries"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="$(SolutionDir)\binaries"
+			IntermediateDirectory="$(SolutionDir)\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -103,7 +103,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="$(SolutionDir)\libraries\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -132,8 +132,8 @@
 		</Configuration>
 		<Configuration
 			Name="Mixed|Win32"
-			OutputDirectory="x:\binaries\"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="$(SolutionDir)\binaries\"
+			IntermediateDirectory="$(SolutionDir)\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -211,7 +211,7 @@
 				MapFileName="$(OutDir)/$(ProjectName).map"
 				SubSystem="2"
 				LargeAddressAware="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="$(SolutionDir)\libraries\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -240,8 +240,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="x:\binaries"
-			IntermediateDirectory="x:\intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="$(SolutionDir)\binaries"
+			IntermediateDirectory="$(SolutionDir)\intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -319,7 +319,7 @@
 				MapFileName=""
 				SubSystem="2"
 				LargeAddressAware="2"
-				ImportLibrary="x:\libraries\$(ProjectName).lib"
+				ImportLibrary="$(SolutionDir)\libraries\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

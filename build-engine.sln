@@ -19,11 +19,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrGame", "trunk\xray\xr_3da
 		{6FDBCDB3-D190-486D-BDAC-3C4AC527DA3B} = {6FDBCDB3-D190-486D-BDAC-3C4AC527DA3B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrSound", "..\trunk\xray\xrSound\xrSound.vcxproj", "{CCCA7859-EB86-493E-9B53-C4235F45B3C5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrSound", "trunk\xray\xrSound\xrSound.vcxproj", "{CCCA7859-EB86-493E-9B53-C4235F45B3C5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrCore", "..\trunk\xray\xrCore\xrCore.vcxproj", "{A0F7D1FB-59A7-4717-A7E4-96F37E91998E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrCore", "trunk\xray\xrCore\xrCore.vcxproj", "{A0F7D1FB-59A7-4717-A7E4-96F37E91998E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrCDB", "..\trunk\xray\xrCDB\xrCDB.vcxproj", "{A19B1DF2-82EC-4364-8BDF-85D13A1C89B5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrCDB", "trunk\xray\xrCDB\xrCDB.vcxproj", "{A19B1DF2-82EC-4364-8BDF-85D13A1C89B5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrRender_R1", "trunk\xray\xr_3da\xrRender_R1\xrRender_R1.vcxproj", "{57A498C9-A741-4DDF-8EFC-BFB9EB6B00E2}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -35,13 +35,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrRender_R2", "trunk\xray\x
 		{6FDBCDB3-D190-486D-BDAC-3C4AC527DA3B} = {6FDBCDB3-D190-486D-BDAC-3C4AC527DA3B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrXMLParser", "..\trunk\xray\xrXMLParser\xrXMLParser.vcxproj", "{94A1C366-3D19-48E6-8170-4ADC2E70DF98}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrXMLParser", "trunk\xray\xrXMLParser\xrXMLParser.vcxproj", "{94A1C366-3D19-48E6-8170-4ADC2E70DF98}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ode", "..\trunk\xray\xrODE\contrib\msvc7\ode_default\default.vcxproj", "{1BF75FEB-87DD-486C-880B-227987D191C2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ode", "trunk\xray\xrODE\contrib\msvc7\ode_default\default.vcxproj", "{1BF75FEB-87DD-486C-880B-227987D191C2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrParticles", "..\trunk\xray\xrParticles\xrParticles.vcxproj", "{94A1C366-3D19-48E6-8170-4ADC2E70DF97}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrParticles", "trunk\xray\xrParticles\xrParticles.vcxproj", "{94A1C366-3D19-48E6-8170-4ADC2E70DF97}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrNetServer", "..\trunk\xray\xrNetServer\xrNetServer.vcxproj", "{435BAC9A-B225-457D-AB40-C9BD0CC8838C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrNetServer", "trunk\xray\xrNetServer\xrNetServer.vcxproj", "{435BAC9A-B225-457D-AB40-C9BD0CC8838C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CCCA7859-EB86-493E-9B53-C4235F45B3C5} = {CCCA7859-EB86-493E-9B53-C4235F45B3C5}
 		{6FDBCDB3-D190-486D-BDAC-3C4AC527DA3B} = {6FDBCDB3-D190-486D-BDAC-3C4AC527DA3B}
@@ -51,25 +51,25 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrD3D9-Null", "trunk\xray\x
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrGameSpy", "trunk\xray\xr_3da\xrGame\xrGameSpy\xrGameSpy.vcxproj", "{5535F6B4-7AE6-4B66-8AEA-CC31C14D7AB7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libogg_static", "..\..\trunk\3rd party\Xiph\libogg\win32\VS2010\libogg_static.vcxproj", "{15CBFEFF-7965-41F5-B4E2-21E8795C9159}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libogg_static", "trunk\3rd party\Xiph\libogg\win32\VS2010\libogg_static.vcxproj", "{15CBFEFF-7965-41F5-B4E2-21E8795C9159}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbis_static", "..\..\trunk\3rd party\Xiph\libvorbis\win32\VS2010\libvorbis\libvorbis_static.vcxproj", "{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbis_static", "trunk\3rd party\Xiph\libvorbis\win32\VS2010\libvorbis\libvorbis_static.vcxproj", "{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbisfile", "..\..\trunk\3rd party\Xiph\libvorbis\win32\VS2010\libvorbisfile\libvorbisfile_static.vcxproj", "{CEBDE98B-A6AA-46E6-BC79-FAAF823DB9EC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbisfile", "trunk\3rd party\Xiph\libvorbis\win32\VS2010\libvorbisfile\libvorbisfile_static.vcxproj", "{CEBDE98B-A6AA-46E6-BC79-FAAF823DB9EC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtheora_static", "..\..\trunk\3rd party\Xiph\libtheora\win32\VS2010\libtheora_static.vcxproj", "{653F3841-3F26-49B9-AFCF-091DB4B67031}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtheora_static", "trunk\3rd party\Xiph\libtheora\win32\VS2010\libtheora_static.vcxproj", "{653F3841-3F26-49B9-AFCF-091DB4B67031}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lua", "Lua", "{EF293583-AFED-4761-A72D-04F8BF122434}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LuaJIT", "..\trunk\xray\LuaJIT\LuaJIT.vcxproj", "{94BE3D19-23D3-4D15-8B5C-41193885648C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LuaJIT", "trunk\xray\LuaJIT\LuaJIT.vcxproj", "{94BE3D19-23D3-4D15-8B5C-41193885648C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Luabind", "..\trunk\xray\Luabind\Luabind.vcxproj", "{6FDBCDB3-D190-486D-BDAC-3C4AC527DA3B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Luabind", "trunk\xray\Luabind\Luabind.vcxproj", "{6FDBCDB3-D190-486D-BDAC-3C4AC527DA3B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{94BE3D19-23D3-4D15-8B5C-41193885648C} = {94BE3D19-23D3-4D15-8B5C-41193885648C}
 		{A0F7D1FB-59A7-4717-A7E4-96F37E91998E} = {A0F7D1FB-59A7-4717-A7E4-96F37E91998E}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nvtt", "..\..\trunk\3rd party\nvtt\nvtt.vcxproj", "{0EB257DC-5CFC-44B0-82C9-CE6B158BE473}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nvtt", "trunk\3rd party\nvtt\nvtt.vcxproj", "{0EB257DC-5CFC-44B0-82C9-CE6B158BE473}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -39,14 +39,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>x:\binaries\</OutDir>
-    <IntDir>x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)\binaries\</OutDir>
+    <IntDir>$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>lua5.1</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>x:\binaries\Debug\</OutDir>
-    <IntDir>x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)\binaries\Debug\</OutDir>
+    <IntDir>$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>lua5.1</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -57,7 +57,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>x:\libraries\Debug\lua5.1.lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\libraries\Debug\lua5.1.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -84,7 +84,7 @@
       <ProgramDatabaseFile>$(OutDir)lua5.1.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <LargeAddressAware>true</LargeAddressAware>
-      <ImportLibrary>x:\libraries\lua5.1.lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\libraries\lua5.1.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

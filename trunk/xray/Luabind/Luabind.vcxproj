@@ -40,26 +40,26 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>luabind</TargetName>
-    <OutDir>x:\binaries\</OutDir>
-    <IntDir>x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)\binaries\</OutDir>
+    <IntDir>$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IntDir>x:\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
-    <OutDir>x:\binaries\Debug\</OutDir>
+    <IntDir>$(SolutionDir)\intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)\binaries\Debug\</OutDir>
     <TargetName>luabind</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>X:\trunk\3rd party\boost;X:\trunk\xray\LuaJIT\src;X:\trunk\xray\Luabind;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\trunk\3rd party\boost;$(SolutionDir)\trunk\xray\LuaJIT\src;$(SolutionDir)\trunk\xray\Luabind;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUABIND_BUILDING;LUABIND_NO_ERROR_CHECKING;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>x:\libraries\Debug\luabind.lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\libraries\Debug\luabind.lib</ImportLibrary>
       <AdditionalDependencies>xrCore.lib;lua5.1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>X:\libraries\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\libraries\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -68,7 +68,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>X:\trunk\3rd party\boost;X:\trunk\xray\LuaJIT\src;X:\trunk\xray\Luabind;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\trunk\3rd party\boost;$(SolutionDir)\trunk\xray\LuaJIT\src;$(SolutionDir)\trunk\xray\Luabind;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUABIND_BUILDING;LUABIND_NO_ERROR_CHECKING;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
@@ -85,9 +85,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>X:\libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>xrCore.lib;lua5.1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ImportLibrary>x:\libraries\luabind.lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\libraries\luabind.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
