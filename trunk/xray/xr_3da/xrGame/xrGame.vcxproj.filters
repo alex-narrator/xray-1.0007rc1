@@ -6571,7 +6571,9 @@
     <ClInclude Include="derived_client_classes.h">
       <Filter>AI\AScript\ScriptClasses\DerivedClientClasses</Filter>
     </ClInclude>
-    <ClInclude Include="script_vars_storage.h" />
+    <ClInclude Include="script_vars_storage.h">
+      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9734,7 +9736,9 @@
     <ClCompile Include="derived_client_classes.cpp">
       <Filter>AI\AScript\ScriptClasses\DerivedClientClasses</Filter>
     </ClCompile>
-    <ClCompile Include="script_vars_storage.cpp" />
+    <ClCompile Include="script_vars_storage.cpp">
+      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="graph_abstract.h">
