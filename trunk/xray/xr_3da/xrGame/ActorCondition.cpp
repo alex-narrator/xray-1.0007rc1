@@ -253,10 +253,6 @@ void CActorCondition::UpdateSatiety()
 					(m_fV_SatietyHealth*(m_fSatiety>m_fSatietyCritical?1.f:-1.f)*m_fDeltaTime) //по идее тут надо сравнить с m_fSatietyCritical
 					: 0;
 #else
-	/*	m_fDeltaHealth += CanBeHarmed() ?
-			(m_fV_SatietyHealth*(m_fRadiation>m_fRadiationBlocksRestore ? 0.f : 1.f)*m_fDeltaTime) //сытость увеличивает здоровье только если радиация меньше заданного уровня
-			: 0;*/
-
 		m_fDeltaHealth += CanBeHarmed() ?
 			(m_fV_SatietyHealth*(m_fSatiety>m_fSatietyCritical ? 1.f : -1.f)*m_fDeltaTime) //по идее тут надо сравнить с m_fSatietyCritical
 			: 0;
@@ -272,10 +268,10 @@ void CActorCondition::UpdateSatiety()
 				satiety_power_k*
 				m_fDeltaTime;
 
-//#ifdef MY_DEBUG
+#ifdef MY_DEBUG
 	Msg("m_fDeltaHealth = %.10f", m_fDeltaHealth);
 	//Msg("m_fDeltaPower = %.10f", m_fDeltaPower);
-//#endif //MY_DEBUG
+#endif //MY_DEBUG
 }
 
 

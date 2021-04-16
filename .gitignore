@@ -1,0 +1,7 @@
+/binaries
+/intermediate
+/ipch
+/libraries
+
+*.sdf
+*.suo
