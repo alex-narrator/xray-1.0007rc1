@@ -87,10 +87,10 @@ DLL_API CUIMainIngameWnd* GetMainIngameWindow()
 #ifdef SCRIPT_ICONS_CONTROL
 	CUIStatic * warn_icon_list[8] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
 	
-	bool __declspec(dllexport) external_icon_ctrl = false;			// alpet: äëÿ âîçìîæíîñòè âíåøíåãî êîíòðîëÿ èêîíîê (èñïîëüçóåòñÿ â NLC6 âìåñòî òèïè÷íûõ èíäèêàòîðîâ). Íèêàê íå âëèÿåò íà èãðó äëÿ îñòàëüíûõ ìîäîâ.	
+	bool __declspec(dllexport) external_icon_ctrl = false;			// alpet: для возможности внешнего контроля иконок (используется в NLC6 вместо типичных индикаторов). Никак не влияет на игру для остальных модов.
 
 
-	bool __declspec(dllexport) SetupGameIcon(u32 icon, u32 cl, float width, float height) // ïîçâîëÿåò ðàñöâåòèòü èêîíêó èëè èçìåíèòü å¸ ðàçìåð
+	bool __declspec(dllexport) SetupGameIcon(u32 icon, u32 cl, float width, float height) // позволяет расцветить иконку или изменить её размер
 	{
 		CUIMainIngameWnd *window = GetMainIngameWindow();
 		if (!window)
@@ -220,7 +220,7 @@ void CUIMainIngameWnd::Init()
 
 	UIWeaponIcon.Enable			(false);
 
-	//èíäèêàòîðû 
+	//индикаторы 
 	UIZoneMap->Init				();
 	UIZoneMap->SetScale			(DEFAULT_MAP_SCALE);
 
@@ -231,19 +231,19 @@ void CUIMainIngameWnd::Init()
 	}
 
 
-	//Ïîëîñà ïðîãðåññà çäîðîâüÿ
+	//Полоса прогресса здоровья
 	UIStaticHealth.AttachChild	(&UIHealthBar);
 //.	xml_init.InitAutoStaticGroup(uiXml,"static_health", &UIStaticHealth);
 	xml_init.InitProgressBar	(uiXml, "progress_bar_health", 0, &UIHealthBar);
 
-	//Ïîëîñà ïðîãðåññà àðìîðà
+	//Полоса прогресса армора
 	UIStaticArmor.AttachChild	(&UIArmorBar);
 //.	xml_init.InitAutoStaticGroup(uiXml,"static_armor", &UIStaticArmor);
 	xml_init.InitProgressBar	(uiXml, "progress_bar_armor", 0, &UIArmorBar);
 
 	
 
-	// Ïîäñêàçêè, êîòîðûå âîçíèêàþò ïðè íàâåäåíèè ïðèöåëà íà îáúåêò
+	// Подсказки, которые возникают при наведении прицела на объект
 	AttachChild					(&UIStaticQuickHelp);
 	xml_init.InitStatic			(uiXml, "quick_info", 0, &UIStaticQuickHelp);
 
@@ -253,7 +253,7 @@ void CUIMainIngameWnd::Init()
 	xml_init.InitScrollView		(uiXml, "icons_scroll_view", 0, m_UIIcons);
 	AttachChild					(m_UIIcons);
 
-	// Çàãðóæàåì èêîíêè 
+	// Загружаем иконки 
 	if(IsGameTypeSingle())
 	{
 		xml_init.InitStatic		(uiXml, "starvation_static", 0, &UIStarvationIcon);
@@ -291,11 +291,11 @@ void CUIMainIngameWnd::Init()
 		"invincible"
 	};
 
-	// Çàãðóæàåì ïîðîãîâûå çíà÷åíèÿ äëÿ èíäèêàòîðîâ
+	// Загружаем пороговые значения для индикаторов
 	EWarningIcons j = ewiWeaponJammed;
 	while (j < ewiInvincible)
 	{
-		// ×èòàåì äàííûå ïîðîãîâ äëÿ êàæäîãî èíäèêàòîðà
+		// Читаем данные порогов для каждого индикатора
 		shared_str cfgRecord = pSettings->r_string("main_ingame_indicators_thresholds", *warningStrings[static_cast<int>(j) - 1]);
 		u32 count = _GetItemCount(*cfgRecord);
 
@@ -364,7 +364,7 @@ void CUIMainIngameWnd::Draw()
 	}
 	FS.dwOpenCounter = 0;
 
-//	if(!IsGameTypeSingle()) //ïåðåíñåíåíî â UIMotionIcon.cpp, óïðàâëåíèå êîìàíäîé hud_use_luminosity = 1/0
+//	if(!IsGameTypeSingle()) //перенсенено в UIMotionIcon.cpp, управление командой hud_use_luminosity = 1/0
 //	{
 //		float		luminocity = smart_cast<CGameObject*>(Level().CurrentEntity())->ROS()->get_luminocity();
 //		float		power = log(luminocity > .001f ? luminocity : .001f)*(1.f/*luminocity_factor*/);
@@ -383,7 +383,7 @@ void CUIMainIngameWnd::Draw()
 	CUIWindow::Draw();
 
 CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem && ShowMimimapHud()) //íå ðèñóì ìèíèêàðòó åñëè ÏÄÀ íåò â ñëîòå è íå íàæàòà êíîïêà -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem && ShowMimimapHud()) //не рисум миникарту если ПДА нет в слоте и не нажата кнопка -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 {
 	UIZoneMap->Render();
 }
@@ -393,7 +393,7 @@ if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem && ShowMimimapHud()) //íå �
 #endif
 }
 
-bool CUIMainIngameWnd::ShowMimimapHud() //ïîêàçûâàåì ìèíèêàðòó åñëè íàæàòà êëàâèøà àêòèâíîãî çàäàíèÿ/àêòèâåí ñëîò áîëòà/îòêëþ÷åíà ñîîòâ. íàñòðîéêà ìåíþ
+bool CUIMainIngameWnd::ShowMimimapHud() //показываем миникарту если нажата клавиша активного задания/активен слот болта/отключена соотв. настройка меню
 {
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if (psHUD_Flags.test(HUD_MINIMAP_ON_KEY))
@@ -410,7 +410,7 @@ bool CUIMainIngameWnd::ShowMimimapHud() //ïîêàçûâàåì ìèíèêàðò�
 			return true;
 }
 
-bool CUIMainIngameWnd::ShowRadiationHud() //ïîêàçûâàåì õóäîâûé èíäèêàòîð ðàäèàöèè åñëè íàæàòà êëàâèøà àêòèâíîãî çàäàíèÿ/àêòèâåí ñëîò áîëòà/îòêëþ÷åíà ñîîòâ. íàñòðîéêà ìåíþ
+bool CUIMainIngameWnd::ShowRadiationHud() //показываем худовый индикатор радиации если нажата клавиша активного задания/активен слот болта/отключена соотв. настройка меню
 {
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if (psHUD_Flags.test(HUD_RADIATION_ON_KEY))
@@ -427,12 +427,15 @@ bool CUIMainIngameWnd::ShowRadiationHud() //ïîêàçûâàåì õóäîâûé 
 		return true;
 }
 
-bool CUIMainIngameWnd::ShowWeaponInfo() //ïîêàçûâàåì êîë-âî ïàòðîíîâ â îðóæèè/çàïàñ ïàòðîíîâ åñëè íàæàòà êëàâèøà ïåðåçàðÿäêè/êëàâèøà ñìåíû òèïà ïàòðîíà/îòêëþ÷åíà ñîîòâ. íàñòðîéêà ìåíþ
+bool CUIMainIngameWnd::ShowWeaponInfo() //показываем кол-во патронов в оружии/запас патронов если нажата клавиша перезарядки/смены типа патрона/смены режима огня/отключена соотв. настройка меню
 {
 
 	if (psHUD_Flags.test(HUD_WEAPON_INFO_ON_KEY))
 	{
-		if (Level().IR_GetKeyState(get_action_dik(kWPN_RELOAD)) || Level().IR_GetKeyState(get_action_dik(kWPN_NEXT)))
+		if (Level().IR_GetKeyState(get_action_dik(kWPN_RELOAD)) || 
+			Level().IR_GetKeyState(get_action_dik(kWPN_NEXT)) ||
+			Level().IR_GetKeyState(get_action_dik(kWPN_FIREMODE_PREV)) ||
+			Level().IR_GetKeyState(get_action_dik(kWPN_FIREMODE_NEXT)))
 			return true;
 		else
 			return false;
@@ -557,7 +560,7 @@ void CUIMainIngameWnd::Update()
 			UIStaticArmor.Show				(false);
 		}
 
-		UpdateActiveItemInfo();  //àïäåéòèì HUD-èêîíêó àêòèâíîãî ïðåäìåòà (îðóæèÿ)
+		UpdateActiveItemInfo();  //апдейтим HUD-иконку активного предмета (оружия)
 
 		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 
@@ -569,7 +572,7 @@ void CUIMainIngameWnd::Update()
 			{
 				//radiation
 			case ewiRadiation: 
-				if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem && ShowRadiationHud()) //îáíóëÿåì çíà÷åíèå ðàäèàöèè äëÿ èêîíêè íà õóäå åñëè äåòåêòîðà íåò â ñëîòå è/èëè íå íàæàòà êíîïêà (ïðè âûáîðå ñîîòâ. îïöèè ìåíþ) -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
+				if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem && ShowRadiationHud()) //обнуляем значение радиации для иконки на худе если детектора нет в слоте и/или не нажата кнопка (при выборе соотв. опции меню) -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
 				value = m_pActor->conditions().GetRadiation();
 			else
 				value = 0;
@@ -593,14 +596,14 @@ void CUIMainIngameWnd::Update()
 
 			xr_vector<float>::reverse_iterator	rit;
 
-			// Ñíà÷àëà ïðîâåðÿåì íà òî÷íîå ñîîòâåòñâèå
+			// Сначала проверяем на точное соответсвие
 			rit  = std::find(m_Thresholds[i].rbegin(), m_Thresholds[i].rend(), value);
 
-			// Åñëè åãî íåò, òî áåðåì ïîñëåäíåå ìåíüøåå çíà÷åíèå ()
+			// Если его нет, то берем последнее меньшее значение ()
 			if (rit == m_Thresholds[i].rend())
 				rit = std::find_if(m_Thresholds[i].rbegin(), m_Thresholds[i].rend(), std::bind2nd(std::less<float>(), value));
 
-			// Ìèíèìàëüíîå è ìàêñèìàëüíîå çíà÷åíèÿ ãðàíèöû
+			// Минимальное и максимальное значения границы
 			float min = m_Thresholds[i].front();
 			float max = m_Thresholds[i].back();
 
@@ -630,14 +633,14 @@ void CUIMainIngameWnd::Update()
 	m_quickSlotPanel->Update();
 	#endif
  
-	UpdateFlashingIcons(); //îáíîâëÿåì ñîñòîÿíèå ìèãàþùèõ èêîíîê - UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+	UpdateFlashingIcons(); //обновляем состояние мигающих иконок - UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 
 	CUIWindow::Update				();
 }
 
 void CUIMainIngameWnd::HudAdjustMode(int dik)
 {
-	// ïîääåðæêà ðåæèìà adjust hud mode
+	// поддержка режима adjust hud mode
 	if (g_bHudAdjustMode)
 	{
 		CWeaponHUD *pWpnHud = NULL;
@@ -1043,7 +1046,7 @@ void CUIMainIngameWnd::ReceiveNews(GAME_NEWS_DATA* news)
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 
 	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
-	HUD().GetUI()->m_pMessagesWnd->AddIconedPdaMessage(*(news->texture_name), news->tex_rect, news->SingleLineText(), news->show_time); //íå ïîêàçûâàåì ñîîáùåíèÿ íà õóäå åñëè íåò ÏÄÀ â ñëîòå -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+	HUD().GetUI()->m_pMessagesWnd->AddIconedPdaMessage(*(news->texture_name), news->tex_rect, news->SingleLineText(), news->show_time); //не показываем сообщения на худе если нет ПДА в слоте -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 }
 
 template <typename T>
@@ -1134,7 +1137,7 @@ void CUIMainIngameWnd::SetWarningIconColor(CUIStatic* s, const u32 cl)
 void CUIMainIngameWnd::SetWarningIconColor(EWarningIcons icon, const u32 cl)
 {
 	bool bMagicFlag = true;
-	// Çàäàåì öâåò òðåáóåìîé èêîíêè
+	// Задаем цвет требуемой иконки
 	switch (icon)
 	{
 	case ewiAll:
@@ -1143,7 +1146,7 @@ void CUIMainIngameWnd::SetWarningIconColor(EWarningIcons icon, const u32 cl)
 		SetWarningIconColor(&UIWeaponJammedIcon, cl);
 		if (bMagicFlag) break;
 	case ewiRadiation:
-		SetWarningIconColor(&UIRadiaitionIcon, cl); //NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT ìîæíî ðåàëèçîâàòü è òóò, ÷åðåç îêðàøèâàíèå èêîíêè â ïðîçðà÷íîñòü SetWarningIconColor(&UIRadiaitionIcon, 0x00ffffff);
+		SetWarningIconColor(&UIRadiaitionIcon, cl); //NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT можно реализовать и тут, через окрашивание иконки в прозрачность SetWarningIconColor(&UIRadiaitionIcon, 0x00ffffff);
 		if (bMagicFlag) break;
 	case ewiWound:
 		SetWarningIconColor(&UIWoundIcon, cl);
@@ -1176,7 +1179,7 @@ void CUIMainIngameWnd::TurnOffWarningIcon(EWarningIcons icon)
 
 void CUIMainIngameWnd::SetFlashIconState_(EFlashingIcons type, bool enable)
 {
-	// Âêëþ÷àåì àíèìàöèþ òðåáóåìîé èêîíêè
+	// Включаем анимацию требуемой иконки
 	FlashingIcons_it icon = m_FlashingIcons.find(type);
 	R_ASSERT2(icon != m_FlashingIcons.end(), "Flashing icon with this type not existed");
 	icon->second->Show(enable);
@@ -1189,14 +1192,14 @@ void CUIMainIngameWnd::InitFlashingIcons(CUIXml* node)
 
 	CUIXmlInit xml_init;
 	CUIStatic *pIcon = NULL;
-	// Ïðîáåãàåìñÿ ïî âñåì íîäàì è èíèöèàëèçèðóåì èç íèõ ñòàòèêè
+	// Пробегаемся по всем нодам и инициализируем из них статики
 	for (int i = 0; i < staticsCount; ++i)
 	{
 		pIcon = xr_new<CUIStatic>();
 		xml_init.InitStatic(*node, flashingIconNodeName, i, pIcon);
 		shared_str iconType = node->ReadAttrib(flashingIconNodeName, i, "type", "none");
 
-		// Òåïåðü çàïîìèíàåì èêîíêó è åå òèï
+		// Теперь запоминаем иконку и ее тип
 		EFlashingIcons type = efiPdaTask;
 
 		if		(iconType == "pda")		type = efiPdaTask;
@@ -1232,20 +1235,19 @@ void CUIMainIngameWnd::UpdateFlashingIcons()
 		it->second->Update();
 
         if (!pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
-			it->second->Show(false); //óáèðàåì ìèãàþùèå èêîíêè åñëè ÏÄÀ íåò â ñëîòå -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+			it->second->Show(false); //убираем мигающие иконки если ПДА нет в слоте -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 	}
 }
 
 void CUIMainIngameWnd::AnimateContacts(bool b_snd)
 {
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem) //íå èãðàåì çâóê íîâîãî êîíòàêòà åñëè ÏÄÀ íåò â ñëîòå (à òàêæå äëÿ ïåðåçàïóñêà èêîíêè êîë-âà êîíòàêòîâ ðÿäîì) -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem) //не играем звук нового контакта если ПДА нет в слоте (а также для перезапуска иконки кол-ва контактов рядом) -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 	{
 		UIPdaOnline.ResetClrAnimation();
 	  if (b_snd)
 		HUD_SOUND::PlaySound(m_contactSnd, Fvector().set(0, 0, 0), 0, true);
     }
-//#endif
 }
 
 void CUIMainIngameWnd::SetPickUpItem	(CInventoryItem* PickUpItem)
@@ -1299,7 +1301,7 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 		return;
 	};
 
-	if (UIPickUpItemIcon.IsShown() ) return; // Real Wolf: Êàêîé ñìûñë ïîñòîÿííî îáíîâëÿòü? 10.08.2014.
+	if (UIPickUpItemIcon.IsShown() ) return; // Real Wolf: Какой смысл постоянно обновлять? 10.08.2014.
 
 	shared_str sect_name	= m_pPickUpItem->object().cNameSect();
 
@@ -1329,7 +1331,7 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 
 	UIPickUpItemIcon.SetStretchTexture(true);
 
-	// Real Wolf: Èñïðàâëÿåì ðàñòÿãèâàíèå. 10.08.2014.
+	// Real Wolf: Исправляем растягивание. 10.08.2014.
 	scale_x = Device.fASPECT/0.75f;
 
 	UIPickUpItemIcon.SetWidth(m_iGridWidth*INV_GRID_WIDTH*scale*scale_x);
@@ -1342,7 +1344,7 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 
 	UIPickUpItemIcon.SetColor(color_rgba(255,255,255,192));
 
-	// Real Wolf: Äîáàâëÿåì ê èêîíêå àääîíû îðóæèÿ. 10.08.2014.
+	// Real Wolf: Добавляем к иконке аддоны оружия. 10.08.2014.
 	if (auto wpn = m_pPickUpItem->cast_weapon() )
 	{
 		auto cell_item = xr_new<CUIWeaponCellItem>(wpn);
@@ -1367,7 +1369,7 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 		delete_data(cell_item);
 	}
 
-	// Real Wolf: Êîëáåê äëÿ ñêðèïòîâîãî äîáàâëåíèÿ ñâîèõ èêîíîê. 10.08.2014.
+	// Real Wolf: Колбек для скриптового добавления своих иконок. 10.08.2014.
 	g_actor->callback(GameObject::eUIPickUpItemShowing)(m_pPickUpItem->object().lua_game_object(), &UIPickUpItemIcon);
 
 	UIPickUpItemIcon.Show(true);
@@ -1376,7 +1378,7 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 void CUIMainIngameWnd::UpdateActiveItemInfo()
 {
 	PIItem item		=  m_pActor->inventory().ActiveItem();
-	if (item && ShowWeaponInfo()) //-- íå ïîêàçûâàåì èêîíêó àêòèâíîãî ïðåäìåòà (îðóæèÿ) åñëè íå íàæàòà êëàâèøà ïåðåçàðÿäêè/ñìåíû òèïà ïàòðîíà (ïðè âêëþ÷åíèè ñîîòâ. îïöèè)
+	if (item && ShowWeaponInfo()) //-- не показываем иконку активного предмета (оружия) если не нажата клавиша перезарядки/смены типа патрона/смены режима огня (при включении соотв. опции)
 	{
 		xr_string					str_name;
 		xr_string					icon_sect_name;
