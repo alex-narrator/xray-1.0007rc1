@@ -1,385 +1,385 @@
 <?xml version="1.0" encoding="windows-1251" ?>
 <string_table>
 	<string id="Clear">
-		<text>СЏСЃРЅР°СЏ</text>
+		<text>ясная</text>
 	</string>
 	<string id="Cloudy">
-		<text>РѕР±Р»Р°С‡РЅР°СЏ</text>
+		<text>облачная</text>
 	</string>
 	<string id="Default">
-		<text>СЃСЂРµРґРЅРёРµ</text>
+		<text>средние</text>
 	</string>
 	<string id="Extreme">
-		<text>РјР°РєСЃРёРјР°Р»СЊРЅС‹Рµ</text>
+		<text>максимальные</text>
 	</string>
 	<string id="gd_master">
-		<text>РјР°СЃС‚РµСЂ</text>
+		<text>мастер</text>
 	</string>
 	<string id="gd_novice">
-		<text>РЅРѕРІРёС‡РѕРє</text>
+		<text>новичок</text>
 	</string>
 	<string id="gd_stalker">
-		<text>РѕРїС‹С‚РЅС‹Р№</text>
+		<text>опытный</text>
 	</string>
 	<string id="gd_veteran">
-		<text>РІРµС‚РµСЂР°РЅ</text>
+		<text>ветеран</text>
 	</string>
 	<string id="High">
-		<text>РІС‹СЃРѕРєРёРµ</text>
+		<text>высокие</text>
 	</string>
 	<string id="Low">
-		<text>РЅРёР·РєРёРµ</text>
+		<text>низкие</text>
 	</string>
 	<string id="Minimum">
-		<text>РјРёРЅРёРјР°Р»СЊРЅС‹Рµ</text>
+		<text>минимальные</text>
 	</string>
 	<string id="mm_mp_check_cdkey">
-		<text>РїСЂРѕРІРµСЂСЏС‚СЊ CD-Key</text>
+		<text>проверять CD-Key</text>
 	</string>
 	<string id="Nigth">
-		<text>РЅРѕС‡СЊ</text>
+		<text>ночь</text>
 	</string>
 	<string id="Rain">
-		<text>РґРѕР¶РґСЊ</text>
+		<text>дождь</text>
 	</string>
 	<string id="renderer_r1">
-		<text>РЎС‚Р°С‚РёС‡РЅРѕРµ РѕСЃРІРµС‰РµРЅРёРµ</text>
+		<text>Статичное освещение</text>
 	</string>
 	<string id="renderer_r2">
-		<text>РџРѕР»РЅРѕРµ РґРёРЅР°РјРёС‡РµСЃРєРѕРµ РѕСЃРІРµС‰РµРЅРёРµ</text>
+		<text>Полное динамическое освещение</text>
 	</string>
 	<string id="renderer_r2a">
-		<text>Р”РёРЅР°РјРёС‡РµСЃРєРѕРµ РѕСЃРІРµС‰РµРЅРёРµ РѕР±СЉРµРєС‚РѕРІ</text>
+		<text>Динамическое освещение объектов</text>
 	</string>
 	<string id="st_artefacthunt">
-		<text>РћС…РѕС‚Р° Р·Р° Р°СЂС‚РµС„Р°РєС‚РѕРј</text>
+		<text>Охота за артефактом</text>
 	</string>
 	<string id="st_deathmatch">
-		<text>Р’СЃРµ РїСЂРѕС‚РёРІ РІСЃРµС…</text>
+		<text>Все против всех</text>
 	</string>
 	<string id="st_rank_experienced">
-		<text>РѕРїС‹С‚РЅС‹Р№</text>
+		<text>опытный</text>
 	</string>
 	<string id="st_rank_legend">
-		<text>Р»РµРіРµРЅРґР°СЂРЅС‹Р№ СЃС‚Р°Р»РєРµСЂ</text>
+		<text>легендарный сталкер</text>
 	</string>
 	<string id="st_rank_novice">
-		<text>РЅРѕРІРёС‡РѕРє</text>
+		<text>новичок</text>
 	</string>
 	<string id="st_rank_professional">
-		<text>РїСЂРѕС„РµСЃСЃРёРѕРЅР°Р»</text>
+		<text>профессионал</text>
 	</string>
 	<string id="st_rank_veteran">
-		<text>РІРµС‚РµСЂР°РЅ</text>
+		<text>ветеран</text>
 	</string>
 	<string id="st_team_deathmatch">
-		<text>РљРѕРјР°РЅРґР° РїСЂРѕС‚РёРІ РєРѕРјР°РЅРґС‹</text>
+		<text>Команда против команды</text>
 	</string>
 	<string id="testers_mp_agroprom">
-		<text>Р—Р°РІРѕРґ "РђРіСЂРѕРїСЂРѕРј"</text>
+		<text>Завод "Агропром"</text>
 	</string>
 	<string id="testers_mp_atp">
-		<text>РђРўРџ</text>
+		<text>АТП</text>
 	</string>
 	<string id="testers_mp_darkvalley">
-		<text>РўРµРјРЅР°СЏ РґРѕР»РёРЅР°</text>
+		<text>Темная долина</text>
 	</string>
 	<string id="testers_mp_factory">
-		<text>Р—Р°РІРѕРґ "РЇРЅС‚Р°СЂСЊ"</text>
+		<text>Завод "Янтарь"</text>
 	</string>
 	<string id="testers_mp_lost_village">
-		<text>РџРѕРєРёРЅСѓС‚Р°СЏ РґРµСЂРµРІРЅСЏ</text>
+		<text>Покинутая деревня</text>
 	</string>
 	<string id="testers_mp_military_1">
-		<text>Р’РѕРµРЅРЅС‹Рµ СЃРєР»Р°РґС‹</text>
+		<text>Военные склады</text>
 	</string>
 	<string id="testers_mp_pool">
-		<text>Р‘Р°СЃСЃРµР№РЅ</text>
+		<text>Бассейн</text>
 	</string>
 	<string id="testers_mp_railroad">
-		<text>Р–/Р” СЃС‚Р°РЅС†РёСЏ</text>
+		<text>Ж/Д станция</text>
 	</string>
 	<string id="testers_mp_rostok">
-		<text>Р—Р°РІРѕРґ "Р РѕСЃС‚РѕРє"</text>
+		<text>Завод "Росток"</text>
 	</string>
 	<string id="testers_mp_workshop">
-		<text>Р‘СЂРѕС€РµРЅРЅР°СЏ С„Р°Р±СЂРёРєР°</text>
+		<text>Брошенная фабрика</text>
 	</string>
 	<string id="ui_mm_60_hz">
-		<text>Р§Р°СЃС‚РѕС‚Р° 60Р“С†</text>
+		<text>Частота 60Гц</text>
 	</string>
 	<string id="ui_mm_action">
-		<text>Р”РµР№СЃС‚РІРёРµ</text>
+		<text>Действие</text>
 	</string>
 	<string id="ui_mm_advanced">
-		<text>Р Р°СЃС€РёСЂРµРЅРЅС‹Рµ</text>
+		<text>Расширенные</text>
 	</string>
 	<string id="ui_mm_anisotropic">
-		<text>Р¤РёР»СЊС‚СЂР°С†РёСЏ С‚РµРєСЃС‚СѓСЂ</text>
+		<text>Фильтрация текстур</text>
 	</string>
 	<string id="ui_mm_apply">
-		<text>РџСЂРёРјРµРЅРёС‚СЊ</text>
+		<text>Применить</text>
 	</string>
 	<string id="ui_mm_back">
-		<text>РќР°Р·Р°Рґ</text>
+		<text>Назад</text>
 	</string>
 	<string id="ui_mm_blood">
-		<text>РљСЂРѕРІСЊ</text>
+		<text>Кровь</text>
 	</string>
 	<string id="ui_mm_brightness">
-		<text>РЇСЂРєРѕСЃС‚СЊ</text>
+		<text>Яркость</text>
 	</string>
 	<string id="ui_mm_cancel">
-		<text>РћС‚РјРµРЅР°</text>
+		<text>Отмена</text>
 	</string>
 	<string id="ui_mm_contrast">
-		<text>РљРѕРЅС‚СЂР°СЃС‚</text>
+		<text>Контраст</text>
 	</string>
 	<string id="ui_mm_controls">
-		<text>РЈРїСЂР°РІР»РµРЅРёРµ</text>
+		<text>Управление</text>
 	</string>
 	<string id="ui_mm_credits">
-		<text>РўРёС‚СЂС‹</text>
+		<text>Титры</text>
 	</string>
 	<string id="ui_mm_crosshair_distance">
-		<text>Р”РёСЃС‚Р°РЅС†РёСЏ РґРѕ С†РµР»Рё</text>
+		<text>Дистанция до цели</text>
 	</string>
 	<string id="ui_mm_delete">
-		<text>РЈРґР°Р»РёС‚СЊ</text>
+		<text>Удалить</text>
 	</string>
 	<string id="ui_mm_difficulty">
-		<text>РЎР»РѕР¶РЅРѕСЃС‚СЊ</text>
+		<text>Сложность</text>
 	</string>
 	<string id="ui_mm_disconnect">
-		<text>РћС‚СЃРѕРµРґРёРЅРёС‚СЊСЃСЏ</text>
+		<text>Отсоединиться</text>
 	</string>
 	<string id="ui_mm_disconnect_message">
-		<text>Р”РµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ Р»Рё РІС‹ Р¶РµР»Р°РµС‚Рµ РѕС‚СЃРѕРµРґРёРЅРёС‚СЊСЃСЏ?</text>
+		<text>Действительно ли вы желаете отсоединиться?</text>
 	</string>
 	<string id="ui_mm_dyn_crosshair">
-		<text>Р”РёРЅР°РјРёС‡РµСЃРєРёР№ РїСЂРёС†РµР»</text>
+		<text>Динамический прицел</text>
 	</string>
 	<string id="ui_mm_use_luminosity">
-		<text>РћСЃРІРµС‰С‘РЅРЅРѕСЃС‚СЊ РІРјРµСЃС‚Рѕ Р·Р°РјРµС‚РЅРѕСЃС‚Рё</text>
+		<text>Освещённость вместо заметности</text>
 	</string>
 	<string id="ui_mm_ammo_from_belt">
-		<text>Р‘РѕРµРїСЂРёРїР°СЃС‹ СЃ РїРѕСЏСЃР°</text>
+		<text>Боеприпасы с пояса</text>
 	</string>
 	<string id="ui_mm_minimap_on_key">
-		<text>РћС‚РѕР±СЂР°Р¶Р°С‚СЊ РјРёРЅРёРєР°СЂС‚Сѓ РїСЂРё СѓРґРµСЂР¶Р°РЅРёРё РєРЅРѕРїРєРё ($$ACTION_SCORES$$)</text>
+		<text>Отображать миникарту при удержании кнопки ($$ACTION_SCORES$$)</text>
 	</string>
 	<string id="ui_mm_radiation_on_key">
-		<text>РћС‚РѕР±СЂР°Р¶Р°С‚СЊ HUD-РёРЅРґРёРєР°С‚РѕСЂ СЂР°РґРёР°С†РёРё РїСЂРё СѓРґРµСЂР¶Р°РЅРёРё РєРЅРѕРїРєРё ($$ACTION_SCORES$$)</text>
+		<text>Отображать HUD-индикатор радиации при удержании кнопки ($$ACTION_SCORES$$)</text>
 	</string>
 	<string id="ui_mm_wpn_info_on_key">
-		<text>РћС‚РѕР±СЂР°Р¶Р°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РµРєСѓС‰РµРј РѕСЂСѓР¶РёРё РїСЂРё СѓРґРµСЂР¶Р°РЅРёРё РєРЅРѕРїРѕРє ($$ACTION_WPN_RELOAD$$)/($$ACTION_WPN_NEXT$$)/($$ACTION_WPN_FIREMODE_NEXT$$)/($$ACTION_WPN_FIREMODE_PREV$$)</text>
+		<text>Отображать информацию о текущем оружии при удержании кнопок ($$ACTION_WPN_RELOAD$$)/($$ACTION_WPN_NEXT$$)/($$ACTION_WPN_FIREMODE_NEXT$$)/($$ACTION_WPN_FIREMODE_PREV$$)</text>
 	</string>
 	<string id="ui_mm_round_crosshair">
-		<text>РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РєСЂСѓРіР»С‹Р№ (Р±РёР»РґРѕРІС‹Р№) РєСѓСЂСЃРѕСЂ РІРјРµСЃС‚Рѕ РїРµСЂРµРєСЂРµСЃС‚РёСЏ РїСЂРёС†РµР»Р°</text>
+		<text>Использовать круглый (билдовый) курсор вместо перекрестия прицела</text>
 	</string>
 	<string id="ui_mm_eax">
 		<text>EAX</text>
 	</string>
 	<string id="ui_mm_fullscreen">
-		<text>РџРѕР»РЅС‹Р№ СЌРєСЂР°РЅ</text>
+		<text>Полный экран</text>
 	</string>
 	<string id="ui_mm_gameplay">
-		<text>РРіСЂР°</text>
+		<text>Игра</text>
 	</string>
 	<string id="ui_mm_gamma">
-		<text>Р“Р°РјРјР°</text>
+		<text>Гамма</text>
 	</string>
 	<string id="ui_mm_geometry_lod">
-		<text>Р”РµС‚Р°Р»РёР·Р°С†РёСЏ РѕР±СЉРµРєС‚РѕРІ</text>
+		<text>Детализация объектов</text>
 	</string>
 	<string id="ui_mm_invert_mouse">
-		<text>РРЅРІРµСЂС‚РёСЂРѕРІР°С‚СЊ РјС‹С€СЊ</text>
+		<text>Инвертировать мышь</text>
 	</string>
 	<string id="ui_mm_key">
-		<text>РљРЅРѕРїРєР°</text>
+		<text>Кнопка</text>
 	</string>
 	<string id="ui_mm_keyboard_setup">
-		<text>РќР°СЃС‚СЂРѕР№РєР° РєР»Р°РІРёР°С‚СѓСЂС‹</text>
+		<text>Настройка клавиатуры</text>
 	</string>
 	<string id="ui_mm_last_save">
-		<text>РџРѕСЃР»РµРґРЅ. СЃРѕС…СЂР°РЅ.</text>
+		<text>Последн. сохран.</text>
 	</string>
 	<string id="ui_mm_light_distance">
-		<text>Р”Р°Р»СЊРЅРѕСЃС‚СЊ РѕСЃРІРµС‰РµРЅРёСЏ</text>
+		<text>Дальность освещения</text>
 	</string>
 	<string id="ui_mm_load">
-		<text>Р—Р°РіСЂСѓР·РёС‚СЊ</text>
+		<text>Загрузить</text>
 	</string>
 	<string id="ui_mm_load_game">
-		<text>Р—Р°РіСЂСѓР·РёС‚СЊ РёРіСЂСѓ</text>
+		<text>Загрузить игру</text>
 	</string>
 	<string id="ui_mm_master">
-		<text>РњР°СЃС‚РµСЂ</text>
+		<text>Мастер</text>
 	</string>
 	<string id="ui_mm_master_volume">
-		<text>Р“СЂРѕРјРєРѕСЃС‚СЊ</text>
+		<text>Громкость</text>
 	</string>
 	<string id="ui_mm_mouse_sense">
-		<text>Р§СѓРІСЃС‚РІРёС‚РµР»СЊРЅРѕСЃС‚СЊ РјС‹С€Рё</text>
+		<text>Чувствительность мыши</text>
 	</string>
 	<string id="ui_mm_multiplayer">
-		<text>РЎР•РўР•Р’РђРЇ РР“Р Рђ</text>
+		<text>СЕТЕВАЯ ИГРА</text>
 	</string>
 	<string id="ui_mm_multiplayer_n">
-		<text>РЎРµС‚РµРІР°СЏ РёРіСЂР°</text>
+		<text>Сетевая игра</text>
 	</string>
 	<string id="ui_mm_music_volume">
-		<text>Р“СЂРѕРјРєРѕСЃС‚СЊ РјСѓР·С‹РєРё</text>
+		<text>Громкость музыки</text>
 	</string>
 	<string id="ui_mm_need_restart">
-		<text>РР·РјРµРЅРµРЅРёСЏ РІСЃС‚СѓРїСЏС‚ РІ СЃРёР»Сѓ С‚РѕР»СЊРєРѕ РїРѕСЃР»Рµ РїРµСЂРµР·Р°РіСЂСѓР·РєРё РёРіСЂС‹.</text>
+		<text>Изменения вступят в силу только после перезагрузки игры.</text>
 	</string>
 	<string id="ui_mm_newgame">
-		<text>РќРѕРІР°СЏ РёРіСЂР°</text>
+		<text>Новая игра</text>
 	</string>
 	<string id="ui_mm_novice">
-		<text>РќРѕРІРёС‡РѕРє</text>
+		<text>Новичок</text>
 	</string>
 	<string id="ui_mm_npc_torch">
-		<text>РЎРІРµС‚ С„РѕРЅР°СЂРёРєРѕРІ РќРџРЎ</text>
+		<text>Свет фонариков НПС</text>
 	</string>
 	<string id="ui_mm_options">
-		<text>РћРџР¦РР</text>
+		<text>ОПЦИИ</text>
 	</string>
 	<string id="ui_mm_options_n">
-		<text>РћРїС†РёРё</text>
+		<text>Опции</text>
 	</string>
 	<string id="ui_mm_particles_distance">
-		<text>Р”Р°Р»СЊРЅРѕСЃС‚СЊ РїР°СЂС‚РёРєР»РѕРІ</text>
+		<text>Дальность партиклов</text>
 	</string>
 	<string id="ui_mm_quality_presets">
-		<text>РЈСЃС‚Р°РЅРѕРІРєРё РєР°С‡РµСЃС‚РІР°</text>
+		<text>Установки качества</text>
 	</string>
 	<string id="ui_mm_quit_game">
-		<text>Р—Р°РІРµСЂС€РёС‚СЊ РёРіСЂСѓ</text>
+		<text>Завершить игру</text>
 	</string>
 	<string id="ui_mm_quit_game_message">
-		<text>Р”РµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ Р»Рё РІС‹ Р¶РµР»Р°РµС‚Рµ РїРѕРєРёРЅСѓС‚СЊ РёРіСЂСѓ?</text>
+		<text>Действительно ли вы желаете покинуть игру?</text>
 	</string>
 	<string id="ui_mm_quit_windows_message">
-		<text>Р”РµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ Р»Рё РІС‹ С…РѕС‚РёС‚Рµ РІС‹Р№С‚Рё РІ Windows?</text>
+		<text>Действительно ли вы хотите выйти в Windows?</text>
 	</string>
 	<string id="ui_mm_quit2windows">
-		<text>Р’С‹Р№С‚Рё РІ Windows</text>
+		<text>Выйти в Windows</text>
 	</string>
 	<string id="ui_mm_renderer">
-		<text>РўРёРї СЂРµРЅРґРµСЂР°</text>
+		<text>Тип рендера</text>
 	</string>
 	<string id="ui_mm_resolution">
-		<text>Р Р°Р·СЂРµС€РµРЅРёРµ</text>
+		<text>Разрешение</text>
 	</string>
 	<string id="ui_mm_return_game">
-		<text>Р’РѕР·РІСЂР°С‚ Рє РёРіСЂРµ</text>
+		<text>Возврат к игре</text>
 	</string>
 	<string id="ui_mm_save">
-		<text>РЎРѕС…СЂР°РЅРёС‚СЊ</text>
+		<text>Сохранить</text>
 	</string>
 	<string id="ui_mm_save_game">
-		<text>РЎРѕС…СЂР°РЅРёС‚СЊ РёРіСЂСѓ</text>
+		<text>Сохранить игру</text>
 	</string>
 	<string id="ui_mm_show_crosshair">
-		<text>РџРѕРєР°Р·С‹РІР°С‚СЊ РїСЂРёС†РµР»</text>
+		<text>Показывать прицел</text>
 	</string>
 	<string id="ui_mm_show_weapon">
-		<text>РџРѕРєР°Р·С‹РІР°С‚СЊ РѕСЂСѓР¶РёРµ</text>
+		<text>Показывать оружие</text>
 	</string>
 	<string id="ui_mm_simply">
-		<text>Р‘Р°Р·РѕРІС‹Рµ</text>
+		<text>Базовые</text>
 	</string>
 	<string id="ui_mm_sound">
-		<text>Р—РІСѓРє</text>
+		<text>Звук</text>
 	</string>
 	<string id="ui_mm_sound_quality">
-		<text>РљР°С‡РµСЃС‚РІРѕ Р·РІСѓРєР°</text>
+		<text>Качество звука</text>
 	</string>
 	<string id="ui_mm_stalker">
-		<text>РЎС‚Р°Р»РєРµСЂ</text>
+		<text>Сталкер</text>
 	</string>
 	<string id="ui_mm_sun_quality">
-		<text>РљР°С‡РµСЃС‚РІРѕ С‚РµРЅРµР№</text>
+		<text>Качество теней</text>
 	</string>
 	<string id="ui_mm_supersample">
-		<text>РЎРіР»Р°Р¶РёРІР°РЅРёРµ</text>
+		<text>Сглаживание</text>
 	</string>
 	<string id="ui_mm_switch_torch">
-		<text>РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ С„РѕРЅР°СЂРёРєРѕРІ AI</text>
+		<text>Использование фонариков AI</text>
 	</string>
 	<string id="ui_mm_texture_quality">
-		<text>РљР°С‡РµСЃС‚РІРѕ С‚РµРєСЃС‚СѓСЂ</text>
+		<text>Качество текстур</text>
 	</string>
 	<string id="ui_mm_tips">
-		<text>Р Р°СЃРїРѕР·РЅР°РІР°РЅРёРµ РќРџРЎ</text>
+		<text>Распознавание НПС</text>
 	</string>
 	<string id="ui_mm_veteran">
-		<text>Р’РµС‚РµСЂР°РЅ</text>
+		<text>Ветеран</text>
 	</string>
 	<string id="ui_mm_video">
-		<text>Р’РёРґРµРѕ</text>
+		<text>Видео</text>
 	</string>
 	<string id="ui_mm_vis_distance">
-		<text>Р”Р°Р»СЊРЅРѕСЃС‚СЊ РІРёРґРёРјРѕСЃС‚Рё</text>
+		<text>Дальность видимости</text>
 	</string>
 	<string id="ui_mm_vsync">
-		<text>Р’РµСЂС‚. СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ</text>
+		<text>Верт. синхронизация</text>
 	</string>
 	<string id="ui_st_last_set">
-		<text>РџРѕСЃР». РЅР°Р±РѕСЂ</text>
+		<text>Посл. набор</text>
 	</string>
 	<string id="ui_st_preset1">
-		<text>РќР°Р±РѕСЂ 1</text>
+		<text>Набор 1</text>
 	</string>
 	<string id="ui_st_preset2">
-		<text>РќР°Р±РѕСЂ 2</text>
+		<text>Набор 2</text>
 	</string>
 	<string id="ui_st_preset3">
-		<text>РќР°Р±РѕСЂ 3</text>
+		<text>Набор 3</text>
 	</string>
 	<string id="ui_st_reset">
-		<text>РЎР±СЂРѕСЃРёС‚СЊ</text>
+		<text>Сбросить</text>
 	</string>
 	<string id="ui_st_sell_all">
-		<text>РџСЂРѕРґР°С‚СЊ РІСЃРµ</text>
+		<text>Продать все</text>
 	</string>
 	
 	
 	<string id="ui_mm_detail_radius">
-		<text>Р”Р°Р»СЊРЅРѕСЃС‚СЊ РѕС‚СЂРёСЃРѕРІРєРё С‚СЂР°РІС‹</text>
+		<text>Дальность отрисовки травы</text>
 	</string>
 	<string id="ui_mm_parallax">
-		<text>Р РµР»СЊРµС„РЅРѕСЃС‚СЊ РїРѕРІРµСЂС…РЅРѕСЃС‚РµР№</text>
+		<text>Рельефность поверхностей</text>
 	</string>
 	<string id="ui_mm_r2_true_sun_shadows">
-		<text>РџСЂР°РІРёР»СЊРЅС‹Рµ С‚РµРЅРё СЃРѕР»РЅС†Р°</text>
+		<text>Правильные тени солнца</text>
 	</string>
 	<string id="ui_mm_r2_soft_water">
-		<text>РњСЏРіРєРёРµ РєСЂР°СЏ РІРѕРґС‹</text>
+		<text>Мягкие края воды</text>
 	</string>
 	<string id="ui_mm_r2_soft_particles">
-		<text>РњСЏРіРєРёРµ РєСЂР°СЏ РїР°СЂС‚РёРєР»РѕРІ</text>
+		<text>Мягкие края партиклов</text>
 	</string>
 	<string id="ui_mm_bloodmarks">
-		<text>РџСЏС‚РЅР° РєСЂРѕРІРё РЅР° РїРµСЂСЃРѕРЅР°Р¶Р°С…</text>
+		<text>Пятна крови на персонажах</text>
 	</string>	
 	
 	<string id="qt_off">
-		<text>РІС‹РєР»</text>
+		<text>выкл</text>
 	</string>	
 	<string id="qt_low">
-		<text>РЅРёР·РєРѕРµ</text>
+		<text>низкое</text>
 	</string>	
 	<string id="qt_medium">
-		<text>СЃСЂРµРґРЅРµРµ</text>
+		<text>среднее</text>
 	</string>	
 	<string id="qt_high">
-		<text>РІС‹СЃРѕРєРѕРµ</text>
+		<text>высокое</text>
 	</string>	
 	<string id="qt_extreme">
-		<text>РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ</text>
+		<text>максимальное</text>
 	</string>	
 	
 </string_table>

@@ -218,14 +218,14 @@
 			<options_item entry="r2_slight_fade" group="mm_opt_video_adv"/>
 		</track_light_distance>
 
-<!-- BEGIN Ð¢ÐµÐ½ÑŒ Ð“Ð“ Ð¾Ñ‚ Ð¿ÐµÑ€Ð²Ð¾Ð³Ð¾ Ð»Ð¸Ñ†Ð° Ð½Ð° Ð²Ñ‚Ð¾Ñ€Ð¾Ð¼ Ñ€ÐµÐ½Ð´ÐµÑ€Ðµ -->>
+<!-- BEGIN Òåíü ÃÃ îò ïåðâîãî ëèöà íà âòîðîì ðåíäåðå -->>
 		<cap_r__actor_shadow x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_r__actor_shadow</text>
 		</cap_r__actor_shadow>
 		<check_r__actor_shadow x="194" y="0" width="30" height="21">
 			<options_item entry="r__actor_shadow" group="mm_opt_video"/>
 		</check_r__actor_shadow>
-<!-- END Ð¢ÐµÐ½ÑŒ Ð“Ð“ Ð¾Ñ‚ Ð¿ÐµÑ€Ð²Ð¾Ð³Ð¾ Ð»Ð¸Ñ†Ð° Ð½Ð° Ð²Ñ‚Ð¾Ñ€Ð¾Ð¼ Ñ€ÐµÐ½Ð´ÐµÑ€Ðµ -->>	
+<!-- END Òåíü ÃÃ îò ïåðâîãî ëèöà íà âòîðîì ðåíäåðå -->>	
 	
 		<cap_npc_torch x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_npc_torch</text>
@@ -383,7 +383,7 @@
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_tips</text>
 		</check_tips>
 
-<!-- BEGIN ÐÐ¾Ð²Ñ‹Ðµ Ð¾Ð¿Ñ†Ð¸Ð¸ Ð³ÐµÐ¹Ð¼Ð¿Ð»ÐµÑ -->>
+<!-- BEGIN Íîâûå îïöèè ãåéìïëåÿ -->>
 		<check_use_luminosity x="20" y="150" width="243" height="21">
 			<options_item entry="hud_use_luminosity" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_use_luminosity</text>
@@ -413,7 +413,7 @@
 			<options_item entry="hud_round_crosshair" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_round_crosshair</text>
 		</check_round_crosshair>
-<!-- END ÐÐ¾Ð²Ñ‹Ðµ Ð¾Ð¿Ñ†Ð¸Ð¸ Ð³ÐµÐ¹Ð¼Ð¿Ð»ÐµÑ -->>
+<!-- END Íîâûå îïöèè ãåéìïëåÿ -->>
 
 		<btn_check_updates x="342" y="330" width="111" height="29">
 			<text align="c" font="letterica16" r="227" g="199" b="178">ui_mm_check_updates</text>	
