@@ -177,6 +177,9 @@
 	<string id="ui_mm_round_crosshair">
 		<text>Использовать круглый (билдовый) курсор вместо перекрестия прицела</text>
 	</string>
+	<string id="ui_mm_gear_info_on_key">
+		<text>Отображать панель артефактов и быстрых слотов при удержании кнопки ($$ACTION_check_gear$$)</text>
+	</string>
 	<string id="ui_mm_eax">
 		<text>EAX</text>
 	</string>

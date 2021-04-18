@@ -234,5 +234,7 @@
 		<text>Свободный обзор камерой</text>
 	</string>
 <!--                            camera modes keys end                            -->
-
+        <string id="kb_check_gear">
+		<text>Проверить карманы</text>
+	</string>
 </string_table>

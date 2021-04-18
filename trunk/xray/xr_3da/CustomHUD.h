@@ -18,6 +18,7 @@ ENGINE_API extern Flags32		psHUD_Flags;
 #define HUD_RADIATION_ON_KEY	(1<<13) //худ-иконка радиации по клавише
 #define HUD_WEAPON_INFO_ON_KEY	(1<<14) //инфо об активом оружии по клавише
 #define HUD_ROUND_CROSSHAIR  	(1<<15) //билдовый круглый курсор
+#define HUD_GEAR_INFO_ON_KEY  	(1<<16) //артпанель и быстрые слоты по клавише
 
 class ENGINE_API IRender_Visual;
 class CUI;

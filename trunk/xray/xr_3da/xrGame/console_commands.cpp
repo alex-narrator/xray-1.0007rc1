@@ -1406,6 +1406,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,              "hud_radiation_on_key", &psHUD_Flags,   HUD_RADIATION_ON_KEY); //худ-иконка радиации по клавише
 	CMD3(CCC_Mask,              "hud_wpn_info_on_key",  &psHUD_Flags,   HUD_WEAPON_INFO_ON_KEY); //инфо об активом оружии по клавише
 	CMD3(CCC_Mask,              "hud_round_crosshair",  &psHUD_Flags,   HUD_ROUND_CROSSHAIR); //билдовый круглый курсор
+	CMD3(CCC_Mask,              "hud_gear_info_on_key",  &psHUD_Flags,   HUD_GEAR_INFO_ON_KEY); //артпанель и быстрые слоты по клавише
 
 #ifdef DEBUG
 	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV,		0.1f,	1.0f);

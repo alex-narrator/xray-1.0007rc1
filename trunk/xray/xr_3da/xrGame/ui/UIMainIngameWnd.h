@@ -89,6 +89,7 @@ public:
 	bool ShowMimimapHud();
 	bool ShowRadiationHud();
 	bool ShowWeaponInfo();
+	bool ShowGearInfo();
 
 	bool OnKeyboardPress(int dik);
 	void HudAdjustMode(int);

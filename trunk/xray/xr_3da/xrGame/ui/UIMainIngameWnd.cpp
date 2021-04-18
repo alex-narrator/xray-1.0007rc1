@@ -444,6 +444,24 @@ bool CUIMainIngameWnd::ShowWeaponInfo() //показываем кол-во па�
 		return true;
 }
 
+bool CUIMainIngameWnd::ShowGearInfo() //показываем панель артефактов и быстрых слотов если нажата кнопка быстрого слота/кнопка проверить карманы/ соотв. настройка меню
+{
+
+	if (psHUD_Flags.test(HUD_GEAR_INFO_ON_KEY))
+	{
+		if (Level().IR_GetKeyState(get_action_dik(kCHECKGEAR)) ||
+			Level().IR_GetKeyState(get_action_dik(kUSE_SLOT_QUICK_ACCESS_0)) ||
+			Level().IR_GetKeyState(get_action_dik(kUSE_SLOT_QUICK_ACCESS_1)) ||
+			Level().IR_GetKeyState(get_action_dik(kUSE_SLOT_QUICK_ACCESS_2)) ||
+			Level().IR_GetKeyState(get_action_dik(kUSE_SLOT_QUICK_ACCESS_3)))
+			return true;
+		else
+			return false;
+	}
+	else
+		return true;
+}
+
 void CUIMainIngameWnd::SetMPChatLog(CUIWindow* pChat, CUIWindow* pLog){
 	m_pMPChatWnd = pChat;
 	m_pMPLogWnd  = pLog;
@@ -1768,7 +1786,7 @@ void CUIQuickSlotPanel::Update()
 {
     CActor*	pActor = smart_cast<CActor*>(Level().CurrentViewEntity());
 
-    if (pActor)
+	if (pActor)
     {
 
         PIItem itm = 0;
@@ -1778,7 +1796,7 @@ void CUIQuickSlotPanel::Update()
 
         itm = pActor->inventory().m_slots[SLOT_QUICK_ACCESS_0].m_pIItem;
 
-        if(itm)
+        if(itm && CUIMainIngameWnd().ShowGearInfo())
         {
             sprintf_s	(str, "%s",*CStringTable().translate("ui_quick_slot_use_str_0"));
             m_UseQuickSlot_0_Text->SetText(str);
@@ -1804,7 +1822,7 @@ void CUIQuickSlotPanel::Update()
 
         itm = pActor->inventory().m_slots[SLOT_QUICK_ACCESS_1].m_pIItem;
 
-        if(itm)
+        if(itm && CUIMainIngameWnd().ShowGearInfo())
         {
             sprintf_s	(str, "%s",*CStringTable().translate("ui_quick_slot_use_str_1"));
             m_UseQuickSlot_1_Text->SetText(str);
@@ -1830,7 +1848,7 @@ void CUIQuickSlotPanel::Update()
 
         itm = pActor->inventory().m_slots[SLOT_QUICK_ACCESS_2].m_pIItem;
 
-        if(itm)
+        if(itm && CUIMainIngameWnd().ShowGearInfo())
         {
             sprintf_s	(str, "%s",*CStringTable().translate("ui_quick_slot_use_str_2"));
             m_UseQuickSlot_2_Text->SetText(str);
@@ -1856,7 +1874,7 @@ void CUIQuickSlotPanel::Update()
 
         itm = pActor->inventory().m_slots[SLOT_QUICK_ACCESS_3].m_pIItem;
 
-        if(itm)
+        if(itm && CUIMainIngameWnd().ShowGearInfo())
         {
             sprintf_s	(str, "%s",*CStringTable().translate("ui_quick_slot_use_str_3"));
             m_UseQuickSlot_3_Text->SetText(str);

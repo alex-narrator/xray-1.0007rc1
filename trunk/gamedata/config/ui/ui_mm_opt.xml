@@ -384,35 +384,40 @@
 		</check_tips>
 
 <!-- BEGIN Новые опции геймплея -->>
-		<check_use_luminosity x="20" y="150" width="243" height="21">
+		<check_round_crosshair x="20" y="150" width="243" height="21">
+			<options_item entry="hud_round_crosshair" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_round_crosshair</text>
+		</check_round_crosshair>
+
+		<check_use_luminosity x="20" y="170" width="243" height="21">
 			<options_item entry="hud_use_luminosity" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_use_luminosity</text>
 		</check_use_luminosity>
 
-		<check_ammo_from_belt x="20" y="170" width="243" height="21">
+		<check_ammo_from_belt x="20" y="190" width="243" height="21">
 			<options_item entry="g_ammo_from_belt" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_ammo_from_belt</text>
 		</check_ammo_from_belt>
 
-		<check_minimap_on_key x="20" y="190" width="243" height="21">
+		<check_minimap_on_key x="20" y="210" width="243" height="21">
 			<options_item entry="hud_minimap_on_key" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_minimap_on_key</text>
 		</check_minimap_on_key>
 
-		<check_radiation_on_key x="20" y="210" width="243" height="21">
+		<check_radiation_on_key x="20" y="230" width="243" height="21">
 			<options_item entry="hud_radiation_on_key" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_radiation_on_key</text>
 		</check_radiation_on_key>
 
-		<check_wpn_info_on_key x="20" y="230" width="243" height="21">
+		<check_wpn_info_on_key x="20" y="250" width="243" height="21">
 			<options_item entry="hud_wpn_info_on_key" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_wpn_info_on_key</text>
 		</check_wpn_info_on_key>
 
-		<check_round_crosshair x="20" y="250" width="243" height="21">
-			<options_item entry="hud_round_crosshair" group="mm_opt_gameplay"/>
-			<text font="letterica16" r="215" g="195" b="170">ui_mm_round_crosshair</text>
-		</check_round_crosshair>
+		<check_gear_info_on_key x="20" y="270" width="243" height="21">
+			<options_item entry="hud_gear_info_on_key" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_gear_info_on_key</text>
+		</check_gear_info_on_key>
 <!-- END Новые опции геймплея -->>
 
 		<btn_check_updates x="342" y="330" width="111" height="29">

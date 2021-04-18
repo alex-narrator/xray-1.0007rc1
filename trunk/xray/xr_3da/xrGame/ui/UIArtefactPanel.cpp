@@ -4,6 +4,7 @@
 #include "UIXmlInit.h"
 
 #include "../artifact.h"
+#include "UiMainIngameWnd.h"
 
 
 void CUIArtefactPanel::InitFromXML	(CUIXml& xml, LPCSTR path, int index)
@@ -63,7 +64,8 @@ void CUIArtefactPanel::Draw(){
 		m_si.SetPos(x, y);
 		x = x + iIndent + iWidth;
 
-        m_si.Render();
+		if (CUIMainIngameWnd().ShowGearInfo())  //показываем панель артефактов если нажата кнопка быстрого слота/кнопка проверить карманы/ соотв. настройка меню
+			m_si.Render();
 	}
 
 	CUIWindow::Draw();

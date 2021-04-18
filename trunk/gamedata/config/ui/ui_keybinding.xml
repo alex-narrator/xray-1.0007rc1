@@ -59,6 +59,7 @@
 		<command id="kb_slot_quick_2"				exe="use_slot_quick_access_2"/>
 		<command id="kb_slot_quick_3"				exe="use_slot_quick_access_3"/>
                 <!--                            quick slots use keys end                            -->
+		<command id="kb_check_gear"				exe="check_gear"/>
 	</group>
 	<group name="kb_grp_common">
 		<command id="kb_pause"						exe="pause"/>

@@ -105,6 +105,7 @@ _action  actions[]		= {
 	{ "use_slot_quick_access_2",			kUSE_SLOT_QUICK_ACCESS_2				,_both},
 	{ "use_slot_quick_access_3",			kUSE_SLOT_QUICK_ACCESS_3				,_both},
 #endif																	
+	{ "check_gear",			kCHECKGEAR				,_sp},		
 	{ NULL, 				kLASTACTION				,_both}		
 };															
 
