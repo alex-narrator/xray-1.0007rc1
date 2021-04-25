@@ -399,22 +399,17 @@
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_ammo_from_belt</text>
 		</check_ammo_from_belt>
 
-		<check_minimap_on_key x="20" y="210" width="243" height="21">
-			<options_item entry="hud_minimap_on_key" group="mm_opt_gameplay"/>
-			<text font="letterica16" r="215" g="195" b="170">ui_mm_minimap_on_key</text>
-		</check_minimap_on_key>
+		<check_devices_ui_on_key x="20" y="210" width="243" height="21">
+			<options_item entry="hud_devices_ui_on_key" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_devices_ui_on_key</text>
+		</check_devices_ui_on_key>
 
-		<check_radiation_on_key x="20" y="230" width="243" height="21">
-			<options_item entry="hud_radiation_on_key" group="mm_opt_gameplay"/>
-			<text font="letterica16" r="215" g="195" b="170">ui_mm_radiation_on_key</text>
-		</check_radiation_on_key>
-
-		<check_wpn_info_on_key x="20" y="250" width="243" height="21">
+		<check_wpn_info_on_key x="20" y="230" width="243" height="21">
 			<options_item entry="hud_wpn_info_on_key" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_wpn_info_on_key</text>
 		</check_wpn_info_on_key>
 
-		<check_gear_info_on_key x="20" y="270" width="243" height="21">
+		<check_gear_info_on_key x="20" y="250" width="243" height="21">
 			<options_item entry="hud_gear_info_on_key" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_gear_info_on_key</text>
 		</check_gear_info_on_key>

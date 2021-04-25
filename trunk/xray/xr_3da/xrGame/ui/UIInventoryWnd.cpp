@@ -89,7 +89,7 @@ void CUIInventoryWnd::Init()
 	if (GameID() == GAME_SINGLE){
 		AttachChild							(&UISleepWnd);
 		UISleepWnd.Init();
-		UISleepWnd.SetWindowName("sleep_wnd");  // äëÿ ëó÷øåãî íàõîæäåíèÿ ÷åðåç GetStatic
+		UISleepWnd.SetWindowName("sleep_wnd");  // для лучшего нахождения через GetStatic
 	}
 #endif
 	
@@ -134,7 +134,7 @@ void CUIInventoryWnd::Init()
 	UIOutfitInfo.InitFromXml			(uiXml);
 //.	xml_init.InitStatic					(uiXml, "outfit_info_window",0, &UIOutfitInfo);
 
-	//Ýëåìåíòû àâòîìàòè÷åñêîãî äîáàâëåíèÿ
+	//Элементы автоматического добавления
 	xml_init.InitAutoStatic				(uiXml, "auto_static", this);
 
 
@@ -240,7 +240,7 @@ void CUIInventoryWnd::Init()
 	m_slots_array[RIFLE_SLOT]				= m_pUIAutomaticList;
 	m_slots_array[OUTFIT_SLOT]				= m_pUIOutfitList;
 
-//âàðèàöèè îòîáðàæåíèÿ è èñïîëüçîâàíèÿ ñëîòà ãðàíàòû - íà÷àëî
+//вариации отображения и использования слота гранаты - начало
 #if defined (GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
 m_pUIGrenadeList = xr_new<CUIDragDropListEx>(); AttachChild(m_pUIGrenadeList); m_pUIGrenadeList->SetAutoDelete(true);
 xml_init.InitDragDropListEx(uiXml, "dragdrop_slot_grenade", 0, m_pUIGrenadeList);
@@ -255,7 +255,7 @@ m_slots_array[GRENADE_SLOT] = m_pUIGrenadeList;
 #if !defined (GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
 	m_slots_array[GRENADE_SLOT]				= NULL;	
 #endif
-//âàðèàöèè îòîáðàæåíèÿ è èñïîëüçîâàíèÿ ñëîòà ãðàíàòû - êîíåö
+//вариации отображения и использования слота гранаты - конец
 
 	m_slots_array[BOLT_SLOT]				= NULL;		
 #if defined(SHOW_ARTEFACT_SLOT)
@@ -309,7 +309,7 @@ EListType CUIInventoryWnd::GetType(CUIDragDropListEx* l)
 	for (u32 i = 0; i < SLOTS_TOTAL; i++)
 		if (m_slots_array[i] == l)
 			return iwSlot;
-#pragma todo("alpet: ïîñëå òåñòà óäàëèòü")
+#pragma todo("alpet: после теста удалить")
 /* 
 	if(l==m_pUIAutomaticList)	return iwSlot;
 	if(l==m_pUIPistolList)		return iwSlot;
@@ -351,7 +351,7 @@ bool CUIInventoryWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 	if(m_b_need_reinit)
 		return true;
 
-	//âûçîâ äîïîëíèòåëüíîãî ìåíþ ïî ïðàâîé êíîïêå
+	//вызов дополнительного меню по правой кнопке
 	if(mouse_action == WINDOW_RBUTTON_DOWN)
 	{
 		if(UIPropertiesBox.IsShown())
@@ -390,12 +390,15 @@ void CUIInventoryWnd::Update()
 
 		v = pEntityAlive->conditions().GetRadiation()*100.0f;
 		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-		if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem) //îáíóëÿåì çíà÷åíèå ðàäèàöèè äëÿ ïðîãðåññáàðà â èíâåíòàðå åñëè íå ýêèïèðîâàí äåòåêòîð -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
+		if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem) //удаляем шкалу радиации для прогрессбара в инвентаре если не экипирован детектор -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
 		{
+			UIProgressBarRadiation.Show(true);
 			UIProgressBarRadiation.SetProgressPos(v); 
 		}
 		else
-			UIProgressBarRadiation.SetProgressPos(0);
+		{
+			UIProgressBarRadiation.Show(false);
+		}
 //#endif
 
 #ifdef INV_NEW_SLOTS_SYSTEM
@@ -479,7 +482,7 @@ void CUIInventoryWnd::Hide()
 	SendInfoToActor						("ui_inventory_hide");
 	ClearAllLists						();
 
-	//äîñòàòü âåùü â àêòèâíûé ñëîò
+	//достать вещь в активный слот
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if(pActor && m_iCurrentActiveSlot != NO_ACTIVE_SLOT && 
 		pActor->inventory().m_slots[m_iCurrentActiveSlot].m_pIItem)
@@ -512,7 +515,7 @@ void CUIInventoryWnd::AttachAddon(PIItem item_to_upgrade)
 	item_to_upgrade->Attach						(CurrentIItem(), true);
 
 
-	//ñïðÿòàòü âåùü èç àêòèâíîãî ñëîòà â èíâåíòàðü íà âðåìÿ âûçîâà ìåíþøêè
+	//спрятать вещь из активного слота в инвентарь на время вызова менюшки
 	CActor *pActor								= smart_cast<CActor*>(Level().CurrentEntity());
 	if(pActor && item_to_upgrade == pActor->inventory().ActiveItem())
 	{
@@ -534,7 +537,7 @@ void CUIInventoryWnd::DetachAddon(const char* addon_name)
 	};
 	CurrentIItem()->Detach						(addon_name, true);
 
-	//ñïðÿòàòü âåùü èç àêòèâíîãî ñëîòà â èíâåíòàðü íà âðåìÿ âûçîâà ìåíþøêè
+	//спрятать вещь из активного слота в инвентарь на время вызова менюшки
 	CActor *pActor								= smart_cast<CActor*>(Level().CurrentEntity());
 	if(pActor && CurrentIItem() == pActor->inventory().ActiveItem())
 	{

@@ -38,7 +38,7 @@ void CGrenade::Load(LPCSTR section)
 	HUD_SOUND::LoadSound(section,"snd_checkout",sndCheckout,m_eSoundCheckout);
 
 	//////////////////////////////////////
-	//âðåìÿ óáèðàíèÿ îðóæèÿ ñ óðîâíÿ
+	//время убирания оружия с уровня
 	if(pSettings->line_exist(section,"grenade_remove_time"))
 		m_dwGrenadeRemoveTime = pSettings->r_u32(section,"grenade_remove_time");
 	else
@@ -139,7 +139,7 @@ void CGrenade::Throw()
 	
 	if (pGrenade) {
 		pGrenade->set_destroy_time(m_dwDestroyTimeMax);
-		//óñòàíîâèòü ID òîãî êòî êèíóë ãðàíàòó
+		//установить ID того кто кинул гранату
 		pGrenade->SetInitiator( H_Parent()->ID() );
 	}
 	inherited::Throw			();
@@ -342,17 +342,21 @@ void CGrenade::Deactivate()
 
 	inherited::Deactivate();
 }
-
+#include "hudmanager.h"
+#include "ui/UIMainIngameWnd.h"
 void CGrenade::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)
 {
 	str_name				= NameShort();
 #if defined(GRENADE_FROM_BELT)
-	u32 ThisGrenadeCount = m_pCurrentInventory->GrenadeOnBeltCount(*cNameSect());
+	u32 ThisGrenadeCount = m_pCurrentInventory->GrenadeOnBeltCount(*cNameSect(), false);
 #else
 	u32 ThisGrenadeCount	= m_pCurrentInventory->dwfGetSameItemCount(*cNameSect(), true);
 #endif
 	string16				stmp;
-	sprintf_s					(stmp, "%d", ThisGrenadeCount);
+	if (HUD().GetUI()->UIMainIngameWnd->ShowGearInfo())
+	    sprintf_s			(stmp, "%d", ThisGrenadeCount);
+	else
+		sprintf_s           (stmp, "");
 	str_count				= stmp;
 	icon_sect_name			= *cNameSect();
 }

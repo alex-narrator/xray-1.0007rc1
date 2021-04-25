@@ -996,9 +996,12 @@ void CWeaponMagazined::InitAddons()
 	else
 	{
 		if (m_UIScope) xr_delete(m_UIScope);
-#ifndef SIMPLE_ZOOM_SETTINGS
+
 		if (IsZoomEnabled())
+#ifndef SIMPLE_ZOOM_SETTINGS
 			m_fIronSightZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
+#else
+			m_fIronSightZoomFactor = g_fov / READ_IF_EXISTS(pSettings, r_float, cNameSect(), "ironsight_zoom_factor", 1.0f);
 #endif
 	}
 
@@ -1275,8 +1278,12 @@ void CWeaponMagazined::net_Import(NET_Packet& P)
 	SetQueueSize(GetCurrentFireMode());
 }
 #include "string_table.h"
+#include "ui/UIMainIngameWnd.h"
 void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)
 {
+	bool wpn_info = HUD().GetUI()->UIMainIngameWnd->ShowWeaponInfo();
+	bool gear_info = HUD().GetUI()->UIMainIngameWnd->ShowGearInfo();
+
 	int	AE = GetAmmoElapsed();
 	int	AC = GetAmmoCurrent();
 
@@ -1288,15 +1295,24 @@ void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_na
 	string256		sItemName;
 	strcpy_s(sItemName, *CStringTable().translate(pSettings->r_string(icon_sect_name.c_str(), "inv_name_short")));
 
-	if (HasFireModes())
+	if (HasFireModes() && wpn_info)
 		strcat_s(sItemName, GetCurrentFireModeStr());
 
 	str_name = sItemName;
 
 	{
-		if (!unlimited_ammo())
+		/*if (!unlimited_ammo())
 			sprintf_s(sItemName, "%d/%d", AE, AC - AE);
 		else
+			sprintf_s(sItemName, "%d/--", AE);*/
+
+		if (wpn_info && gear_info)
+			sprintf_s(sItemName, "%d/%d", AE, AC - AE);
+		else if (wpn_info)
+			sprintf_s(sItemName, "%d", AE);
+		else if (gear_info)
+			sprintf_s(sItemName, "%d", AC - AE);
+		else if (unlimited_ammo())
 			sprintf_s(sItemName, "%d/--", AE);
 
 		str_count = sItemName;

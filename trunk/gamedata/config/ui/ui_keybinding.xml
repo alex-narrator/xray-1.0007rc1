@@ -59,7 +59,11 @@
 		<command id="kb_slot_quick_2"				exe="use_slot_quick_access_2"/>
 		<command id="kb_slot_quick_3"				exe="use_slot_quick_access_3"/>
                 <!--                            quick slots use keys end                            -->
+
+		<!--                            ui check keys start                          -->
 		<command id="kb_check_gear"				exe="check_gear"/>
+		<command id="kb_check_devices"				exe="scores"/>
+                <!--                            ui check keys end                            -->
 	</group>
 	<group name="kb_grp_common">
 		<command id="kb_pause"						exe="pause"/>

@@ -977,10 +977,11 @@ u32		CInventory::dwfGetGrenadeCount(LPCSTR caSection, bool SearchAll)
 }
 
 #if defined(GRENADE_FROM_BELT)
-u32 CInventory::GrenadeOnBeltCount(LPCSTR caSection)
+u32 CInventory::GrenadeOnBeltCount(LPCSTR caSection, bool SearchRuck)
 {
-	u32			l_dwCount = 1; //xer-urg: 1, т.к. первая граната на поясе находится, по факту в слоте гранат
-	for (TIItemContainer::iterator l_it = m_belt.begin(); m_belt.end() != l_it; ++l_it)
+	u32			l_dwCount = 0;
+	TIItemContainer	&l_list = SearchRuck ? m_ruck : m_belt;
+	for (TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it)
 	{
 		PIItem	l_pIItem = *l_it;
 		if (l_pIItem && !xr_strcmp(l_pIItem->object().cNameSect(), caSection))

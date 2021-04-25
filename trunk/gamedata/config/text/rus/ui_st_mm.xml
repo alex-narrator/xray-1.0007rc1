@@ -159,26 +159,23 @@
 	<string id="ui_mm_dyn_crosshair">
 		<text>Динамический прицел</text>
 	</string>
+	<string id="ui_mm_round_crosshair">
+		<text>Использовать круглый (билдовый) курсор вместо перекрестия прицела</text>
+	</string>
 	<string id="ui_mm_use_luminosity">
 		<text>Освещённость вместо заметности</text>
 	</string>
 	<string id="ui_mm_ammo_from_belt">
 		<text>Боеприпасы с пояса</text>
 	</string>
-	<string id="ui_mm_minimap_on_key">
-		<text>Отображать миникарту при удержании кнопки ($$ACTION_SCORES$$)</text>
-	</string>
-	<string id="ui_mm_radiation_on_key">
-		<text>Отображать HUD-индикатор радиации при удержании кнопки ($$ACTION_SCORES$$)</text>
+	<string id="ui_mm_devices_ui_on_key">
+		<text>Отображать миникарту и HUD-индикатор радиации при удержании кнопки [$$ACTION_SCORES$$]</text>
 	</string>
 	<string id="ui_mm_wpn_info_on_key">
-		<text>Отображать информацию о текущем оружии при удержании кнопок ($$ACTION_WPN_RELOAD$$)/($$ACTION_WPN_NEXT$$)/($$ACTION_WPN_FIREMODE_NEXT$$)/($$ACTION_WPN_FIREMODE_PREV$$)</text>
-	</string>
-	<string id="ui_mm_round_crosshair">
-		<text>Использовать круглый (билдовый) курсор вместо перекрестия прицела</text>
+		<text>Отображать информацию о текущем оружии при удержании кнопок [$$ACTION_WPN_RELOAD$$]</text>
 	</string>
 	<string id="ui_mm_gear_info_on_key">
-		<text>Отображать панель артефактов и быстрых слотов при удержании кнопки ($$ACTION_check_gear$$)</text>
+		<text>Отображать панель артефактов и быстрых слотов при удержании кнопки [$$ACTION_CHECK_GEAR$$]</text>
 	</string>
 	<string id="ui_mm_eax">
 		<text>EAX</text>

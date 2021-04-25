@@ -171,6 +171,9 @@
 	<string id="st_item_used">
 		<text>Использовано</text>
 	</string>
+	<string id="st_quick_slot_empty">
+		<text>Слот пуст</text>
+	</string>
 	<string id="st_not_enough_money">
 		<text>Недостаточно денег</text>
 	</string>

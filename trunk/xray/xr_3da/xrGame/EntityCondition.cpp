@@ -455,15 +455,19 @@ void CEntityCondition::UpdateHealth()
 	float bleeding_speed		= BleedingSpeed() * m_fDeltaTime * m_change_v.m_fV_Bleeding;
 	m_bIsBleeding				= fis_zero(bleeding_speed)?false:true;
 	m_fDeltaHealth				-= CanBeHarmed() ? bleeding_speed : 0;
+#ifndef RADIATION_PARAMS_DEPENDECY
 	m_fDeltaHealth				+= m_fDeltaTime * m_change_v.m_fV_HealthRestore;
 	
 	VERIFY						(_valid(m_fDeltaHealth));
-#ifndef RADIATION_PARAMS_DEPENDECY
+
 	ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime);
 #else
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if (!pActor || m_fRadiation < m_fRadiationBlocksRestore) //раны заживают только если радиация меньше заданного уровня
+	if (!pActor || m_fRadiation < m_fRadiationBlocksRestore) //раны заживают/здоровье регенерирует только если радиация меньше заданного уровня
 	{
+		m_fDeltaHealth += m_fDeltaTime * m_change_v.m_fV_HealthRestore;
+		VERIFY(_valid(m_fDeltaHealth));
+
 		ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime);
 	}
 #endif

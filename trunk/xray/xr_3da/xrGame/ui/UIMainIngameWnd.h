@@ -86,10 +86,9 @@ public:
 	virtual void Draw();
 	virtual void Update();
 
-	bool ShowMimimapHud();
-	bool ShowRadiationHud();
-	bool ShowWeaponInfo();
-	bool ShowGearInfo();
+	bool ShowDevicesUI();  //миникарта и HUD-индикатор радиации по кнопке
+	bool ShowWeaponInfo(); //информация об оружии в руках (тип/кол-во/иконка/название патронов в магазине, режим огня) по кнопке
+	bool ShowGearInfo();   //информация о предметах в быстрых слотах/панелиартефактов/кол-во патронов заряженного типа к оружию в руках
 
 	bool OnKeyboardPress(int dik);
 	void HudAdjustMode(int);

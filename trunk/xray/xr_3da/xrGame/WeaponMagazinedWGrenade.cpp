@@ -235,10 +235,16 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 
 	if(m_bZoomEnabled && m_pHUD)
 	{
-		if(m_bGrenadeMode)
+		if (m_bGrenadeMode)
+		{
+			m_fZoomFactor = m_fIronSightZoomFactor; //зададим зум в режиме гранатомёта
 			LoadZoomOffset(*hud_sect, "grenade_");
+		}
 		else 
 		{
+			if (IsScopeAttached())
+				m_fZoomFactor = m_fScopeZoomFactor; //если установлен прицел, то при выходе из режима гранатомёта установим зум прицела
+			
 			if(GrenadeLauncherAttachable())
 				LoadZoomOffset(*hud_sect, "grenade_normal_");
 			else

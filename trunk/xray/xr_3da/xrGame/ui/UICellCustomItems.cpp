@@ -50,15 +50,15 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	item1->m_flags.set(CInventoryItem::FIUngroupable, false);
 	item2->m_flags.set(CInventoryItem::FIUngroupable, false);
 
-	if (fl1.test(CInventoryItem::FIUngroupable) || 
-		fl2.test(CInventoryItem::FIUngroupable) || 
-		item1->m_eItemPlace == eItemPlaceSlot || //если предмет в слоте то группировать его в окнах обыска тоже не нужно
-		item1->m_eItemPlace == eItemPlaceBelt) //если предмет на поясе то группировать его в окнах обыска тоже не нужно
+	if (fl1.test(CInventoryItem::FIUngroupable) || fl2.test(CInventoryItem::FIUngroupable))
 		return false;
 
 	return					(
 								fsimilar(object()->GetCondition(), ci->object()->GetCondition(), 0.01f) &&
-								(object()->object().cNameSect() == ci->object()->object().cNameSect())
+								(object()->object().cNameSect() == ci->object()->object().cNameSect() && 
+								fsimilar(object()->m_eItemPlace == eItemPlaceSlot, ci->object()->m_eItemPlace == eItemPlaceSlot) && //группирует преметы в слоте
+								fsimilar(object()->m_eItemPlace == eItemPlaceBelt, ci->object()->m_eItemPlace == eItemPlaceBelt) //группирует преметы на поясе
+								)
 							);
 }
 
