@@ -84,9 +84,9 @@ public:
 	// get all the items with the same section name
 	virtual u32				dwfGetSameItemCount	(LPCSTR caSection, bool SearchAll = false);	
 	virtual u32				dwfGetGrenadeCount	(LPCSTR caSection, bool SearchAll);	
-#if defined(GRENADE_FROM_BELT)
-	virtual u32				GrenadeOnBeltCount  (LPCSTR caSection, bool SearchRuck); //считаем гранаты на поясе или в рюкзаке (весь инвентарь не считаем, и так понятно что в руке одна граната)
-#endif
+//#if defined(GRENADE_FROM_BELT)
+	virtual u32				dwfGetItemCount     (LPCSTR caSection, bool SearchRuck); //считаем предметы на поясе или в рюкзаке
+//#endif
 	// get all the items with the same object id
 	virtual bool			bfCheckForObject	(ALife::_OBJECT_ID tObjectID);	
 	PIItem					get_object_by_id	(ALife::_OBJECT_ID tObjectID);

@@ -9,6 +9,7 @@ enum{
 		AF_AUTOPICKUP		=(1<<5),
 		AF_PSP				=(1<<6),
 		AF_AMMO_FROM_BELT	=(1<<7), //патроны с пояса
+		AF_QUICK_FROM_BELT	=(1<<8), //наполнение быстрых слотов с пояса
 };
 
 extern Flags32 psActorFlags;

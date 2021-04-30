@@ -212,7 +212,8 @@ void CActor::IR_OnKeyboardPress(int cmd)
 					if(pMedkit || pAntirad || pEatableItem || pBottleItem)
 					{
 #ifndef QUICK_SLOT_POCKET_LOGIC
-						PIItem iitm = inventory().Same(itm, true);
+						bool SearchRuck = !psActorFlags.test(AF_QUICK_FROM_BELT);
+						PIItem iitm = inventory().Same(itm, SearchRuck);
 						if(iitm)
 						{
 							inventory().Eat(iitm);

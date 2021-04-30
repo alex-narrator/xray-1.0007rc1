@@ -166,7 +166,10 @@
 		<text>Освещённость вместо заметности</text>
 	</string>
 	<string id="ui_mm_ammo_from_belt">
-		<text>Боеприпасы с пояса</text>
+		<text>Патроны с пояса</text>
+	</string>
+	<string id="ui_mm_quick_slot_from_belt">
+		<text>Предметы для быстрых слотов с пояса</text>
 	</string>
 	<string id="ui_mm_devices_ui_on_key">
 		<text>Отображать миникарту и HUD-индикатор радиации при удержании кнопки [$$ACTION_SCORES$$]</text>

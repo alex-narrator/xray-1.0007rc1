@@ -94,7 +94,7 @@
 		<text>Пожалуйста, выберите хотя бы одну карту</text>
 	</string>
 	<string id="ui_st_take_all">
-		<text>Взять все</text>
+		<text>Взять все [$$ACTION_SPRINT_TOGGLE$$]</text>
 	</string>
 	<string id="ui_st_time_remains">
 		<text>Осталось</text>

@@ -109,7 +109,7 @@ void CWeaponMagazined::Load(LPCSTR section)
 	if (IsZoomEnabled())
 		animGet(mhud.mhud_idle_aim, pSettings->r_string(*hud_sect, "anim_idle_aim"));
 
-	//çâóêè è ïàðòèêëû ãëóøèòåëÿ, åñëèò òàêîé åñòü
+	//звуки и партиклы глушителя, еслит такой есть
 	if (m_eSilencerStatus == ALife::eAddonAttachable)
 	{
 		if (pSettings->line_exist(section, "silencer_flame_particles"))
@@ -187,10 +187,10 @@ void CWeaponMagazined::Reload()
 	TryReload();
 }
 
-// Real Wolf: Îäíà ðåàëèçàöèÿ íà âñå ó÷àñòêè êîäà.20.01.15
+// Real Wolf: Одна реализация на все участки кода.20.01.15
 bool CWeaponMagazined::TryToGetAmmo(u32 id)
 {
-	if (psActorFlags.test(AF_AMMO_FROM_BELT)) //ïàòðîíû ñ ïîÿñà
+	if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
 	{
 		if (smart_cast<CActor*>(H_Parent()) != NULL)
 		{
@@ -257,7 +257,7 @@ bool CWeaponMagazined::IsAmmoAvailable()
 
 void CWeaponMagazined::OnMagazineEmpty()
 {
-	//ïîïûòêà ñòðåëÿòü êîãäà íåò ïàòðîíîâ
+	//попытка стрелять когда нет патронов
 	if (GetState() == eIdle)
 	{
 		OnEmptyClick();
@@ -319,11 +319,11 @@ void CWeaponMagazined::ReloadMagazine()
 {
 	m_dwAmmoCurrentCalcFrame = 0;
 
-	//óñòðàíèòü îñå÷êó ïðè ïåðåçàðÿäêå
+	//устранить осечку при перезарядке
 	if (IsMisfire())	bMisfire = false;
 
-	//ïåðåìåííàÿ áëîêèðóåò èñïîëüçîâàíèå
-	//òîëüêî ðàçíûõ òèïîâ ïàòðîíîâ
+	//переменная блокирует использование
+	//только разных типов патронов
 	//	static bool l_lockType = false;
 	if (!m_bLockType) {
 		m_ammoName = NULL;
@@ -339,8 +339,8 @@ void CWeaponMagazined::ReloadMagazine()
 
 	if (!unlimited_ammo())
 	{
-		//ïîïûòàòüñÿ íàéòè â èíâåíòàðå ïàòðîíû òåêóùåãî òèïà
-		if (psActorFlags.test(AF_AMMO_FROM_BELT)) //ïàòðîíû ñ ïîÿñà
+		//попытаться найти в инвентаре патроны текущего типа
+		if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
 		{
 			if (ParentIsActor())
 				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmoOnBelt(*m_ammoTypes[m_ammoType]));
@@ -356,8 +356,8 @@ void CWeaponMagazined::ReloadMagazine()
 		{
 			for (u32 i = 0; i < m_ammoTypes.size(); ++i)
 			{
-				//ïðîâåðèòü ïàòðîíû âñåõ ïîäõîäÿùèõ òèïîâ
-				if (psActorFlags.test(AF_AMMO_FROM_BELT)) //ïàòðîíû ñ ïîÿñà
+				//проверить патроны всех подходящих типов
+				if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
 				{
 					if (ParentIsActor())
 						m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmoOnBelt(*m_ammoTypes[i]));
@@ -381,10 +381,10 @@ void CWeaponMagazined::ReloadMagazine()
 	else
 		m_ammoType = m_ammoType;
 
-	//íåò ïàòðîíîâ äëÿ ïåðåçàðÿäêè
+	//нет патронов для перезарядки
 	if (!m_pAmmo && !unlimited_ammo()) return;
 
-	//ðàçðÿäèòü ìàãàçèí, åñëè çàãðóæàåì ïàòðîíàìè äðóãîãî òèïà
+	//разрядить магазин, если загружаем патронами другого типа
 	if (!m_bLockType && !m_magazine.empty() &&
 		(!m_pAmmo || xr_strcmp(m_pAmmo->cNameSect(),
 		*m_magazine.back().m_ammoSect)))
@@ -409,7 +409,7 @@ void CWeaponMagazined::ReloadMagazine()
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
 
-	//âûêèíóòü êîðîáêó ïàòðîíîâ, åñëè îíà ïóñòàÿ
+	//выкинуть коробку патронов, если она пустая
 	if (m_pAmmo && !m_pAmmo->m_boxCurr && OnServer())
 		m_pAmmo->SetDropManual(TRUE);
 
@@ -503,8 +503,8 @@ void CWeaponMagazined::UpdateCL()
 	inherited::UpdateCL();
 	float dt = Device.fTimeDelta;
 
-	//êîãäà ïðîèñõîäèò àïäåéò ñîñòîÿíèÿ îðóæèÿ
-	//íè÷åãî äðóãîãî íå äåëàòü
+	//когда происходит апдейт состояния оружия
+	//ничего другого не делать
 	if (GetNextState() == GetState())
 	{
 		switch (GetState())
@@ -653,10 +653,10 @@ void CWeaponMagazined::OnShot()
 	PHGetLinearVell(vel);
 	OnShellDrop(get_LastSP(), vel);
 
-	// Îãîíü èç ñòâîëà
+	// Огонь из ствола
 	StartFlameParticles();
 
-	//äûì èç ñòâîëà
+	//дым из ствола
 	ForceUpdateFireParticles();
 	StartSmokeParticles(get_LastFP(), vel);
 }
@@ -790,7 +790,7 @@ bool CWeaponMagazined::Action(s32 cmd, u32 flags)
 {
 	if (inherited::Action(cmd, flags)) return true;
 
-	//åñëè îðóæèå ÷åì-òî çàíÿòî, òî íè÷åãî íå äåëàòü
+	//если оружие чем-то занято, то ничего не делать
 	if (IsPending()) return false;
 
 	switch (cmd)
@@ -905,7 +905,7 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 	{
 		if (b_send_event && OnServer())
 		{
-			//óíè÷òîæèòü ïîäñîåäèíåííóþ âåùü èç èíâåíòàðÿ
+			//уничтожить подсоединенную вещь из инвентаря
 			//.			pIItem->Drop					();
 			pIItem->object().DestroyObject();
 		};
@@ -959,7 +959,7 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 void CWeaponMagazined::InitAddons()
 {
 	//////////////////////////////////////////////////////////////////////////
-	// Ïðèöåë
+	// Прицел
 #ifndef SIMPLE_ZOOM_SETTINGS
 	m_fIronSightZoomFactor = READ_IF_EXISTS(pSettings, r_float, cNameSect(), "ironsight_zoom_factor", 50.0f);
 #else
@@ -1020,10 +1020,10 @@ void CWeaponMagazined::InitAddons()
 		m_sSmokeParticlesCurrent = m_sSilencerSmokeParticles;
 		m_pSndShotCurrent = &sndSilencerShot;
 
-		//ñèëà âûñòðåëà
+		//сила выстрела
 		LoadFireParams(*cNameSect(), "");
 
-		//ïîäñâåòêà îò âûñòðåëà
+		//подсветка от выстрела
 		LoadLights(*cNameSect(), "silencer_");
 		ApplySilencerKoeffs();
 	}
@@ -1033,9 +1033,9 @@ void CWeaponMagazined::InitAddons()
 		m_sSmokeParticlesCurrent = m_sSmokeParticles;
 		m_pSndShotCurrent = &sndShot;
 
-		//ñèëà âûñòðåëà
+		//сила выстрела
 		LoadFireParams(*cNameSect(), "");
-		//ïîäñâåòêà îò âûñòðåëà
+		//подсветка от выстрела
 		LoadLights(*cNameSect(), "");
 	}
 
@@ -1077,7 +1077,7 @@ void CWeaponMagazined::ApplySilencerKoeffs()
 	camDispersionInc *= CD_k;
 }
 
-//âèðòóàëüíûå ôóíêöèè äëÿ ïðîèãðûâàíèÿ àíèìàöèè HUD
+//виртуальные функции для проигрывания анимации HUD
 void CWeaponMagazined::PlayAnimShow()
 {
 	VERIFY(GetState() == eShowing);
@@ -1183,7 +1183,7 @@ void CWeaponMagazined::OnZoomOut()
 		pActor->Cameras().RemoveCamEffector(eCEZoom);
 }
 
-//ïåðåêëþ÷åíèå ðåæèìîâ ñòðåëüáû îäèíî÷íûìè è î÷åðåäÿìè
+//переключение режимов стрельбы одиночными и очередями
 bool CWeaponMagazined::SwitchMode()
 {
 	if (eIdle != GetState() || IsPending()) return false;
@@ -1316,13 +1316,13 @@ void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_na
 			sprintf_s(sItemName, "%d/--", AE);*/
 
 		if (wpn_info && gear_info)
-			sprintf_s(sItemName, "%d/%d", AE, AC - AE);
+			sprintf_s(sItemName, "%d|%d", AE, AC - AE);
 		else if (wpn_info)
-			sprintf_s(sItemName, "%d", AE);
+			sprintf_s(sItemName, "[%d]", AE);
 		else if (gear_info)
 			sprintf_s(sItemName, "%d", AC - AE);
 		else if (unlimited_ammo())
-			sprintf_s(sItemName, "%d/--", AE);
+			sprintf_s(sItemName, "%d|--", AE);
 
 		str_count = sItemName;
 	}

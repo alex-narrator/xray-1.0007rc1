@@ -406,6 +406,13 @@ bool CUICarBodyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 			GetHolder()->StartStopMenu(this,true);
 			return true;
 	}
+
+	// забрать всё по кнопке kSPRINT_TOGGLE (X)
+	if (keyboard_action == WINDOW_KEY_PRESSED && is_binded(kSPRINT_TOGGLE, dik))
+	{
+		TakeAll();
+		return true;
+	}
 	return false;
 }
 

@@ -1395,7 +1395,7 @@ void CUIMainIngameWnd::UpdateActiveItemInfo()
 		SetAmmoIcon					(icon_sect_name.c_str	()	);
 
 		//-------------------
-		//m_pWeapon = smart_cast<CWeapon*> (item);
+		m_pWeapon = smart_cast<CWeapon*> (item);
 	}else
 	{
 		/*UIWeaponIcon.Show			(false);
@@ -1780,6 +1780,7 @@ void CUIQuickSlotPanel::Update()
 		string32	str;
 		shared_str itm_name;
 		u32 count;
+		bool SearchRuck = !psActorFlags.test(AF_QUICK_FROM_BELT);
 
         itm = pActor->inventory().m_slots[SLOT_QUICK_ACCESS_0].m_pIItem;
 
@@ -1790,7 +1791,7 @@ void CUIQuickSlotPanel::Update()
             m_UseQuickSlot_0_Text->Show(true);
 
 			itm_name = itm->object().cNameSect();
-            count = pActor->inventory().dwfGetSameItemCount(itm_name.c_str(), true);
+			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
 #ifndef QUICK_SLOT_POCKET_LOGIC
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_0_Text->SetText(str);
@@ -1816,7 +1817,7 @@ void CUIQuickSlotPanel::Update()
             m_UseQuickSlot_1_Text->Show(true);
 
 			itm_name = itm->object().cNameSect();
-            count = pActor->inventory().dwfGetSameItemCount(itm_name.c_str(), true);
+			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
 #ifndef QUICK_SLOT_POCKET_LOGIC
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_1_Text->SetText(str);
@@ -1842,7 +1843,7 @@ void CUIQuickSlotPanel::Update()
             m_UseQuickSlot_2_Text->Show(true);
 
 			itm_name = itm->object().cNameSect();
-            count = pActor->inventory().dwfGetSameItemCount(itm_name.c_str(), true);
+			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
 #ifndef QUICK_SLOT_POCKET_LOGIC
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_2_Text->SetText(str);
@@ -1868,7 +1869,7 @@ void CUIQuickSlotPanel::Update()
             m_UseQuickSlot_3_Text->Show(true);
 
 			itm_name = itm->object().cNameSect();
-            count = pActor->inventory().dwfGetSameItemCount(itm_name.c_str(), true);
+			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
 #ifndef QUICK_SLOT_POCKET_LOGIC
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_3_Text->SetText(str);

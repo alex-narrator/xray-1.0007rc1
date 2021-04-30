@@ -824,7 +824,7 @@ void CInventory::UpdateDropItem(PIItem pIItem)
 	}// dropManual
 }
 
-//ищем на поясе гранату такоже типа
+//ищем item такоже типа в рюкзаке|на поясе
 PIItem CInventory::Same(const PIItem pIItem, bool bSearchRuck) const
 {
 	const TIItemContainer &list = bSearchRuck ? m_ruck : m_belt;
@@ -976,10 +976,10 @@ u32		CInventory::dwfGetGrenadeCount(LPCSTR caSection, bool SearchAll)
 	return		(l_dwCount);
 }
 
-#if defined(GRENADE_FROM_BELT)
-u32 CInventory::GrenadeOnBeltCount(LPCSTR caSection, bool SearchRuck)
+//#if defined(GRENADE_FROM_BELT)
+u32 CInventory::dwfGetItemCount(LPCSTR caSection, bool SearchRuck)
 {
-	u32			l_dwCount = 0;
+	u32			l_dwCount = 1; //для учета айтема в слоте при выведении худовых каунтеров
 	TIItemContainer	&l_list = SearchRuck ? m_ruck : m_belt;
 	for (TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it)
 	{
@@ -990,7 +990,7 @@ u32 CInventory::GrenadeOnBeltCount(LPCSTR caSection, bool SearchRuck)
 
 	return		(l_dwCount);
 }
-#endif
+//#endif
 
 bool CInventory::bfCheckForObject(ALife::_OBJECT_ID tObjectID)
 {

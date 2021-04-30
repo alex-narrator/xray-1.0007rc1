@@ -348,7 +348,7 @@ void CGrenade::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_s
 {
 	str_name				= NameShort();
 #if defined(GRENADE_FROM_BELT)
-	u32 ThisGrenadeCount = m_pCurrentInventory->GrenadeOnBeltCount(*cNameSect(), false);
+	u32 ThisGrenadeCount = m_pCurrentInventory->dwfGetItemCount(*cNameSect(), false);
 #else
 	u32 ThisGrenadeCount	= m_pCurrentInventory->dwfGetSameItemCount(*cNameSect(), true);
 #endif
