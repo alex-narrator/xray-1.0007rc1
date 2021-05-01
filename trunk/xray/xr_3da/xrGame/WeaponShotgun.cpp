@@ -330,7 +330,7 @@ bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)
 	if(m_pCurrentInventory) 
 	{
 		//попытаться найти в инвентаре патроны текущего типа 
-		if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
+		/*if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
 		{
 			if (ParentIsActor())
 				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmoOnBelt(*m_ammoTypes[m_ammoType]));
@@ -340,15 +340,16 @@ bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)
 		else
 		{
 			m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[m_ammoType]));
-		}
-		
+		}*/
+		bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !smart_cast<CActor*>(H_Parent());
+		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[m_ammoType], SearchRuck));
 
 		if(!m_pAmmo )
 		{
 			for(u32 i = 0; i < m_ammoTypes.size(); ++i) 
 			{
 				//проверить патроны всех подходящих типов
-				if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
+			/*	if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
 				{
 					if (ParentIsActor())
 						m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmoOnBelt(*m_ammoTypes[i]));
@@ -358,8 +359,8 @@ bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)
 				else
 				{
 					m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[i]));
-				}
-								
+				}*/
+				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[i], SearchRuck));
 
 				if(m_pAmmo) 
 				{ 

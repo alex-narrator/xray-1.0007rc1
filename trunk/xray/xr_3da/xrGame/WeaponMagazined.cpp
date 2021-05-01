@@ -190,7 +190,7 @@ void CWeaponMagazined::Reload()
 // Real Wolf: Одна реализация на все участки кода.20.01.15
 bool CWeaponMagazined::TryToGetAmmo(u32 id)
 {
-	if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
+	/*if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
 	{
 		if (smart_cast<CActor*>(H_Parent()) != NULL)
 		{
@@ -207,7 +207,9 @@ bool CWeaponMagazined::TryToGetAmmo(u32 id)
 	{
 		Msg("Try to get ammo for any");
 		m_pAmmo		= smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[id]));
-	}
+	}*/
+	bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !smart_cast<CActor*>(H_Parent());
+	m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[id], SearchRuck));
 
 	return m_pAmmo != NULL;
 }
@@ -302,8 +304,9 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 	xr_map<LPCSTR, u16>::iterator l_it;
 	for (l_it = l_ammo.begin(); l_ammo.end() != l_it; ++l_it)
 	{
-		
-		CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(l_it->first));
+		bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !smart_cast<CActor*>(H_Parent());
+		CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(l_it->first, SearchRuck));
+		//CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(l_it->first)); 
 
 		if (l_pA)
 		{
@@ -340,7 +343,7 @@ void CWeaponMagazined::ReloadMagazine()
 	if (!unlimited_ammo())
 	{
 		//попытаться найти в инвентаре патроны текущего типа
-		if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
+		/*if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
 		{
 			if (ParentIsActor())
 				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmoOnBelt(*m_ammoTypes[m_ammoType]));
@@ -350,14 +353,16 @@ void CWeaponMagazined::ReloadMagazine()
 		else
 		{
 			m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[m_ammoType]));
-		}
+		}*/
+		bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !smart_cast<CActor*>(H_Parent());
+		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[m_ammoType], SearchRuck));
 		
 		if (!m_pAmmo && !m_bLockType)
 		{
 			for (u32 i = 0; i < m_ammoTypes.size(); ++i)
 			{
 				//проверить патроны всех подходящих типов
-				if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
+				/*if (psActorFlags.test(AF_AMMO_FROM_BELT)) //патроны с пояса
 				{
 					if (ParentIsActor())
 						m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmoOnBelt(*m_ammoTypes[i]));
@@ -367,7 +372,8 @@ void CWeaponMagazined::ReloadMagazine()
 				else
 				{
 		                        m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAny(*m_ammoTypes[i]));		
-				}
+				}*/
+				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[i], SearchRuck));
 		
 
 				if (m_pAmmo)

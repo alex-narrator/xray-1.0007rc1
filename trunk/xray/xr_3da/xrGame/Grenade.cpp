@@ -354,9 +354,7 @@ void CGrenade::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_s
 #endif
 	string16				stmp;
 	if (HUD().GetUI()->UIMainIngameWnd->ShowGearInfo())
-	    sprintf_s			(stmp, "%d", ThisGrenadeCount);
-	else
-		sprintf_s           (stmp, "");
+       sprintf_s			(stmp, "%d", ThisGrenadeCount);
 	str_count				= stmp;
 	icon_sect_name			= *cNameSect();
 }

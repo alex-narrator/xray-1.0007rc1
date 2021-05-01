@@ -910,9 +910,14 @@ PIItem CInventory::GetAny(const char *name) const
 }
 
 // by Karlan // патроны используются только с пояса (в общем получение итема с пояса)
-PIItem CInventory::GetAmmoOnBelt(const char *name) const
+//получаем айтем из рюкзака или с пояса по условию
+PIItem CInventory::GetAmmo(const char *name, bool SearchRuck) const
 {
-	PIItem itm = Get(name, false);
+	PIItem itm;
+	if (SearchRuck)
+	    itm = Get(name, true);
+	else
+		itm = Get(name, false);
 	return itm;
 }
 
