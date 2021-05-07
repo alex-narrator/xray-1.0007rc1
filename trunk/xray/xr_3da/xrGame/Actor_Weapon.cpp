@@ -57,14 +57,24 @@ float CActor::GetWeaponAccuracy() const
 	return dispersion;
 }
 
-
+#include "HudManager.h"
 void CActor::g_fireParams	(const CHudItem* pHudItem, Fvector &fire_pos, Fvector &fire_dir)
 {
 //	VERIFY			(inventory().ActiveItem());
+	if (!psActorFlags.test(AF_BULLET_FROM_BARREL)) //пуля летит из позиции камеры по направлению взгляда
+	{
+		fire_pos = Cameras().Pos();
+		fire_dir = Cameras().Dir();
+	}
+	else                                           //пуля летит из fire_bone в точку куда направлена камера
+	{
+		Fvector cam_pos = Cameras().Pos();
+		Fvector cam_dir = Cameras().Dir();
 
-	fire_pos		= Cameras().Pos();
-	fire_dir		= Cameras().Dir();
-
+		float dist = HUD().GetCurrentRayQuery().range;
+		Fvector target_pos = cam_pos.mad(cam_dir, dist);
+		fire_dir.sub(target_pos, fire_pos).normalize();
+	}
 	const CMissile	*pMissile = smart_cast <const CMissile*> (pHudItem);
 	if (pMissile)
 	{
@@ -288,9 +298,7 @@ void	CActor::RemoveAmmoForWeapon	(CInventoryItem *pIItem)
 	CWeaponMagazined* pWM = smart_cast<CWeaponMagazined*> (pIItem);
 	if (!pWM || !pWM->AutoSpawnAmmo()) return;
 
-	bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !smart_cast<CActor*>(H_Parent());
-	CWeaponAmmo* pAmmo = smart_cast<CWeaponAmmo*>(inventory().GetAmmo(*(pWM->m_ammoTypes[0]), SearchRuck));
-//	CWeaponAmmo* pAmmo = smart_cast<CWeaponAmmo*>(inventory().GetAny(*(pWM->m_ammoTypes[0]) ));
+	CWeaponAmmo* pAmmo = smart_cast<CWeaponAmmo*>(inventory().GetAny(*(pWM->m_ammoTypes[0]) ));
 	if (!pAmmo) return;
 	pAmmo->DestroyObject();
 };

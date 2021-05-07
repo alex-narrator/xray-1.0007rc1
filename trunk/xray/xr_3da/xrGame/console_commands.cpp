@@ -1030,6 +1030,25 @@ struct CCC_JumpToLevel : public IConsole_Command {
 		Msg							("! There is no level \"%s\" in the game graph!",level);
 	}
 };
+
+class CCC_Spawn : public IConsole_Command {
+public:
+	CCC_Spawn(LPCSTR N) : IConsole_Command(N) {}
+
+	void Execute(LPCSTR args)
+	{
+		if (!g_pGameLevel)
+			return;
+
+		if (!pSettings->section_exist(args))
+		{
+			Msg("! Can't find section: %s", args);
+			return;
+		}
+
+		Level().g_cl_Spawn(args, 0xff, M_SPAWN_OBJECT_LOCAL, Actor()->Position());
+	}
+};
 //#endif // MASTER_GOLD
 
 #include "GamePersistent.h"
@@ -1366,6 +1385,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"g_backrun",			&psActorFlags,	AF_RUN_BACKWARD);
 	CMD3(CCC_Mask,				"g_ammo_from_belt",		  &psActorFlags,	AF_AMMO_FROM_BELT); //патроны с пояса
 	CMD3(CCC_Mask,				"g_quick_slot_from_belt", &psActorFlags,	AF_QUICK_FROM_BELT); //патроны с пояса
+	CMD3(CCC_Mask,				"g_bullet_from_barrel", &psActorFlags,	AF_BULLET_FROM_BARREL); //Пуля/ракета летит из fire_bone в точку куда направлена камера
 
 	// alife
 #ifdef DEBUG
@@ -1516,6 +1536,7 @@ void CCC_RegisterCommands()
 
 //#ifndef MASTER_GOLD
 	CMD1(CCC_JumpToLevel,	"jump_to_level"		);
+	CMD1(CCC_Spawn,			"g_spawn");
 	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE	);
 	CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);
 	CMD1(CCC_Script,		"run_script");

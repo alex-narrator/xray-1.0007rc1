@@ -177,6 +177,22 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 
 	if (!strict_placement)
 		pIItem->m_eItemPlace = eItemPlaceUndefined;
+	
+	// AF_AMMO_FROM_BELT
+	auto pActor = smart_cast<CActor*>(m_pOwner);
+	auto ammo = smart_cast<CWeaponAmmo*>(pIItem);
+	auto weapon = smart_cast<CWeapon*>(pIItem);
+	if (psActorFlags.test(AF_AMMO_FROM_BELT) && ammo && pActor) //если включены патроны с пояса, то для боеприпасов актора
+	{    
+		if (m_bAmmoSpawnUnloading && !m_bInventoryReloading) //при взведённом флаге на разряжание/смену типа патрона и если не поставлен флаг инвентарной перезарядки
+		{
+			Msg("m_bAmmoSpawnUnloading && !m_bInventoryReloading -- match!");
+			pIItem->m_eItemPlace = eItemPlaceBelt; //укажем попадать на пояс, а затем
+			m_bAmmoSpawnUnloading = false;              //сбросим флаг на разряжание/смену типа патрона
+			m_bInventoryReloading = false;         //сбросим флаг инвентарной перезарядки
+		}
+	}
+	//
 
 	bool result = false;
 	switch (pIItem->m_eItemPlace)

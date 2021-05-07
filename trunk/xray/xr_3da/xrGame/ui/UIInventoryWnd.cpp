@@ -399,7 +399,6 @@ void CUIInventoryWnd::Update()
 		{
 			UIProgressBarRadiation.Show(false);
 		}
-//#endif
 
 #ifdef INV_NEW_SLOTS_SYSTEM
 		if (GameID() == GAME_SINGLE){
@@ -469,7 +468,11 @@ void CUIInventoryWnd::Show()
 	}
 
 	SendInfoToActor						("ui_inventory");
-
+	//AF_AMMO_FROM_BELT
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor)
+	pActor->inventory().m_bInventoryReloading = true; //установим флаг инвентарной перезарядки
+	//
 	Update								();
 	PlaySnd								(eInvSndOpen);
 }
@@ -480,10 +483,15 @@ void CUIInventoryWnd::Hide()
 	inherited::Hide						();
 
 	SendInfoToActor						("ui_inventory_hide");
+	// AF_AMMO_FROM_BELT
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor)
+	pActor->inventory().m_bInventoryReloading = false; //сбросим флаг инвентарной перезарядки
+	//
 	ClearAllLists						();
 
 	//достать вещь в активный слот
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	//CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if(pActor && m_iCurrentActiveSlot != NO_ACTIVE_SLOT && 
 		pActor->inventory().m_slots[m_iCurrentActiveSlot].m_pIItem)
 	{

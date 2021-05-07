@@ -247,15 +247,15 @@
 		<text>Подождать</text>
 	</string>
 	<string id="ui_quick_slot_use_str_0">
-		<text>($$ACTION_USE_SLOT_QUICK_ACCESS_0$$)</text>
+		<text>[$$ACTION_USE_SLOT_QUICK_ACCESS_0$$]</text>
 	</string>
 	<string id="ui_quick_slot_use_str_1">
-		<text>($$ACTION_USE_SLOT_QUICK_ACCESS_1$$)</text>
+		<text>[$$ACTION_USE_SLOT_QUICK_ACCESS_1$$]</text>
 	</string>
 	<string id="ui_quick_slot_use_str_2">
-		<text>($$ACTION_USE_SLOT_QUICK_ACCESS_2$$)</text>
+		<text>[$$ACTION_USE_SLOT_QUICK_ACCESS_2$$]</text>
 	</string>
 	<string id="ui_quick_slot_use_str_3">
-		<text>($$ACTION_USE_SLOT_QUICK_ACCESS_3$$)</text>
+		<text>[$$ACTION_USE_SLOT_QUICK_ACCESS_3$$]</text>
 	</string>
 </string_table>

@@ -408,6 +408,11 @@
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_quick_slot_from_belt</text>
 		</check_quick_slot_from_belt>
 
+		<check_bullet_from_barrel x="20" y="0" width="243" height="21">
+			<options_item entry="g_bullet_from_barrel" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_bullet_from_barrel</text>
+		</check_bullet_from_barrel>
+
 		<check_devices_ui_on_key x="20" y="0" width="243" height="21">
 			<options_item entry="hud_devices_ui_on_key" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_devices_ui_on_key</text>

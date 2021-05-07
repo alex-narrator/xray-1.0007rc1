@@ -180,6 +180,9 @@
 	<string id="ui_mm_gear_info_on_key">
 		<text>Отображать панель артефактов и быстрых слотов при удержании кнопки [$$ACTION_CHECK_GEAR$$]</text>
 	</string>
+	<string id="ui_mm_bullet_from_barrel">
+		<text>Пуля/ракета летит из fire_bone в точку куда направлена камера</text>
+	</string>
 	<string id="ui_mm_eax">
 		<text>EAX</text>
 	</string>

@@ -1381,7 +1381,7 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 void CUIMainIngameWnd::UpdateActiveItemInfo()
 {
 	PIItem item		=  m_pActor->inventory().ActiveItem();
-	if (item && (ShowWeaponInfo() || ShowGearInfo())) //-- не показываем иконку активного предмета (оружия) если не нажата клавиша перезарядки/клавиша активного задания (при включении соотв. опции)
+	if (item && (ShowWeaponInfo() || ShowGearInfo())) //-- не показываем иконку активного предмета (оружия) если не нажата клавиша перезарядки/клавиша проверки снаряжения (при включении соотв. опции)
 	{
 		xr_string					str_name;
 		xr_string					icon_sect_name;

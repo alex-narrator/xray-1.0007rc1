@@ -78,7 +78,11 @@ public:
 	// Ищет на поясе или в рюкзаке IItem с указанным CLS_ID
 	PIItem					Get					(CLASS_ID cls_id,  bool bSearchRuck) const;
 	PIItem					GetAny				(const char *name) const;//search both (ruck and belt)
+	// AMMO_FROM_BELT begin
 	PIItem					GetAmmo     		(const char *name, bool SearchRuck) const;  //получаем айтем из рюкзака или с пояса по условию
+	bool                    m_bAmmoSpawnUnloading = false;    //флаг на разряжание/смену типа патрона
+	bool                    m_bInventoryReloading = false; //флаг инвентарной перезарядки
+	// AMMO_FROM_BELT end
 	PIItem					item				(CLASS_ID cls_id) const;
 	
 	// get all the items with the same section name

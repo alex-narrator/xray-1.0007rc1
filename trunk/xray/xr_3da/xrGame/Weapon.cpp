@@ -808,7 +808,7 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 			{
 				l_newType = (l_newType + 1) % m_ammoTypes.size();
 				b1 = l_newType != m_ammoType;
-				bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !ParentIsActor();
+				bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !ParentIsActor() || m_pCurrentInventory->m_bInventoryReloading;
 				b2 = unlimited_ammo() ? false : (!m_pCurrentInventory->GetAmmo(*m_ammoTypes[l_newType], SearchRuck));
 				//b2 = unlimited_ammo() ? false : (!m_pCurrentInventory->GetAny(*m_ammoTypes[l_newType]));
 			} while (b1 && b2);
@@ -889,7 +889,10 @@ void CWeapon::SpawnAmmo(u32 boxCurr, LPCSTR ammoSect, u32 ParentID)
 	if (!m_ammoTypes.size())			return;
 	if (OnClient())					return;
 	m_bAmmoWasSpawned = true;
-
+	// AF_AMMO_FROM_BELT
+	m_pCurrentInventory->m_bAmmoSpawnUnloading = true; //устанавливаем флаг на событие перезарядки/смены типа боеприпаса
+	     if (m_pCurrentInventory->m_bAmmoSpawnUnloading = true) Msg("SpawnAmmo m_bAmmoSpawnUnloading = true");
+	//
 	int l_type = 0;
 	l_type %= m_ammoTypes.size();
 
@@ -922,7 +925,7 @@ void CWeapon::SpawnAmmo(u32 boxCurr, LPCSTR ammoSect, u32 ParentID)
 		D->s_flags.assign(M_SPAWN_OBJECT_LOCAL);
 		D->RespawnTime = 0;
 		l_pA->m_tNodeID = g_dedicated_server ? u32(-1) : ai_location().level_vertex_id();
-
+		
 		if (boxCurr == 0xffffffff)
 			boxCurr = l_pA->m_boxSize;
 
@@ -999,7 +1002,7 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 		}*/
 		auto parent = const_cast<CObject*>(H_Parent());
 		auto entity_alive = smart_cast<CEntityAlive*>(parent);
-		bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || entity_alive == NULL || !entity_alive->cast_actor();
+		bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || entity_alive == NULL || !entity_alive->cast_actor() || m_pCurrentInventory->m_bInventoryReloading;
 
 		TIItemContainer &list = SearchRuck ? m_pCurrentInventory->m_ruck : m_pCurrentInventory->m_belt;
 		for (TIItemContainer::iterator l_it = list.begin(); list.end() != l_it; ++l_it)
