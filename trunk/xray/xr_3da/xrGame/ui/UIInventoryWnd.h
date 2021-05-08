@@ -137,6 +137,7 @@ protected:
 
 
 	CUIStatic					UIProgressBack;
+	CUIStatic					UIProgressBackRadiation; //отдельная подложка для убираемого прогрессбара радиации
 	CUIStatic					UIProgressBack_rank;
 	CUIProgressBar				UIProgressBarHealth;	
 	CUIProgressBar				UIProgressBarPsyHealth;

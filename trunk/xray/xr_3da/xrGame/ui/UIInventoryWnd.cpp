@@ -99,6 +99,9 @@ void CUIInventoryWnd::Init()
 	AttachChild							(&UIProgressBack);
 	xml_init.InitStatic					(uiXml, "progress_background", 0, &UIProgressBack);
 
+	AttachChild							(&UIProgressBackRadiation);
+	xml_init.InitStatic					(uiXml, "progress_background_radiation", 0, &UIProgressBackRadiation);
+
 	if (GameID() != GAME_SINGLE){
 		AttachChild						(&UIProgressBack_rank);
 		xml_init.InitStatic				(uiXml, "progress_back_rank", 0, &UIProgressBack_rank);
@@ -116,7 +119,7 @@ void CUIInventoryWnd::Init()
 	UIProgressBack.AttachChild	(&UIProgressBarPsyHealth);
 	xml_init.InitProgressBar (uiXml, "progress_bar_psy", 0, &UIProgressBarPsyHealth);
 
-	UIProgressBack.AttachChild	(&UIProgressBarRadiation);
+	UIProgressBackRadiation.AttachChild(&UIProgressBarRadiation);
 	xml_init.InitProgressBar (uiXml, "progress_bar_radiation", 0, &UIProgressBarRadiation);
 
 #ifdef INV_NEW_SLOTS_SYSTEM
@@ -392,12 +395,13 @@ void CUIInventoryWnd::Update()
 		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 		if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem) //удаляем шкалу радиации для прогрессбара в инвентаре если не экипирован детектор -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
 		{
+			UIProgressBackRadiation.Show(true);
 			UIProgressBarRadiation.Show(true);
 			UIProgressBarRadiation.SetProgressPos(v); 
 		}
 		else
 		{
-			UIProgressBarRadiation.Show(false);
+			UIProgressBackRadiation.Show(false);
 		}
 
 #ifdef INV_NEW_SLOTS_SYSTEM

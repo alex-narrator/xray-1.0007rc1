@@ -186,7 +186,6 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	{    
 		if (m_bAmmoSpawnUnloading && !m_bInventoryReloading) //при взведённом флаге на разряжание/смену типа патрона и если не поставлен флаг инвентарной перезарядки
 		{
-			Msg("m_bAmmoSpawnUnloading && !m_bInventoryReloading -- match!");
 			pIItem->m_eItemPlace = eItemPlaceBelt; //укажем попадать на пояс, а затем
 			m_bAmmoSpawnUnloading = false;              //сбросим флаг на разряжание/смену типа патрона
 			m_bInventoryReloading = false;         //сбросим флаг инвентарной перезарядки
