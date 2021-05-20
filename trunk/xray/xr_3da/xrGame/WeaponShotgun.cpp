@@ -330,7 +330,7 @@ bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)
 	if(m_pCurrentInventory) 
 	{
 		//попытаться найти в инвентаре патроны текущего типа 
-		bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !ParentIsActor() || m_pCurrentInventory->m_bInventoryReloading;
+		bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !ParentIsActor() || m_pCurrentInventory->m_bInventoryAmmoPlacement;
 		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[m_ammoType], SearchRuck));
 
 		if(!m_pAmmo )

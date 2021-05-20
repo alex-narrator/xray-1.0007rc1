@@ -1045,7 +1045,7 @@ public:
 			Msg("! Can't find section: %s", args);
 			return;
 		}
-
+		
 		Level().g_cl_Spawn(args, 0xff, M_SPAWN_OBJECT_LOCAL, Actor()->Position());
 	}
 };
@@ -1385,7 +1385,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"g_backrun",			&psActorFlags,	AF_RUN_BACKWARD);
 	CMD3(CCC_Mask,				"g_ammo_from_belt",		  &psActorFlags,	AF_AMMO_FROM_BELT); //патроны с пояса
 	CMD3(CCC_Mask,				"g_quick_slot_from_belt", &psActorFlags,	AF_QUICK_FROM_BELT); //патроны с пояса
-	CMD3(CCC_Mask,				"g_bullet_from_barrel", &psActorFlags,	AF_BULLET_FROM_BARREL); //Пуля/ракета летит из fire_bone в точку куда направлена камера
+	CMD3(CCC_Mask,				"g_no_auto_reload",       &psActorFlags,	AF_NO_AUTO_RELOAD); //запрет автоперезарядки оружия
 
 	// alife
 #ifdef DEBUG

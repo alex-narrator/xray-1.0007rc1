@@ -434,7 +434,7 @@ void CUIInventoryWnd::Update()
 
 		// update outfit parameters
 		CCustomOutfit* outfit			= smart_cast<CCustomOutfit*>(pOurInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem);		
-		UIOutfitInfo.Update				(outfit);		
+		UIOutfitInfo.Update				(outfit);	
 	}
 
 	UIStaticTimeString.SetText(*InventoryUtilities::GetGameTimeAsString(InventoryUtilities::etpTimeToMinutes));
@@ -475,7 +475,10 @@ void CUIInventoryWnd::Show()
 	//AF_AMMO_FROM_BELT
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if (pActor)
-	pActor->inventory().m_bInventoryReloading = true; //установим флаг инвентарной перезарядки
+	{
+		pActor->inventory().m_bInventoryAmmoPlacement = true; //установим флаг инвентарной перезарядки
+		pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //восстановим показ оружия в руках
+	}
 	//
 	Update								();
 	PlaySnd								(eInvSndOpen);
@@ -487,15 +490,11 @@ void CUIInventoryWnd::Hide()
 	inherited::Hide						();
 
 	SendInfoToActor						("ui_inventory_hide");
-	// AF_AMMO_FROM_BELT
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if (pActor)
-	pActor->inventory().m_bInventoryReloading = false; //сбросим флаг инвентарной перезарядки
-	//
+
 	ClearAllLists						();
 
 	//достать вещь в активный слот
-	//CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if(pActor && m_iCurrentActiveSlot != NO_ACTIVE_SLOT && 
 		pActor->inventory().m_slots[m_iCurrentActiveSlot].m_pIItem)
 	{
@@ -509,6 +508,12 @@ void CUIInventoryWnd::Hide()
 		if(!pActor)			return;
 
 		pActor->SetWeaponHideState(INV_STATE_INV_WND, false);
+	}
+	// AF_AMMO_FROM_BELT
+	if (pActor)
+	{
+		pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //спрячем оружие в руках
+		pActor->inventory().m_bInventoryAmmoPlacement = false; //сбросим флаг инвентарной перезарядки
 	}
 }
 

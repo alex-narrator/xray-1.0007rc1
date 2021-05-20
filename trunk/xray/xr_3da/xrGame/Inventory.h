@@ -81,7 +81,7 @@ public:
 	// AMMO_FROM_BELT begin
 	PIItem					GetAmmo     		(const char *name, bool SearchRuck) const;  //получаем айтем из рюкзака или с пояса по условию
 	bool                    m_bAmmoSpawnUnloading = false;    //флаг на разряжание/смену типа патрона
-	bool                    m_bInventoryReloading = false; //флаг инвентарной перезарядки
+	bool                    m_bInventoryAmmoPlacement = false; //флаг инвентарной перезарядки
 	// AMMO_FROM_BELT end
 	PIItem					item				(CLASS_ID cls_id) const;
 	

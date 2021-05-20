@@ -58,29 +58,28 @@ float CActor::GetWeaponAccuracy() const
 }
 
 #include "HudManager.h"
-void CActor::g_fireParams	(const CHudItem* pHudItem, Fvector &fire_pos, Fvector &fire_dir)
+void CActor::g_fireParams(const CHudItem* pHudItem, Fvector &fire_pos, Fvector &fire_dir)
 {
-//	VERIFY			(inventory().ActiveItem());
-	if (!psActorFlags.test(AF_BULLET_FROM_BARREL)) //пуля летит из позиции камеры по направлению взгляда
-	{
-		fire_pos = Cameras().Pos();
-		fire_dir = Cameras().Dir();
-	}
-	else                                           //пуля летит из fire_bone в точку куда направлена камера
-	{
-		Fvector cam_pos = Cameras().Pos();
-		Fvector cam_dir = Cameras().Dir();
+	fire_pos = Cameras().Pos();
+	fire_dir = Cameras().Dir();
 
-		float dist = HUD().GetCurrentRayQuery().range;
-		Fvector target_pos = cam_pos.mad(cam_dir, dist);
-		fire_dir.sub(target_pos, fire_pos).normalize();
-	}
-	const CMissile	*pMissile = smart_cast <const CMissile*> (pHudItem);
-	if (pMissile)
-	{
+	const CMissile    *pMissile = smart_cast <const CMissile*> (pHudItem);
+	CWeaponMagazined*    wpn = smart_cast<CWeaponMagazined*>(pHudItem->item().cast_weapon());
+	if (pMissile){
 		Fvector offset;
 		XFORM().transform_dir(offset, m_vMissileOffset);
 		fire_pos.add(offset);
+	}
+	else if (wpn){
+		fire_pos.set(wpn->get_LastFP());
+		if (active_cam() == eacFreeLook)
+			fire_dir.set(wpn->get_LastFD());
+		else{
+			Fvector        pos;
+			pos.mad(Device.vCameraPosition, Device.vCameraDirection, HUD().GetCurrentRayQuery().range);    //точка куда стреляем
+			fire_dir.sub(pos, fire_pos).normalize();
+		}
+		fire_pos.mad(fire_dir, -1.0f);    //для того чтобы пули не летели через стену.
 	}
 }
 

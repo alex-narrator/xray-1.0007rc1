@@ -59,6 +59,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	CEatableItem*		pEatableItem		= smart_cast<CEatableItem*>		(CurrentIItem());
 	CCustomOutfit*		pOutfit				= smart_cast<CCustomOutfit*>	(CurrentIItem());
 	CWeapon*			pWeapon				= smart_cast<CWeapon*>			(CurrentIItem());
+	CWeaponMagazined*	pWeaponMag          = smart_cast<CWeaponMagazined*>	(CurrentIItem());
 	CScope*				pScope				= smart_cast<CScope*>			(CurrentIItem());
 	CSilencer*			pSilencer			= smart_cast<CSilencer*>		(CurrentIItem());
 	CGrenadeLauncher*	pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>	(CurrentIItem());
@@ -80,10 +81,10 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 #endif
 			if (!m_pInv->m_slots[slots[i]].m_pIItem || m_pInv->m_slots[slots[i]].m_pIItem != CurrentIItem() )
 			{
-				CEatableItem *eat = smart_cast<CEatableItem*>(CurrentIItem() );
+				//CEatableItem *eat = smart_cast<CEatableItem*>(CurrentIItem() );
 				// Для еды разрешены только быстрые слоты.
 #ifndef QUICK_SLOT_POCKET_LOGIC
-				if (!eat || is_quick_slot(u32(slots[i]), CurrentIItem(), m_pInv) )
+				if (/*!eat || */is_quick_slot(u32(slots[i]), CurrentIItem(), m_pInv) )
 #endif
 				{
 					sprintf_s(temp, "st_move_to_slot%d", slots[i]);
@@ -156,6 +157,12 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		if(smart_cast<CWeaponMagazined*>(pWeapon) && IsGameTypeSingle())
 		{
 			bool b = (0!=pWeapon->GetAmmoElapsed());
+
+			if (m_pInv->InSlot(pWeapon) && pWeapon->GetAmmoElapsed() < pWeapon->GetAmmoMagSize() && pWeaponMag->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
+			{
+				UIPropertiesBox.AddItem("st_reload_magazine", NULL, INVENTORY_RELOAD_MAGAZINE);
+				b_show = true;
+			}
 
 			if(!b)
 			{

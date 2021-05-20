@@ -162,7 +162,7 @@ bool CHudItem::Activate()
 void CHudItem::Deactivate() 
 {
 	Hide();
-	OnHiddenItem ();
+	//OnHiddenItem (); //для плавного сокрытия оружия
 }
 
 

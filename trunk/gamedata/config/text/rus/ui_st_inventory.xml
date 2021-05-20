@@ -34,7 +34,7 @@
 		<text>отсоединить глушитель</text>
 	</string>
 	<string id="st_dress_outfit">
-		<text>одеть костюм</text>
+		<text>надеть костюм</text>
 	</string>
 	<string id="st_drop">
 		<text>выбросить</text>
@@ -56,13 +56,13 @@
 	</string>
 <!-- new slot system start -->
         <string id="st_move_to_slot0">
-		<text>в ножны</text>
+		<text>в слот оружия 1</text>
 	</string>
         <string id="st_move_to_slot1">
-		<text>в кобуру</text>
+		<text>в слот оружия 2</text>
 	</string>
         <string id="st_move_to_slot2">
-		<text>на плечо</text>
+		<text>в слот оружия 3</text>
 	</string>
         <string id="st_move_to_slot3">
 		<text>в слот гранаты</text>
@@ -112,6 +112,9 @@
 	</string>
 	<string id="st_unload_magazine">
 		<text>разрядить</text>
+	</string>
+	<string id="st_reload_magazine">
+		<text>перезарядить</text>
 	</string>
 	<string id="st_use">
 		<text>использовать</text>

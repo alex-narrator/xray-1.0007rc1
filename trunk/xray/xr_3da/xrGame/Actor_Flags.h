@@ -10,7 +10,7 @@ enum{
 		AF_PSP				=(1<<6),
 		AF_AMMO_FROM_BELT	=(1<<7), //патроны с пояса
 		AF_QUICK_FROM_BELT	=(1<<8), //наполнение быстрых слотов с пояса
-		AF_BULLET_FROM_BARREL =(1<<9), //Пуля/ракета летит из fire_bone в точку куда направлена камера
+		AF_NO_AUTO_RELOAD   =(1<<9), //запрет автоперезарядки оружия
 };
 
 extern Flags32 psActorFlags;

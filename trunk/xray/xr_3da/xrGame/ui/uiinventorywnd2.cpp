@@ -656,7 +656,17 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 #ifndef NO_DBCLICK_USE
 
 #if  defined(INV_NEW_SLOTS_SYSTEM) && !defined (QUICK_SLOT_POCKET_LOGIC)
-	if (__slot < SLOT_QUICK_ACCESS_0 || __slot > SLOT_QUICK_ACCESS_3)
+	if (__slot >= SLOT_QUICK_ACCESS_0 || __slot <= SLOT_QUICK_ACCESS_3)
+	{
+		if (is_quick_slot(__slot, __item, m_pInv))
+			ToSlot(itm, true);
+	}
+	else
+	{
+		if (TryUseItem(__item))
+			return true;
+	}
+	/*	if (__slot < SLOT_QUICK_ACCESS_0 || __slot > SLOT_QUICK_ACCESS_3)
 	{
 		if(TryUseItem(__item))
 		return true;
@@ -675,7 +685,7 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 			if(TryUseItem(__item))
 			return true;
 		}	
-	}
+	}*/
 #else
 	if(TryUseItem(__item))
 		return true;
@@ -693,8 +703,8 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 		case iwBag:
 		{
 #ifdef INV_NEW_SLOTS_SYSTEM
-			// Ïûòàåìñÿ íàéòè ñâîáîäíûé ñëîò èç ñïèñêà ðàçðåøåííûõ.
-			// Åñëè åãî íåòó, òî ïðèíóäèòåëüíî çàéìåò ïåðâûé ñëîò, óêàçàííûé â ñïèñêå.
+			// Пытаемся найти свободный слот из списка аз ешенных.
+			// Если его нету, то принудительно займет первый слот, указанный в списке.
 			auto slots = __item->GetSlots();
 			#if !defined(INV_MOVE_ITM_INTO_QUICK_SLOTS)
 			bool is_eat = __item->cast_eatable_item() != NULL;

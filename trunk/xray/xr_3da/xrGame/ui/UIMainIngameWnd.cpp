@@ -569,12 +569,13 @@ void CUIMainIngameWnd::Update()
 			switch (i)
 			{
 				//radiation
-			case ewiRadiation: 
+			case ewiRadiation:
+			{
 				if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem && ShowDevicesUI()) //удаляем иконку радиации на худе если детектора нет в слоте и/или не нажата кнопка (при выборе соотв. опции меню) -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
-				value = m_pActor->conditions().GetRadiation();
-			else
-				TurnOffWarningIcon(ewiRadiation);
-				break;
+					value = m_pActor->conditions().GetRadiation();
+				else
+					TurnOffWarningIcon(ewiRadiation);
+			}	break;
 			case ewiWound:
 				value = m_pActor->conditions().BleedingSpeed();
 				break;
