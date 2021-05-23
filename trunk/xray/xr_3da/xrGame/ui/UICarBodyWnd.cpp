@@ -222,6 +222,13 @@ void CUICarBodyWnd::Hide()
 	inherited::Hide								();
 	if(m_pInventoryBox)
 		m_pInventoryBox->m_in_use				= false;
+    //
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor)
+	{
+		pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //восстановим показ оружия в руках
+	}
+    //
 }
 
 void CUICarBodyWnd::UpdateLists()
@@ -330,6 +337,13 @@ void CUICarBodyWnd::Show()
 	inherited::Show							();
 	SetCurrentItem							(NULL);
 	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd);
+	//
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor)
+	{
+		pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //спрячем оружие в руках
+	}
+	//
 }
 
 void CUICarBodyWnd::DisableAll()

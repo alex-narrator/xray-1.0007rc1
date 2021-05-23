@@ -116,6 +116,9 @@
 	<string id="st_reload_magazine">
 		<text>перезарядить</text>
 	</string>
+	<string id="st_next_ammo_type">
+		<text>сменить тип патрона</text>
+	</string>
 	<string id="st_use">
 		<text>использовать</text>
 	</string>

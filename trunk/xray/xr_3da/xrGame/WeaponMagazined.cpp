@@ -755,6 +755,8 @@ void CWeaponMagazined::switch2_Hidden()
 }
 void CWeaponMagazined::switch2_Showing()
 {
+	HUD_SOUND::StopSound(sndReload);
+
 	PlaySound(sndShow, get_LastFP());
 
 	m_bPending = true;

@@ -93,6 +93,8 @@ void CWeaponBM16::PlayAnimIdle()
 #if defined(BM16_ANIMS_FIX)
 void CWeaponBM16::switch2_Showing()
 {
+	HUD_SOUND::StopSound(sndReload);
+
 	PlaySound(sndShow, get_LastFP());
 	m_bPending = true;
 

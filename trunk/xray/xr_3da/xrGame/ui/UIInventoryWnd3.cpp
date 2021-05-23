@@ -164,6 +164,26 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 				b_show = true;
 			}
 
+
+			if (m_pInv->InSlot(pWeapon) && pWeaponMag->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
+			{
+				u32 l_newType = pWeapon->m_ammoType;
+				bool b1, b2;
+				do
+				{
+					l_newType = (l_newType + 1) % pWeapon->m_ammoTypes.size();
+					b1 = l_newType != pWeapon->m_ammoType;
+					bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || pWeapon->m_pCurrentInventory->m_bInventoryAmmoPlacement; //в целом для действий контекстного меню патроны ищем ВСЕГДА в рюкзаке, но пока пусть будет в зависимости от опции/флага
+					b2 = pWeapon->unlimited_ammo() ? false : (!pWeapon->m_pCurrentInventory->GetAmmo(*pWeapon->m_ammoTypes[l_newType], SearchRuck));
+				} while (b1 && b2);
+
+				if (l_newType != pWeapon->m_ammoType)
+				{
+					UIPropertiesBox.AddItem("st_next_ammo_type", NULL, INVENTORY_NEXT_AMMO_TYPE);
+					b_show = true;
+				}
+			}
+
 			if(!b)
 			{
 				CUICellItem * itm = CurrentItem();
@@ -414,6 +434,9 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 			break;
 		case INVENTORY_RELOAD_MAGAZINE:
 			(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_RELOAD, CMD_START);
+			break;
+		case INVENTORY_NEXT_AMMO_TYPE:
+			(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_NEXT, CMD_START);
 			break;
 		case INVENTORY_UNLOAD_MAGAZINE:
 			{
