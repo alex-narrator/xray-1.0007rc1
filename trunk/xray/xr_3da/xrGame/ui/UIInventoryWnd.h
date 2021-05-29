@@ -17,6 +17,7 @@ class CInventory;
 #endif
 
 #include "../inventory_space.h"
+#include "../actor_flags.h"
 
 class CArtefact;
 class CUI3tButton;
@@ -36,7 +37,7 @@ public:
 
 	void					InitInventory				();
 	void					InitInventory_delayed		();
-	virtual bool			StopAnyMove					()					{return false;}
+	virtual bool			StopAnyMove                 (){ return !!psActorFlags.test(AF_HARD_INV_ACCESS); }
 
 	virtual void			SendMessage					(CUIWindow *pWnd, s16 msg, void *pData);
 	virtual bool			OnMouse						(float x, float y, EUIMessages mouse_action);

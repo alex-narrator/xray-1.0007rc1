@@ -97,6 +97,9 @@ CInventoryItem::CInventoryItem()
 	m_Description		= "";
 	m_cell_item			= NULL;
 	need_slot			= false;
+
+	/*eHandDependence     = hdNone;
+	m_bIsSingleHanded   = true;*/
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -206,6 +209,14 @@ void CInventoryItem::Load(LPCSTR section)
 	m_fControlInertionFactor	= READ_IF_EXISTS(pSettings, r_float,section,"control_inertion_factor",	1.0f);
 	m_icon_name					= READ_IF_EXISTS(pSettings, r_string,section,"icon_name",				NULL);
 
+	// hands
+	/*if (pSettings->line_exist(section, "hand_dependence"))
+		eHandDependence = EHandDependence(pSettings->r_s32(section, "hand_dependence"));
+	if (pSettings->line_exist(section, "single_handed"))
+		m_bIsSingleHanded = !!pSettings->r_bool(section, "single_handed");*/
+	eHandDependence = EHandDependence(READ_IF_EXISTS(pSettings, r_u32, section, "hand_dependence", hdNone));
+	m_bIsSingleHanded = !!READ_IF_EXISTS(pSettings, r_bool, section, "single_handed", TRUE);
+	//
 }
 
 

@@ -10,6 +10,8 @@
 #include "../level.h"
 #include "../game_cl_base.h"
 
+#include "../Actor.h"
+
 #include "UIStatic.h"
 #include "UIFrameWindow.h"
 #include "UITabControl.h"
@@ -165,6 +167,12 @@ void CUIPdaWnd::Show()
 	InventoryUtilities::SendInfoToActor("ui_pda");
 
 	inherited::Show();
+
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor)
+	{
+		if (psActorFlags.test(AF_HARD_INV_ACCESS)) pActor->SetWeaponHideState(INV_STATE_PDA_WND, true);  //спрячем оружие в руках
+	}
 }
 
 void CUIPdaWnd::Hide()
@@ -173,6 +181,12 @@ void CUIPdaWnd::Hide()
 
 	InventoryUtilities::SendInfoToActor("ui_pda_hide");
 	HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
+
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor)
+	{
+		if (psActorFlags.test(AF_HARD_INV_ACCESS)) pActor->SetWeaponHideState(INV_STATE_PDA_WND, false);  //спрячем оружие в руках
+	}
 
 }
 
@@ -192,7 +206,7 @@ void CUIPdaWnd::UpdateDateTime()
 
 #include "../../build_config_defines.h"
 //#if defined(UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT)
-	#include "../Actor.h"
+	//#include "../Actor.h"
 	//#include "../Inventory.h"
 //#endif
 
@@ -202,7 +216,9 @@ void CUIPdaWnd::Update()
 	UpdateDateTime			();
 
 	// Real Wolf: если предмет убрали, когда окно было открыто, то закрываем его. 07.08.2014.
-	if (!g_actor->inventory().m_slots[PDA_SLOT].m_pIItem && IsShown() )
+	//if (!g_actor->inventory().m_slots[PDA_SLOT].m_pIItem && IsShown() )
+	CPda* PDA = smart_cast<CPda*>(g_actor->inventory().ItemFromSlot(PDA_SLOT));
+	if (!PDA && IsShown())
 		GetHolder()->StartStopMenu(this, true);
 }
 

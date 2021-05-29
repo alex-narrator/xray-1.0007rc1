@@ -27,9 +27,11 @@ function opt_gameplay:InitControls(x, y, xml, handler)
 	xml:InitCheck("tab_gameplay:check_no_auto_reload", 		self.scroll_view)
 	xml:InitCheck("tab_gameplay:check_ammo_from_belt", 		self.scroll_view)
 	xml:InitCheck("tab_gameplay:check_quick_slot_from_belt", 	self.scroll_view)
+	xml:InitCheck("tab_gameplay:check_hard_inventory_access", 	self.scroll_view)
 	xml:InitCheck("tab_gameplay:check_devices_ui_on_key", 		self.scroll_view)
 	xml:InitCheck("tab_gameplay:check_wpn_info_on_key", 		self.scroll_view)
 	xml:InitCheck("tab_gameplay:check_gear_info_on_key", 		self.scroll_view)
+	xml:InitCheck("tab_gameplay:check_corpses_collision", 		self.scroll_view)
 	xml:InitComboBox("tab_gameplay:list_difficulty",	self)
 
 	local btn

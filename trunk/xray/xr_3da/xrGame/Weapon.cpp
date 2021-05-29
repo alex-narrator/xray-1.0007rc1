@@ -61,7 +61,7 @@ CWeapon::CWeapon(LPCSTR name)
 	m_ammoType = 0;
 	m_ammoName = NULL;
 
-	eHandDependence = hdNone;
+	//eHandDependence = hdNone;
 
 	m_fZoomFactor = g_fov;
 	m_fZoomRotationFactor = 0.f;
@@ -352,10 +352,10 @@ void CWeapon::Load(LPCSTR section)
 		vLoadedFirePoint2 = vLoadedFirePoint;
 
 	// hands
-	eHandDependence = EHandDependence(pSettings->r_s32(section, "hand_dependence"));
+	/*eHandDependence = EHandDependence(pSettings->r_s32(section, "hand_dependence"));
 	m_bIsSingleHanded = true;
 	if (pSettings->line_exist(section, "single_handed"))
-		m_bIsSingleHanded = !!pSettings->r_bool(section, "single_handed");
+		m_bIsSingleHanded = !!pSettings->r_bool(section, "single_handed");*/
 	//
 	m_fMinRadius = pSettings->r_float(section, "min_radius");
 	m_fMaxRadius = pSettings->r_float(section, "max_radius");

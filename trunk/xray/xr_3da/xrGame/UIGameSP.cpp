@@ -73,6 +73,7 @@ void CUIGameSP::SetClGame (game_cl_GameState* g)
 }
 
 #include "Inventory.h"
+#include "PDA.h"
 bool CUIGameSP::IR_OnKeyboardPress(int dik) 
 {
 	if(inherited::IR_OnKeyboardPress(dik)) return true;
@@ -80,50 +81,118 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	if( Device.Paused()		) return false;
 
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	CPda* PDA = smart_cast<CPda*>(pActor->inventory().ItemFromSlot(PDA_SLOT));
+	
 	if(!pActor)								return false;
 	if( pActor && !pActor->g_Alive() )		return false;
 
 	switch ( get_binded_action(dik) )
 	{
 	case kINVENTORY:
-		if( !MainInputReceiver() || MainInputReceiver()==InventoryMenu){
-			m_game->StartStopMenu(InventoryMenu,true);
-			return true;
+		if( !MainInputReceiver() || MainInputReceiver()==InventoryMenu)
+		{
+			if (pActor->inventory().FreeHands()) //инвентарь можно открыть если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
+			{
+				m_game->StartStopMenu(InventoryMenu, true);
+				return true;
+			}
+			else
+			{
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //на всякий случай удаляем статики в той же области экрана
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //на всякий случай удаляем статики в той же области экрана 
+				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
+				_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
+			}
 		}break;
-if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem) //проверяем есть ли PDA в слоте - UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
-{
+		
 	case kACTIVE_JOBS:
-		if (!MainInputReceiver() || MainInputReceiver() == PdaMenu){
-			PdaMenu->SetActiveSubdialog(eptQuests);
-			m_game->StartStopMenu(PdaMenu, true);
-			return true;
+		if ((!MainInputReceiver() || MainInputReceiver() == PdaMenu) && PDA)
+		{
+			if (pActor->inventory().FreeHands()) //открыть раздел ПДА можно если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
+			{
+				PdaMenu->SetActiveSubdialog(eptQuests);
+				m_game->StartStopMenu(PdaMenu, true);
+				return true;
+			}
+			else
+			{
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //на всякий случай удаляем статики в той же области экрана
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //на всякий случай удаляем статики в той же области экрана 
+				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
+				_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
+			}
 		}break;
 
 	case kMAP:
-		if (!MainInputReceiver() || MainInputReceiver() == PdaMenu){
-			PdaMenu->SetActiveSubdialog(eptMap);
-			m_game->StartStopMenu(PdaMenu, true);
-			return true;
+		if ((!MainInputReceiver() || MainInputReceiver() == PdaMenu) && PDA)
+		{
+			if (pActor->inventory().FreeHands()) //открыть раздел ПДА можно если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
+			{
+				PdaMenu->SetActiveSubdialog(eptMap);
+				m_game->StartStopMenu(PdaMenu, true);
+				return true;
+			}
+			else
+			{
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //на всякий случай удаляем статики в той же области экрана
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //на всякий случай удаляем статики в той же области экрана 
+				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
+				_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
+			}
 		}break;
 
 	case kCONTACTS:
-		if (!MainInputReceiver() || MainInputReceiver() == PdaMenu){
-			PdaMenu->SetActiveSubdialog(eptContacts);
-			m_game->StartStopMenu(PdaMenu, true);
-			return true;
+		if ((!MainInputReceiver() || MainInputReceiver() == PdaMenu) && PDA)
+		{
+			if (pActor->inventory().FreeHands()) //открыть раздел ПДА можно если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
+			{
+				PdaMenu->SetActiveSubdialog(eptContacts);
+				m_game->StartStopMenu(PdaMenu, true);
+				return true;
+			}
+			else
+			{
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //на всякий случай удаляем статики в той же области экрана
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //на всякий случай удаляем статики в той же области экрана 
+				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
+				_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
+			}
 		}break;
 
 	case kSCORES:
 	{
-		SDrawStaticStruct* ss = AddCustomStatic("main_task", true);
-		SGameTaskObjective* o = pActor->GameTaskManager().ActiveObjective();
-		if (!o)
-			ss->m_static->SetTextST("st_no_active_task");
+		if (PDA)
+		if (pActor->inventory().FreeHands()) //открыть раздел ПДА можно если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
+		{
+			SDrawStaticStruct* ss = AddCustomStatic("main_task", true);
+			SGameTaskObjective* o = pActor->GameTaskManager().ActiveObjective();
+			if (!o)
+			    ss->m_static->SetTextST("st_no_active_task");
+			else
+				ss->m_static->SetTextST(*(o->description));
+		}
 		else
-			ss->m_static->SetTextST(*(o->description));
+		{
+			HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //на всякий случай удаляем статики в той же области экрана
+			HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //на всякий случай удаляем статики в той же области экрана 
+			SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
+			_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
+		}
 	}
 	break;
-}
+	//
+	case kFWD:
+	case kBACK:
+	case kR_STRAFE:
+	case kL_STRAFE:
+	case kJUMP:
+	{
+		if (MainInputReceiver() == InventoryMenu && psActorFlags.test(AF_HARD_INV_ACCESS)) //если открыто окно инвентаря и установлена опция - закроем его
+			m_game->StartStopMenu(InventoryMenu, true);
+		return true;
+	}
+	break;
+	//
 	}
 	return false;
 }

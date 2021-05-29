@@ -90,8 +90,8 @@ public:
 	virtual bool				CanAttach			(PIItem pIItem) {return false;}
 	virtual bool				CanDetach			(LPCSTR item_section_name) {return false;}
 
-	virtual EHandDependence		HandDependence		()	const	{return hd1Hand;};
-	virtual bool				IsSingleHanded		()	const	{return true;};	
+	virtual EHandDependence		HandDependence		()	const	{return eHandDependence;};
+	virtual bool				IsSingleHanded		()	const	{return m_bIsSingleHanded;};	
 	virtual bool				Activate			();									// !!! Переопределить. (см. в Inventory.cpp)
 	virtual void				Deactivate			();								// !!! Переопределить. (см. в Inventory.cpp)
 	virtual bool				Action				(s32 cmd, u32 flags) {return false;}	// true если известная команда, иначе false
@@ -187,7 +187,9 @@ public:
 			void				SetSlot				(SLOT_ID slot)				{m_slot = slot;};	
 #endif
 protected:
-	
+	// 0-используется без участия рук, 1-одна рука, 2-две руки
+	EHandDependence			eHandDependence;
+	bool					m_bIsSingleHanded;
 	
 #ifdef INV_NEW_SLOTS_SYSTEM	
 	xr_vector<SLOT_ID>			m_slots;

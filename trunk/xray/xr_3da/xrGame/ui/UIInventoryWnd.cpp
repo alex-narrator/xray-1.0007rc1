@@ -443,7 +443,6 @@ void CUIInventoryWnd::Update()
 
 void CUIInventoryWnd::Show() 
 { 	
-
 	InitInventory			();
 	inherited::Show			();
 
@@ -476,8 +475,8 @@ void CUIInventoryWnd::Show()
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if (pActor)
 	{
-		pActor->inventory().m_bInventoryAmmoPlacement = true; //установим флаг инвентарной перезарядки
-		pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //восстановим показ оружия в руках
+		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = true; //установим флаг инвентарной перезарядки
+		if (psActorFlags.test(AF_HARD_INV_ACCESS)) pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //спрячем оружие в руках
 	}
 	//
 	Update								();
@@ -512,8 +511,8 @@ void CUIInventoryWnd::Hide()
 	// AF_AMMO_FROM_BELT
 	if (pActor)
 	{
-		pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //спрячем оружие в руках
-		pActor->inventory().m_bInventoryAmmoPlacement = false; //сбросим флаг инвентарной перезарядки
+		if (psActorFlags.test(AF_HARD_INV_ACCESS)) pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //восстановим показ оружия в руках
+		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = false; //сбросим флаг инвентарной перезарядки
 	}
 }
 

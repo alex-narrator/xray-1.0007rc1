@@ -53,9 +53,10 @@ bool activate_slot(u32 slot)
 #endif
 
 // what to block
-u32	INV_STATE_LADDER		= (1<<RIFLE_SLOT);
+u32	INV_STATE_LADDER		= INV_STATE_BLOCK_ALL;//(1<<RIFLE_SLOT);
 u32	INV_STATE_BLOCK_ALL		= 0xffffffff;
 u32	INV_STATE_INV_WND		= INV_STATE_BLOCK_ALL;
+u32	INV_STATE_PDA_WND		= INV_STATE_BLOCK_ALL;
 u32	INV_STATE_BUY_MENU		= INV_STATE_BLOCK_ALL;
 #if defined(HIDE_WEAPON_IN_CAR)
 u32	INV_STATE_CAR			= INV_STATE_BLOCK_ALL;
@@ -929,6 +930,14 @@ PIItem CInventory::GetAmmo(const char *name, bool SearchRuck) const
 	else
 		itm = Get(name, false);
 	return itm;
+}
+
+bool CInventory::FreeHands()
+{
+	if (!psActorFlags.test(AF_HARD_INV_ACCESS) || GetActiveSlot() == NO_ACTIVE_SLOT || ActiveItem()->IsSingleHanded())
+		return true;
+	else
+		return false;
 }
 
 PIItem CInventory::item(CLASS_ID cls_id) const

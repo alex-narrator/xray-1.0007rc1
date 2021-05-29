@@ -159,6 +159,7 @@
 	<string id="ui_mm_dyn_crosshair">
 		<text>Динамический прицел</text>
 	</string>
+<!-- BEGIN Новые опции геймплея -->>
 	<string id="ui_mm_round_crosshair">
 		<text>Использовать круглый (билдовый) курсор вместо перекрестия прицела</text>
 	</string>
@@ -183,6 +184,13 @@
 	<string id="ui_mm_no_auto_reload">
 		<text>Запрет автоматической перезарядки оружия и сброса зума</text>
 	</string>
+	<string id="ui_mm_hard_inventory_access">
+		<text>Для доступа к инвентарю, ПДА, быстрым слотам нужны свободные руки</text>
+	</string>
+	<string id="ui_mm_corpses_collision">
+		<text>Коллизия трупов (необходима перезагрузка)</text>
+	</string>
+<!-- END Новые опции геймплея -->>
 	<string id="ui_mm_eax">
 		<text>EAX</text>
 	</string>

@@ -54,6 +54,10 @@
 		<text font="graffiti22"  r="240" g="217" b="182" a="255" align="c">st_quick_slot_empty</text>
 	</quick_slot_empty>
 
+	<no_free_hands  x="100" y="730" width="800" height="30">
+		<text font="graffiti22"  r="240" g="217" b="182" a="255" align="c">st_no_free_hands</text>
+	</no_free_hands>
+
 	<gun_jammed x="200" y="70" width="600" height="50" ttl="3">
 		<text font="graffiti32"  r="240" g="217" b="182" a="255" align="c">gun_jammed</text>
 	</gun_jammed>

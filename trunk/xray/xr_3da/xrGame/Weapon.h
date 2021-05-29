@@ -257,8 +257,8 @@ public:
 	virtual float				Weight();
 
 public:
-	virtual EHandDependence		HandDependence()	const		{ return eHandDependence; }
-	bool				IsSingleHanded()	const		{ return m_bIsSingleHanded; }
+	//virtual EHandDependence		HandDependence()	const		{ return eHandDependence; }
+	//bool				IsSingleHanded()	const		{ return m_bIsSingleHanded; }
 
 public:
 	IC		LPCSTR			strap_bone0() const { return m_strap_bone0; }
@@ -275,8 +275,8 @@ protected:
 
 	Fmatrix					m_Offset;
 	// 0-используется без участия рук, 1-одна рука, 2-две руки
-	EHandDependence			eHandDependence;
-	bool					m_bIsSingleHanded;
+//	EHandDependence			eHandDependence;
+//	bool					m_bIsSingleHanded;
 
 public:
 	//загружаемые параметры

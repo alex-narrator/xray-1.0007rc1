@@ -226,7 +226,7 @@ void CUICarBodyWnd::Hide()
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if (pActor)
 	{
-		pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //восстановим показ оружия в руках
+		if (psActorFlags.test(AF_HARD_INV_ACCESS)) pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //восстановим показ оружия в руках
 	}
     //
 }
@@ -341,7 +341,7 @@ void CUICarBodyWnd::Show()
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if (pActor)
 	{
-		pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //спрячем оружие в руках
+		if (psActorFlags.test(AF_HARD_INV_ACCESS)) pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //спрячем оружие в руках
 	}
 	//
 }

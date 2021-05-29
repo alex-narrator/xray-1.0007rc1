@@ -52,7 +52,9 @@ void CActor::IR_OnKeyboardPress(int cmd)
 //	if (conditions().IsSleeping())	return;
 	if (IsTalking())	return;
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
-	
+
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+		
 	switch (cmd)
 	{
 	case kWPN_FIRE:
@@ -183,7 +185,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kUSE_SLOT_QUICK_ACCESS_2:
 	case kUSE_SLOT_QUICK_ACCESS_3:
 		{
-			if(IsGameTypeSingle())
+			if (IsGameTypeSingle() && pActor->inventory().FreeHands())
 			{
 				PIItem itm = 0;
 				switch (cmd){
@@ -226,6 +228,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 							strconcat(sizeof(str),str,*CStringTable().translate("st_item_used"),": ", itm->Name());
 						}
 						HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty");
+						HUD().GetUI()->UIGame()->RemoveCustomStatic("no_free_hands");
 						SDrawStaticStruct* _s		= HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
 						_s->m_endTime				= Device.fTimeGlobal+3.0f;// 3sec
 						_s->wnd()->SetText			(str);
@@ -235,10 +238,17 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				else
 				{
 					HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");
+					HUD().GetUI()->UIGame()->RemoveCustomStatic("no_free_hands");
 					SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("quick_slot_empty", true);
 					_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
-					_s->wnd()->SetText(*CStringTable().translate("st_quick_slot_empty"));
 				}
+			}
+			else
+			{
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //на всякий случай удаляем статики в той же области экрана
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //на всякий случай удаляем статики в той же области экрана 
+				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
+				_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
 			}
 		}break;
 #endif		
@@ -324,7 +334,7 @@ void CActor::IR_OnKeyboardHold(int cmd)
 	case kFWD:		mstate_wishful |= mcFwd;									break;
 	case kBACK:		mstate_wishful |= mcBack;									break;
 	case kCROUCH:	mstate_wishful |= mcCrouch;									break;
-
+	case kJUMP:     mstate_wishful |= mcJump;                                   break; //без этого при текущей реализации закрытия инвентаря по кнопкам движения в AF_HARD_INV_ACCESS прыжок просто не работал
 
 	}
 }
@@ -469,7 +479,6 @@ void CActor::ActorUse()
 			if(b_allow && !character_physics_support()->movement()->PHCapture())
 			{
 				character_physics_support()->movement()->PHCaptureObject(object,element);
-
 			}
 
 		}

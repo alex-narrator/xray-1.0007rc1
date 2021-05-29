@@ -81,10 +81,10 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 #endif
 			if (!m_pInv->m_slots[slots[i]].m_pIItem || m_pInv->m_slots[slots[i]].m_pIItem != CurrentIItem() )
 			{
-				//CEatableItem *eat = smart_cast<CEatableItem*>(CurrentIItem() );
+				CEatableItem *eat = smart_cast<CEatableItem*>(CurrentIItem() );
 				// Для еды разрешены только быстрые слоты.
 #ifndef QUICK_SLOT_POCKET_LOGIC
-				if (/*!eat || */is_quick_slot(u32(slots[i]), CurrentIItem(), m_pInv) )
+				if (!eat || is_quick_slot(u32(slots[i]), CurrentIItem(), m_pInv) )
 #endif
 				{
 					sprintf_s(temp, "st_move_to_slot%d", slots[i]);

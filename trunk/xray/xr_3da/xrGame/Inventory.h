@@ -78,11 +78,13 @@ public:
 	// »щет на по€се или в рюкзаке IItem с указанным CLS_ID
 	PIItem					Get					(CLASS_ID cls_id,  bool bSearchRuck) const;
 	PIItem					GetAny				(const char *name) const;//search both (ruck and belt)
-	// AMMO_FROM_BELT begin
+	// AMMO_FROM_BELT
 	PIItem					GetAmmo     		(const char *name, bool SearchRuck) const;  //получаем айтем из рюкзака или с по€са по условию
 	bool                    m_bAmmoSpawnUnloading = false;    //флаг на разр€жание/смену типа патрона
 	bool                    m_bInventoryAmmoPlacement = false; //флаг инвентарной перезар€дки
-	// AMMO_FROM_BELT end
+	// AF_HARD_INV_ACCESS
+	bool                    FreeHands();  //свободна ли хот€бы одна рука актора
+	//
 	PIItem					item				(CLASS_ID cls_id) const;
 	
 	// get all the items with the same section name
