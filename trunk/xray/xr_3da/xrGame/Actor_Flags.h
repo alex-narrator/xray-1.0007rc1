@@ -11,8 +11,9 @@ enum{
 		AF_AMMO_FROM_BELT	 =(1<<7), //патроны с пояса
 		AF_QUICK_FROM_BELT	 =(1<<8), //наполнение быстрых слотов с пояса
 		AF_NO_AUTO_RELOAD    =(1<<9), //запрет автоперезарядки оружия
-		AF_HARD_INV_ACCESS   =(1<<10), //усложненный доступ к инвентарю, ПДА, быстрым слотам
-		AF_CORPSES_COLLISION =(1<<11), //коллизия трупов
+		AF_HARD_INV_ACCESS   =(1<<10), //усложненный доступ к инвентарю, ПДА, быстрым слотам, обыску трупов и ящиков
+		AF_DISABLE_LIVE_DEAD_COLLISION =(1<<11), //отключение коллизии живых тел с мертвыми
+		AF_DISABLE_NON_ALIVE_COLLISION = (1<<12), //отключение коллизии всех неживых тел
 };
 
 extern Flags32 psActorFlags;

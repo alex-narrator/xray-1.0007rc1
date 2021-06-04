@@ -433,10 +433,15 @@
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_gear_info_on_key</text>
 		</check_gear_info_on_key>
 
-		<check_corpses_collision x="20" y="0" width="243" height="21">
-			<options_item entry="g_corpses_collision" group="mm_opt_gameplay"/>
-			<text font="letterica16" r="215" g="195" b="170">ui_mm_corpses_collision</text>
-		</check_corpses_collision>
+		<check_disable_live_dead_collision x="20" y="0" width="243" height="21">
+			<options_item entry="g_disable_live_dead_collision" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_disable_live_dead_collision</text>
+		</check_disable_live_dead_collision>
+		
+		<check_disable_non_alive_collision x="20" y="0" width="243" height="21">
+			<options_item entry="g_disable_non_alive_collision" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_disable_non_alive_collision</text>
+		</check_disable_non_alive_collision>
 <!-- END Новые опции геймплея -->>
 
 		<btn_check_updates x="342" y="330" width="111" height="29">

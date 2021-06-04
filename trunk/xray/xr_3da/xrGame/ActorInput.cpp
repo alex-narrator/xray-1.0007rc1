@@ -412,10 +412,12 @@ bool CActor::use_Holder				(CHolderCustom* holder)
 	}
 }
 
+#include "WeaponKnife.h"
 void CActor::ActorUse()
 {
 	//mstate_real = 0;
-	PickupModeOn();
+//	if (inventory().FreeHands())
+	//PickupModeOn();
 
 		
 	if (m_holder)
@@ -428,17 +430,26 @@ void CActor::ActorUse()
 		return;
 	}
 				
-	if(character_physics_support()->movement()->PHCapture())
+	if (character_physics_support()->movement()->PHCapture())
+	{
 		character_physics_support()->movement()->PHReleaseObject();
+		return;
+	}
 
 	
 
-	if(m_pUsableObject)m_pUsableObject->use(this);
+	if (m_pUsableObject)
+	{
+		if (m_pPersonWeLookingAt || inventory().FreeHands()) //чтобы можно было слышать просьбы убрать оружие при попытке поговорить со сталкерами с оружием в руках
+		{
+			m_pUsableObject->use(this);
+		}
+	}
 	
 	if(m_pInvBoxWeLookingAt && m_pInvBoxWeLookingAt->nonscript_usable())
 	{
 		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
-		if(pGameSP) pGameSP->StartCarBody(this, m_pInvBoxWeLookingAt );
+		if (pGameSP && inventory().FreeHands()) pGameSP->StartCarBody(this, m_pInvBoxWeLookingAt);
 		return;
 	}
 
@@ -456,13 +467,30 @@ void CActor::ActorUse()
 				if(pEntityAliveWeLookingAt->g_Alive())
 				{
 					TryToTalk();
+					return;
 				}
 				//обыск трупа
 				else  if(!Level().IR_GetKeyState(DIK_LSHIFT))
 				{
 					//только если находимся в режиме single
 					CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
-					if(pGameSP)pGameSP->StartCarBody(this, m_pPersonWeLookingAt );
+					if (pGameSP)
+					{
+						if (m_pMonsterWeLookingAt && psActorFlags.test(AF_HARD_INV_ACCESS))
+						{
+							CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(inventory().ActiveItem());
+							if (Knife)
+							{
+								pGameSP->StartCarBody(this, m_pPersonWeLookingAt);
+								return;
+							}
+						}
+						else if (inventory().FreeHands())
+						{
+							pGameSP->StartCarBody(this, m_pPersonWeLookingAt);
+							return;
+						}
+					}
 				}
 			}
 		}
@@ -475,10 +503,13 @@ void CActor::ActorUse()
 
 		if(object && Level().IR_GetKeyState(DIK_LSHIFT))
 		{
-			bool b_allow = !!pSettings->line_exist("ph_capture_visuals",object->cNameVisual());
-			if(b_allow && !character_physics_support()->movement()->PHCapture())
+			if (object->ActorCanCapture() && !character_physics_support()->movement()->PHCapture())
 			{
-				character_physics_support()->movement()->PHCaptureObject(object,element);
+				if (inventory().FreeHands())
+				{
+					character_physics_support()->movement()->PHCaptureObject(object, element);
+					return;
+				}
 			}
 
 		}
@@ -492,11 +523,11 @@ void CActor::ActorUse()
 					CGameObject::u_EventSend	(P);
 					return;
 			}
-
 		}
 	}
 
-
+	if (inventory().FreeHands())
+		PickupModeOn();
 }
 BOOL CActor::HUDview				( )const 
 { 

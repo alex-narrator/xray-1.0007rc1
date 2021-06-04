@@ -705,10 +705,16 @@ void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 	m_eState=esDead;
 	m_flags.set(fl_skeleton_in_shell,TRUE);
 	
-	if(IsGameTypeSingle() && psActorFlags.test(AF_CORPSES_COLLISION)) //коллизия трупов. необходима перезагрузка чтобы увидеть результат переключения опции
+	if(IsGameTypeSingle())
 	{
 		m_pPhysicsShell->SetPrefereExactIntegration	();//use exact integration for ragdolls in single
-		m_pPhysicsShell->SetRemoveCharacterCollLADisable();
+		//
+		if (!psActorFlags.test(AF_DISABLE_NON_ALIVE_COLLISION))
+		{
+			if (psActorFlags.test(AF_DISABLE_LIVE_DEAD_COLLISION)) m_pPhysicsShell->SetRemoveCharacterCollLADisable(); //отключение коллизии живых тел с мертвыми. необходима перезагрузка чтобы увидеть результат переключения опции
+		}
+		else
+			m_pPhysicsShell->SetIgnoreDynamic(); //отключение коллизии всех неживых тел. необходима перезагрузка чтобы увидеть результат переключения опции
 	}
 	else
 	{

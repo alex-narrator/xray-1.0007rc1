@@ -1,5 +1,6 @@
-#ifndef PHYSICSSHELL_HOLDER_H
-#define PHYSICSSHELL_HOLDER_H
+/*#ifndef PHYSICSSHELL_HOLDER_H
+#define PHYSICSSHELL_HOLDER_H*/
+#pragma once
 
 #include "GameObject.h"
 #include "ParticlesPlayer.h"
@@ -115,11 +116,11 @@ public:
 
 public:
 	virtual bool			register_schedule	() const;
-
+	        bool            ActorCanCapture     () const;
 public:
 	virtual	void			on_physics_disable	();
 
 	virtual void			UpdateXFORM(const Fmatrix &upd); // alpet: для обновления позиции и направления
 };
 
-#endif
+//#endif

@@ -934,7 +934,7 @@ PIItem CInventory::GetAmmo(const char *name, bool SearchRuck) const
 
 bool CInventory::FreeHands()
 {
-	if (!psActorFlags.test(AF_HARD_INV_ACCESS) || GetActiveSlot() == NO_ACTIVE_SLOT || ActiveItem()->IsSingleHanded())
+	if (!psActorFlags.test(AF_HARD_INV_ACCESS) || GetActiveSlot() == NO_ACTIVE_SLOT || ActiveItem()->IsSingleHanded() || ActiveItem() == NULL)
 		return true;
 	else
 		return false;

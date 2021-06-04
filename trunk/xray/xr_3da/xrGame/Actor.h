@@ -351,7 +351,7 @@ public:
 protected:
 	void					cam_Set					(EActorCameras style);
 	void					cam_Update				(float dt, float fFOV);
-	void					camUpdateLadder		(float dt);
+	void					camUpdateLadder		    (float dt);
 	void					cam_SetLadder			();
 	void					cam_UnsetLadder			();
 	float					currentFOV				();
@@ -385,7 +385,8 @@ public:
 	virtual BOOL			feel_touch_on_contact		(CObject* O);
 
 	CGameObject*			ObjectWeLookingAt			() {return m_pObjectWeLookingAt;}
-	CInventoryOwner*		PersonWeLookingAt			() {return m_pPersonWeLookingAt;}
+	CInventoryOwner*		PersonWeLookingAt           () {return m_pPersonWeLookingAt;}
+	CBaseMonster*		    MonsterWeLookingAt          () {return m_pMonsterWeLookingAt;}
 	LPCSTR					GetDefaultActionForObject	() {return *m_sDefaultObjAction;}
 //.	void					AddFollower					(u16 id);
 //.	void					RemoveFollower				(u16 id);
@@ -397,6 +398,7 @@ protected:
 	CUsableScriptObject*	m_pUsableObject;
 	// Person we're looking at
 	CInventoryOwner*		m_pPersonWeLookingAt;
+	CBaseMonster*           m_pMonsterWeLookingAt;
 	CHolderCustom*			m_pVehicleWeLookingAt;
 	CGameObject*			m_pObjectWeLookingAt;
 	CInventoryBox*			m_pInvBoxWeLookingAt;
@@ -406,8 +408,17 @@ protected:
 	shared_str				m_sCharacterUseAction;
 	shared_str				m_sDeadCharacterUseAction;
 	shared_str				m_sDeadCharacterUseOrDragAction;
+	shared_str              m_sDeadCharacterNoAnyAction;    //руки зан€ты
+	shared_str              m_sDeadMonsterUseOrDragAction;  //отрезать и тащить
+	shared_str              m_sDeadMonsterUseNotDragAction; //отрезать/руки зан€ты
+	shared_str              m_sDeadMonsterDragNotUseAction; //нужен нож/тащить
+	shared_str              m_sDeadMonsterNotDragNotUse;    //нужен нож/руки зан€ты
+	shared_str              m_sDeadMonsterUseAction;        //отрезать
+	shared_str              m_sDeadMonsterNotUse;           //нужен нож
+	shared_str              m_sNoAnyAction;                 //руки зан€ты
 	shared_str				m_sCarCharacterUseAction;
 	shared_str				m_sInventoryItemUseAction;
+	shared_str				m_sGameObjectDragAction;         //“ащить предмет
 	shared_str				m_sInventoryBoxUseAction;
 
 	//режим подбирани€ предметов

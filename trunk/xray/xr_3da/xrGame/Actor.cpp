@@ -11,6 +11,7 @@
 #include "PHDestroyable.h"
 #include "Car.h"
 #include "xrserver_objects_alife_monsters.h"
+#include "AI/Monsters/BaseMonster/base_monster.h"
 #include "CameraLook.h"
 #include "CameraFirstEye.h"
 #include "effectorfall.h"
@@ -50,6 +51,7 @@
 #include "alife_registry_wrappers.h"
 #include "../skeletonanimated.h"
 #include "artifact.h"
+#include "WeaponKnife.h"
 #include "CharacterPhysicsSupport.h"
 #include "material_manager.h"
 #include "IColisiondamageInfo.h"
@@ -156,6 +158,7 @@ CActor::CActor() : CEntityAlive()
 	inventory().SetBeltUseful(true);
 
 	m_pPersonWeLookingAt	= NULL;
+	m_pMonsterWeLookingAt   = NULL;
 	m_pVehicleWeLookingAt	= NULL;
 	m_pObjectWeLookingAt	= NULL;
 	m_bPickupMode			= false;
@@ -412,13 +415,21 @@ if(!g_dedicated_server)
 	m_AutoPickUp_AABB_Offset		= READ_IF_EXISTS(pSettings,r_fvector3,section,"AutoPickUp_AABB_offs",Fvector().set(0, 0, 0));
 
 	CStringTable string_table;
-	m_sCharacterUseAction			= "character_use";
-	m_sDeadCharacterUseAction		= "dead_character_use";
-	m_sDeadCharacterUseOrDragAction	= "dead_character_use_or_drag";
-	m_sCarCharacterUseAction		= "car_character_use";
-	m_sInventoryItemUseAction		= "inventory_item_use";
-	m_sInventoryBoxUseAction		= "inventory_box_use";
-	//---------------------------------------------------------------------
+	m_sCharacterUseAction           = "character_use";
+	m_sDeadCharacterUseAction       = "dead_character_use";
+	m_sDeadCharacterUseOrDragAction = "dead_character_use_or_drag";
+	m_sDeadMonsterUseOrDragAction   = "dead_monster_use_or_drag";      //отрезать и тащить
+	m_sDeadMonsterUseNotDragAction  = "dead_monster_use_not_drag";     //отрезать/руки заняты
+	m_sDeadMonsterDragNotUseAction  = "dead_monster_drag_not_use";     //нужен нож/тащить
+	m_sDeadMonsterNotDragNotUse     = "dead_monster_not_drag_not_use"; //нужен нож/руки заняты
+	m_sDeadMonsterUseAction         = "dead_monster_use";              //отрезать
+	m_sDeadMonsterNotUse            = "dead_monster_not_use";          //нужен нож
+	m_sNoAnyAction                  = "no_any_action";                 //руки заняты
+	m_sCarCharacterUseAction        = "car_character_use";
+	m_sInventoryItemUseAction       = "inventory_item_use";
+	m_sGameObjectDragAction         = "game_object_drag";              //Тащить предмет
+	m_sInventoryBoxUseAction        = "inventory_box_use";
+//---------------------------------------------------------------------
 	m_sHeadShotParticle	= READ_IF_EXISTS(pSettings,r_string,section,"HeadShotParticle",0);
 
 }
@@ -1174,45 +1185,70 @@ void CActor::shedule_Update	(u32 DT)
 		m_pInvBoxWeLookingAt			= smart_cast<CInventoryBox*>(game_object);
 		inventory().m_pTarget			= smart_cast<PIItem>(game_object);
 		m_pPersonWeLookingAt			= smart_cast<CInventoryOwner*>(game_object);
+		m_pMonsterWeLookingAt			= smart_cast<CBaseMonster*>(game_object);
 		m_pVehicleWeLookingAt			= smart_cast<CHolderCustom*>(game_object);
 		CEntityAlive* pEntityAlive		= smart_cast<CEntityAlive*>(game_object);
-		
+		//
+		CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(inventory().ActiveItem());
+		//
+		auto ph_shell_holder = smart_cast<CPhysicsShellHolder*>(RQ.O);
+		bool b_allow_drag = ph_shell_holder && ph_shell_holder->ActorCanCapture();
+
 		if (GameID() == GAME_SINGLE )
 		{
-			if (m_pUsableObject && m_pUsableObject->tip_text())
+			if (!m_pPersonWeLookingAt && m_pUsableObject && m_pUsableObject->tip_text()) //юзабельные предметы типа дверей, замков, но не НПС (НПС исключены чтобы не было "руки заняты" при попытке разговора)
 			{
-				m_sDefaultObjAction = CStringTable().translate( m_pUsableObject->tip_text() );
+					m_sDefaultObjAction = inventory().FreeHands() ? CStringTable().translate(m_pUsableObject->tip_text()) : m_sNoAnyAction;
 			}
-			else
+			else if (pEntityAlive)
 			{
 				if (m_pPersonWeLookingAt && pEntityAlive->g_Alive())
-					m_sDefaultObjAction = m_sCharacterUseAction;
+					//m_sDefaultObjAction = m_sCharacterUseAction;
+					m_sDefaultObjAction = CStringTable().translate(m_pUsableObject->tip_text());
 
-				else if (pEntityAlive && !pEntityAlive->g_Alive())
+				else if (!pEntityAlive->g_Alive())
 				{
-					bool b_allow_drag = !!pSettings->line_exist("ph_capture_visuals",pEntityAlive->cNameVisual());
-				
-					if(b_allow_drag)
-						m_sDefaultObjAction = m_sDeadCharacterUseOrDragAction;
+					if (b_allow_drag)
+					{
+							if (m_pMonsterWeLookingAt && psActorFlags.test(AF_HARD_INV_ACCESS))
+							{
+								if (Knife) //на текущих конфигах нож - одноручный и с ним всегда FreeHands() == true, но вдруг будут двуручные ножи
+									m_sDefaultObjAction = inventory().FreeHands() ? m_sDeadMonsterUseOrDragAction : m_sDeadMonsterUseNotDragAction; //отрезать и тащить | отрезать/руки заняты
+								else
+									m_sDefaultObjAction = inventory().FreeHands() ? m_sDeadMonsterDragNotUseAction : m_sDeadMonsterNotDragNotUse;   //нужен нож/тащить | нужен нож/руки заняты
+							}
+							else
+								m_sDefaultObjAction = inventory().FreeHands() ? m_sDeadCharacterUseOrDragAction : m_sNoAnyAction;
+					}
 					else
-						m_sDefaultObjAction = m_sDeadCharacterUseAction;
+					{
+							if (m_pMonsterWeLookingAt && psActorFlags.test(AF_HARD_INV_ACCESS))
+								m_sDefaultObjAction = Knife ? m_sDeadMonsterUseAction : m_sDeadMonsterNotUse;
+							else
+								m_sDefaultObjAction = inventory().FreeHands() ? m_sDeadCharacterUseAction : m_sNoAnyAction;
+					}
 
-				}else if (m_pVehicleWeLookingAt)
-					m_sDefaultObjAction = m_sCarCharacterUseAction;
-
-				else if (inventory().m_pTarget && inventory().m_pTarget->CanTake() )
-					m_sDefaultObjAction = m_sInventoryItemUseAction;
-//.				else if (m_pInvBoxWeLookingAt)
-//.					m_sDefaultObjAction = m_sInventoryBoxUseAction;
-				else 
-					m_sDefaultObjAction = NULL;
+				}
 			}
+			else if (m_pVehicleWeLookingAt)
+				m_sDefaultObjAction = inventory().FreeHands() ? m_sCarCharacterUseAction : m_sNoAnyAction;
+
+			else if (inventory().m_pTarget && inventory().m_pTarget->CanTake()) //подобрать предмет
+					m_sDefaultObjAction = inventory().FreeHands() ? m_sInventoryItemUseAction : m_sNoAnyAction;
+
+			else if (b_allow_drag)
+					m_sDefaultObjAction = inventory().FreeHands() ? m_sGameObjectDragAction : m_sNoAnyAction;
+			//.				else if (m_pInvBoxWeLookingAt)
+			//.					m_sDefaultObjAction = m_sInventoryBoxUseAction;
+			else
+				m_sDefaultObjAction = NULL;
 		}
 	}
 	else 
 	{
 		inventory().m_pTarget	= NULL;
 		m_pPersonWeLookingAt	= NULL;
+		m_pMonsterWeLookingAt   = NULL;
 		m_sDefaultObjAction		= NULL;
 		m_pUsableObject			= NULL;
 		m_pObjectWeLookingAt	= NULL;
