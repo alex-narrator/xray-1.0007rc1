@@ -1,4 +1,4 @@
-#pragma	 once
+﻿#pragma	 once
 #ifndef PH_CAPTURE_H
 #define PH_CAPTURE_H
 
@@ -31,6 +31,7 @@ Fvector				m_capture_pos;
 float				m_back_force;
 float				m_pull_force;
 float				m_capture_force;
+float               m_throw_force; //установим силу для отбрасывания предмета
 float				m_capture_distance;
 float				m_pull_distance;
 u32					m_capture_time;

@@ -197,16 +197,16 @@ public:
 
 
 public:
-	//сон
+	//СЃРѕРЅ
 //			void		UpdateSleep			();
 
-	//свойства артефактов
+	//СЃРІРѕР№СЃС‚РІР° Р°СЂС‚РµС„Р°РєС‚РѕРІ
 	virtual void		UpdateArtefactsOnBelt	();
 	virtual void		UpdateArtefactPanel();
 	virtual float		HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type);
 	
 protected:
-	//звук тяжелого дыхания
+	//Р·РІСѓРє С‚СЏР¶РµР»РѕРіРѕ РґС‹С…Р°РЅРёСЏ
 	ref_sound			m_HeavyBreathSnd;
 	ref_sound			m_BloodSnd;
 
@@ -214,7 +214,7 @@ protected:
 
 protected:
 	//Sleep params
-	//время когда актера надо разбудить
+	//РІСЂРµРјСЏ РєРѕРіРґР° Р°РєС‚РµСЂР° РЅР°РґРѕ СЂР°Р·Р±СѓРґРёС‚СЊ
 	ALife::_TIME_ID			m_dwWakeUpTime;
 	float					m_fOldTimeFactor;
 	float					m_fOldOnlineRadius;
@@ -242,17 +242,17 @@ protected:
 	BOOL					b_DropActivated;
 	float					f_DropPower;
 
-	//random seed для Zoom mode
+	//random seed РґР»СЏ Zoom mode
 	s32						m_ZoomRndSeed;
-	//random seed для Weapon Effector Shot
+	//random seed РґР»СЏ Weapon Effector Shot
 	s32						m_ShotRndSeed;
 
 	bool					m_bOutBorder;
-	//сохраняет счетчик объектов в feel_touch, для которых необходимо обновлять размер колижена с актером 
+	//СЃРѕС…СЂР°РЅСЏРµС‚ СЃС‡РµС‚С‡РёРє РѕР±СЉРµРєС‚РѕРІ РІ feel_touch, РґР»СЏ РєРѕС‚РѕСЂС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РѕР±РЅРѕРІР»СЏС‚СЊ СЂР°Р·РјРµСЂ РєРѕР»РёР¶РµРЅР° СЃ Р°РєС‚РµСЂРѕРј 
 	u32						m_feel_touch_characters;
-	//разрешения на удаление трупа актера 
-	//после того как контролирующий его игрок зареспавнился заново. 
-	//устанавливается в game
+	//СЂР°Р·СЂРµС€РµРЅРёСЏ РЅР° СѓРґР°Р»РµРЅРёРµ С‚СЂСѓРїР° Р°РєС‚РµСЂР° 
+	//РїРѕСЃР»Рµ С‚РѕРіРѕ РєР°Рє РєРѕРЅС‚СЂРѕР»РёСЂСѓСЋС‰РёР№ РµРіРѕ РёРіСЂРѕРє Р·Р°СЂРµСЃРїР°РІРЅРёР»СЃСЏ Р·Р°РЅРѕРІРѕ. 
+	//СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚СЃСЏ РІ game
 private:
 	void					SwitchOutBorder(bool new_border_state);
 public:
@@ -292,10 +292,10 @@ protected:
 	// Rotation
 	SRotation				r_torso;
 	float					r_torso_tgt_roll;
-	//положение торса без воздействия эффекта отдачи оружия
+	//РїРѕР»РѕР¶РµРЅРёРµ С‚РѕСЂСЃР° Р±РµР· РІРѕР·РґРµР№СЃС‚РІРёСЏ СЌС„С„РµРєС‚Р° РѕС‚РґР°С‡Рё РѕСЂСѓР¶РёСЏ
 	SRotation				unaffected_r_torso;
 
-	//ориентация модели
+	//РѕСЂРёРµРЅС‚Р°С†РёСЏ РјРѕРґРµР»Рё
 	float					r_model_yaw_dest;
 	float					r_model_yaw;			// orientation of model
 	float					r_model_yaw_delta;		// effect on multiple "strafe"+"something"
@@ -312,7 +312,7 @@ public:
 	MotionID				m_current_torso;
 	MotionID				m_current_head;
 
-	// callback на анимации модели актера
+	// callback РЅР° Р°РЅРёРјР°С†РёРё РјРѕРґРµР»Рё Р°РєС‚РµСЂР°
 	void					SetCallbacks		();
 	void					ResetCallbacks		();
 	static void				Spin0Callback		(CBoneInstance*);
@@ -371,12 +371,12 @@ protected:
 	SSleepEffector*			m_pSleepEffector;
 	CSleepEffectorPP*		m_pSleepEffectorPP;
 
-	//менеджер эффекторов, есть у каждого актрера
+	//РјРµРЅРµРґР¶РµСЂ СЌС„С„РµРєС‚РѕСЂРѕРІ, РµСЃС‚СЊ Сѓ РєР°Р¶РґРѕРіРѕ Р°РєС‚СЂРµСЂР°
 	CCameraManager*			m_pActorEffector;
 	static float			f_Ladder_cam_limit;
 	////////////////////////////////////////////
-	// для взаимодействия с другими персонажами 
-	// или предметами
+	// РґР»СЏ РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ СЃ РґСЂСѓРіРёРјРё РїРµСЂСЃРѕРЅР°Р¶Р°РјРё 
+	// РёР»Рё РїСЂРµРґРјРµС‚Р°РјРё
 	///////////////////////////////////////////
 public:
 	virtual void			feel_touch_new				(CObject* O);
@@ -408,22 +408,22 @@ protected:
 	shared_str				m_sCharacterUseAction;
 	shared_str				m_sDeadCharacterUseAction;
 	shared_str				m_sDeadCharacterUseOrDragAction;
-	shared_str              m_sDeadCharacterNoAnyAction;    //руки заняты
-	shared_str              m_sDeadMonsterUseOrDragAction;  //отрезать и тащить
-	shared_str              m_sDeadMonsterUseNotDragAction; //отрезать/руки заняты
-	shared_str              m_sDeadMonsterDragNotUseAction; //нужен нож/тащить
-	shared_str              m_sDeadMonsterNotDragNotUse;    //нужен нож/руки заняты
-	shared_str              m_sDeadMonsterUseAction;        //отрезать
-	shared_str              m_sDeadMonsterNotUse;           //нужен нож
-	shared_str              m_sNoAnyAction;                 //руки заняты
+	shared_str              m_sDeadCharacterNoAnyAction;    //СЂСѓРєРё Р·Р°РЅСЏС‚С‹
+	shared_str              m_sDeadMonsterUseOrDragAction;  //РѕС‚СЂРµР·Р°С‚СЊ Рё С‚Р°С‰РёС‚СЊ
+	shared_str              m_sDeadMonsterUseNotDragAction; //РѕС‚СЂРµР·Р°С‚СЊ/СЂСѓРєРё Р·Р°РЅСЏС‚С‹
+	shared_str              m_sDeadMonsterDragNotUseAction; //РЅСѓР¶РµРЅ РЅРѕР¶/С‚Р°С‰РёС‚СЊ
+	shared_str              m_sDeadMonsterNotDragNotUse;    //РЅСѓР¶РµРЅ РЅРѕР¶/СЂСѓРєРё Р·Р°РЅСЏС‚С‹
+	shared_str              m_sDeadMonsterUseAction;        //РѕС‚СЂРµР·Р°С‚СЊ
+	shared_str              m_sDeadMonsterNotUse;           //РЅСѓР¶РµРЅ РЅРѕР¶
+	shared_str              m_sNoAnyAction;                 //СЂСѓРєРё Р·Р°РЅСЏС‚С‹
 	shared_str				m_sCarCharacterUseAction;
 	shared_str				m_sInventoryItemUseAction;
-	shared_str				m_sGameObjectDragAction;         //Тащить предмет
+	shared_str				m_sGameObjectDragAction;         //РўР°С‰РёС‚СЊ РїСЂРµРґРјРµС‚
 	shared_str				m_sInventoryBoxUseAction;
 
-	//режим подбирания предметов
+	//СЂРµР¶РёРј РїРѕРґР±РёСЂР°РЅРёСЏ РїСЂРµРґРјРµС‚РѕРІ
 	bool					m_bPickupMode;
-	//расстояние подсветки предметов
+	//СЂР°СЃСЃС‚РѕСЏРЅРёРµ РїРѕРґСЃРІРµС‚РєРё РїСЂРµРґРјРµС‚РѕРІ
 	float					m_fPickupInfoRadius;
 
 	void					PickupModeUpdate	();
@@ -437,7 +437,7 @@ public:
 
 
 	//////////////////////////////////////////////////////////////////////////
-	// Motions (передвижения актрера)
+	// Motions (РїРµСЂРµРґРІРёР¶РµРЅРёСЏ Р°РєС‚СЂРµСЂР°)
 	//////////////////////////////////////////////////////////////////////////
 public:
 	void					g_cl_CheckControls		(u32 mstate_wf, Fvector &vControlAccel, float &Jump, float dt);
@@ -462,8 +462,8 @@ public:
 
 #if defined (AF_JUMP_WALK) || defined (ACTOR_PARAMS_DEPENDECY)
 	void                    UpdateConfigParams      ();
-	float                   m_fWalkAccelCfg         = pSettings->r_float("actor", "walk_accel"); //конфиговое значение скорости ходьбы
-	float                   m_fJumpSpeedCfg         = pSettings->r_float("actor", "jump_speed"); //конфиговое значение высоты прыжка
+	float                   m_fWalkAccelCfg         = pSettings->r_float("actor", "walk_accel"); //РєРѕРЅС„РёРіРѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ СЃРєРѕСЂРѕСЃС‚Рё С…РѕРґСЊР±С‹
+	float                   m_fJumpSpeedCfg         = pSettings->r_float("actor", "jump_speed"); //РєРѕРЅС„РёРіРѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ РІС‹СЃРѕС‚С‹ РїСЂС‹Р¶РєР°
 	float                   m_fAdditionalWalkAccel;
 	float                   m_fAdditionalJumpSpeed;
 #endif
@@ -502,7 +502,7 @@ public:
 	virtual	float			GetLookFactor			();
 
 	//////////////////////////////////////////////////////////////////////////
-	// Weapon fire control (оружие актрера)
+	// Weapon fire control (РѕСЂСѓР¶РёРµ Р°РєС‚СЂРµСЂР°)
 	//////////////////////////////////////////////////////////////////////////
 public:
 	virtual void						g_WeaponBones		(int &L, int &R1, int &R2);
@@ -512,31 +512,31 @@ public:
 			bool						IsZoomAimingMode	() const {return m_bZoomAimingMode;}
 
 protected:
-	//если актер целится в прицел
+	//РµСЃР»Рё Р°РєС‚РµСЂ С†РµР»РёС‚СЃСЏ РІ РїСЂРёС†РµР»
 	bool								m_bZoomAimingMode;
 
-	//настройки аккуратности стрельбы
-	//базовая дисперсия (когда игрок стоит на месте)
+	//РЅР°СЃС‚СЂРѕР№РєРё Р°РєРєСѓСЂР°С‚РЅРѕСЃС‚Рё СЃС‚СЂРµР»СЊР±С‹
+	//Р±Р°Р·РѕРІР°СЏ РґРёСЃРїРµСЂСЃРёСЏ (РєРѕРіРґР° РёРіСЂРѕРє СЃС‚РѕРёС‚ РЅР° РјРµСЃС‚Рµ)
 	float								m_fDispBase;
 	float								m_fDispAim;
-	//коэффициенты на сколько процентов увеличится базовая дисперсия
-	//учитывает скорость актера 
+	//РєРѕСЌС„С„РёС†РёРµРЅС‚С‹ РЅР° СЃРєРѕР»СЊРєРѕ РїСЂРѕС†РµРЅС‚РѕРІ СѓРІРµР»РёС‡РёС‚СЃСЏ Р±Р°Р·РѕРІР°СЏ РґРёСЃРїРµСЂСЃРёСЏ
+	//СѓС‡РёС‚С‹РІР°РµС‚ СЃРєРѕСЂРѕСЃС‚СЊ Р°РєС‚РµСЂР° 
 	float								m_fDispVelFactor;
-	//если актер бежит
+	//РµСЃР»Рё Р°РєС‚РµСЂ Р±РµР¶РёС‚
 	float								m_fDispAccelFactor;
-	//если актер сидит
+	//РµСЃР»Рё Р°РєС‚РµСЂ СЃРёРґРёС‚
 	float								m_fDispCrouchFactor;
 	//crouch+no acceleration
 	float								m_fDispCrouchNoAccelFactor;
-	//смещение firepoint относительно default firepoint для бросания болтов и гранат
+	//СЃРјРµС‰РµРЅРёРµ firepoint РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ default firepoint РґР»СЏ Р±СЂРѕСЃР°РЅРёСЏ Р±РѕР»С‚РѕРІ Рё РіСЂР°РЅР°С‚
 	Fvector								m_vMissileOffset;
 public:
-	// Получение, и запись смещения для гранат
+	// РџРѕР»СѓС‡РµРЅРёРµ, Рё Р·Р°РїРёСЃСЊ СЃРјРµС‰РµРЅРёСЏ РґР»СЏ РіСЂР°РЅР°С‚
 	Fvector								GetMissileOffset	() const;
 	void								SetMissileOffset	(const Fvector &vNewOffset);
 
 protected:
-	//косточки используемые при стрельбе
+	//РєРѕСЃС‚РѕС‡РєРё РёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РїСЂРё СЃС‚СЂРµР»СЊР±Рµ
 	int									m_r_hand;
 	int									m_l_finger1;
     int									m_r_finger2;
@@ -587,15 +587,15 @@ protected:
 ////////////////////////////////////////////////////////////////////////////
 virtual	bool				can_validate_position_on_spawn	(){return false;}
 	///////////////////////////////////////////////////////
-	// апдайт с данными физики
+	// Р°РїРґР°Р№С‚ СЃ РґР°РЅРЅС‹РјРё С„РёР·РёРєРё
 	xr_deque<net_update_A>	NET_A;
 	
 	//---------------------------------------------
 //	bool					m_bHasUpdate;	
 	/// spline coeff /////////////////////
-	float			SCoeff[3][4];			//коэффициэнты для сплайна Бизье
-	float			HCoeff[3][4];			//коэффициэнты для сплайна Эрмита
-	Fvector			IPosS, IPosH, IPosL;	//положение актера после интерполяции Бизье, Эрмита, линейной
+	float			SCoeff[3][4];			//РєРѕСЌС„С„РёС†РёСЌРЅС‚С‹ РґР»СЏ СЃРїР»Р°Р№РЅР° Р‘РёР·СЊРµ
+	float			HCoeff[3][4];			//РєРѕСЌС„С„РёС†РёСЌРЅС‚С‹ РґР»СЏ СЃРїР»Р°Р№РЅР° Р­СЂРјРёС‚Р°
+	Fvector			IPosS, IPosH, IPosL;	//РїРѕР»РѕР¶РµРЅРёРµ Р°РєС‚РµСЂР° РїРѕСЃР»Рµ РёРЅС‚РµСЂРїРѕР»СЏС†РёРё Р‘РёР·СЊРµ, Р­СЂРјРёС‚Р°, Р»РёРЅРµР№РЅРѕР№
 
 #ifdef DEBUG
 	DEF_DEQUE		(VIS_POSITION, Fvector);
@@ -648,6 +648,7 @@ public:
 	virtual void			PH_A_CrPr		(); // actions & operations after phisic correction-prediction steps
 //	virtual void			UpdatePosStack	( u32 Time0, u32 Time1 );
 	virtual void			MoveActor		(Fvector NewPos, Fvector NewDir);
+	        float           m_fCaptureReleaseThrowForce; //СЃРёР»Р° СЃ РєРѕС‚РѕСЂРѕР№ Р°РєС‚РѕСЂ РѕС‚Р±СЂР°СЃС‹РІР°РµС‚ РїСЂРµРґРјРµС‚
 
 	virtual void			SpawnAmmoForWeapon		(CInventoryItem *pIItem);
 	virtual void			RemoveAmmoForWeapon		(CInventoryItem *pIItem);
@@ -783,7 +784,7 @@ public:
 private:
 	ALife::_OBJECT_ID	m_holder_id;
 			
-			xr_map<EGameActions, bool> m_blocked_actions; // Вектор с заблокированными действиями. Real Wolf. 14.10.2014.
+			xr_map<EGameActions, bool> m_blocked_actions; // Р’РµРєС‚РѕСЂ СЃ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅС‹РјРё РґРµР№СЃС‚РІРёСЏРјРё. Real Wolf. 14.10.2014.
 public:
 	virtual bool				register_schedule				() const {return false;}
 			IC u32 get_state() const

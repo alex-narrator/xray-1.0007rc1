@@ -146,11 +146,11 @@ void CPHSkeleton::Update(u32 dt)
 	}
 
 	if(b_removing&&
-		Device.dwTimeGlobal>m_remove_time&&
+		Device.dwTimeGlobal>m_remove_time &&
 		//(Device.dwTimeGlobal-m_unsplit_time)*phTimefactor>remove_time&&
-		m_unsplited_shels.empty()) 
+		m_unsplited_shels.empty() && !obj->IsHoldedByActor)
 	{
-		if (obj->Local())	obj->DestroyObject	();
+		if (obj->Local())	obj->DestroyObject();
 		b_removing=false;
 	}
 

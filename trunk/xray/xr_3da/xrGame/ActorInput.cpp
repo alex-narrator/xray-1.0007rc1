@@ -416,10 +416,8 @@ bool CActor::use_Holder				(CHolderCustom* holder)
 void CActor::ActorUse()
 {
 	//mstate_real = 0;
-//	if (inventory().FreeHands())
 	//PickupModeOn();
 
-		
 	if (m_holder)
 	{
 		CGameObject*	GO			= smart_cast<CGameObject*>(m_holder);
@@ -453,7 +451,7 @@ void CActor::ActorUse()
 		return;
 	}
 
-	if(!m_pUsableObject||m_pUsableObject->nonscript_usable())
+	else if(!m_pUsableObject||m_pUsableObject->nonscript_usable())
 	{
 		if(m_pPersonWeLookingAt)
 		{

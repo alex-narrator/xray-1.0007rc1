@@ -101,6 +101,7 @@ void CPhysicsShellHolder::init			()
 {
 	m_pPhysicsShell				=	NULL		;
 	b_sheduled					=	false		;
+	IsHoldedByActor             =   false;
 }
 void CPhysicsShellHolder::correct_spawn_pos()
 {

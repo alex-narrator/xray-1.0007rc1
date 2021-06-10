@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "UIInventoryWnd.h"
 #include "../actor.h"
 #include "../silencer.h"
@@ -28,7 +28,7 @@ void CUIInventoryWnd::EatItem(PIItem itm)
 }
 
 #if defined(INV_NEW_SLOTS_SYSTEM)
-// вернет true если слот назначения быстрый, и не занят аналогичным предметом
+// РІРµСЂРЅРµС‚ true РµСЃР»Рё СЃР»РѕС‚ РЅР°Р·РЅР°С‡РµРЅРёСЏ Р±С‹СЃС‚СЂС‹Р№, Рё РЅРµ Р·Р°РЅСЏС‚ Р°РЅР°Р»РѕРіРёС‡РЅС‹Рј РїСЂРµРґРјРµС‚РѕРј
 bool is_quick_slot(u32 slot, PIItem item, CInventory *inv)
 {
 	if (slot >= SLOT_QUICK_ACCESS_0 && slot <= SLOT_QUICK_ACCESS_3)
@@ -48,7 +48,7 @@ bool is_quick_slot(u32 slot, PIItem item, CInventory *inv)
 #include "../Antirad.h"
 void CUIInventoryWnd::ActivatePropertiesBox()
 {
-	// Флаг-признак для невлючения пункта контекстного меню: Dreess Outfit, если костюм уже надет
+	// Р¤Р»Р°Рі-РїСЂРёР·РЅР°Рє РґР»СЏ РЅРµРІР»СЋС‡РµРЅРёСЏ РїСѓРЅРєС‚Р° РєРѕРЅС‚РµРєСЃС‚РЅРѕРіРѕ РјРµРЅСЋ: Dreess Outfit, РµСЃР»Рё РєРѕСЃС‚СЋРј СѓР¶Рµ РЅР°РґРµС‚
 	bool bAlreadyDressed = false; 
 
 		
@@ -69,7 +69,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 
 
 #if defined(INV_NEW_SLOTS_SYSTEM)
-	// Добавим в контекстное меню выбор слота. Real Wolf.
+	// Р”РѕР±Р°РІРёРј РІ РєРѕРЅС‚РµРєСЃС‚РЅРѕРµ РјРµРЅСЋ РІС‹Р±РѕСЂ СЃР»РѕС‚Р°. Real Wolf.
 	auto slots = CurrentIItem()->GetSlots();
 	char temp[64];
 	for(u8 i = 0; i < (u8)slots.size(); ++i) 
@@ -82,7 +82,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			if (!m_pInv->m_slots[slots[i]].m_pIItem || m_pInv->m_slots[slots[i]].m_pIItem != CurrentIItem() )
 			{
 				CEatableItem *eat = smart_cast<CEatableItem*>(CurrentIItem() );
-				// Для еды разрешены только быстрые слоты.
+				// Р”Р»СЏ РµРґС‹ СЂР°Р·СЂРµС€РµРЅС‹ С‚РѕР»СЊРєРѕ Р±С‹СЃС‚СЂС‹Рµ СЃР»РѕС‚С‹.
 #ifndef QUICK_SLOT_POCKET_LOGIC
 				if (!eat || is_quick_slot(u32(slots[i]), CurrentIItem(), m_pInv) )
 #endif
@@ -136,7 +136,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	}
 #endif
 	
-	//отсоединение аддонов от вещи
+	//РѕС‚СЃРѕРµРґРёРЅРµРЅРёРµ Р°РґРґРѕРЅРѕРІ РѕС‚ РІРµС‰Рё
 	if(pWeapon)
 	{
 		if(pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
@@ -158,14 +158,14 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		{
 			bool b = (0!=pWeapon->GetAmmoElapsed());
 
-			if (m_pInv->InSlot(pWeapon) && pWeapon->GetAmmoElapsed() < pWeapon->GetAmmoMagSize() && pWeaponMag->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
+			if (m_pInv->InSlot(pWeapon) && pWeapon->GetAmmoElapsed() < pWeapon->GetAmmoMagSize() && pWeaponMag->IsAmmoAvailable()) //РїРµСЂРµР·Р°СЂСЏРґРёС‚СЊ РєРѕРЅС‚РµРєСЃС‚РЅС‹Рј РјРµРЅСЋ РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ РѕСЂСѓР¶РёРµ РІ СЃР»РѕС‚Рµ
 			{
 				UIPropertiesBox.AddItem("st_reload_magazine", NULL, INVENTORY_RELOAD_MAGAZINE);
 				b_show = true;
 			}
 
 
-			if (m_pInv->InSlot(pWeapon) && pWeaponMag->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
+			if (m_pInv->InSlot(pWeapon) && pWeaponMag->IsAmmoAvailable()) //РїРµСЂРµР·Р°СЂСЏРґРёС‚СЊ РєРѕРЅС‚РµРєСЃС‚РЅС‹Рј РјРµРЅСЋ РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ РѕСЂСѓР¶РёРµ РІ СЃР»РѕС‚Рµ
 			{
 				u32 l_newType = pWeapon->m_ammoType;
 				bool b1, b2;
@@ -173,7 +173,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 				{
 					l_newType = (l_newType + 1) % pWeapon->m_ammoTypes.size();
 					b1 = l_newType != pWeapon->m_ammoType;
-					bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || pWeapon->m_pCurrentInventory->m_bInventoryAmmoPlacement; //в целом для действий контекстного меню патроны ищем ВСЕГДА в рюкзаке, но пока пусть будет в зависимости от опции/флага
+					bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || pWeapon->m_pCurrentInventory->m_bInventoryAmmoPlacement; //РІ С†РµР»РѕРј РґР»СЏ РґРµР№СЃС‚РІРёР№ РєРѕРЅС‚РµРєСЃС‚РЅРѕРіРѕ РјРµРЅСЋ РїР°С‚СЂРѕРЅС‹ РёС‰РµРј Р’РЎР•Р“Р”Рђ РІ СЂСЋРєР·Р°РєРµ, РЅРѕ РїРѕРєР° РїСѓСЃС‚СЊ Р±СѓРґРµС‚ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РѕРїС†РёРё/С„Р»Р°РіР°
 					b2 = pWeapon->unlimited_ammo() ? false : (!pWeapon->m_pCurrentInventory->GetAmmo(*pWeapon->m_ammoTypes[l_newType], SearchRuck));
 				} while (b1 && b2);
 
@@ -205,7 +205,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		}
 	}
 	
-	//присоединение аддонов к активному слоту (2 или 3)
+	//РїСЂРёСЃРѕРµРґРёРЅРµРЅРёРµ Р°РґРґРѕРЅРѕРІ Рє Р°РєС‚РёРІРЅРѕРјСѓ СЃР»РѕС‚Сѓ (2 РёР»Рё 3)
 	if(pScope)
 	{
 	#ifndef INV_NEW_SLOTS_SYSTEM

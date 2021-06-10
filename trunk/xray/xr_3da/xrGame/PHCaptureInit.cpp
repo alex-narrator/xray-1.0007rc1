@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/////////////////////////////////////////////////////////////////////////////////////////////////
 #include "StdAfx.h"
 #include "phcharacter.h"
 #include "Physics.h"
@@ -255,6 +255,7 @@ void CPHCapture::Init(CInifile* ini)
 	CActor* A=smart_cast<CActor*>(m_character->PhysicsRefObject());
 	if(A)
 	{
+		m_taget_object->IsHoldedByActor = true; //взведём флаг удержания предмета актором (предмет запрещено уничтожать)
 		A->SetWeaponHideState(INV_STATE_BLOCK_ALL,true);
 	}
 }
@@ -294,6 +295,12 @@ void CPHCapture::Release()
 	CActor* A=smart_cast<CActor*>(m_character->PhysicsRefObject());
 	if(A)
 	{
+		//предотвращенеи залипания режима переноски при отпускании схваченного предмета
+		m_character->SetObjectContactCallback(0); //зададим отсутствие контакта. т.е. разъединяем физоболочки актора и объекта
+		m_throw_force = A->m_fCaptureReleaseThrowForce*m_taget_element->PhysicsShell()->getMass(); //установим силу для отбрасывания предмета в зависимости от его массы (для более-менее равномерного броска разномассовых предметов)
+		m_taget_element->applyImpulse(A->Direction(), m_throw_force); //придадим предмету который больше не тащит актор некоторый импульс в направлении взгляда актора
+		m_taget_object->IsHoldedByActor = false; //сбросим флаг удержания предмета актором (предмет можно уничтожить)
+		//
 		A->SetWeaponHideState(INV_STATE_BLOCK_ALL,false);
 //.		A->inventory().setSlotsBlocked(false);
 	}

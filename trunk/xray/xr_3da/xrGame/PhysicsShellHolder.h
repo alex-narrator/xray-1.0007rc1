@@ -1,4 +1,4 @@
-/*#ifndef PHYSICSSHELL_HOLDER_H
+п»ї/*#ifndef PHYSICSSHELL_HOLDER_H
 #define PHYSICSSHELL_HOLDER_H*/
 #pragma once
 
@@ -45,6 +45,7 @@ class CPhysicsShellHolder:  public CGameObject,
 public:
 	void	SheduleRegister		(){if(!IsSheduled())shedule_register();b_sheduled=true;}
 	void	SheduleUnregister	(){if(IsSheduled())shedule_unregister();b_sheduled=false;}
+	bool    IsHoldedByActor;    //Р°РєС‚РѕСЂ РґРµСЂР¶РёС‚ РѕР±СЉРµРєС‚
 IC	bool	IsSheduled			(){return b_sheduled;}	
 public:
 
@@ -110,7 +111,7 @@ public:
 			void			init				();
 
 	virtual void			OnChangeVisual		();
-	//для наследования CParticlesPlayer
+	//РґР»СЏ РЅР°СЃР»РµРґРѕРІР°РЅРёСЏ CParticlesPlayer
 	virtual void			UpdateCL			();
 			void			correct_spawn_pos	();
 
@@ -120,7 +121,7 @@ public:
 public:
 	virtual	void			on_physics_disable	();
 
-	virtual void			UpdateXFORM(const Fmatrix &upd); // alpet: для обновления позиции и направления
+	virtual void			UpdateXFORM(const Fmatrix &upd); // alpet: РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ РїРѕР·РёС†РёРё Рё РЅР°РїСЂР°РІР»РµРЅРёСЏ
 };
 
 //#endif

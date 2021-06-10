@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 #include "UIMainIngameWnd.h"
 #include "UIMessagesWindow.h"
@@ -41,7 +41,7 @@
 #include "../clsid_game.h"
 #include "UIArtefactPanel.h"
 #include "UIMap.h"
-#include <functional>  // äîáàâëåíî alpet äëÿ óñïåøíîé ñáîðêè â VS 2013
+#include <functional>  // добавлено alpet для успешной сборки в VS 2013
 
 #ifdef DEBUG
 #	include "../attachable_item.h"
