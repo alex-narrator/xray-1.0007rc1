@@ -34,6 +34,9 @@ animation_slot				= 5
 hand_dependence		     	= 1
 single_handed				= 1
 
+fire_power_dec              = 0.1  ;уменьшение выносливости при основном ударе
+fire2_power_dec             = 0.15 ;уменьшение выносливости при альтернативном ударе
+
 hud							= wpn_knife_hud
 	
 cost						= 70
@@ -74,7 +77,7 @@ hit_impulse_2	         	= 120
 hit_type_2				 	= wound_2
 
 fire_distance            	= 1.4;1.8
-bullet_speed			 	= 1000;500			;��������� �������� ����
+bullet_speed			 	= 1000;500			;начальная скорость пули
 rpm                      	= 1000;600
 ; end ttc
 
@@ -105,7 +108,7 @@ zoom_enabled				= false
 
 snd_shoot					= weapons\knife_1
 
-weapon_remove_time			= 5000	;����� ����������� ������ (� ������ TimeFactor) ��� ������������
+weapon_remove_time			= 5000	;время уничтожения оружия (с учетом TimeFactor) для мультиплеера
 
 [wpn_knife_hud]
 shell_point					= 0.0, 0.0, 0.0

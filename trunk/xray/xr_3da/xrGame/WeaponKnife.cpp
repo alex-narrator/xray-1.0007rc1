@@ -1,9 +1,10 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 
 #include "WeaponKnife.h"
 #include "WeaponHUD.h"
 #include "Entity.h"
 #include "Actor.h"
+#include "ActorCondition.h"
 #include "level.h"
 #include "xr_level_controller.h"
 #include "game_cl_base.h"
@@ -13,6 +14,7 @@
 #include "ai_sounds.h"
 #include "game_cl_single.h"
 #include "../../build_config_defines.h"
+#include "HUDManager.h"
 
 #define KNIFE_MATERIAL_NAME "objects\\knife"
 
@@ -53,6 +55,10 @@ void CWeaponKnife::Load	(LPCSTR section)
 	HUD_SOUND::LoadSound(section,"snd_shoot"		, m_sndShot		, ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING)		);
 	
 	knife_material_idx =  GMLib.GetMaterialIdx(KNIFE_MATERIAL_NAME);
+	//
+	m_fFirePowerDec = READ_IF_EXISTS(pSettings, r_float, section, "fire_power_dec", 0.0f);
+	m_fFire2PowerDec = READ_IF_EXISTS(pSettings, r_float, section, "fire2_power_dec", m_fFirePowerDec);
+	//
 }
 
 void CWeaponKnife::OnStateSwitch	(u32 S)
@@ -242,20 +248,43 @@ void CWeaponKnife::switch2_Showing	()
 
 void CWeaponKnife::FireStart()
 {	
-	inherited::FireStart();
-	SwitchState			(eFire);
+	if (!ParentIsActor() || (ParentIsActor() && !g_actor->conditions().IsCantWalk()))
+	{
+		inherited::FireStart();
+		SwitchState(eFire);
+	}
+	//
+	if (ParentIsActor())
+	{
+		if(!g_actor->conditions().IsCantWalk())
+			g_actor->conditions().ChangePower(-m_fFirePowerDec);
+		else
+			HUD().GetUI()->AddInfoMessage("cant_walk");
+	}
+	//
 }
 
 void CWeaponKnife::Fire2Start () 
 {
-	inherited::Fire2Start();
-	SwitchState(eFire2);
-
-	// Real Wolf: Прерывание спринта при ударе. 17.07.2014.
+	if (!ParentIsActor() || (ParentIsActor() && !g_actor->conditions().IsCantWalk()))
+	{
+		inherited::Fire2Start();
+		SwitchState(eFire2);
+	}
+	// Real Wolf: РџСЂРµСЂС‹РІР°РЅРёРµ СЃРїСЂРёРЅС‚Р° РїСЂРё СѓРґР°СЂРµ. 17.07.2014.
 #if defined(KNIFE_SPRINT_FIX)
 	if (ParentIsActor() )
 		g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint) );
 #endif
+	//
+	if (ParentIsActor())
+	{
+		if(!g_actor->conditions().IsCantWalk()) 
+			g_actor->conditions().ChangePower(-m_fFire2PowerDec);
+		else
+			HUD().GetUI()->AddInfoMessage("cant_walk");
+	}
+	//
 }
 
 
@@ -266,7 +295,7 @@ bool CWeaponKnife::Action(s32 cmd, u32 flags)
 	{
 
 		case kWPN_ZOOM : 
-			if(flags&CMD_START) Fire2Start();
+			if(flags&CMD_START && !m_bPending) Fire2Start(); //!m_bPending РґРѕР±Р°РІР»РµРЅРѕ С‡С‚РѕР±С‹ Fire2Start() РІС‹Р·С‹РІР°Р»СЃСЏ С‚РѕР»СЊРєРѕ РїРѕ РѕРєРѕРЅС‡Р°РЅРёРё Р°С‚Р°РєРё Р° РЅРµ РїРѕ РєР°Р¶РґРѕРјСѓ РЅР°Р¶Р°С‚РёСЋ kWPN_ZOOM
 			else Fire2End();
 			return true;
 	}
@@ -287,24 +316,24 @@ void CWeaponKnife::LoadFireParams(LPCSTR section, LPCSTR prefix)
 
 	//fHitPower_2			= pSettings->r_float	(section,strconcat(full_name, prefix, "hit_power_2"));
 	s_sHitPower_2		= pSettings->r_string_wb	(section,strconcat(sizeof(full_name),full_name, prefix, "hit_power_2"));
-	fvHitPower_2[egdMaster]	= (float)atof(_GetItem(*s_sHitPower_2,0,buffer));//первый параметр - это хит для уровня игры мастер
+	fvHitPower_2[egdMaster]	= (float)atof(_GetItem(*s_sHitPower_2,0,buffer));//РїРµСЂРІС‹Р№ РїР°СЂР°РјРµС‚СЂ - СЌС‚Рѕ С…РёС‚ РґР»СЏ СѓСЂРѕРІРЅСЏ РёРіСЂС‹ РјР°СЃС‚РµСЂ
 
-	fvHitPower_2[egdVeteran]	= fvHitPower_2[egdMaster];//изначально параметры для других уровней
-	fvHitPower_2[egdStalker]	= fvHitPower_2[egdMaster];//сложности
-	fvHitPower_2[egdNovice]		= fvHitPower_2[egdMaster];//такие же
+	fvHitPower_2[egdVeteran]	= fvHitPower_2[egdMaster];//РёР·РЅР°С‡Р°Р»СЊРЅРѕ РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ РґСЂСѓРіРёС… СѓСЂРѕРІРЅРµР№
+	fvHitPower_2[egdStalker]	= fvHitPower_2[egdMaster];//СЃР»РѕР¶РЅРѕСЃС‚Рё
+	fvHitPower_2[egdNovice]		= fvHitPower_2[egdMaster];//С‚Р°РєРёРµ Р¶Рµ
 
-	int num_game_diff_param=_GetItemCount(*s_sHitPower_2);//узнаём колличество параметров для хитов
-	if (num_game_diff_param>1)//если задан второй параметр хита
+	int num_game_diff_param=_GetItemCount(*s_sHitPower_2);//СѓР·РЅР°С‘Рј РєРѕР»Р»РёС‡РµСЃС‚РІРѕ РїР°СЂР°РјРµС‚СЂРѕРІ РґР»СЏ С…РёС‚РѕРІ
+	if (num_game_diff_param>1)//РµСЃР»Рё Р·Р°РґР°РЅ РІС‚РѕСЂРѕР№ РїР°СЂР°РјРµС‚СЂ С…РёС‚Р°
 	{
-		fvHitPower_2[egdVeteran]	= (float)atof(_GetItem(*s_sHitPower_2,1,buffer));//то вычитываем его для уровня ветерана
+		fvHitPower_2[egdVeteran]	= (float)atof(_GetItem(*s_sHitPower_2,1,buffer));//С‚Рѕ РІС‹С‡РёС‚С‹РІР°РµРј РµРіРѕ РґР»СЏ СѓСЂРѕРІРЅСЏ РІРµС‚РµСЂР°РЅР°
 	}
-	if (num_game_diff_param>2)//если задан третий параметр хита
+	if (num_game_diff_param>2)//РµСЃР»Рё Р·Р°РґР°РЅ С‚СЂРµС‚РёР№ РїР°СЂР°РјРµС‚СЂ С…РёС‚Р°
 	{
-		fvHitPower_2[egdStalker]	= (float)atof(_GetItem(*s_sHitPower_2,2,buffer));//то вычитываем его для уровня сталкера
+		fvHitPower_2[egdStalker]	= (float)atof(_GetItem(*s_sHitPower_2,2,buffer));//С‚Рѕ РІС‹С‡РёС‚С‹РІР°РµРј РµРіРѕ РґР»СЏ СѓСЂРѕРІРЅСЏ СЃС‚Р°Р»РєРµСЂР°
 	}
-	if (num_game_diff_param>3)//если задан четвёртый параметр хита
+	if (num_game_diff_param>3)//РµСЃР»Рё Р·Р°РґР°РЅ С‡РµС‚РІС‘СЂС‚С‹Р№ РїР°СЂР°РјРµС‚СЂ С…РёС‚Р°
 	{
-		fvHitPower_2[egdNovice]	= (float)atof(_GetItem(*s_sHitPower_2,3,buffer));//то вычитываем его для уровня новичка
+		fvHitPower_2[egdNovice]	= (float)atof(_GetItem(*s_sHitPower_2,3,buffer));//С‚Рѕ РІС‹С‡РёС‚С‹РІР°РµРј РµРіРѕ РґР»СЏ СѓСЂРѕРІРЅСЏ РЅРѕРІРёС‡РєР°
 	}
 
 	fHitImpulse_2		= pSettings->r_float	(section,strconcat(sizeof(full_name),full_name, prefix, "hit_impulse_2"));
@@ -322,7 +351,7 @@ void CWeaponKnife::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, 
 	icon_sect_name	= *cNameSect();
 }
 
-// Real Wolf: Анимация бега. 17.07.2014.
+// Real Wolf: РђРЅРёРјР°С†РёСЏ Р±РµРіР°. 17.07.2014.
 #if defined(KNIFE_SPRINT_MOTION)
 void CWeaponKnife::onMovementChanged(ACTOR_DEFS::EMoveCommand cmd)
 {

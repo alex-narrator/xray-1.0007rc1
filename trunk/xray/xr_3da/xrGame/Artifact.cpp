@@ -257,7 +257,7 @@ void CArtefact::StartLights()
 	VERIFY(!ph_world->Processing());
 	if(!m_bLightsEnabled) return;
 
-	//âêëþ÷èòü ñâåòîâóþ ïîäñâåòêó îò äâèãàòåëÿ
+	//включить световую подсветку от двигателя
 	m_pTrailLight->set_color(m_TrailLightColor.r, 
 		m_TrailLightColor.g, 
 		m_TrailLightColor.b);

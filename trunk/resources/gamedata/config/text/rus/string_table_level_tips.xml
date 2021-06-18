@@ -22,16 +22,16 @@
 		<text>Отрезать [$$ACTION_USE$$]\n Руки заняты</text>
 	</string>
 	<string id="dead_monster_drag_not_use">
-		<text>Нужен нож\n Тащить труп [SHIFT+$$ACTION_USE$$]</text>
+		<text>Нужен острый нож\n Тащить труп [SHIFT+$$ACTION_USE$$]</text>
 	</string>
 	<string id="dead_monster_not_drag_not_use">
-		<text>Нужен нож\n Руки заняты</text>
+		<text>Нужен острый нож\n Руки заняты</text>
 	</string>
 	<string id="dead_monster_use">
 		<text>Отрезать [$$ACTION_USE$$]</text>
 	</string>
 	<string id="dead_monster_not_use">
-		<text>Нужен нож</text>
+		<text>Нужен острый нож</text>
 	</string>
 	<string id="no_any_action">
 		<text>Руки заняты</text>

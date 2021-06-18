@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "WeaponCustomPistol.h"
 #include "script_export_space.h"
@@ -40,6 +40,9 @@ protected:
 
 	float				fWallmarkSize;
 	u16					knife_material_idx;
+	//
+	float               m_fFirePowerDec;  //снижение выносливости при ударе
+	float               m_fFire2PowerDec; //снижение выносливости при ударе2
 
 protected:	
 	ALife::EHitType		m_eHitType;

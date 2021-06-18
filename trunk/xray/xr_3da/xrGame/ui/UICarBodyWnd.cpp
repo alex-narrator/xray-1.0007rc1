@@ -1,4 +1,4 @@
-#include "pch_script.h"
+﻿#include "pch_script.h"
 #include "UICarBodyWnd.h"
 #include "xrUIXmlParser.h"
 #include "UIXmlInit.h"
@@ -25,6 +25,8 @@
 #include "../script_callback_ex.h"
 #include "../script_game_object.h"
 #include "../BottleItem.h"
+#include "../WeaponKnife.h"
+#include "../smart_cast.h"
 
 #define				CAR_BODY_XML		"carbody_new.xml"
 #define				CARBODY_ITEM_XML	"carbody_item.xml"
@@ -99,7 +101,7 @@ void CUICarBodyWnd::Init()
 	xml_init.InitDragDropListEx		(uiXml, "dragdrop_list_other", 0, m_pUIOthersBagList);
 
 
-	//���������� � ��������
+	//информация о предмете
 	m_pUIDescWnd					= xr_new<CUIFrameWindow>(); m_pUIDescWnd->SetAutoDelete(true);
 	AttachChild						(m_pUIDescWnd);
 	xml_init.InitFrameWindow		(uiXml, "frame_window", 0, m_pUIDescWnd);
@@ -148,7 +150,7 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryBox* pInvBox)
 	EnableAll										();
 	UpdateLists										();
 
-	// Real Wolf: ������ �� �������� �����. 02.08.2014.
+	// Real Wolf: колбек на открытие ящика. 02.08.2014.
 	pInvBox->callback(GameObject::eOnInvBoxOpen)();
 }
 
@@ -198,8 +200,8 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 			NET_Packet		P;
 			CGameObject::u_EventGen		(P,GE_INFO_TRANSFER, our_id);
 			P.w_u16						(0);//not used
-			P.w_stringZ					((*it).info_id);			//���������
-			P.w_u8						(1);						//���������� ���������
+			P.w_stringZ					((*it).info_id);			//сообщение
+			P.w_u8						(1);						//добавление сообщения
 			CGameObject::u_EventSend	(P);
 		}
 		known_info.clear	();
@@ -224,9 +226,11 @@ void CUICarBodyWnd::Hide()
 		m_pInventoryBox->m_in_use				= false;
     //
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	CBaseMonster* Monster = smart_cast<CBaseMonster *>(m_pOthersObject);
 	if (pActor)
 	{
-		if (psActorFlags.test(AF_HARD_INV_ACCESS)) pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //����������� ����� ������ � �����
+		//ОБЯЗАТЕЛЬНО!!! одинаковая проверка для Hide() и Show(), иначе всё ломается
+		if (psActorFlags.test(AF_HARD_INV_ACCESS) && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //восстановим показ оружия в руках, если обыскиваем не монстра
 	}
     //
 }
@@ -242,7 +246,7 @@ void CUICarBodyWnd::UpdateLists()
 	m_pOurObject->inventory().AddAvailableItems	(ruck_list, true);
 	std::sort									(ruck_list.begin(),ruck_list.end(),InventoryUtilities::GreaterRoomInRuck);
 
-	//��� ������
+	//Наш рюкзак
 	TIItemContainer::iterator it;
 	for(it =  ruck_list.begin(); ruck_list.end() != it; ++it) 
 	{
@@ -262,7 +266,7 @@ void CUICarBodyWnd::UpdateLists()
 
 	std::sort										(ruck_list.begin(),ruck_list.end(),InventoryUtilities::GreaterRoomInRuck);
 
-	//����� ������
+	//Чужой рюкзак
 	for(it =  ruck_list.begin(); ruck_list.end() != it; ++it) 
 	{
 		CUICellItem* itm							= create_cell_item(*it);
@@ -288,7 +292,7 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 		{
 			switch(m_pUIPropertiesBox->GetClickedItem()->GetTAG())
 			{
-			case INVENTORY_EAT_ACTION:	//������ ������
+			case INVENTORY_EAT_ACTION:	//съесть объект
 				EatItem();
 				break;
 			case INVENTORY_UNLOAD_MAGAZINE:
@@ -339,9 +343,11 @@ void CUICarBodyWnd::Show()
 	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd);
 	//
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	CBaseMonster* Monster = smart_cast<CBaseMonster *>(m_pOthersObject);
 	if (pActor)
 	{
-		if (psActorFlags.test(AF_HARD_INV_ACCESS)) pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //������� ������ � �����
+		//ОБЯЗАТЕЛЬНО!!! одинаковая проверка для Hide() и Show(), иначе всё ломается
+		if (psActorFlags.test(AF_HARD_INV_ACCESS) && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //спрячем оружие в руках, если обыскиваем не монстра 
 	}
 	//
 }
@@ -421,7 +427,7 @@ bool CUICarBodyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 			return true;
 	}
 
-	// ������� �� �� ������ kSPRINT_TOGGLE (X)
+	// забрать всё по кнопке kSPRINT_TOGGLE (X)
 	if (keyboard_action == WINDOW_KEY_PRESSED && is_binded(kSPRINT_TOGGLE, dik))
 	{
 		TakeAll();
@@ -607,7 +613,7 @@ void move_item (u16 from_id, u16 to_id, u16 what_id)
 	P.w_u16									(what_id);
 	CGameObject::u_EventSend				(P);
 
-	//������� ��������� - ����� ���� 
+	//другому инвентарю - взять вещь 
 	CGameObject::u_EventGen					(	P,
 												GE_OWNERSHIP_TAKE,
 												to_id
@@ -631,7 +637,21 @@ bool CUICarBodyWnd::TransferItem(PIItem itm, CInventoryOwner* owner_from, CInven
 		float itmWeight						= itm->Weight();
 		if(invWeight+itmWeight >=maxWeight)	return false;
 	}
-
+	//
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(pActor->inventory().ActiveItem());
+	//CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(pActor->inventory().ItemFromSlot(pActor->inventory().GetPrevActiveSlot())); 
+	CBaseMonster* Monster = smart_cast<CBaseMonster*>(go_from);
+	if (psActorFlags.test(AF_HARD_INV_ACCESS) && pActor && Monster)      //если мы забираем что-то из инвентаря монстра в режиме "свободных рук"
+	{
+		if (Knife)                                                       //убедимся что оружие в активном слоте - нож
+		{
+			Knife->Fire2Start();                                         //нанесём удар ножом
+			itm->ChangeCondition( -(1 - Knife->GetCondition()) );        //уменьшим Condition части монстра на величину износа ножа (1 - Knife->GetCondition())
+			Knife->ChangeCondition(-Monster->m_fBladeConditionDecOnUse); //уменьшим Condition ножа на величину из конфига монстра
+		}
+	}
+	//
 	move_item(go_from->ID(), go_to->ID(), itm->object().ID());
 
 	return true;

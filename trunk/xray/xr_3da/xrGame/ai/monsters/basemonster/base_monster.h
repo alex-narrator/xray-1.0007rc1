@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include "../../../CustomMonster.h"
 
@@ -175,10 +175,10 @@ public:
 
 	virtual void			SetTurnAnimation				(bool turn_left);
 	
-	// установка специфических анимаций 
+	// СѓСЃС‚Р°РЅРѕРІРєР° СЃРїРµС†РёС„РёС‡РµСЃРєРёС… Р°РЅРёРјР°С†РёР№ 
 	virtual	void			CheckSpecParams					(u32 /**spec_params/**/) {}
 	virtual void			ForceFinalAnimation				() {}
-	virtual void			LookPosition					(Fvector to_point, float angular_speed = PI_DIV_3);		// каждый монстр может по-разному реализвать эту функ (e.g. кровосос с поворотом головы и т.п.)
+	virtual void			LookPosition					(Fvector to_point, float angular_speed = PI_DIV_3);		// РєР°Р¶РґС‹Р№ РјРѕРЅСЃС‚СЂ РјРѕР¶РµС‚ РїРѕ-СЂР°Р·РЅРѕРјСѓ СЂРµР°Р»РёР·РІР°С‚СЊ СЌС‚Сѓ С„СѓРЅРє (e.g. РєСЂРѕРІРѕСЃРѕСЃ СЃ РїРѕРІРѕСЂРѕС‚РѕРј РіРѕР»РѕРІС‹ Рё С‚.Рї.)
 
 	// Team	
 	virtual void			ChangeTeam						(int team, int squad, int group);
@@ -425,7 +425,8 @@ protected:
 	
 
 public:	
-
+	float m_fRequiredBladeSharpness; //condition РЅРѕР¶Р° РїСЂРё РєРѕС‚РѕСЂРѕРј РІСЃРµ РµС‰Рµ РґРѕСЃС‚СѓРїРµРЅ РѕР±С‹СЃРє С‚СЂСѓРїР° РјРѕРЅСЃС‚СЂР°
+	float m_fBladeConditionDecOnUse; //Р·РЅР°С‡РµРЅРёРµ РЅР° РєРѕС‚РѕСЂРѕРµ СѓРјРµРЅСЊС€РёС‚СЃСЏ condition РЅРѕР¶Р° РїСЂРё РѕР±С‹СЃРєРµ С‚СЂСѓРїР° РјРѕРЅСЃС‚СЂР°
 
 //////////////////////////////////////////////////////////////////////////
 // DEBUG stuff

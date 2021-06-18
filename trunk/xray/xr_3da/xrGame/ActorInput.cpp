@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include <dinput.h>
 #include "Actor.h"
 #include "Torch.h"
@@ -245,8 +245,8 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			}
 			else
 			{
-				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //на всякий случай удаляем статики в той же области экрана
-				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //на всякий случай удаляем статики в той же области экрана 
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№ СѓРґР°Р»СЏРµРј СЃС‚Р°С‚РёРєРё РІ С‚РѕР№ Р¶Рµ РѕР±Р»Р°СЃС‚Рё СЌРєСЂР°РЅР°
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№ СѓРґР°Р»СЏРµРј СЃС‚Р°С‚РёРєРё РІ С‚РѕР№ Р¶Рµ РѕР±Р»Р°СЃС‚Рё СЌРєСЂР°РЅР° 
 				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
 				_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
 			}
@@ -334,7 +334,7 @@ void CActor::IR_OnKeyboardHold(int cmd)
 	case kFWD:		mstate_wishful |= mcFwd;									break;
 	case kBACK:		mstate_wishful |= mcBack;									break;
 	case kCROUCH:	mstate_wishful |= mcCrouch;									break;
-	case kJUMP:     mstate_wishful |= mcJump;                                   break; //без этого при текущей реализации закрытия инвентаря по кнопкам движения в AF_HARD_INV_ACCESS прыжок просто не работал
+	case kJUMP:     mstate_wishful |= mcJump;                                   break; //Р±РµР· СЌС‚РѕРіРѕ РїСЂРё С‚РµРєСѓС‰РµР№ СЂРµР°Р»РёР·Р°С†РёРё Р·Р°РєСЂС‹С‚РёСЏ РёРЅРІРµРЅС‚Р°СЂСЏ РїРѕ РєРЅРѕРїРєР°Рј РґРІРёР¶РµРЅРёСЏ РІ AF_HARD_INV_ACCESS РїСЂС‹Р¶РѕРє РїСЂРѕСЃС‚Рѕ РЅРµ СЂР°Р±РѕС‚Р°Р»
 
 	}
 }
@@ -413,6 +413,7 @@ bool CActor::use_Holder				(CHolderCustom* holder)
 }
 
 #include "WeaponKnife.h"
+#include "AI/Monsters/BaseMonster/base_monster.h"
 void CActor::ActorUse()
 {
 	//mstate_real = 0;
@@ -438,7 +439,7 @@ void CActor::ActorUse()
 
 	if (m_pUsableObject)
 	{
-		if (m_pPersonWeLookingAt || inventory().FreeHands()) //чтобы можно было слышать просьбы убрать оружие при попытке поговорить со сталкерами с оружием в руках
+		if (m_pPersonWeLookingAt || inventory().FreeHands()) //С‡С‚РѕР±С‹ РјРѕР¶РЅРѕ Р±С‹Р»Рѕ СЃР»С‹С€Р°С‚СЊ РїСЂРѕСЃСЊР±С‹ СѓР±СЂР°С‚СЊ РѕСЂСѓР¶РёРµ РїСЂРё РїРѕРїС‹С‚РєРµ РїРѕРіРѕРІРѕСЂРёС‚СЊ СЃРѕ СЃС‚Р°Р»РєРµСЂР°РјРё СЃ РѕСЂСѓР¶РёРµРј РІ СЂСѓРєР°С…
 		{
 			m_pUsableObject->use(this);
 		}
@@ -467,19 +468,21 @@ void CActor::ActorUse()
 					TryToTalk();
 					return;
 				}
-				//обыск трупа
+				//РѕР±С‹СЃРє С‚СЂСѓРїР°
 				else  if(!Level().IR_GetKeyState(DIK_LSHIFT))
 				{
-					//только если находимся в режиме single
+					//С‚РѕР»СЊРєРѕ РµСЃР»Рё РЅР°С…РѕРґРёРјСЃСЏ РІ СЂРµР¶РёРјРµ single
 					CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 					if (pGameSP)
 					{
 						if (m_pMonsterWeLookingAt && psActorFlags.test(AF_HARD_INV_ACCESS))
 						{
 							CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(inventory().ActiveItem());
-							if (Knife)
+							if (Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness) //РЅРѕР¶ Рё condition РЅРѕР¶Р° Р±РѕР»СЊС€Рµ Р»РёР±Рѕ СЂР°РІРµРЅ РЅСѓР¶РЅРѕРјСѓ РґР»СЏ СЃСЂРµР·Р°РЅРёСЏ
 							{
+								//Knife->Fire2Start();
 								pGameSP->StartCarBody(this, m_pPersonWeLookingAt);
+								//Knife->ChangeCondition(-m_pMonsterWeLookingAt->m_fBladeConditionDecOnUse); //СѓРјРµРЅСЊС€Р°РµРј condition РЅРѕР¶Р° РЅР° Р·РЅР°С‡РµРЅРёРµ РёР· РєРѕРЅС„РёРіР° РјРѕРЅСЃС‚СЂР°
 								return;
 							}
 						}
@@ -505,7 +508,8 @@ void CActor::ActorUse()
 			{
 				if (inventory().FreeHands())
 				{
-					character_physics_support()->movement()->PHCaptureObject(object, element);
+					if (!conditions().IsCantWalk()) character_physics_support()->movement()->PHCaptureObject(object, element); //С‚Р°СЃРєР°С‚СЊ РїСЂРµРґРјРµС‚С‹ РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ РµСЃР»Рё РµСЃС‚СЊ СЃРёР»С‹
+					else HUD().GetUI()->AddInfoMessage("cant_walk");
 					return;
 				}
 			}

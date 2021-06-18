@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
+п»ї////////////////////////////////////////////////////////////////////////////
 //	Module 		: inventory_item.cpp
 //	Created 	: 24.03.2003
 //  Modified 	: 29.01.2004
@@ -114,7 +114,7 @@ CInventoryItem::~CInventoryItem()
 	// Msg("* [%3d] destroying CInventoryItem 0x%08p #%5d '%s', m_object = %p ", destr_no, this, id, m_name.c_str(), m_object);			
 
 #ifdef INV_NEW_SLOTS_SYSTEM
-	R_ASSERT2((int)m_slots.size() >= 0, "m_slots.size() returned negative value inside destructor!"); // alpet: для детекта повреждения объекта
+	R_ASSERT2((int)m_slots.size() >= 0, "m_slots.size() returned negative value inside destructor!"); // alpet: РґР»СЏ РґРµС‚РµРєС‚Р° РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕР±СЉРµРєС‚Р°
 #endif
 
 
@@ -164,13 +164,13 @@ void CInventoryItem::Load(LPCSTR section)
 		for (int i = 0; i < count; ++i)
 		{
 			SLOT_ID slot = atoi(_GetItem(str, i, buf) ); 
-			// вместо std::find(m_slots.begin(), m_slots.end(), slot) == m_slots.end() используется !IsPlaceable
+			// РІРјРµСЃС‚Рѕ std::find(m_slots.begin(), m_slots.end(), slot) == m_slots.end() РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ !IsPlaceable
 			if (slot < SLOTS_TOTAL && !IsPlaceable(slot, slot))
 				m_slots.push_back(slot);			
 		}
 	}	
 
-	// alpet: разрешение некоторым объектам попадать в слоты быстрого доступа независимо от настроек
+	// alpet: СЂР°Р·СЂРµС€РµРЅРёРµ РЅРµРєРѕС‚РѕСЂС‹Рј РѕР±СЉРµРєС‚Р°Рј РїРѕРїР°РґР°С‚СЊ РІ СЃР»РѕС‚С‹ Р±С‹СЃС‚СЂРѕРіРѕ РґРѕСЃС‚СѓРїР° РЅРµР·Р°РІРёСЃРёРјРѕ РѕС‚ РЅР°СЃС‚СЂРѕРµРє
 #if defined(QUICK_MEDICINE)
 	if (smart_cast<CMedkit*>(&object()) || smart_cast<CAntirad*>(&object()) &&
 #else
@@ -202,7 +202,7 @@ void CInventoryItem::Load(LPCSTR section)
 
 
 
-	//время убирания объекта с уровня
+	//РІСЂРµРјСЏ СѓР±РёСЂР°РЅРёСЏ РѕР±СЉРµРєС‚Р° СЃ СѓСЂРѕРІРЅСЏ
 	m_dwItemRemoveTime			= READ_IF_EXISTS(pSettings, r_u32, section,"item_remove_time",			ITEM_REMOVE_TIME);
 
 	m_flags.set					(FAllowSprint,READ_IF_EXISTS	(pSettings, r_bool, section,"sprint_allowed",			TRUE));
@@ -411,9 +411,9 @@ void CInventoryItem::OnEvent (NET_Packet& P, u16 type)
 	}
 }
 
-//процесс отсоединения вещи заключается в спауне новой вещи 
-//в инвентаре и установке соответствующих флагов в родительском
-//объекте, поэтому функция должна быть переопределена
+//РїСЂРѕС†РµСЃСЃ РѕС‚СЃРѕРµРґРёРЅРµРЅРёСЏ РІРµС‰Рё Р·Р°РєР»СЋС‡Р°РµС‚СЃСЏ РІ СЃРїР°СѓРЅРµ РЅРѕРІРѕР№ РІРµС‰Рё 
+//РІ РёРЅРІРµРЅС‚Р°СЂРµ Рё СѓСЃС‚Р°РЅРѕРІРєРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёС… С„Р»Р°РіРѕРІ РІ СЂРѕРґРёС‚РµР»СЊСЃРєРѕРј
+//РѕР±СЉРµРєС‚Рµ, РїРѕСЌС‚РѕРјСѓ С„СѓРЅРєС†РёСЏ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅР°
 bool CInventoryItem::Detach(const char* item_section_name, bool b_spawn_item) 
 {
 	if (OnClient()) return true;
@@ -488,7 +488,7 @@ BOOL CInventoryItem::net_Spawn			(CSE_Abstract* DC)
 
 void CInventoryItem::net_Destroy		()
 {
-	//инвентарь которому мы принадлежали
+	//РёРЅРІРµРЅС‚Р°СЂСЊ РєРѕС‚РѕСЂРѕРјСѓ РјС‹ РїСЂРёРЅР°РґР»РµР¶Р°Р»Рё
 //.	m_pCurrentInventory = NULL;
 }
 
@@ -496,7 +496,7 @@ void CInventoryItem::save(NET_Packet &packet)
 {
 	packet.w_u8				((u8)m_eItemPlace);
 	packet.w_float			(m_fCondition);
-#pragma message("alpet: здесь можно сохранять все слоты, но это будет несовместимо по формату сейвов")
+#pragma message("alpet: Р·РґРµСЃСЊ РјРѕР¶РЅРѕ СЃРѕС…СЂР°РЅСЏС‚СЊ РІСЃРµ СЃР»РѕС‚С‹, РЅРѕ СЌС‚Рѕ Р±СѓРґРµС‚ РЅРµСЃРѕРІРјРµСЃС‚РёРјРѕ РїРѕ С„РѕСЂРјР°С‚Сѓ СЃРµР№РІРѕРІ")
 	packet.w_u8				((u8)GetSlot());
 
 	if (object().H_Parent()) {
@@ -817,7 +817,7 @@ void CInventoryItem::CalculateInterpolationParams()
 		for (u32 k=0; k<3; k++)
 		{
 			P0[k] = c*(c*(c*p->SCoeff[k][0]+p->SCoeff[k][1])+p->SCoeff[k][2])+p->SCoeff[k][3];
-			P1[k] = (c*c*p->SCoeff[k][0]*3+c*p->SCoeff[k][1]*2+p->SCoeff[k][2])/3; // сокрость из формулы в 3 раза превышает скорость при расчете коэффициентов !!!!
+			P1[k] = (c*c*p->SCoeff[k][0]*3+c*p->SCoeff[k][1]*2+p->SCoeff[k][2])/3; // СЃРѕРєСЂРѕСЃС‚СЊ РёР· С„РѕСЂРјСѓР»С‹ РІ 3 СЂР°Р·Р° РїСЂРµРІС‹С€Р°РµС‚ СЃРєРѕСЂРѕСЃС‚СЊ РїСЂРё СЂР°СЃС‡РµС‚Рµ РєРѕСЌС„С„РёС†РёРµРЅС‚РѕРІ !!!!
 		};
 		P0.set(p->IStartPos);
 		P1.add(p->IStartPos);
@@ -1259,4 +1259,12 @@ BOOL CInventoryItem::IsInvalid() const
 u16 CInventoryItem::bone_count_to_synchronize	() const
 {
 	return 0;
+}
+
+//С…СѓРґ РёРєРѕРЅРєР° РґР»СЏ Р»СЋР±РѕРіРѕ РёРЅРІ.РёС‚РµРјР° РІ СЂСѓРєР°С…
+void CInventoryItem::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count) 
+{
+	str_name = Name();
+	str_count = "";
+	icon_sect_name = *m_object->cNameSect();
 }

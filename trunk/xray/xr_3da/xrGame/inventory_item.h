@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
+п»ї////////////////////////////////////////////////////////////////////////////
 //	Module 		: inventory_item.h
 //	Created 	: 24.03.2003
 //  Modified 	: 29.01.2004
@@ -78,23 +78,23 @@ public:
 	virtual LPCSTR				NameShort			();
 //.	virtual LPCSTR				NameComplex			();
 	shared_str					ItemDescription		() { return m_Description; }
-	virtual void				GetBriefInfo		(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count) {};
+	virtual void				GetBriefInfo		(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)/* {}*/; //С…СѓРґ РёРєРѕРЅРєР° РґР»СЏ Р»СЋР±РѕРіРѕ РёРЅРІ.РёС‚РµРјР° РІ СЂСѓРєР°С…
 	
 	virtual void				OnEvent				(NET_Packet& P, u16 type);
 	
-	virtual bool				Useful				() const;									// !!! Переопределить. (см. в Inventory.cpp)
+	virtual bool				Useful				() const;									// !!! РџРµСЂРµРѕРїСЂРµРґРµР»РёС‚СЊ. (СЃРј. РІ Inventory.cpp)
 	virtual bool				Attach				(PIItem pIItem, bool b_send_event) {return false;}
 	virtual bool				Detach				(PIItem pIItem) {return false;}
-	//при детаче спаунится новая вещь при заданно названии секции
+	//РїСЂРё РґРµС‚Р°С‡Рµ СЃРїР°СѓРЅРёС‚СЃСЏ РЅРѕРІР°СЏ РІРµС‰СЊ РїСЂРё Р·Р°РґР°РЅРЅРѕ РЅР°Р·РІР°РЅРёРё СЃРµРєС†РёРё
 	virtual bool				Detach				(const char* item_section_name, bool b_spawn_item);
 	virtual bool				CanAttach			(PIItem pIItem) {return false;}
 	virtual bool				CanDetach			(LPCSTR item_section_name) {return false;}
 
 	virtual EHandDependence		HandDependence		()	const	{return eHandDependence;};
 	virtual bool				IsSingleHanded		()	const	{return m_bIsSingleHanded;};	
-	virtual bool				Activate			();									// !!! Переопределить. (см. в Inventory.cpp)
-	virtual void				Deactivate			();								// !!! Переопределить. (см. в Inventory.cpp)
-	virtual bool				Action				(s32 cmd, u32 flags) {return false;}	// true если известная команда, иначе false
+	virtual bool				Activate			();									// !!! РџРµСЂРµРѕРїСЂРµРґРµР»РёС‚СЊ. (СЃРј. РІ Inventory.cpp)
+	virtual void				Deactivate			();								// !!! РџРµСЂРµРѕРїСЂРµРґРµР»РёС‚СЊ. (СЃРј. РІ Inventory.cpp)
+	virtual bool				Action				(s32 cmd, u32 flags) {return false;}	// true РµСЃР»Рё РёР·РІРµСЃС‚РЅР°СЏ РєРѕРјР°РЅРґР°, РёРЅР°С‡Рµ false
 
 	virtual bool				IsHidden			()	const	{return true;}
 	virtual bool				IsHiding			()	const	{return false;}
@@ -174,11 +174,11 @@ public:
 	virtual bool 				IsNecessaryItem	    (CInventoryItem* item);
 	virtual bool				IsNecessaryItem	    (const shared_str& item_sect){return false;};
 	typedef						u32					SLOT_ID;		
-	bool						need_slot;			// alpet: для предотвращения использования индекса NO_ACTIVE_SLOT
+	bool						need_slot;			// alpet: РґР»СЏ РїСЂРµРґРѕС‚РІСЂР°С‰РµРЅРёСЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РёРЅРґРµРєСЃР° NO_ACTIVE_SLOT
 #if defined(INV_NEW_SLOTS_SYSTEM)		
 	u32							selected_slot;		
 	const	xr_vector<SLOT_ID>&	GetSlots			()							{return m_slots;}
-	void						SetSlot				(SLOT_ID slot); // alpet: реально это SelectSlot
+	void						SetSlot				(SLOT_ID slot); // alpet: СЂРµР°Р»СЊРЅРѕ СЌС‚Рѕ SelectSlot
 	virtual SLOT_ID				GetSlot				()  const;
 	SLOT_ID						GetSlotsCount		() const					{ return m_slots.size(); }
 	bool						IsPlaceable			(SLOT_ID min_slot, SLOT_ID max_slot);
@@ -187,7 +187,7 @@ public:
 			void				SetSlot				(SLOT_ID slot)				{m_slot = slot;};	
 #endif
 protected:
-	// 0-используется без участия рук, 1-одна рука, 2-две руки
+	// 0-РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ Р±РµР· СѓС‡Р°СЃС‚РёСЏ СЂСѓРє, 1-РѕРґРЅР° СЂСѓРєР°, 2-РґРІРµ СЂСѓРєРё
 	EHandDependence			eHandDependence;
 	bool					m_bIsSingleHanded;
 	

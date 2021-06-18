@@ -411,10 +411,10 @@ protected:
 	shared_str              m_sDeadCharacterNoAnyAction;    //руки заняты
 	shared_str              m_sDeadMonsterUseOrDragAction;  //отрезать и тащить
 	shared_str              m_sDeadMonsterUseNotDragAction; //отрезать/руки заняты
-	shared_str              m_sDeadMonsterDragNotUseAction; //нужен нож/тащить
-	shared_str              m_sDeadMonsterNotDragNotUse;    //нужен нож/руки заняты
+	shared_str              m_sDeadMonsterDragNotUseAction; //нужен острый нож/тащить
+	shared_str              m_sDeadMonsterNotDragNotUse;    //нужен острый нож/руки заняты
 	shared_str              m_sDeadMonsterUseAction;        //отрезать
-	shared_str              m_sDeadMonsterNotUse;           //нужен нож
+	shared_str              m_sDeadMonsterNotUse;           //нужен острый нож
 	shared_str              m_sNoAnyAction;                 //руки заняты
 	shared_str				m_sCarCharacterUseAction;
 	shared_str				m_sInventoryItemUseAction;
