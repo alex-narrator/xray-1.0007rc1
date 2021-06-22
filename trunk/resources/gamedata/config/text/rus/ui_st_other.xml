@@ -102,6 +102,9 @@
 	<string id="ui_st_trade">
 		<text>Торговать</text>
 	</string>
+	<string id="ui_st_barter">
+		<text>Меняться</text>
+	</string>
 	<string id="ui_st_voting_disabled">
 		<text>Голосование отключено</text>
 	</string>
@@ -239,6 +242,9 @@
 	</string>
 	<string id="ui_st_money_regional">
 		<text>руб.</text>
+	</string>
+	<string id="ui_st_pda_account_unavailable">
+		<text>[счёт недоступен]</text>
 	</string>
 	<string id="ui_inv_sleep">
 		<text>Спать</text>

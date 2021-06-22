@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "alife_space.h"
 #include "hit.h"
 #include "PHDestroyable.h"
@@ -149,7 +149,7 @@ void CCharacterPhysicsSupport::in_Load(LPCSTR section)
 	skel_ddelay						= pSettings->r_float(section,"ph_skeleton_ddelay");
 	skel_remain_time				= skel_ddelay;
 	skel_fatal_impulse_factor		= pSettings->r_float(section,"ph_skel_fatal_impulse_factor");
-	//gray_wolf>Читаем из ltx параметры для поддержки изменяющегося трения у персонажей во время смерти
+	//gray_wolf>Р§РёС‚Р°РµРј РёР· ltx РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ РїРѕРґРґРµСЂР¶РєРё РёР·РјРµРЅСЏСЋС‰РµРіРѕСЃСЏ С‚СЂРµРЅРёСЏ Сѓ РїРµСЂСЃРѕРЅР°Р¶РµР№ РІРѕ РІСЂРµРјСЏ СЃРјРµСЂС‚Рё
 	skeleton_skin_ddelay			= pSettings->r_float(section,"ph_skeleton_skin_ddelay");
 	skeleton_skin_remain_time		= skeleton_skin_ddelay;
 	skeleton_skin_friction_start	= pSettings->r_float(section,"ph_skeleton_skin_friction_start");
@@ -171,6 +171,10 @@ void CCharacterPhysicsSupport::in_Load(LPCSTR section)
 	{
 		m_BonceDamageFactor=pSettings->r_float("collision_damage","bonce_damage_factor_for_objects");
 	}
+	//
+	BodiesCollisionMode = READ_IF_EXISTS(pSettings, r_u8, "bodies_collision", "collision_mode", 0); //СЂРµР¶РёРјС‹ РєРѕР»Р»РёР·РёРё С‚СЂСѓРїРѕРІ РјРµР¶РґСѓ СЃРѕР±РѕР№ Рё СЃ Р¶РёРІС‹РјРё С‚РµР»Р°РјРё
+	clamp(BodiesCollisionMode, 0, 2); //СЂРµР¶РёРјРѕРІ РІСЃРµРіРѕ С‚СЂРё
+	//
 	CPHDestroyable::Load(section);
 }
 
@@ -204,9 +208,9 @@ void CCharacterPhysicsSupport::in_NetSpawn(CSE_Abstract* e)
 	}else if( !m_EntityAlife.animation_movement_controlled( ) )
 	{
 	
-		ka->PlayCycle( "death_init" );///непонятно зачем это вообще надо запускать
-									  ///этот хак нужен, потому что некоторым монстрам 
-									  ///анимация после спона, может быть вообще не назначена
+		ka->PlayCycle( "death_init" );///РЅРµРїРѕРЅСЏС‚РЅРѕ Р·Р°С‡РµРј СЌС‚Рѕ РІРѕРѕР±С‰Рµ РЅР°РґРѕ Р·Р°РїСѓСЃРєР°С‚СЊ
+									  ///СЌС‚РѕС‚ С…Р°Рє РЅСѓР¶РµРЅ, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РЅРµРєРѕС‚РѕСЂС‹Рј РјРѕРЅСЃС‚СЂР°Рј 
+									  ///Р°РЅРёРјР°С†РёСЏ РїРѕСЃР»Рµ СЃРїРѕРЅР°, РјРѕР¶РµС‚ Р±С‹С‚СЊ РІРѕРѕР±С‰Рµ РЅРµ РЅР°Р·РЅР°С‡РµРЅР°
 	}
 	ka->CalculateBones_Invalidate();
 	ka->CalculateBones();
@@ -476,7 +480,7 @@ void CCharacterPhysicsSupport::in_UpdateCL( )
 	if( m_pPhysicsShell )
 	{
 		VERIFY( m_pPhysicsShell->isFullActive( ) );
-		m_pPhysicsShell->SetRagDoll( );//Теперь шела относиться к классу объектов cbClassRagDoll
+		m_pPhysicsShell->SetRagDoll( );//РўРµРїРµСЂСЊ С€РµР»Р° РѕС‚РЅРѕСЃРёС‚СЊСЃСЏ Рє РєР»Р°СЃСЃСѓ РѕР±СЉРµРєС‚РѕРІ cbClassRagDoll
 		
 		if( !is_imotion(m_interactive_motion ) )//!m_flags.test(fl_use_death_motion)
 			m_pPhysicsShell->InterpolateGlobalTransform( &mXFORM );
@@ -707,14 +711,19 @@ void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 	
 	if(IsGameTypeSingle())
 	{
-		m_pPhysicsShell->SetPrefereExactIntegration	();//use exact integration for ragdolls in single
-		//
-		if (!psActorFlags.test(AF_DISABLE_NON_ALIVE_COLLISION))
+		m_pPhysicsShell->SetPrefereExactIntegration();//use exact integration for ragdolls in single
+
+		switch (BodiesCollisionMode)
 		{
-			if (psActorFlags.test(AF_DISABLE_LIVE_DEAD_COLLISION)) m_pPhysicsShell->SetRemoveCharacterCollLADisable(); //отключение коллизии живых тел с мертвыми. необходима перезагрузка чтобы увидеть результат переключения опции
+		case 0:
+			break;
+		case 1:
+			m_pPhysicsShell->SetRemoveCharacterCollLADisable(); //РѕС‚РєР»СЋС‡РµРЅРёРµ РєРѕР»Р»РёР·РёРё Р¶РёРІС‹С… С‚РµР» СЃ РјРµСЂС‚РІС‹РјРё
+			break;
+		case 2:
+			m_pPhysicsShell->SetIgnoreDynamic(); //РѕС‚РєР»СЋС‡РµРЅРёРµ РєРѕР»Р»РёР·РёРё Р¶РёРІС‹С… С‚РµР» СЃ РјРµСЂС‚РІС‹РјРёРё Рё РјРµСЂС‚РІС‹С… С‚РµР» СЃ РјРµСЂС‚РІС‹РјРё
+			break;
 		}
-		else
-			m_pPhysicsShell->SetIgnoreDynamic(); //отключение коллизии всех неживых тел. необходима перезагрузка чтобы увидеть результат переключения опции
 	}
 	else
 	{
@@ -913,7 +922,7 @@ void CCharacterPhysicsSupport::TestForWounded()
 
 void CCharacterPhysicsSupport::UpdateFrictionAndJointResistanse()
 {
-	//Преобразование skel_ddelay из кадров в секунды и линейное нарастание сопротивления в джоинтах со временем от момента смерти 
+	//РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ skel_ddelay РёР· РєР°РґСЂРѕРІ РІ СЃРµРєСѓРЅРґС‹ Рё Р»РёРЅРµР№РЅРѕРµ РЅР°СЂР°СЃС‚Р°РЅРёРµ СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёСЏ РІ РґР¶РѕРёРЅС‚Р°С… СЃРѕ РІСЂРµРјРµРЅРµРј РѕС‚ РјРѕРјРµРЅС‚Р° СЃРјРµСЂС‚Рё 
 
 	if(skel_remain_time!=0)
 	{

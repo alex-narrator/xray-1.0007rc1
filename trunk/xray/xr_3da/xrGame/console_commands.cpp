@@ -1,4 +1,4 @@
-#include "pch_script.h"
+п»ї#include "pch_script.h"
 #include "../xr_ioconsole.h"
 #include "../xr_ioc_cmd.h"
 #include "../customhud.h"
@@ -1383,13 +1383,10 @@ void CCC_RegisterCommands()
 	CMD1(CCC_GameDifficulty,	"g_game_difficulty"		);
 
 	CMD3(CCC_Mask,				"g_backrun",			   &psActorFlags,	AF_RUN_BACKWARD);
-	CMD3(CCC_Mask,				"g_ammo_from_belt",		   &psActorFlags,	AF_AMMO_FROM_BELT); //патроны с пояса
-	CMD3(CCC_Mask,				"g_quick_slot_from_belt",  &psActorFlags,	AF_QUICK_FROM_BELT); //патроны с пояса
-	CMD3(CCC_Mask,				"g_no_auto_reload",        &psActorFlags,	AF_NO_AUTO_RELOAD); //запрет автоперезарядки оружия
-	CMD3(CCC_Mask,				"g_hard_inventory_access", &psActorFlags,	AF_HARD_INV_ACCESS); //усложненный доступ к инвентарю, ПДА, быстрым слотам, обыску трупов и ящиков
-	//
-	CMD3(CCC_Mask,				"g_disable_live_dead_collision",     &psActorFlags,	AF_DISABLE_LIVE_DEAD_COLLISION); //отключение коллизии живых тел с мертвыми
-	CMD3(CCC_Mask,				"g_disable_non_alive_collision",     &psActorFlags,	AF_DISABLE_NON_ALIVE_COLLISION); //отключение коллизии всех неживых тел
+	CMD3(CCC_Mask,				"g_ammo_from_belt",		   &psActorFlags,	AF_AMMO_FROM_BELT);  //РїР°С‚СЂРѕРЅС‹ СЃ РїРѕСЏСЃР°
+	CMD3(CCC_Mask,				"g_quick_slot_from_belt",  &psActorFlags,	AF_QUICK_FROM_BELT); //РЅР°РїРѕР»РЅРµРЅРёРµ Р±С‹СЃС‚СЂС‹С… СЃР»РѕС‚РѕРІ СЃ РїРѕСЏСЃР°
+	CMD3(CCC_Mask,				"g_no_auto_reload",        &psActorFlags,	AF_NO_AUTO_RELOAD);  //Р·Р°РїСЂРµС‚ Р°РІС‚РѕРїРµСЂРµР·Р°СЂСЏРґРєРё РѕСЂСѓР¶РёСЏ
+	CMD3(CCC_Mask,				"g_hard_inventory_access", &psActorFlags,	AF_HARD_INV_ACCESS); //СѓСЃР»РѕР¶РЅРµРЅРЅС‹Р№ РґРѕСЃС‚СѓРї Рє РёРЅРІРµРЅС‚Р°СЂСЋ, РџР”Рђ, Р±С‹СЃС‚СЂС‹Рј СЃР»РѕС‚Р°Рј, РѕР±С‹СЃРєСѓ С‚СЂСѓРїРѕРІ Рё СЏС‰РёРєРѕРІ
 
 	// alife
 #ifdef DEBUG
@@ -1426,11 +1423,11 @@ void CCC_RegisterCommands()
 
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
-	CMD3(CCC_Mask,              "hud_use_luminosity",   &psHUD_Flags,   HUD_USE_LUMINOSITY); //использование освещённости вместо заметности на худовой шкале
-	CMD3(CCC_Mask,              "hud_devices_ui_on_key",&psHUD_Flags,   HUD_DEVICES_UI_ON_KEY); //миникарта и худ-иконка радиации по клавише
-	CMD3(CCC_Mask,              "hud_wpn_info_on_key",  &psHUD_Flags,   HUD_WEAPON_INFO_ON_KEY); //инфо об активом оружии по клавише
-	CMD3(CCC_Mask,              "hud_round_crosshair",  &psHUD_Flags,   HUD_ROUND_CROSSHAIR); //билдовый круглый курсор
-	CMD3(CCC_Mask,              "hud_gear_info_on_key", &psHUD_Flags,   HUD_GEAR_INFO_ON_KEY); //артпанель и быстрые слоты по клавише
+	CMD3(CCC_Mask,              "hud_use_luminosity",   &psHUD_Flags,   HUD_USE_LUMINOSITY); //РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РѕСЃРІРµС‰С‘РЅРЅРѕСЃС‚Рё РІРјРµСЃС‚Рѕ Р·Р°РјРµС‚РЅРѕСЃС‚Рё РЅР° С…СѓРґРѕРІРѕР№ С€РєР°Р»Рµ
+	CMD3(CCC_Mask,              "hud_devices_ui_on_key",&psHUD_Flags,   HUD_DEVICES_UI_ON_KEY); //РјРёРЅРёРєР°СЂС‚Р° Рё С…СѓРґ-РёРєРѕРЅРєР° СЂР°РґРёР°С†РёРё РїРѕ РєР»Р°РІРёС€Рµ
+	CMD3(CCC_Mask,              "hud_wpn_info_on_key",  &psHUD_Flags,   HUD_WEAPON_INFO_ON_KEY); //РёРЅС„Рѕ РѕР± Р°РєС‚РёРІРѕРј РѕСЂСѓР¶РёРё РїРѕ РєР»Р°РІРёС€Рµ
+	CMD3(CCC_Mask,              "hud_round_crosshair",  &psHUD_Flags,   HUD_ROUND_CROSSHAIR); //Р±РёР»РґРѕРІС‹Р№ РєСЂСѓРіР»С‹Р№ РєСѓСЂСЃРѕСЂ
+	CMD3(CCC_Mask,              "hud_gear_info_on_key", &psHUD_Flags,   HUD_GEAR_INFO_ON_KEY); //Р°СЂС‚РїР°РЅРµР»СЊ Рё Р±С‹СЃС‚СЂС‹Рµ СЃР»РѕС‚С‹ РїРѕ РєР»Р°РІРёС€Рµ
 
 #ifdef DEBUG
 	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV,		0.1f,	1.0f);

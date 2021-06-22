@@ -585,6 +585,13 @@ script_binding          = bind_restrictor.bind
 [collision_damage]
 bonce_damage_factor_for_objects = 1.
 
+;режимы коллизии трупов между собой и с живыми телами
+;0 - коллизия трупов с трупами и с живыми телами
+;1 - отключение коллизии живых тел с мертвыми
+;2 - отключение коллизии живых тел с мертвымии и мертвых тел с мертвыми
+[bodies_collision]
+collision_mode = 0
+
 [details]
 swing_normal_amp1	= .1
 swing_normal_amp2	= .05

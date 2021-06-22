@@ -1,10 +1,11 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "UITalkWnd.h"
 
 #include "UITradeWnd.h"
 #include "UITalkDialogWnd.h"
 
 #include "../actor.h"
+#include "../inventory.h"
 #include "../HUDManager.h"
 #include "../UIGameSP.h"
 #include "../PDA.h"
@@ -51,13 +52,13 @@ void CUITalkWnd::Init()
 {
 	inherited::Init(0, 0, UI_BASE_WIDTH, UI_BASE_HEIGHT);
 
-	//Меню разговора
+	//РњРµРЅСЋ СЂР°Р·РіРѕРІРѕСЂР°
 	UITalkDialogWnd = xr_new<CUITalkDialogWnd>();UITalkDialogWnd->SetAutoDelete(true);
 	AttachChild(UITalkDialogWnd);
 	UITalkDialogWnd->Init(0,0, UI_BASE_WIDTH, UI_BASE_HEIGHT);
 
 	/////////////////////////
-	//Меню торговли
+	//РњРµРЅСЋ С‚РѕСЂРіРѕРІР»Рё
 	UITradeWnd = xr_new<CUITradeWnd>();UITradeWnd->SetAutoDelete(true);
 	AttachChild(UITradeWnd);
 	UITradeWnd->Hide();
@@ -76,13 +77,13 @@ void CUITalkWnd::InitTalkDialog()
 	m_pOurDialogManager = smart_cast<CPhraseDialogManager*>(m_pOurInvOwner);
 	m_pOthersDialogManager = smart_cast<CPhraseDialogManager*>(m_pOthersInvOwner);
 
-	//имена собеседников
+	//РёРјРµРЅР° СЃРѕР±РµСЃРµРґРЅРёРєРѕРІ
 	UITalkDialogWnd->UICharacterInfoLeft.InitCharacter		(m_pOurInvOwner->object_id());
 	UITalkDialogWnd->UICharacterInfoRight.InitCharacter		(m_pOthersInvOwner->object_id());
 	UITalkDialogWnd->UIDialogFrame.UITitleText.SetText	(m_pOthersInvOwner->Name());
 	UITalkDialogWnd->UIOurPhrasesFrame.UITitleText.SetText(m_pOurInvOwner->Name());
 	
-	//очистить лог сообщений
+	//РѕС‡РёСЃС‚РёС‚СЊ Р»РѕРі СЃРѕРѕР±С‰РµРЅРёР№
 	UITalkDialogWnd->ClearAll();
 
 	InitOthersStartDialog					();
@@ -93,6 +94,19 @@ void CUITalkWnd::InitTalkDialog()
 	UITalkDialogWnd->Show					();
 
 	UITradeWnd->Hide							();
+
+// СЂРµР¶РёРј Р±Р°СЂС‚РµСЂРЅРѕР№ С‚РѕСЂРіРѕРІР»Рё
+	CPda* PDA = smart_cast<CPda*>(g_actor->inventory().ItemFromSlot(PDA_SLOT));
+	if (!PDA)
+	{
+		u_NonBarterMoney = g_actor->get_money(); //РїРѕР»СѓС‡Р°РµРј РґРµРЅСЊРіРё РЅР° РІРёСЂС‚СѓР°Р»СЊРЅРѕРј РџР”Рђ-СЃС‡РµС‚Рµ Р°РєС‚РѕСЂР°
+		if(!m_pOthersInvOwner->InfinitiveMoney()) u_NonBarterMoneyOther = m_pOthersInvOwner->get_money(); //РїРѕР»СѓС‡Р°РµРј РґРµРЅСЊРіРё РЅР° РІРёСЂС‚СѓР°Р»СЊРЅРѕРј РџР”Рђ-СЃС‡РµС‚Рµ РєРѕРЅС‚СЂР°РіРµРЅС‚Р°, РµСЃР»Рё РєРѕРЅС‚СЂР°РіРµРЅС‚ РЅРµ Р±РµСЃРєРѕРЅРµС‡РЅРѕ Р±РѕРіР°С‚С‹Р№ С‚РѕСЂРіРѕРІРµС†
+		Msg("CUITalkWnd::InitTalkDialog() NonBarterMoney = %i", u_NonBarterMoney);
+		Msg("CUITalkWnd::InitTalkDialog() NonBarterMoneyOther = %i", u_NonBarterMoneyOther);
+		g_actor->set_money(0, true); //РѕР±РЅСѓР»РёРј РґРµРЅСЊРіРё Р°РєС‚РѕСЂР° РґР»СЏ Р±Р°СЂС‚РµСЂР°
+		if(!m_pOthersInvOwner->InfinitiveMoney()) m_pOthersInvOwner->set_money(m_pOthersInvOwner->u_BarterMoney, true); //РµСЃР»Рё РєРѕРЅС‚СЂР°РіРµРЅС‚ РЅРµ Р±РµСЃРєРѕРЅРµС‡РЅРѕ Р±РѕРіР°С‚С‹Р№ С‚РѕСЂРіРѕРІРµС† С‚Рѕ РґРѕР±Р°РІРёРј РµРјСѓ РґРµРЅРµРі РґР»СЏ Р±Р°СЂС‚РµСЂР°
+	}
+//
 }
 
 void CUITalkWnd::InitOthersStartDialog()
@@ -103,12 +117,12 @@ void CUITalkWnd::InitOthersStartDialog()
 		m_pCurrentDialog = m_pOthersDialogManager->AvailableDialogs().front();
 		m_pOthersDialogManager->InitDialog(m_pOurDialogManager, m_pCurrentDialog);
 		
-		//сказать фразу
+		//СЃРєР°Р·Р°С‚СЊ С„СЂР°Р·Сѓ
 		CStringTable stbl;
 		AddAnswer(m_pCurrentDialog->GetPhraseText("0"), m_pOthersInvOwner->Name());
 		m_pOthersDialogManager->SayPhrase(m_pCurrentDialog, "0");
 
-		//если диалог завершился, перейти в режим выбора темы
+		//РµСЃР»Рё РґРёР°Р»РѕРі Р·Р°РІРµСЂС€РёР»СЃСЏ, РїРµСЂРµР№С‚Рё РІ СЂРµР¶РёРј РІС‹Р±РѕСЂР° С‚РµРјС‹
 		if(!m_pCurrentDialog || m_pCurrentDialog->IsFinished()) ToTopicMode();
 	}
 }
@@ -122,8 +136,8 @@ void CUITalkWnd::UpdateQuestions()
 {
 	UITalkDialogWnd->ClearQuestions();
 
-	//если нет активного диалога, то
-	//режима выбора темы
+	//РµСЃР»Рё РЅРµС‚ Р°РєС‚РёРІРЅРѕРіРѕ РґРёР°Р»РѕРіР°, С‚Рѕ
+	//СЂРµР¶РёРјР° РІС‹Р±РѕСЂР° С‚РµРјС‹
 	if(!m_pCurrentDialog)
 	{
 		m_pOurDialogManager->UpdateAvailableDialogs(m_pOthersDialogManager);
@@ -137,14 +151,14 @@ void CUITalkWnd::UpdateQuestions()
 	{
 		if(m_pCurrentDialog->IsWeSpeaking(m_pOurDialogManager))
 		{
-			//если в списке допустимых фраз только одна фраза пустышка, то просто
-			//сказать (игрок сам не производит никаких действий)
+			//РµСЃР»Рё РІ СЃРїРёСЃРєРµ РґРѕРїСѓСЃС‚РёРјС‹С… С„СЂР°Р· С‚РѕР»СЊРєРѕ РѕРґРЅР° С„СЂР°Р·Р° РїСѓСЃС‚С‹С€РєР°, С‚Рѕ РїСЂРѕСЃС‚Рѕ
+			//СЃРєР°Р·Р°С‚СЊ (РёРіСЂРѕРє СЃР°Рј РЅРµ РїСЂРѕРёР·РІРѕРґРёС‚ РЅРёРєР°РєРёС… РґРµР№СЃС‚РІРёР№)
 			if( !m_pCurrentDialog->PhraseList().empty() && m_pCurrentDialog->allIsDummy() ){
 				CPhrase* phrase = m_pCurrentDialog->PhraseList()[Random.randI(m_pCurrentDialog->PhraseList().size())];
 				SayPhrase(phrase->GetID());
 			};
 
-			//выбор доступных фраз из активного диалога
+			//РІС‹Р±РѕСЂ РґРѕСЃС‚СѓРїРЅС‹С… С„СЂР°Р· РёР· Р°РєС‚РёРІРЅРѕРіРѕ РґРёР°Р»РѕРіР°
 			if( m_pCurrentDialog && !m_pCurrentDialog->allIsDummy() )
 			{			
 				for(PHRASE_VECTOR::const_iterator   it = m_pCurrentDialog->PhraseList().begin();
@@ -210,7 +224,7 @@ void UpdateCameraDirection(CGameObject* pTo)
 
 void CUITalkWnd::Update()
 {
-	//остановить разговор, если нужно
+	//РѕСЃС‚Р°РЅРѕРІРёС‚СЊ СЂР°Р·РіРѕРІРѕСЂ, РµСЃР»Рё РЅСѓР¶РЅРѕ
 	if (g_actor && m_pActor && !m_pActor->IsTalking() )
 	{
 		Game().StartStopMenu(this,true);
@@ -260,6 +274,18 @@ void CUITalkWnd::Hide()
 	ToTopicMode					();
 
 	if (m_pActor->IsTalking()) m_pActor->StopTalk();
+
+// СЂРµР¶РёРј Р±Р°СЂС‚РµСЂРЅРѕР№ С‚РѕСЂРіРѕРІР»Рё
+	CPda* PDA = smart_cast<CPda*>(g_actor->inventory().ItemFromSlot(PDA_SLOT));
+	if (!PDA)
+	{
+		g_actor->set_money(u_NonBarterMoney, true);                                                          //РІРµСЂРЅС‘Рј РґРµРЅСЊРіРё СЃ РІРёСЂС‚СѓР°Р»СЊРЅРѕРіРѕ РџР”Рђ-СЃС‡РµС‚Р° Р°РєС‚РѕСЂР°
+		if(!m_pOthersInvOwner->InfinitiveMoney()) m_pOthersInvOwner->set_money(u_NonBarterMoneyOther, true); //РІРµСЂРЅС‘Рј РґРµРЅСЊРіРё СЃ РІРёСЂС‚СѓР°Р»СЊРЅРѕРіРѕ РџР”Рђ-СЃС‡РµС‚Р° РєРѕРЅС‚СЂР°РіРµРЅС‚Р°
+		Msg("CUITalkWnd::Hide() NonBarterMoney = %i", u_NonBarterMoney);
+		Msg("CUITalkWnd::Hide() NonBarterMoneyOther = %i", u_NonBarterMoneyOther);
+	}
+//
+
 	m_pActor = NULL;
 }
 
@@ -284,7 +310,7 @@ void CUITalkWnd::AskQuestion()
 	if(m_bNeedToUpdateQuestions) return;//quick dblclick:(
 	shared_str					phrase_id;
 
-	//игрок выбрал тему разговора
+	//РёРіСЂРѕРє РІС‹Р±СЂР°Р» С‚РµРјСѓ СЂР°Р·РіРѕРІРѕСЂР°
 	if(TopicMode())
 	{
 		if ( (UITalkDialogWnd->m_ClickedQuestionID =="") ||
@@ -318,11 +344,11 @@ void CUITalkWnd::SayPhrase(const shared_str& phrase_id)
 	AddAnswer(m_pCurrentDialog->GetPhraseText(phrase_id), m_pOurInvOwner->Name());
 	m_pOurDialogManager->SayPhrase(m_pCurrentDialog, phrase_id);
 /*
-	//добавить ответ собеседника в список, если он что-то сказал
+	//РґРѕР±Р°РІРёС‚СЊ РѕС‚РІРµС‚ СЃРѕР±РµСЃРµРґРЅРёРєР° РІ СЃРїРёСЃРѕРє, РµСЃР»Рё РѕРЅ С‡С‚Рѕ-С‚Рѕ СЃРєР°Р·Р°Р»
 	if(m_pCurrentDialog->GetLastPhraseID() !=  phrase_id)
 		AddAnswer(m_pCurrentDialog->GetLastPhraseText(), m_pOthersInvOwner->Name());
 */
-	//если диалог завершился, перейти в режим выбора темы
+	//РµСЃР»Рё РґРёР°Р»РѕРі Р·Р°РІРµСЂС€РёР»СЃСЏ, РїРµСЂРµР№С‚Рё РІ СЂРµР¶РёРј РІС‹Р±РѕСЂР° С‚РµРјС‹
 	if(m_pCurrentDialog->IsFinished()) ToTopicMode();
 }
 
@@ -338,7 +364,7 @@ void CUITalkWnd::AddQuestion(const shared_str& text, const shared_str& value)
 
 void CUITalkWnd::AddAnswer(const shared_str& text, LPCSTR SpeakerName)
 {
-	//для пустой фразы вообще ничего не выводим
+	//РґР»СЏ РїСѓСЃС‚РѕР№ С„СЂР°Р·С‹ РІРѕРѕР±С‰Рµ РЅРёС‡РµРіРѕ РЅРµ РІС‹РІРѕРґРёРј
 	if(text.size() == 0) return;
 	PlaySnd			(text.c_str());
 

@@ -12,6 +12,7 @@
 #include "../CustomOutfit.h"
 
 #include "../weapon.h"
+#include "../PDA.h"
 
 #include "../script_process.h"
 
@@ -431,7 +432,11 @@ void CUIInventoryWnd::Update()
 		string64						sMoney;
 		//red_virus
 		sprintf_s						(sMoney,"%d %s", _money, *CStringTable().translate("ui_st_money_regional"));
-		UIMoneyWnd.SetText				(sMoney);
+		CPda* PDA = smart_cast<CPda*>(pActor->inventory().ItemFromSlot(PDA_SLOT));
+		if (PDA)
+		    UIMoneyWnd.SetText				(sMoney);
+		else
+			UIMoneyWnd.SetText              (*CStringTable().translate("ui_st_pda_account_unavailable"));
 
 		// update outfit parameters
 		CCustomOutfit* outfit			= smart_cast<CCustomOutfit*>(pOurInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem);		

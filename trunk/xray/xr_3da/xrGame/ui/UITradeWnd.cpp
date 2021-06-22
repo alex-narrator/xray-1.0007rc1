@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "UITradeWnd.h"
 
 #include "xrUIXmlParser.h"
@@ -14,6 +14,7 @@
 #include "../inventoryowner.h"
 #include "../eatable_item.h"
 #include "../inventory.h"
+#include "../PDA.h"
 #include "../level.h"
 #include "../string_table.h"
 #include "../character_info.h"
@@ -50,17 +51,17 @@ struct CUITradeInternal{
 	CUIDragDropListEx	UIOurTradeList;
 	CUIDragDropListEx	UIOthersTradeList;
 
-	//������
+	//кнопки
 	CUI3tButton			UIPerformTradeButton;
 	CUI3tButton			UIToTalkButton;
 
-	//���������� � ���������� 
+	//информация о персонажах 
 	CUIStatic			UIOurIcon;
 	CUIStatic			UIOthersIcon;
 	CUICharacterInfo	UICharacterInfoLeft;
 	CUICharacterInfo	UICharacterInfoRight;
 
-	//���������� � ��������������� ��������
+	//информация о перетаскиваемом предмете
 	CUIStatic			UIDescWnd;
 	CUIItemInfo			UIItemInfo;
 
@@ -97,13 +98,13 @@ void CUITradeWnd::Init()
 
 	xml_init.InitWindow					(uiXml, "main", 0, this);
 
-	//����������� �������� ����������
+	//статические элементы интерфейса
 	AttachChild							(&m_uidata->UIStaticTop);
 	xml_init.InitStatic					(uiXml, "top_background", 0, &m_uidata->UIStaticTop);
 	AttachChild							(&m_uidata->UIStaticBottom);
 	xml_init.InitStatic					(uiXml, "bottom_background", 0, &m_uidata->UIStaticBottom);
 
-	//������ � ����������� ��� � �������� �� ��������
+	//иконки с изображение нас и партнера по торговле
 	AttachChild							(&m_uidata->UIOurIcon);
 	xml_init.InitStatic					(uiXml, "static_icon", 0, &m_uidata->UIOurIcon);
 	AttachChild							(&m_uidata->UIOthersIcon);
@@ -114,7 +115,7 @@ void CUITradeWnd::Init()
 	m_uidata->UICharacterInfoRight.Init	(0,0, m_uidata->UIOthersIcon.GetWidth(), m_uidata->UIOthersIcon.GetHeight(), TRADE_CHARACTER_XML);
 
 
-	//������ ��������
+	//Списки торговли
 	AttachChild							(&m_uidata->UIOurBagWnd);
 	xml_init.InitStatic					(uiXml, "our_bag_static", 0, &m_uidata->UIOurBagWnd);
 	AttachChild							(&m_uidata->UIOthersBagWnd);
@@ -137,7 +138,7 @@ void CUITradeWnd::Init()
 	m_uidata->UIOthersTradeWnd.AttachChild(&m_uidata->UIOthersPriceCaption);
 	xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &m_uidata->UIOthersPriceCaption);
 
-	//������ Drag&Drop
+	//Списки Drag&Drop
 	m_uidata->UIOurBagWnd.AttachChild	(&m_uidata->UIOurBagList);	
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_list", 0, &m_uidata->UIOurBagList);
 
@@ -191,10 +192,22 @@ void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 		
 	m_pTrade							= pOur->GetTrade();
 	m_pOthersTrade						= pOur->GetTrade()->GetPartnerTrade();
-    	
+
 	EnableAll							();
 
 	UpdateLists							(eBoth);
+
+// режим бартерной торговли
+	CPda* PDA = smart_cast<CPda*>(g_actor->inventory().ItemFromSlot(PDA_SLOT));
+	if (!PDA)
+	{
+		m_uidata->UIOurMoneyStatic.SetText(*CStringTable().translate("ui_st_pda_account_unavailable"));   //закроем статиком кол-во денег актора, т.к. оно еще не обновилось и не ноль
+		m_uidata->UIOtherMoneyStatic.SetText(*CStringTable().translate("ui_st_pda_account_unavailable")); //закроем статиком кол-во денег контрагента, т.к. оно еще не обновилось и не ---
+		m_uidata->UIPerformTradeButton.SetText(*CStringTable().translate("ui_st_barter")); //напишем "бартер" на кнопке, вместо "торговать"
+	}
+	else
+		m_uidata->UIPerformTradeButton.SetText(*CStringTable().translate("ui_st_trade")); //вернём надпись "торговать" на кнопке, вместо "бартер"
+//
 }  
 
 void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
@@ -215,7 +228,7 @@ void CUITradeWnd::Draw()
 {
 	inherited::Draw				();
 	if(m_uidata->UIDealMsg)		m_uidata->UIDealMsg->Draw();
-
+	//Msg("Draw");
 }
 
 extern void UpdateCameraDirection(CGameObject* pTo);
@@ -266,7 +279,7 @@ void CUITradeWnd::Hide()
 	inherited::Enable				(false);
 	if(bStarted)
 		StopTrade					();
-	
+
 	m_uidata->UIDealMsg				= NULL;
 
 	if(HUD().GetUI()->UIGame()){
@@ -460,7 +473,11 @@ void CUITradeWnd::UpdatePrices()
 	if(!m_pOthersInvOwner->InfinitiveMoney()){
 		sprintf_s					(buf, "%d %s", m_pOthersInvOwner->get_money(),*CStringTable().translate("ui_st_money_regional"));
 		m_uidata->UIOtherMoneyStatic.SetText(buf);
-	}else
+	}
+	//
+	CPda* PDA = smart_cast<CPda*>(g_actor->inventory().ItemFromSlot(PDA_SLOT)); //для отлова случая бартера
+	//
+	/*else*/ if (m_pOthersInvOwner->InfinitiveMoney() || (!m_pOthersInvOwner->InfinitiveMoney() && !PDA)) //закроем --- счетчик денег контрагента, если в режиме бартера
 	{
 		m_uidata->UIOtherMoneyStatic.SetText("---");
 	}
