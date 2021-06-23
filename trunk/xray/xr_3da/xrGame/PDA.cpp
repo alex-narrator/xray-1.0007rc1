@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "pda.h"
 #include "hudmanager.h"
 #include "PhysicsShell.h"
@@ -100,7 +100,7 @@ void CPda::feel_touch_delete(CObject* O)
 	if(!H_Parent())							return;
 	CInventoryOwner* pLostContactInvOwner	= smart_cast<CInventoryOwner*>(O);
 	CInventoryOwner* pOwner					= smart_cast<CInventoryOwner*>( H_Parent() );VERIFY(pOwner);
-
+	if (!pOwner)                            return; //затычка от вылета при входе на арену, когда ПДА отбирают принудительно
 	pOwner->LostPdaContact					(pLostContactInvOwner);
 }
 
@@ -124,7 +124,7 @@ void CPda::OnH_A_Chield()
 {
 	VERIFY(IsOff());
 
-	//�������� PDA ������ ���� ��� ��������� � ������� ���������
+	//включить PDA только если оно находится у первого владельца
 	if(H_Parent()->ID() == m_idOriginalOwner){
 		TurnOn					();
 		if(m_sFullName.empty()){
@@ -140,7 +140,7 @@ void CPda::OnH_B_Independent(bool just_before_destroy)
 {
 	inherited::OnH_B_Independent(just_before_destroy);
 	
-	//���������
+	//выключить
 	TurnOff();
 }
 
