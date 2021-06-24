@@ -1,4 +1,4 @@
-# immersive x-ray 1.0007rc1
+# x-ray 1.0007rc1
 Правки движка x-ray 1.0007rc1
 
 Форк со 190 ревизии репозитория https://xp-dev.com/sc/204486/HEAD/ (репозиторий закрыт, клон: https://github.com/xer-urg/xp-dev_xray)
