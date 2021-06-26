@@ -60,12 +60,10 @@ protected:
 	CUIStatic*					m_QuickSlot_2_Icon;
 	CUIStatic*					m_QuickSlot_3_Icon;	
 	//
-#ifndef QUICK_SLOT_POCKET_LOGIC
 	CUIStatic*					m_CountItemQuickSlot_0_Text;
 	CUIStatic*					m_CountItemQuickSlot_1_Text;
 	CUIStatic*					m_CountItemQuickSlot_2_Text;
 	CUIStatic*					m_CountItemQuickSlot_3_Text;
-#endif
 	//
 	CUIStatic*					m_UseQuickSlot_0_Text;
 	CUIStatic*					m_UseQuickSlot_1_Text;

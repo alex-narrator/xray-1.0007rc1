@@ -81,9 +81,9 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 #endif
 			if (!m_pInv->m_slots[slots[i]].m_pIItem || m_pInv->m_slots[slots[i]].m_pIItem != CurrentIItem() )
 			{
+#ifndef INV_MOVE_ITM_INTO_QUICK_SLOTS
 				CEatableItem *eat = smart_cast<CEatableItem*>(CurrentIItem() );
 				// Для еды разрешены только быстрые слоты.
-#ifndef QUICK_SLOT_POCKET_LOGIC
 				if (!eat || is_quick_slot(u32(slots[i]), CurrentIItem(), m_pInv) )
 #endif
 				{
@@ -458,7 +458,9 @@ bool CUIInventoryWnd::TryUseItem(PIItem itm)
 	CMedkit*			pMedkit				= smart_cast<CMedkit*>			(itm);
 	CAntirad*			pAntirad			= smart_cast<CAntirad*>			(itm);
 	CEatableItem*		pEatableItem		= smart_cast<CEatableItem*>		(itm);
-
+	//
+	if (!itm->IsPlaceable(SLOT_QUICK_ACCESS_0, SLOT_QUICK_ACCESS_3)) //съедаем предмет только если его нельзя поместить в быстрые слоты
+	//
 	if(pMedkit || pAntirad || pEatableItem || pBottleItem)
 	{
 		EatItem(itm);

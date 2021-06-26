@@ -517,7 +517,7 @@ void CUIInventoryWnd::Hide()
 	// AF_AMMO_FROM_BELT
 	if (pActor)
 	{
-		if (psActorFlags.test(AF_HARD_INV_ACCESS)) pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //восстановим показ оружия в руках
+		if (psActorFlags.test(AF_HARD_INV_ACCESS)) pActor->SetWeaponHideState(INV_STATE_INV_WND, false); //восстановим показ оружия в руках
 		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = false; //сбросим флаг инвентарной перезарядки
 	}
 }

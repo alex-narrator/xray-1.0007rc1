@@ -17,7 +17,7 @@
 #define KD_DETAIL_RADIUS				// alpet: включает правку дистанции отрисовки травы и плотности. Может влиять на производительность для слабых систем.
 
 // ==================================== Правки от Real Wolf ======================================= 
-#define INV_RUCK_UNLIMITED_FIX		// Real Wolf: позволяет безболезненно использовать атрибут unlimited в теге dragdrop_bag для создания лимитного инвентаря
+#define INV_RUCK_UNLIMITED_FIX		    // Real Wolf: позволяет безболезненно использовать атрибут unlimited в теге dragdrop_bag для создания лимитного инвентаря
 #define INV_NEW_SLOTS_SYSTEM			// Real Wolf, Red Virus: включает слоты.
 #define SUN_DIR_NOT_DEBUG			    // Real Wolf: отключение вывода в лог информации вида CurrentEnv.sun_dir...
 #define ARTEFACTS_FROM_RUCK			    // Real Wolf: артефакты будут работать из всего инвентаря (слотов, пояса, рюкзака).
@@ -40,7 +40,8 @@
 //
 #ifdef INV_NEW_SLOTS_SYSTEM
 	#define INV_NO_ACTIVATE_APPARATUS_SLOT  // Red Virus: убирает невозможность сменить оружие клавишами при активных слотах:  фонарика, детектора и тд
-	#define INV_MOVE_ITM_INTO_QUICK_SLOTS	// Red Virus: позволяет менять местами предметы в быстрых слотах
+	//#define INV_MOVE_ITM_INTO_QUICK_SLOTS	// Red Virus: позволяет менять местами предметы в быстрых слотах 
+                                            // (прим. xer-urg - т.е. ставить аналогичный итем в след квикслот по даблклику и оставляет перечень слотов в менюшке по ПКМ если слот занят аналогичны предметом)
 	#define INV_QUICK_SLOT_PANEL		    // Red Virus: панель быстрых слотов на главном экране
 #endif
 
@@ -53,7 +54,6 @@
 #ifdef INV_NEW_SLOTS_SYSTEM
        #define SHOW_ARTEFACT_SLOT       //отображение слота артефакта в инвентаре
        #define QUICK_MEDICINE           //быстрые слоты назначаются аптечке, бинту и антираду по умолчанию (а не любой еде, как в оригинальном репозитории)
-     //  #define QUICK_SLOT_POCKET_LOGIC  //после использования предмета в быстром слоте следующий аналогичный предмет не встаёт в слот из инвентаря
 #endif
 //
 #ifdef GRENADE_FROM_BELT
@@ -61,7 +61,6 @@
 #endif
 //
 #define DISABLE_MAX_WALK_WEIGHT        //отключает учет параметра max_walk_weight, в т.ч. и обездвиживание при превышении
-//#define NO_DBCLICK_USE                 //отключает использование предметов в инвентаре по даблклику (поедание еды, использование медицины, установка обвесов на оружие)
 #define ACTOR_PARAMS_DEPENDECY         //скорость ходьбы и высота прыжка зависят от здоровья и веса перегруза
 #define AF_JUMP_WALK                   //артефакт влияют на высоту прыжка и скорость ходьбы
 #define SATIETY_SET_MAX_POWER          //сытость напрямую влияет на максимальную выносливость

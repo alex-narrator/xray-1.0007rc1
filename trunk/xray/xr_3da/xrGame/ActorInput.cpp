@@ -213,7 +213,6 @@ void CActor::IR_OnKeyboardPress(int cmd)
 					
 					if(pMedkit || pAntirad || pEatableItem || pBottleItem)
 					{
-#ifndef QUICK_SLOT_POCKET_LOGIC
 						bool SearchRuck = !psActorFlags.test(AF_QUICK_FROM_BELT);
 						PIItem iitm = inventory().Same(itm, SearchRuck);
 						if(iitm)
@@ -222,7 +221,6 @@ void CActor::IR_OnKeyboardPress(int cmd)
 							strconcat(sizeof(str),str,*CStringTable().translate("st_item_used"),": ", iitm->Name());
 						}
 						else
-#endif
 						{
 							inventory().Eat(itm);
 							strconcat(sizeof(str),str,*CStringTable().translate("st_item_used"),": ", itm->Name());
