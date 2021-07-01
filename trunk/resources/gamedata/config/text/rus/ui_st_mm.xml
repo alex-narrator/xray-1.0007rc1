@@ -191,6 +191,9 @@
 	<string id="ui_mm_eax">
 		<text>EAX</text>
 	</string>
+	<string id="ui_mm_doppler">
+		<text>Эффект Допплера</text>
+	</string>
 	<string id="ui_mm_fullscreen">
 		<text>Полный экран</text>
 	</string>

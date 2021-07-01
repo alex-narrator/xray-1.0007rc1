@@ -105,6 +105,6 @@ void CUIOptionsItem::SaveValue(){
 			m_entry == "r__detail_density")
 	m_optionsManager.DoVidRestart();
 
-	if (/*m_entry == "snd_freq" ||*/ m_entry == "snd_efx")
+	if (/*m_entry == "snd_freq" ||*/ m_entry == "snd_efx" || m_entry == "snd_doppler_effect")
 		m_optionsManager.DoSndRestart();
 }

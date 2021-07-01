@@ -2,7 +2,7 @@
 #define SoundH
 #pragma once
 //
-#include "../../build_config_defines.h"
+//#include "../../build_config_defines.h"
 //
 #ifdef XRSOUND_EXPORTS
 	#define XRSOUND_API __declspec(dllexport)
@@ -46,6 +46,7 @@ XRSOUND_API extern int				psSoundCacheSizeMB		;
 enum {
 	ss_Hardware			= (1ul<<1ul),	//!< Use hardware mixing only
     ss_EAX				= (1ul<<2ul),	//!< Use eax
+	ss_Doppler			= (1ul<<3ul),	//!< Doppler Sound Effect
 	ss_forcedword		= u32(-1)
 };
 enum {
@@ -197,7 +198,7 @@ class XRSOUND_API			CSound_params
 {
   
 public:
-#ifdef DOPPLER_SOUND_EFFECT
+//#ifdef DOPPLER_SOUND_EFFECT
 	CSound_params() :
 		set(false),
 		alpha(0.05f)  // Coefficient for exponential moving average.
@@ -212,7 +213,7 @@ public:
 	Fvector                                 curVelocity;  // Current velocity.
 	Fvector                                 prevVelocity;  // Previous velocity.
 	Fvector                                 accVelocity;  // Velocity accumulator (for moving average).
-#endif
+//#endif
 	Fvector					position;
 	float					base_volume;
 	float					volume;
@@ -220,7 +221,7 @@ public:
 	float					min_distance;
 	float					max_distance;
 	float					max_ai_distance;
-#ifdef DOPPLER_SOUND_EFFECT
+//#ifdef DOPPLER_SOUND_EFFECT
 	// Functions added by Cribbledirge for doppler effect.
 	IC virtual void update_position(const Fvector& newPosition)
 	{
@@ -252,7 +253,7 @@ private:
 	bool set;
 
         // End Cribbledirge.
-#endif
+//#endif
 };
 
 /// definition (Sound Interface)

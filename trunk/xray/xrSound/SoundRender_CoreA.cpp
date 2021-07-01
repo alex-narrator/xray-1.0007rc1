@@ -121,7 +121,7 @@ void CSoundRender_CoreA::_initialize(u64 window)
 	wfm.wBitsPerSample = 16;	//(dsCaps.dwFlags&DSCAPS_PRIMARY16BIT)?16:8;
 	wfm.nBlockAlign = wfm.wBitsPerSample / 8 * wfm.nChannels;
 	wfm.nAvgBytesPerSec = wfm.nSamplesPerSec * wfm.nBlockAlign;
-#ifdef DOPPLER_SOUND_EFFECT
+//#ifdef DOPPLER_SOUND_EFFECT
         // Init listener struct.
 	Listener.position.set(0.0f, 0.0f, 0.0f);
 	Listener.prevVelocity.set(0.0f, 0.0f, 0.0f);
@@ -129,7 +129,7 @@ void CSoundRender_CoreA::_initialize(u64 window)
 	Listener.accVelocity.set(0.0f, 0.0f, 0.0f);
 	Listener.orientation[0].set(0.0f, 0.0f, 1.0f);
 	Listener.orientation[1].set(0.0f, 1.0f, 0.0f);
-#endif
+//#endif
 	// inherited initialize
 	inherited::_initialize(window);
 
@@ -187,17 +187,17 @@ void	CSoundRender_CoreA::i_eax_get(const GUID* guid, u32 prop, void* val, u32 sz
 
 void CSoundRender_CoreA::update_listener(const Fvector& P, const Fvector& D, const Fvector& N, float dt)
 {
-#ifdef DOPPLER_SOUND_EFFECT
+//#ifdef DOPPLER_SOUND_EFFECT
         // Use exponential moving average for a nice smooth doppler effect.
 	static const float alpha = 0.05f;
-#endif
+//#endif
 	inherited::update_listener(P, D, N, dt);
-#ifdef DOPPLER_SOUND_EFFECT
+//#ifdef DOPPLER_SOUND_EFFECT
         Listener.prevVelocity.set(Listener.accVelocity);
         Listener.curVelocity.sub(P, Listener.position);
         Listener.accVelocity.set(Listener.curVelocity.mul(alpha).add(Listener.prevVelocity.mul(1.f - alpha)));
-	Listener.prevVelocity.set(Listener.accVelocity).div(dt);
-#endif
+	    Listener.prevVelocity.set(Listener.accVelocity).div(dt);
+//#endif
 	if (!Listener.position.similar(P)){
 		Listener.position.set(P);
 		bListenerMoved = TRUE;
@@ -205,10 +205,16 @@ void CSoundRender_CoreA::update_listener(const Fvector& P, const Fvector& D, con
 	Listener.orientation[0].set(D.x, D.y, -D.z);
 	Listener.orientation[1].set(N.x, N.y, -N.z);
 	A_CHK(alListener3f(AL_POSITION, Listener.position.x, Listener.position.y, -Listener.position.z));
-#ifdef DOPPLER_SOUND_EFFECT
-	A_CHK(alListener3f(AL_VELOCITY, Listener.prevVelocity.x, Listener.prevVelocity.y, -Listener.prevVelocity.z));
-#else
-	A_CHK(alListener3f	(AL_VELOCITY,0.f,0.f,0.f));
-#endif
+//#ifdef DOPPLER_SOUND_EFFECT
+	if (psSoundFlags.test(ss_Doppler))
+	{
+		A_CHK(alListener3f(AL_VELOCITY, Listener.prevVelocity.x, Listener.prevVelocity.y, -Listener.prevVelocity.z));
+	}
+	else
+//#else
+	{
+		A_CHK(alListener3f(AL_VELOCITY, 0.f, 0.f, 0.f));
+	}
+//#endif
 	A_CHK(alListenerfv(AL_ORIENTATION, &Listener.orientation[0].x));
 }

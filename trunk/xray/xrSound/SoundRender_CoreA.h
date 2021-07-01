@@ -30,11 +30,11 @@ class CSoundRender_CoreA: public CSoundRender_Core
 
 	struct SListener{
 		Fvector				position;
-#ifdef DOPPLER_SOUND_EFFECT
+//#ifdef DOPPLER_SOUND_EFFECT
 		Fvector                         curVelocity;
 		Fvector                         prevVelocity;
 		Fvector                         accVelocity;
-#endif
+//#endif
 		Fvector				orientation[2];
 	};
 	SListener				Listener;
