@@ -76,10 +76,10 @@ public:
 	float							m_fPowerRestoreSpeed;
 	float							m_fBleedingRestoreSpeed;
 	CHitImmunity 					m_ArtefactHitImmunities;
-#ifdef AF_JUMP_WALK
-	float m_fAdditionalWalkAccel;
-	float m_fAdditionalJumpSpeed;
-#endif
+
+	float                           m_fAdditionalWalkAccel;
+	float                           m_fAdditionalJumpSpeed;
+
 protected:
 	MotionSVec						m_anim_idle;
 	MotionSVec						m_anim_idle_sprint;

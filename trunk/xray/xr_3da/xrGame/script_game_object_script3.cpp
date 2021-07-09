@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
+ï»¿////////////////////////////////////////////////////////////////////////////
 //	Module 		: script_game_object_script3.cpp
 //	Created 	: 25.09.2003
 //  Modified 	: 29.06.2004
@@ -263,29 +263,29 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 		.def("critically_wounded",			&CScriptGameObject::critically_wounded)
 		
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-		// ôîíàðü
-		/* alpet: ñ ðàçðåøåíèå àâòîðà óòàùåíî â torch_script.cpp. Èñõîäíûé âàðèàíò îñòàëñÿ â ðåâèçèè 110 íà xp-dev.com
+		// Ñ„Ð¾Ð½Ð°Ñ€ÑŒ
+		/* alpet: Ñ Ñ€Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ð°Ð²Ñ‚Ð¾Ñ€Ð° ÑƒÑ‚Ð°Ñ‰ÐµÐ½Ð¾ Ð² torch_script.cpp. Ð˜ÑÑ…Ð¾Ð´Ð½Ñ‹Ð¹ Ð²Ð°Ñ€Ð¸Ð°Ð½Ñ‚ Ð¾ÑÑ‚Ð°Ð»ÑÑ Ð² Ñ€ÐµÐ²Ð¸Ð·Ð¸Ð¸ 110 Ð½Ð° xp-dev.com
 		.def("enable_torch",				&CScriptGameObject::EnableTorch)
 		.def("switch_torch",				&CScriptGameObject::SwitchTorch)
 		.def("torch_enabled",				&CScriptGameObject::TorchEnabled)
-		// ÏÍÂ
+		// ÐŸÐÐ’
 		.def("enable_night_vision",			&CScriptGameObject::EnableNightVision)
 		.def("switch_night_vision",			&CScriptGameObject::SwitchNightVision)
 		.def("night_vision_enabled",		&CScriptGameObject::NightVisionEnabled)
 		//*/
-		// èíâåíòàðü
+		// Ð¸Ð½Ð²ÐµÐ½Ñ‚Ð°Ñ€ÑŒ
 		.def("get_actor_max_weight",			&CScriptGameObject::GetActorMaxWeight)
 		.def("set_actor_max_weight",			&CScriptGameObject::SetActorMaxWeight)
-#ifndef DISABLE_MAX_WALK_WEIGHT
+
 		.def("get_actor_max_walk_weight",		&CScriptGameObject::GetActorMaxWalkWeight)
 		.def("set_actor_max_walk_weight",		&CScriptGameObject::SetActorMaxWalkWeight)
-#endif
+
 		.def("get_additional_max_weight",		&CScriptGameObject::GetAdditionalMaxWeight)
 		.def("set_additional_max_weight",		&CScriptGameObject::SetAdditionalMaxWeight)
-#ifndef DISABLE_MAX_WALK_WEIGHT
+
 		.def("get_additional_max_walk_weight",	&CScriptGameObject::GetAdditionalMaxWalkWeight)
 		.def("set_additional_max_walk_weight",	&CScriptGameObject::SetAdditionalMaxWalkWeight)
-#endif
+
 		.def("get_total_weight",				&CScriptGameObject::GetTotalWeight)
 		.def("weight",							&CScriptGameObject::Weight)
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/

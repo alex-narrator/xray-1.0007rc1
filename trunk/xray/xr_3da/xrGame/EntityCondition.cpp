@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "pch_script.h"
 #include "entitycondition.h"
 #include "inventoryowner.h"
@@ -174,7 +174,7 @@ void CEntityCondition::ChangeEntityMorale(float value)
 
 void CEntityCondition::ChangeBleeding(float percent)
 {
-	//затянуть раны
+	//Р·Р°С‚СЏРЅСѓС‚СЊ СЂР°РЅС‹
 	for(WOUND_VECTOR_IT it = m_WoundVector.begin(); m_WoundVector.end() != it; ++it)
 	{
 		(*it)->Incarnation			(percent, m_fMinWoundSize);
@@ -194,7 +194,7 @@ bool RemoveWoundPred(CWound* pWound)
 
 void  CEntityCondition::UpdateWounds		()
 {
-	//убрать все зашившие раны из списка
+	//СѓР±СЂР°С‚СЊ РІСЃРµ Р·Р°С€РёРІС€РёРµ СЂР°РЅС‹ РёР· СЃРїРёСЃРєР°
 	m_WoundVector.erase(
 		std::remove_if(
 			m_WoundVector.begin(),
@@ -233,7 +233,7 @@ void CEntityCondition::UpdateConditionTime()
 	m_iLastTimeCalled			= _cur_time;
 }
 
-//вычисление параметров с ходом игрового времени
+//РІС‹С‡РёСЃР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ СЃ С…РѕРґРѕРј РёРіСЂРѕРІРѕРіРѕ РІСЂРµРјРµРЅРё
 void CEntityCondition::UpdateCondition()
 {
 	if(GetHealth()<=0)			return;
@@ -308,7 +308,7 @@ float CEntityCondition::HitOutfitEffect(float hit_power, ALife::EHitType hit_typ
 	else
 		new_hit_power				*= pOutfit->GetHitTypeProtection(hit_type,element);
 	
-	//увеличить изношенность костюма
+	//СѓРІРµР»РёС‡РёС‚СЊ РёР·РЅРѕС€РµРЅРЅРѕСЃС‚СЊ РєРѕСЃС‚СЋРјР°
 	pOutfit->Hit					(hit_power, hit_type);
 
 	return							new_hit_power;
@@ -329,10 +329,10 @@ float CEntityCondition::HitPowerEffect(float power_loss)
 
 CWound* CEntityCondition::AddWound(float hit_power, ALife::EHitType hit_type, u16 element)
 {
-	//максимальное число косточек 64
+	//РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ С‡РёСЃР»Рѕ РєРѕСЃС‚РѕС‡РµРє 64
 	VERIFY(element  < 64 || BI_NONE == element);
 
-	//запомнить кость по которой ударили и силу удара
+	//Р·Р°РїРѕРјРЅРёС‚СЊ РєРѕСЃС‚СЊ РїРѕ РєРѕС‚РѕСЂРѕР№ СѓРґР°СЂРёР»Рё Рё СЃРёР»Сѓ СѓРґР°СЂР°
 	WOUND_VECTOR_IT it = m_WoundVector.begin();
 	for(;it != m_WoundVector.end(); it++)
 	{
@@ -342,14 +342,14 @@ CWound* CEntityCondition::AddWound(float hit_power, ALife::EHitType hit_type, u1
 	
 	CWound* pWound = NULL;
 
-	//новая рана
+	//РЅРѕРІР°СЏ СЂР°РЅР°
 	if (it == m_WoundVector.end())
 	{
 		pWound = xr_new<CWound>(element);
 		pWound->AddHit(hit_power*::Random.randF(0.5f,1.5f), hit_type);
 		m_WoundVector.push_back(pWound);
 	}
-	//старая 
+	//СЃС‚Р°СЂР°СЏ 
 	else
 	{
 		pWound = *it;
@@ -362,7 +362,7 @@ CWound* CEntityCondition::AddWound(float hit_power, ALife::EHitType hit_type, u1
 
 CWound* CEntityCondition::ConditionHit(SHit* pHDS)
 {
-	//кто нанес последний хит
+	//РєС‚Рѕ РЅР°РЅРµСЃ РїРѕСЃР»РµРґРЅРёР№ С…РёС‚
 	m_pWho = pHDS->who;
 	m_iWhoID = (NULL != pHDS->who) ? pHDS->who->ID() : 0;
 
@@ -431,7 +431,7 @@ CWound* CEntityCondition::ConditionHit(SHit* pHDS)
 	}
 
 	if (bDebug) Msg("%s hitted in %s with %f[%f]", m_object->Name(), smart_cast<CKinematics*>(m_object->Visual())->LL_BoneName_dbg(pHDS->boneID), m_fHealthLost*100.0f, hit_power_org);
-	//раны добавляются только живому
+	//СЂР°РЅС‹ РґРѕР±Р°РІР»СЏСЋС‚СЃСЏ С‚РѕР»СЊРєРѕ Р¶РёРІРѕРјСѓ
 	if(bAddWound && GetHealth()>0)
 		return AddWound(hit_power*m_fWoundBoneScale, pHDS->hit_type, pHDS->boneID);
 	else
@@ -462,10 +462,10 @@ void CEntityCondition::UpdateHealth()
 
 	ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime);
 #else
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if (!pActor || m_fRadiation < m_fRadiationBlocksRestore) //раны заживают/здоровье регенерирует только если радиация меньше заданного уровня
+	if (!g_actor || m_fRadiation < m_fRadiationBlocksRestore) //СЂР°РЅС‹ Р°РєС‚РѕСЂР° Р·Р°Р¶РёРІР°СЋС‚/Р·РґРѕСЂРѕРІСЊРµ СЂРµРіРµРЅРµСЂРёСЂСѓРµС‚ С‚РѕР»СЊРєРѕ РµСЃР»Рё СЂР°РґРёР°С†РёСЏ РјРµРЅСЊС€Рµ Р·Р°РґР°РЅРЅРѕРіРѕ СѓСЂРѕРІРЅСЏ
 	{
 		m_fDeltaHealth += m_fDeltaTime * m_change_v.m_fV_HealthRestore;
+
 		VERIFY(_valid(m_fDeltaHealth));
 
 		ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime);

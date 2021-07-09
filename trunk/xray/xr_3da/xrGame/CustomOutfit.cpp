@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 
 #include "customoutfit.h"
 #include "PhysicsShell.h"
@@ -66,9 +66,9 @@ void CCustomOutfit::Load(LPCSTR section)
 		m_fPowerLoss = pSettings->r_float(section, "power_loss");
 	else
 		m_fPowerLoss = 1.0f;	
-#ifndef DISABLE_MAX_WALK_WEIGHT
-	m_additional_weight				= pSettings->r_float(section,"additional_inventory_weight");
-#endif
+
+	//m_additional_weight				= pSettings->r_float(section,"additional_inventory_weight");
+	m_additional_weight				= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight", m_additional_weight2); //РґРѕР±Р°РІРєР° Рє РІРµСЃСѓ РѕР±РµР·РґРІРёР¶РёРІР°РЅРёСЏ СЂР°РІРЅР° РґРѕР±Р°РІРєРµ Рє РІРµСЃСѓ РґРѕ РїРµСЂРµРіСЂСѓР·Р°, РµСЃР»Рё РЅРµ СѓРєР°Р·Р°РЅ СЏРІРЅРѕ
 	m_additional_weight2			= pSettings->r_float(section,"additional_inventory_weight2");
 
 	if (pSettings->line_exist(section, "nightvision_sect"))
@@ -155,7 +155,7 @@ void	CCustomOutfit::OnMoveToRuck		()
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
 		if (pActor)
 		{
-			// т.к. родительский инвентарь у предмета меняется раньше вызова этой функции, не будем ничего ломать, а просто проверим, есть ли в слоте бронька. Если есть - уходим.
+			// С‚.Рє. СЂРѕРґРёС‚РµР»СЊСЃРєРёР№ РёРЅРІРµРЅС‚Р°СЂСЊ Сѓ РїСЂРµРґРјРµС‚Р° РјРµРЅСЏРµС‚СЃСЏ СЂР°РЅСЊС€Рµ РІС‹Р·РѕРІР° СЌС‚РѕР№ С„СѓРЅРєС†РёРё, РЅРµ Р±СѓРґРµРј РЅРёС‡РµРіРѕ Р»РѕРјР°С‚СЊ, Р° РїСЂРѕСЃС‚Рѕ РїСЂРѕРІРµСЂРёРј, РµСЃС‚СЊ Р»Рё РІ СЃР»РѕС‚Рµ Р±СЂРѕРЅСЊРєР°. Р•СЃР»Рё РµСЃС‚СЊ - СѓС…РѕРґРёРј.
 			CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(pActor->inventory().ItemFromSlot(OUTFIT_SLOT));
 			if (pOutfit)
 			return;

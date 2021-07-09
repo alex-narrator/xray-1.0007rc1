@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
+п»ї////////////////////////////////////////////////////////////////////////////
 //	Module 		: script_game_object.h
 //	Created 	: 25.09.2003
 //  Modified 	: 29.06.2004
@@ -255,17 +255,17 @@ public:
 	// CProjector
 			Fvector				GetCurrentDirection		();
 			bool				IsInvBoxEmpty			();
-	//передача порции информации InventoryOwner
+	//РїРµСЂРµРґР°С‡Р° РїРѕСЂС†РёРё РёРЅС„РѕСЂРјР°С†РёРё InventoryOwner
 			bool				GiveInfoPortion		(LPCSTR info_id);
 			bool				DisableInfoPortion	(LPCSTR info_id);
 			bool				GiveGameNews		(LPCSTR news, LPCSTR texture_name, Frect tex_rect, int delay, int show_time);
 
 			void				AddIconedTalkMessage(LPCSTR text, LPCSTR texture_name, Frect tex_rect, LPCSTR templ_name);
-	//предикаты наличия/отсутствия порции информации у персонажа
+	//РїСЂРµРґРёРєР°С‚С‹ РЅР°Р»РёС‡РёСЏ/РѕС‚СЃСѓС‚СЃС‚РІРёСЏ РїРѕСЂС†РёРё РёРЅС„РѕСЂРјР°С†РёРё Сѓ РїРµСЂСЃРѕРЅР°Р¶Р°
 			bool				HasInfo				(LPCSTR info_id);
 			bool				DontHasInfo			(LPCSTR info_id);
 			xrTime				GetInfoTime			(LPCSTR info_id);
-	//работа с заданиями
+	//СЂР°Р±РѕС‚Р° СЃ Р·Р°РґР°РЅРёСЏРјРё
 			ETaskState			GetGameTaskState	(LPCSTR task_id, int objective_num);
 			void				SetGameTaskState	(ETaskState state, LPCSTR task_id, int objective_num);
 			void				GiveTaskToActor		(CGameTask* t, u32 dt, bool bCheckExisting);
@@ -568,19 +568,19 @@ public:
 			void				invulnerable						(bool invulnerable);
 			
 			/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/	
-			// инвентарь
+			// РёРЅРІРµРЅС‚Р°СЂСЊ
 			float				GetActorMaxWeight					() const;
 			void				SetActorMaxWeight					(float max_weight);
-#ifndef DISABLE_MAX_WALK_WEIGHT
+			
 			float				GetActorMaxWalkWeight				() const;
 			void				SetActorMaxWalkWeight				(float max_walk_weight);
-#endif
+			
 			float				GetAdditionalMaxWeight				() const;
 			void				SetAdditionalMaxWeight				(float add_max_weight);
-#ifndef DISABLE_MAX_WALK_WEIGHT
+
 			float				GetAdditionalMaxWalkWeight			() const;
 			void				SetAdditionalMaxWalkWeight			(float add_max_walk_weight);
-#endif
+
 			float				GetTotalWeight						() const;
 			float				Weight								() const;
 			/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
@@ -712,10 +712,10 @@ IC bool test_pushobject(lua_State *L, CGameObject* obj)
 	T *pObj = smart_cast<T*> (obj);
 	if (pObj && get_class_rep<T>(L))
 	{		
-		convert_to_lua<T*>(L, pObj);  // обязательно конвертировать указатель, а не значение. Иначе вызов деструктора при сборке мусора!
+		convert_to_lua<T*>(L, pObj);  // РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РєРѕРЅРІРµСЂС‚РёСЂРѕРІР°С‚СЊ СѓРєР°Р·Р°С‚РµР»СЊ, Р° РЅРµ Р·РЅР°С‡РµРЅРёРµ. РРЅР°С‡Рµ РІС‹Р·РѕРІ РґРµСЃС‚СЂСѓРєС‚РѕСЂР° РїСЂРё СЃР±РѕСЂРєРµ РјСѓСЃРѕСЂР°!
 		return true;		
 	}
 	return false;
 }
 
-#include "script_game_object_impl.h" // alpet: исправление error LNK2019: unresolved external symbol "public: class CGameObject & __thiscall CScriptGameObject::object(void)const "
+#include "script_game_object_impl.h" // alpet: РёСЃРїСЂР°РІР»РµРЅРёРµ error LNK2019: unresolved external symbol "public: class CGameObject & __thiscall CScriptGameObject::object(void)const "

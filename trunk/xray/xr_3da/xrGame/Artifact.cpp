@@ -102,10 +102,10 @@ void CArtefact::Load(LPCSTR section)
 		m_fBleedingRestoreSpeed = pSettings->r_float	(section,"bleeding_restore_speed"	);
 		if(pSettings->section_exist(/**cNameSect(), */pSettings->r_string(section,"hit_absorbation_sect")))
 			m_ArtefactHitImmunities.LoadImmunities(pSettings->r_string(section,"hit_absorbation_sect"),pSettings);
-#ifdef AF_JUMP_WALK
+
 		m_fAdditionalWalkAccel = READ_IF_EXISTS(pSettings, r_float, section, "additional_walk_accel", 0.f);
 		m_fAdditionalJumpSpeed = READ_IF_EXISTS(pSettings, r_float, section, "additional_jump_speed", 0.f);
-#endif
+
 	}
 	m_bCanSpawnZone = !!pSettings->line_exist("artefact_spawn_zones", section);
 

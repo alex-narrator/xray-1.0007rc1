@@ -1,4 +1,4 @@
-// ActorCondition.h: класс состояния игрока
+п»ї// ActorCondition.h: РєР»Р°СЃСЃ СЃРѕСЃС‚РѕСЏРЅРёСЏ РёРіСЂРѕРєР°
 //
 
 #pragma once
@@ -25,9 +25,7 @@ private:
 			eCriticalRadiationReached		=(1<<4),
 			eWeaponJammedReached			=(1<<5),
 			ePhyHealthMinReached			=(1<<6),
-#ifndef DISABLE_MAX_WALK_WEIGHT
 			eCantWalkWeight					=(1<<7),
-#endif
 			};
 	Flags16											m_condition_flags;
 private:
@@ -47,12 +45,10 @@ public:
 	virtual void 		ChangeAlcohol				(float value);
 	virtual void 		ChangeSatiety				(float value);
 
-	// хромание при потере сил и здоровья
+	// С…СЂРѕРјР°РЅРёРµ РїСЂРё РїРѕС‚РµСЂРµ СЃРёР» Рё Р·РґРѕСЂРѕРІСЊСЏ
 	virtual	bool		IsLimping					() const;
 	virtual bool		IsCantWalk					() const;
-#ifndef DISABLE_MAX_WALK_WEIGHT
 	virtual bool		IsCantWalkWeight			();
-#endif
 	virtual bool		IsCantSprint				() const;
 
 			void		ConditionJump				(float weight);
@@ -94,19 +90,22 @@ protected:
 	float m_fAccelK;
 	float m_fSprintK;
 public:
-#ifndef DISABLE_MAX_WALK_WEIGHT
-	float	m_MaxWalkWeight;
-#endif
+	float m_MaxWalkWeight;
 #ifdef SATIETY_SET_MAX_POWER
 	float m_fMinPowerSatiety;
 	float m_fMinPowerSatietyTreshold;
+#endif
+#ifdef RADIATION_PARAMS_DEPENDECY
+	//float                   m_fRadiationBlocksRestore;
+	float                   m_fRadiationMinimizeHealth;
+	float                   m_fMinHealthRadiation;
 #endif
 protected:
 	mutable bool m_bLimping;
 	mutable bool m_bCantWalk;
 	mutable bool m_bCantSprint;
 
-	//порог силы и здоровья меньше которого актер начинает хромать
+	//РїРѕСЂРѕРі СЃРёР»С‹ Рё Р·РґРѕСЂРѕРІСЊСЏ РјРµРЅСЊС€Рµ РєРѕС‚РѕСЂРѕРіРѕ Р°РєС‚РµСЂ РЅР°С‡РёРЅР°РµС‚ С…СЂРѕРјР°С‚СЊ
 	float m_fLimpingPowerBegin;
 	float m_fLimpingPowerEnd;
 	float m_fCantWalkPowerBegin;

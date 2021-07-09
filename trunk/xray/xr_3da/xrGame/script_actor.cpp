@@ -118,9 +118,7 @@ void CScriptActor::script_register(lua_State *L)
 			.def_readwrite("overweight_jump_k",			&CActorCondition::m_fOverweightJumpK)
 			.def_readwrite("accel_k",					&CActorCondition::m_fAccelK)
 			.def_readwrite("sprint_k",					&CActorCondition::m_fSprintK)
-#ifndef DISABLE_MAX_WALK_WEIGHT
 			.def_readwrite("max_walk_weight",			&CActorCondition::m_MaxWalkWeight)
-#endif
 			.def_readwrite("limping_power_begin",		&CActorCondition::m_fLimpingPowerBegin)
 			.def_readwrite("limping_power_end",			&CActorCondition::m_fLimpingPowerEnd)
 			.def_readwrite("cant_walk_power_begin",		&CActorCondition::m_fCantWalkPowerBegin)

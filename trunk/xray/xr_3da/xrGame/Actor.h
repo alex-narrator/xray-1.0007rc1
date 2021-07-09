@@ -460,16 +460,10 @@ public:
 
 	bool					is_jump					();	
 
-#if defined (AF_JUMP_WALK) || defined (ACTOR_PARAMS_DEPENDECY)
-	void                    UpdateConfigParams      ();
-	float                   m_fWalkAccelCfg         = pSettings->r_float("actor", "walk_accel"); //конфиговое значение скорости ходьбы
-	float                   m_fJumpSpeedCfg         = pSettings->r_float("actor", "jump_speed"); //конфиговое значение высоты прыжка
+	void                    UpdateWalkJump          (); //ходьба и прыжок
+	float                   m_fMinHealthWalkJump;
 	float                   m_fAdditionalWalkAccel;
 	float                   m_fAdditionalJumpSpeed;
-#endif
-#ifdef ACTOR_PARAMS_DEPENDECY
-	float                   m_fMinHealthWalkJump;
-#endif
 
 protected:
 	u32						mstate_wishful;
@@ -480,6 +474,10 @@ protected:
 
 	float					m_fWalkAccel;
 	float					m_fJumpSpeed;
+	//
+	float					m_fWalkAccelBase; //конфиговое значение скорости ходьбы
+	float					m_fJumpSpeedBase; //конфиговое значение высоты прыжка
+	//
 	float					m_fRunFactor;
 	float					m_fRunBackFactor;
 	float					m_fWalkBackFactor;

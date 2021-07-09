@@ -43,9 +43,7 @@ protected:
 	u32								m_ef_equipment_type;
 
 public:
-#ifndef DISABLE_MAX_WALK_WEIGHT
 	float							m_additional_weight;
-#endif
 	float							m_additional_weight2;
 	shared_str						m_NightVisionSect;
 	virtual u32						ef_equipment_type		() const;

@@ -149,7 +149,6 @@ CActor::CActor() : CEntityAlive()
 	m_holder				=	NULL;
 	m_holderID				=	u16(-1);
 
-
 #ifdef DEBUG
 	Device.seqRender.Add	(this,REG_PRIORITY_LOW);
 #endif
@@ -319,12 +318,12 @@ void CActor::Load	(LPCSTR section )
 		character_physics_support()->movement()->SetActorRestrictorRadius(CPHCharacter::rtMonsterMedium,pSettings->r_float(section,"medium_monster_restrictor_radius"));
 	character_physics_support()->movement()->Load(section);
 
-	
-	m_fWalkAccel    = pSettings->r_float(section, "walk_accel");
-	m_fJumpSpeed    = pSettings->r_float(section, "jump_speed");
-#ifdef ACTOR_PARAMS_DEPENDECY
+	//ходьба и прыжок
+	m_fWalkAccelBase    = pSettings->r_float(section, "walk_accel");
+	m_fJumpSpeedBase    = pSettings->r_float(section, "jump_speed");
+
 	m_fMinHealthWalkJump = pSettings->r_float(section, "min_health_walk_jump");
-#endif
+
 	m_fRunFactor				= pSettings->r_float(section,"run_coef");
 	m_fRunBackFactor			= pSettings->r_float(section,"run_back_coef");
 	m_fWalkBackFactor			= pSettings->r_float(section,"walk_back_coef");
@@ -337,7 +336,7 @@ void CActor::Load	(LPCSTR section )
 
 
 	m_fCamHeightFactor			= pSettings->r_float(section,"camera_height_factor");
-	character_physics_support()->movement()		->SetJumpUpVelocity(m_fJumpSpeed);
+	//character_physics_support()->movement()		->SetJumpUpVelocity(m_fJumpSpeed);
 	float AirControlParam		= pSettings->r_float	(section,"air_control_param");
 	character_physics_support()->movement()		->SetAirControlParam(AirControlParam);
 
@@ -1259,13 +1258,11 @@ void CActor::shedule_Update	(u32 DT)
 
 //	UpdateSleep									();
 
+	UpdateWalkJump                              (); //ходьба и прыжок
 	//для свойст артефактов, находящихся на поясе
 	UpdateArtefactsOnBelt						();
 	m_pPhysics_support->in_shedule_Update		(DT);
 	Check_for_AutoPickUp						();
-#if defined (AF_JUMP_WALK) || defined (ACTOR_PARAMS_DEPENDECY)
-	UpdateConfigParams();
-#endif
 };
 #include "debug_renderer.h"
 void CActor::renderable_Render	()
@@ -1542,7 +1539,7 @@ void CActor::OnItemBelt		(CInventoryItem *inventory_item, EItemPlace previous_pl
 
 void CActor::UpdateArtefactPanel()
 {
-	if (Level().CurrentViewEntity() && Level().CurrentViewEntity() == this) //Îíî íàäî âîîáùå áåç ìóëüòèïëååðà?
+	if (Level().CurrentViewEntity() && Level().CurrentViewEntity() == this) //Оно надо вообще без мультиплеера?
 
 		HUD().GetUI()->UIMainIngameWnd->m_artefactPanel->InitIcons(inventory().m_belt);
 }
@@ -1566,11 +1563,11 @@ void CActor::UpdateArtefactsOnBelt()
 		update_time		= 0.0f;
 	}
 
-#if defined(ARTEFACTS_FROM_RUCK)
-	for(TIItemContainer::iterator it = inventory().m_all.begin(); inventory().m_all.end() != it; ++it)
-#else
-	for (TIItemContainer::iterator it = inventory().m_belt.begin(); inventory().m_belt.end() != it; ++it)
-#endif
+	m_fAdditionalWalkAccel = 0.0f;
+	m_fAdditionalJumpSpeed = 0.0f;
+
+	TIItemContainer &list = psActorFlags.test(AF_ARTEFACTS_FROM_ALL) ? inventory().m_all : inventory().m_belt;
+	for (TIItemContainer::iterator it = list.begin(); list.end() != it; ++it)
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		if (artefact)
@@ -1582,6 +1579,8 @@ void CActor::UpdateArtefactsOnBelt()
 #ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
 			conditions().ChangeRadiation		(artefact->m_fRadiationRestoreSpeed*f_update_time);
 #endif
+			m_fAdditionalWalkAccel += artefact->m_fAdditionalWalkAccel;
+			m_fAdditionalJumpSpeed += artefact->m_fAdditionalJumpSpeed;
 		}
 
 	} // for belt items
@@ -1599,11 +1598,9 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 {
 	float res_hit_power_k		= 1.0f;
 	float _af_count				= 0.0f;
-#if defined(ARTEFACTS_FROM_RUCK)
-	for(TIItemContainer::iterator it = inventory().m_all.begin(); inventory().m_all.end() != it; ++it)
-#else
-	for(TIItemContainer::iterator it = inventory().m_belt.begin(); inventory().m_belt.end() != it; ++it)
-#endif
+
+	TIItemContainer &list = psActorFlags.test(AF_ARTEFACTS_FROM_ALL) ? inventory().m_all : inventory().m_belt;
+	for (TIItemContainer::iterator it = list.begin(); list.end() != it; ++it)
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		if(artefact){
@@ -1612,18 +1609,52 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 		}
 	}
 
-#if defined(INV_NEW_SLOTS_SYSTEM) && !defined(ARTEFACTS_FROM_RUCK)
-	PIItem helmet = inventory().m_slots[HELMET_SLOT].m_pIItem;
-	if (helmet){
-		CArtefact* helmet_artefact = smart_cast<CArtefact*>(helmet);
-		if(helmet_artefact){
-			res_hit_power_k	+= helmet_artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
-			_af_count		+= 1.0f;
+#if defined(INV_NEW_SLOTS_SYSTEM)/* && !defined(ARTEFACTS_FROM_RUCK)*/
+	if (!psActorFlags.test(AF_ARTEFACTS_FROM_ALL))
+	{
+		PIItem helmet = inventory().m_slots[HELMET_SLOT].m_pIItem;
+		if (helmet){
+			CArtefact* helmet_artefact = smart_cast<CArtefact*>(helmet);
+			if (helmet_artefact){
+				res_hit_power_k += helmet_artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+				_af_count += 1.0f;
+			}
 		}
 	}
 #endif
 	res_hit_power_k			-= _af_count;
 	return					res_hit_power_k * hit_power;
+}
+
+void CActor::UpdateWalkJump() //ходьба и прыжок
+{
+	float hs_k = 1.0f;
+	float ow_k = 1.0f;
+
+	if (psActorFlags.test(AF_SMOOTH_OVERWEIGHT))
+	{
+		hs_k = m_fMinHealthWalkJump + (1 - m_fMinHealthWalkJump) * GetHealth(); //коэф влияния здоровья на скорость ходьбы и высоту прыжка
+
+		if (inventory().TotalWeight() > inventory().GetMaxWeight())         //считаем коэф. только если есть перегруз
+			ow_k = inventory().GetMaxWeight() / inventory().TotalWeight();  //коэф влияния перегруза на скорость ходьбы и высоту прыжка
+	}
+	//скорость ходьбы
+	m_fWalkAccel = (m_fWalkAccelBase + m_fAdditionalWalkAccel) * ow_k * hs_k;
+
+	//высота прыжка
+	m_fJumpSpeed = (m_fJumpSpeedBase + m_fAdditionalJumpSpeed) * ow_k * hs_k;
+	character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed);
+
+#ifdef MY_DEBUG
+	Msg("m_fWalkAccel = %.2f", m_fWalkAccel);
+	Msg("m_fJumpSpeed = %.2f", m_fJumpSpeed);
+	Msg("m_fWalkAccelBase = %.2f", m_fWalkAccelBase);
+	Msg("m_fJumpSpeedBase = %.2f", m_fJumpSpeedBase);
+	Msg("m_fAdditionalWalkAccel = %.2f", m_fAdditionalWalkAccel);
+	Msg("m_fAdditionalJumpSpeed = %.2f", m_fAdditionalJumpSpeed);
+	Msg("hs_k = %.2f", hs_k);
+	Msg("ow_k = %.2f", ow_k);
+#endif //MY_DEBUG
 }
 
 void	CActor::SetZoomRndSeed		(s32 Seed)
@@ -1805,52 +1836,3 @@ void CActor::unblock_action(EGameActions cmd)
 		m_blocked_actions.erase(iter);
 	}
 }
-
-#if defined (AF_JUMP_WALK) || defined (ACTOR_PARAMS_DEPENDECY)
-void CActor::UpdateConfigParams()
-{
-	m_fAdditionalWalkAccel = 0.0f;
-	m_fAdditionalJumpSpeed = 0.0f;
-
-	float hs_k = 1.0f;
-	float ow_k = 1.0f;
-
-#ifdef AF_JUMP_WALK
-#if defined(ARTEFACTS_FROM_RUCK)
-	for (TIItemContainer::iterator it = inventory().m_all.begin(); inventory().m_all.end() != it; ++it)
-#else
-	for (TIItemContainer::iterator it = inventory().m_belt.begin(); inventory().m_belt.end() != it; ++it)
-#endif
-	{
-		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
-		if (artefact)
-		{
-			m_fAdditionalWalkAccel += artefact->m_fAdditionalWalkAccel;
-			m_fAdditionalJumpSpeed += artefact->m_fAdditionalJumpSpeed;
-		}
-	}
-#endif
-#ifdef ACTOR_PARAMS_DEPENDECY
-	hs_k = m_fMinHealthWalkJump + (1 - m_fMinHealthWalkJump) * GetHealth();
-
-	if (inventory().TotalWeight() > inventory().GetMaxWeight())
-		ow_k = inventory().GetMaxWeight() / inventory().TotalWeight();
-#endif
-		//скорость ходьбы
-	m_fWalkAccel = (m_fWalkAccelCfg + m_fAdditionalWalkAccel) * ow_k * hs_k;
-		//высота прыжка
-	m_fJumpSpeed = (m_fJumpSpeedCfg + m_fAdditionalJumpSpeed) * ow_k * hs_k;
-	character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed);
-
-#ifdef MY_DEBUG
-	Msg("m_fWalkAccel = %.2f", m_fWalkAccel);
-	Msg("m_fJumpSpeed = %.2f", m_fJumpSpeed);
-	Msg("m_fWalkAccelCfg = %.2f", m_fWalkAccelCfg);
-	Msg("m_fJumpSpeedCfg = %.2f", m_fJumpSpeedCfg);
-	Msg("m_fAdditionalWalkAccel = %.2f", m_fAdditionalWalkAccel);
-	Msg("m_fAdditionalJumpSpeed = %.2f", m_fAdditionalJumpSpeed);
-	Msg("hs_k = %.2f", hs_k);
-	Msg("ow_k = %.2f", ow_k);
-#endif //MY_DEBUG
-}
-#endif

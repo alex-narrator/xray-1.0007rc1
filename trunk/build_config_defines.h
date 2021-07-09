@@ -20,7 +20,7 @@
 #define INV_RUCK_UNLIMITED_FIX		    // Real Wolf: позволяет безболезненно использовать атрибут unlimited в теге dragdrop_bag для создания лимитного инвентаря
 #define INV_NEW_SLOTS_SYSTEM			// Real Wolf, Red Virus: включает слоты.
 #define SUN_DIR_NOT_DEBUG			    // Real Wolf: отключение вывода в лог информации вида CurrentEnv.sun_dir...
-#define ARTEFACTS_FROM_RUCK			    // Real Wolf: артефакты будут работать из всего инвентаря (слотов, пояса, рюкзака).
+//#define ARTEFACTS_FROM_RUCK			    // Real Wolf: артефакты будут работать из всего инвентаря (слотов, пояса, рюкзака). //вынесено в опции
 #define KNIFE_SPRINT_FIX				// Real Wolf: остановка спринта при ударе2.
 #define KNIFE_SPRINT_MOTION				// Real Wolf: вопроизведение анимации бега для ножа.
 #define MISSILE_THREAT_FIX				// Real Wolf: остановка спринта при броске гранаты, болта и т.д.
@@ -63,9 +63,9 @@
        #define SHOW_GRENADE_SLOT       //отображение слота гранаты в инвентаре
 #endif
 //
-#define DISABLE_MAX_WALK_WEIGHT        //отключает учет параметра max_walk_weight, в т.ч. и обездвиживание при превышении
-#define ACTOR_PARAMS_DEPENDECY         //скорость ходьбы и высота прыжка зависят от здоровья и веса перегруза
-#define AF_JUMP_WALK                   //артефакт влияют на высоту прыжка и скорость ходьбы
+//#define DISABLE_MAX_WALK_WEIGHT        //отключает учет параметра max_walk_weight, в т.ч. и обездвиживание при превышении //-- вынесено в опции
+//#define ACTOR_PARAMS_DEPENDECY         //скорость ходьбы и высота прыжка зависят от здоровья и веса перегруза //-- вынесено в опции
+//#define AF_JUMP_WALK                   //артефакт влияют на высоту прыжка и скорость ходьбы //--в конфигах
 #define SATIETY_SET_MAX_POWER          //сытость напрямую влияет на максимальную выносливость
 #define SIMPLE_ZOOM_SETTINGS           //кратность оптики задаётся через степень увеличения а не fov, прицеливание без оптики не зуммирует (если не указан ironsight_zoom_factor)
 #define ITEMS_ON_AF_PANEL              //на худовой панели артефактов отображаются любые предметы, помещенные на пояс

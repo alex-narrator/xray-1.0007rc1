@@ -1,4 +1,4 @@
-#include "pch_script.h"
+п»ї#include "pch_script.h"
 #include "actorcondition.h"
 #include "actor.h"
 #include "actorEffector.h"
@@ -68,7 +68,7 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fAccelK					= pSettings->r_float(section,"accel_k");
 	m_fSprintK					= pSettings->r_float(section,"sprint_k");
 
-	//порог силы и здоровья меньше которого актер начинает хромать
+	//РїРѕСЂРѕРі СЃРёР»С‹ Рё Р·РґРѕСЂРѕРІСЊСЏ РјРµРЅСЊС€Рµ РєРѕС‚РѕСЂРѕРіРѕ Р°РєС‚РµСЂ РЅР°С‡РёРЅР°РµС‚ С…СЂРѕРјР°С‚СЊ
 	m_fLimpingHealthBegin		= pSettings->r_float(section,	"limping_health_begin");
 	m_fLimpingHealthEnd			= pSettings->r_float(section,	"limping_health_end");
 	R_ASSERT					(m_fLimpingHealthBegin<=m_fLimpingHealthEnd);
@@ -93,22 +93,22 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_Satiety				= pSettings->r_float(section,"satiety_v");		
 	m_fV_SatietyPower			= pSettings->r_float(section,"satiety_power_v");
 	m_fV_SatietyHealth			= pSettings->r_float(section,"satiety_health_v");
-#ifndef DISABLE_MAX_WALK_WEIGHT
-	m_MaxWalkWeight					= pSettings->r_float(section,"max_walk_weight");
-#endif
+
+	m_MaxWalkWeight				= pSettings->r_float(section,"max_walk_weight");
+
 #ifdef SATIETY_SET_MAX_POWER
-	m_fMinPowerSatiety = READ_IF_EXISTS(pSettings, r_float, section, "min_power_satiety", 1);
-	m_fMinPowerSatietyTreshold = READ_IF_EXISTS(pSettings, r_float, section, "min_power_satiety_treshold", 0);
+	m_fMinPowerSatiety          = READ_IF_EXISTS(pSettings, r_float, section, "min_power_satiety", 1);
+	m_fMinPowerSatietyTreshold  = READ_IF_EXISTS(pSettings, r_float, section, "min_power_satiety_treshold", 0);
 #endif
 #ifdef RADIATION_PARAMS_DEPENDECY
-	m_fMinHealthRadiation = READ_IF_EXISTS(pSettings, r_float, section, "min_health_radiation", 1);
-	m_fRadiationBlocksRestore = READ_IF_EXISTS(pSettings, r_float, section, "radiation_blocks_restore", 0);
-	m_fRadiationMinimizeHealth = READ_IF_EXISTS(pSettings, r_float, section, "radiation_minimize_health", 0);
+	m_fMinHealthRadiation       = READ_IF_EXISTS(pSettings, r_float, section, "min_health_radiation", 1);
+	m_fRadiationBlocksRestore   = READ_IF_EXISTS(pSettings, r_float, section, "radiation_blocks_restore", 0);
+	m_fRadiationMinimizeHealth  = READ_IF_EXISTS(pSettings, r_float, section, "radiation_minimize_health", 0);
 #endif
 }
 
 
-//вычисление параметров с ходом времени
+//РІС‹С‡РёСЃР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ СЃ С…РѕРґРѕРј РІСЂРµРјРµРЅРё
 #include "UI.h"
 #include "HUDManager.h"
 
@@ -200,7 +200,7 @@ void CActorCondition::UpdateCondition()
 
 #ifdef SATIETY_SET_MAX_POWER
 	if (m_fSatiety < m_fMinPowerSatietyTreshold)
-		SetMaxPower(m_fMinPowerSatiety + (1 - m_fMinPowerSatiety) * m_fSatiety); //сытость влияет на максимальную выносливость
+		SetMaxPower(m_fMinPowerSatiety + (1 - m_fMinPowerSatiety) * m_fSatiety); //СЃС‹С‚РѕСЃС‚СЊ РІР»РёСЏРµС‚ РЅР° РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ РІС‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ
 	else
 		SetMaxPower(1.0f);
 
@@ -213,7 +213,7 @@ void CActorCondition::UpdateCondition()
 
 #ifdef RADIATION_PARAMS_DEPENDECY
 	if (m_fRadiation > m_fRadiationMinimizeHealth)
-		SetMaxHealth(1 - (1 - m_fMinHealthRadiation) * m_fRadiation); //радиация влияет на максимальное здоровье
+		SetMaxHealth(1 - (1 - m_fMinHealthRadiation) * m_fRadiation); //СЂР°РґРёР°С†РёСЏ РІР»РёСЏРµС‚ РЅР° РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РґРѕСЂРѕРІСЊРµ
 	else
 		SetMaxHealth(1.0f);
 
@@ -241,7 +241,7 @@ void CActorCondition::UpdateSatiety()
 
 	}
 		
-	//сытость увеличивает здоровье только если нет открытых ран и радиация меньше заданного уровня
+	//СЃС‹С‚РѕСЃС‚СЊ СѓРІРµР»РёС‡РёРІР°РµС‚ Р·РґРѕСЂРѕРІСЊРµ С‚РѕР»СЊРєРѕ РµСЃР»Рё РЅРµС‚ РѕС‚РєСЂС‹С‚С‹С… СЂР°РЅ Рё СЂР°РґРёР°С†РёСЏ РјРµРЅСЊС€Рµ Р·Р°РґР°РЅРЅРѕРіРѕ СѓСЂРѕРІРЅСЏ
 #ifndef RADIATION_PARAMS_DEPENDECY
 	if (!m_bIsBleeding)
 #else
@@ -250,16 +250,16 @@ void CActorCondition::UpdateSatiety()
 	{
 #ifndef RADIATION_PARAMS_DEPENDECY
 		m_fDeltaHealth += CanBeHarmed() ? 
-					(m_fV_SatietyHealth*(m_fSatiety>m_fSatietyCritical?1.f:-1.f)*m_fDeltaTime) //по идее тут надо сравнить с m_fSatietyCritical
+					(m_fV_SatietyHealth*(m_fSatiety>m_fSatietyCritical?1.f:-1.f)*m_fDeltaTime) //РїРѕ РёРґРµРµ С‚СѓС‚ РЅР°РґРѕ СЃСЂР°РІРЅРёС‚СЊ СЃ m_fSatietyCritical
 					: 0;
 #else
 		m_fDeltaHealth += CanBeHarmed() ?
-			(m_fV_SatietyHealth*(m_fSatiety>m_fSatietyCritical ? 1.f : -1.f)*m_fDeltaTime) //по идее тут надо сравнить с m_fSatietyCritical
+			(m_fV_SatietyHealth*(m_fSatiety>m_fSatietyCritical ? 1.f : -1.f)*m_fDeltaTime) //РїРѕ РёРґРµРµ С‚СѓС‚ РЅР°РґРѕ СЃСЂР°РІРЅРёС‚СЊ СЃ m_fSatietyCritical
 			: 0;
 #endif
 	}
 
-	//коэффициенты уменьшения восстановления силы от сытоти и радиации
+	//РєРѕСЌС„С„РёС†РёРµРЅС‚С‹ СѓРјРµРЅСЊС€РµРЅРёСЏ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ СЃРёР»С‹ РѕС‚ СЃС‹С‚РѕС‚Рё Рё СЂР°РґРёР°С†РёРё
 	float radiation_power_k		= 1.f;
 	float satiety_power_k       = 1.f;
 
@@ -274,14 +274,13 @@ void CActorCondition::UpdateSatiety()
 #endif //MY_DEBUG
 }
 
-
 CWound* CActorCondition::ConditionHit(SHit* pHDS)
 {
 	if (GodMode()) return NULL;
 	return inherited::ConditionHit(pHDS);
 }
 
-//weight - "удельный" вес от 0..1
+//weight - "СѓРґРµР»СЊРЅС‹Р№" РІРµСЃ РѕС‚ 0..1
 void CActorCondition::ConditionJump(float weight)
 {
 	float power			=	m_fJumpPower;
@@ -325,10 +324,9 @@ bool CActorCondition::IsCantWalk() const
 
 #include "CustomOutfit.h"
 
-#ifndef DISABLE_MAX_WALK_WEIGHT
 bool CActorCondition::IsCantWalkWeight()
 {
-	if(IsGameTypeSingle() && !GodMode())
+	if (IsGameTypeSingle() && !GodMode() && !psActorFlags.test(AF_SMOOTH_OVERWEIGHT)) //РѕР±РµР·РґРІРёР¶РёРІР°РЅРёРµ РїРѕ РїРµСЂРµРіСЂСѓР·Сѓ С‚РѕР»СЊРєРѕ РµСЃР»Рё РѕС‚РєР»СЋС‡РµРЅР° РѕРїС†РёСЏ РїР»Р°РІРЅРѕРіРѕ РїРµСЂРµРіСЂСѓР·Р°
 	{
 		float max_w				= m_MaxWalkWeight;
 
@@ -346,7 +344,6 @@ bool CActorCondition::IsCantWalkWeight()
 	m_condition_flags.set					(eCantWalkWeight, FALSE);
 	return false;
 }
-#endif
 
 bool CActorCondition::IsCantSprint() const
 {
@@ -450,13 +447,13 @@ void CActorCondition::UpdateTutorialThresholds()
 		b=false;
 		strcpy_s(cb_name,"_G.on_actor_psy");
 	}
-#ifndef DISABLE_MAX_WALK_WEIGHT
+
 	if(b && !m_condition_flags.test(eCantWalkWeight)){
 //.		m_condition_flags.set			(eCantWalkWeight, TRUE);
 		b=false;
 		strcpy_s(cb_name,"_G.on_actor_cant_walk_weight");
 	}
-#endif
+
 	if(b && !m_condition_flags.test(eWeaponJammedReached)&&m_object->inventory().GetActiveSlot()!=NO_ACTIVE_SLOT){
 		PIItem item							= m_object->inventory().ItemFromSlot(m_object->inventory().GetActiveSlot());
 		CWeapon* pWeapon					= smart_cast<CWeapon*>(item); 

@@ -172,6 +172,9 @@
 	<string id="ui_mm_quick_slot_from_belt">
 		<text>Предметы для быстрых слотов с пояса</text>
 	</string>
+	<string id="ui_mm_artefacts_from_all">
+		<text>Артефакты действуют из всего инвентаря</text>
+	</string>
 	<string id="ui_mm_devices_ui_on_key">
 		<text>Отображать миникарту и HUD-индикатор радиации при удержании кнопки [$$ACTION_SCORES$$]</text>
 	</string>
@@ -186,6 +189,9 @@
 	</string>
 	<string id="ui_mm_hard_inventory_access">
 		<text>Режим "свободные руки" + нож необходим для обыска мутантов</text>
+	</string>
+	<string id="ui_mm_smooth_overweight">
+		<text>Плавный перегруз без обездвиживания</text>
 	</string>
 <!-- END Новые опции геймплея -->>
 	<string id="ui_mm_eax">

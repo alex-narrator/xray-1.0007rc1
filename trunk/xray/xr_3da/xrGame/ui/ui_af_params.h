@@ -22,10 +22,10 @@ protected:
 		_item_satiety_restore_speed,
 		_item_power_restore_speed,
 		_item_bleeding_restore_speed,
-#ifdef AF_JUMP_WALK
+//
 		_item_additional_walk_accel,
 		_item_additional_jump_speed,
-#endif
+//
 		_max_item_index1,
 
 		_item_burn_immunity				= _max_item_index1,

@@ -556,7 +556,6 @@ bool	CActor::CanMove				()
 		}
 		return false;
 	}
-#ifndef DISABLE_MAX_WALK_WEIGHT
 	else
 	if( conditions().IsCantWalkWeight() )
 	{
@@ -567,7 +566,6 @@ bool	CActor::CanMove				()
 		return false;
 	
 	}
-#endif
 	if(IsTalking())
 		return false;
 	else
