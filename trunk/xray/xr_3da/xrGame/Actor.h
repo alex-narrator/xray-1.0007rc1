@@ -461,7 +461,7 @@ public:
 	bool					is_jump					();	
 
 	void                    UpdateWalkJump          (); //ходьба и прыжок
-	float                   m_fMinHealthWalkJump;
+	float                   m_fMinPowerWalkJump;
 	float                   m_fAdditionalWalkAccel;
 	float                   m_fAdditionalJumpSpeed;
 

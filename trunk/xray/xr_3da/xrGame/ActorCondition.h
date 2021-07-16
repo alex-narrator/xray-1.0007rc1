@@ -32,6 +32,14 @@ private:
 	CActor*											m_object;
 	void				UpdateTutorialThresholds	();
 	void 				UpdateSatiety				();
+	//вычисление параметров с ходом игрового времени - лично для актора
+	void                UpdateHealth();
+	void                UpdatePower();
+	void                UpdateRadiation();
+	void                UpdatePsyHealth();
+	void                UpdateEntityMorale();
+	void                UpdateAlcohol();
+	//
 public:
 						CActorCondition				(CActor *object);
 	virtual				~CActorCondition			(void);
@@ -56,6 +64,7 @@ public:
 			void		ConditionStand				(float weight);
 
 			float	xr_stdcall	GetAlcohol			()	{return m_fAlcohol;}
+			float	xr_stdcall	AlcoholSatiety      ()	{ return m_fAlcohol*(1.0f + m_fAlcoholSatietyIntens - GetSatiety()); }
 			float	xr_stdcall	GetPsy				()	{return 1.0f-GetPsyHealth();}
 			float				GetSatiety			()  {return m_fSatiety;}
 
@@ -91,15 +100,15 @@ protected:
 	float m_fSprintK;
 public:
 	float m_MaxWalkWeight;
-#ifdef SATIETY_SET_MAX_POWER
-	float m_fMinPowerSatiety;
-	float m_fMinPowerSatietyTreshold;
-#endif
-#ifdef RADIATION_PARAMS_DEPENDECY
-	//float                   m_fRadiationBlocksRestore;
-	float                   m_fRadiationMinimizeHealth;
-	float                   m_fMinHealthRadiation;
-#endif
+//
+	float m_fMinPowerHealth;
+	float m_fMinPowerHealthTreshold;
+//
+	float m_fMinHealthRadiation;
+	float m_fMinHealthRadiationTreshold;
+//
+	float m_fRegenCoef;            //коэфф. регенрации актора - зависит от сытости и дозы облучения
+	float m_fAlcoholSatietyIntens; //коэфф. для рассчета интенсивности постэффекта опьянения от голода
 protected:
 	mutable bool m_bLimping;
 	mutable bool m_bCantWalk;

@@ -321,9 +321,9 @@ void CActor::Load	(LPCSTR section )
 	//ходьба и прыжок
 	m_fWalkAccelBase    = pSettings->r_float(section, "walk_accel");
 	m_fJumpSpeedBase    = pSettings->r_float(section, "jump_speed");
-
-	m_fMinHealthWalkJump = pSettings->r_float(section, "min_health_walk_jump");
-
+	//
+	m_fMinPowerWalkJump = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_walk_jump", 1.0f);
+	//
 	m_fRunFactor				= pSettings->r_float(section,"run_coef");
 	m_fRunBackFactor			= pSettings->r_float(section,"run_back_coef");
 	m_fWalkBackFactor			= pSettings->r_float(section,"walk_back_coef");
@@ -577,6 +577,13 @@ void	CActor::Hit							(SHit* pHDS)
 			else 
 			{
 				//inherited::Hit		(hit_power,dir,who,element,position_in_bone_space, impulse, hit_type);
+				//
+				if (HDS.hit_type == ALife::eHitTypeTelepatic && psActorFlags.test(AF_CONDITION_INTERDEPENDENCE)) //если хит телепатический и включена соотв. опция
+				{
+					hit_power -= HDS.power * conditions().GetAlcohol(); //уменьшаем телепатический хит если актор пьян
+					Msg("telepatic hit power = %.6f, HDS.power = %.6f, alcohol = %.6f", hit_power, HDS.power, conditions().GetAlcohol());
+				}
+				//
 				HDS.power = hit_power;
 				inherited::Hit(&HDS);
 			};
@@ -1628,21 +1635,23 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 
 void CActor::UpdateWalkJump() //ходьба и прыжок
 {
-	float hs_k = 1.0f;
-	float ow_k = 1.0f;
+	//float hs_k = 1.0f;
+	float power_k = 1.0f;
+	float overweight_k = 1.0f;
 
 	if (psActorFlags.test(AF_SMOOTH_OVERWEIGHT))
 	{
-		hs_k = m_fMinHealthWalkJump + (1 - m_fMinHealthWalkJump) * GetHealth(); //коэф влияния здоровья на скорость ходьбы и высоту прыжка
+		//hs_k = m_fMinHealthWalkJump + (1 - m_fMinHealthWalkJump) * GetHealth(); //коэф влияния здоровья на скорость ходьбы и высоту прыжка
+		power_k = m_fMinPowerWalkJump + (1 - m_fMinPowerWalkJump) * conditions().GetPower(); //коэф влияния выносливости на скорость ходьбы и высоту прыжка
 
 		if (inventory().TotalWeight() > inventory().GetMaxWeight())         //считаем коэф. только если есть перегруз
-			ow_k = inventory().GetMaxWeight() / inventory().TotalWeight();  //коэф влияния перегруза на скорость ходьбы и высоту прыжка
+			overweight_k = inventory().GetMaxWeight() / inventory().TotalWeight();  //коэф влияния перегруза на скорость ходьбы и высоту прыжка
 	}
 	//скорость ходьбы
-	m_fWalkAccel = (m_fWalkAccelBase + m_fAdditionalWalkAccel) * ow_k * hs_k;
+	m_fWalkAccel = (m_fWalkAccelBase + m_fAdditionalWalkAccel) * overweight_k * power_k/*hs_k*/;
 
 	//высота прыжка
-	m_fJumpSpeed = (m_fJumpSpeedBase + m_fAdditionalJumpSpeed) * ow_k * hs_k;
+	m_fJumpSpeed = (m_fJumpSpeedBase + m_fAdditionalJumpSpeed) * overweight_k * power_k/*hs_k*/;
 	character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed);
 
 #ifdef MY_DEBUG
@@ -1652,8 +1661,9 @@ void CActor::UpdateWalkJump() //ходьба и прыжок
 	Msg("m_fJumpSpeedBase = %.2f", m_fJumpSpeedBase);
 	Msg("m_fAdditionalWalkAccel = %.2f", m_fAdditionalWalkAccel);
 	Msg("m_fAdditionalJumpSpeed = %.2f", m_fAdditionalJumpSpeed);
-	Msg("hs_k = %.2f", hs_k);
-	Msg("ow_k = %.2f", ow_k);
+	Msg("power_k = %.2f", power_k);
+	Msg("overweight_k = %.2f", overweight_k);
+	Msg("conditions().GetPower() = %.2f", conditions().GetPower());
 #endif //MY_DEBUG
 }
 

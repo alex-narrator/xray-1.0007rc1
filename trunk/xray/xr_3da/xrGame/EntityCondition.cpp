@@ -455,22 +455,12 @@ void CEntityCondition::UpdateHealth()
 	float bleeding_speed		= BleedingSpeed() * m_fDeltaTime * m_change_v.m_fV_Bleeding;
 	m_bIsBleeding				= fis_zero(bleeding_speed)?false:true;
 	m_fDeltaHealth				-= CanBeHarmed() ? bleeding_speed : 0;
-#ifndef RADIATION_PARAMS_DEPENDECY
+
 	m_fDeltaHealth				+= m_fDeltaTime * m_change_v.m_fV_HealthRestore;
 	
 	VERIFY						(_valid(m_fDeltaHealth));
 
 	ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime);
-#else
-	if (!g_actor || m_fRadiation < m_fRadiationBlocksRestore) //раны актора заживают/здоровье регенерирует только если радиация меньше заданного уровня
-	{
-		m_fDeltaHealth += m_fDeltaTime * m_change_v.m_fV_HealthRestore;
-
-		VERIFY(_valid(m_fDeltaHealth));
-
-		ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime);
-	}
-#endif
 }
 
 void CEntityCondition::UpdatePower()

@@ -366,83 +366,88 @@
 			<list_font	 r="216" g="186" b="140" font="letterica16"/>
 		</list_difficulty>
 
-		<check_crosshair x="20" y="0" width="243" height="21">
+		<check_crosshair x="20" y="0" width="400" height="21">
 			<options_item entry="hud_crosshair" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_show_crosshair</text>
 		</check_crosshair>
 
-		<check_dyn_crosshair x="20" y="0" width="243" height="21">
+		<check_dyn_crosshair x="20" y="0" width="400" height="21">
 			<options_item entry="cl_dynamiccrosshair" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_dyn_crosshair</text>
 		</check_dyn_crosshair>
 
-		<check_tips x="20" y="0" width="243" height="21">
+		<check_tips x="20" y="0" width="400" height="21">
 			<options_item entry="hud_info" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_tips</text>
 		</check_tips>
 
-		<check_dist x="20" y="0" width="243" height="21">
+		<check_dist x="20" y="0" width="400" height="21">
 			<options_item entry="hud_crosshair_dist" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_crosshair_distance</text>
 		</check_dist>
 
-		<check_show_weapon x="20" y="0" width="243" height="21">
+		<check_show_weapon x="20" y="0" width="400" height="21">
 			<options_item entry="hud_weapon" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_show_weapon</text>
 		</check_show_weapon>
 
 <!-- BEGIN Новые опции геймплея -->>
-		<check_round_crosshair x="20" y="0" width="243" height="21">
+		<check_round_crosshair x="20" y="0" width="400" height="21">
 			<options_item entry="hud_round_crosshair" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_round_crosshair</text>
 		</check_round_crosshair>
 
-		<check_use_luminosity x="20" y="0" width="243" height="21">
+		<check_use_luminosity x="20" y="0" width="400" height="21">
 			<options_item entry="hud_use_luminosity" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_use_luminosity</text>
 		</check_use_luminosity>
 
-		<check_ammo_from_belt x="20" y="0" width="243" height="21">
+		<check_ammo_from_belt x="20" y="0" width="400" height="21">
 			<options_item entry="g_ammo_from_belt" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_ammo_from_belt</text>
 		</check_ammo_from_belt>
 
-		<check_quick_slot_from_belt x="20" y="0" width="243" height="21">
+		<check_quick_slot_from_belt x="20" y="0" width="400" height="21">
 			<options_item entry="g_quick_slot_from_belt" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_quick_slot_from_belt</text>
 		</check_quick_slot_from_belt>
 		
-		<check_artefacts_from_all x="20" y="0" width="243" height="21">
+		<check_artefacts_from_all x="20" y="0" width="400" height="21">
 			<options_item entry="g_artefacts_from_all" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_artefacts_from_all</text>
 		</check_artefacts_from_all>
 
-		<check_hard_inventory_access x="20" y="0" width="243" height="21">
+		<check_hard_inventory_access x="20" y="0" width="400" height="21">
 			<options_item entry="g_hard_inventory_access" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_hard_inventory_access</text>
 		</check_hard_inventory_access>
 		
-		<check_smooth_overweight x="20" y="0" width="243" height="21">
+		<check_smooth_overweight x="20" y="0" width="400" height="21">
 			<options_item entry="g_smooth_overweight" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_smooth_overweight</text>
 		</check_smooth_overweight>
+				
+		<check_condition_interdependence x="20" y="0" width="400" height="21">
+			<options_item entry="g_condition_interdependence" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170" complex_mode="1">ui_mm_check_condition_interdependence</text>
+		</check_condition_interdependence>
 
-		<check_no_auto_reload x="20" y="0" width="243" height="21">
+		<check_no_auto_reload x="20" y="0" width="400" height="21">
 			<options_item entry="g_no_auto_reload" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_no_auto_reload</text>
 		</check_no_auto_reload>
 
-		<check_devices_ui_on_key x="20" y="0" width="243" height="21">
+		<check_devices_ui_on_key x="20" y="0" width="400" height="21">
 			<options_item entry="hud_devices_ui_on_key" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_devices_ui_on_key</text>
 		</check_devices_ui_on_key>
 
-		<check_wpn_info_on_key x="20" y="0" width="243" height="21">
+		<check_wpn_info_on_key x="20" y="0" width="400" height="21">
 			<options_item entry="hud_wpn_info_on_key" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_wpn_info_on_key</text>
 		</check_wpn_info_on_key>
 
-		<check_gear_info_on_key x="20" y="0" width="243" height="21">
+		<check_gear_info_on_key x="20" y="0" width="400" height="21">
 			<options_item entry="hud_gear_info_on_key" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_gear_info_on_key</text>
 		</check_gear_info_on_key>

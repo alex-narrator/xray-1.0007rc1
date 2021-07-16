@@ -193,6 +193,9 @@
 	<string id="ui_mm_smooth_overweight">
 		<text>Плавный перегруз без обездвиживания</text>
 	</string>
+	<string id="ui_mm_check_condition_interdependence">
+		<text>Взаимозависимость параметров здоровья ГГ</text>
+	</string>
 <!-- END Новые опции геймплея -->>
 	<string id="ui_mm_eax">
 		<text>EAX</text>

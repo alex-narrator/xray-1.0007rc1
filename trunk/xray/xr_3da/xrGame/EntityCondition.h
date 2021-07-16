@@ -23,12 +23,9 @@ public:
 	IC float 				GetMaxHealth			() const			{return m_fHealthMax;}
 	IC float&				health					()					{return	m_fHealth;}
 	IC float&				max_health				()					{return	m_fHealthMax;}
-#ifdef RADIATION_PARAMS_DEPENDECY
+    //
 	IC void					SetMaxHealth            (float val)			{ m_fHealthMax = val; clamp(m_fHealthMax, 0.f, 1.0f); };
-	float                   m_fRadiationBlocksRestore;
-	/*float                   m_fRadiationMinimizeHealth;
-	float                   m_fMinHealthRadiation;*/
-#endif
+	//
 	virtual	CEntityCondition*	cast_entity_condition()					{ return NULL;  }
 };
 
