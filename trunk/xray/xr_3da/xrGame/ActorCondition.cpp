@@ -95,14 +95,16 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_SatietyHealth			= pSettings->r_float(section,"satiety_health_v");
 
 	m_MaxWalkWeight				= pSettings->r_float(section,"max_walk_weight");
-//
+    //
 	m_fMinPowerHealth             = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_health", 1);
 	m_fMinPowerHealthTreshold     = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_health_treshold", 0);
-//
+    //
 	m_fMinHealthRadiation         = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_health_radiation", 1);
 	m_fMinHealthRadiationTreshold = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_health_radiation_treshold", 0);
-//
+    //
 	m_fAlcoholSatietyIntens       = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "satiety_to_alcohol_effector_intensity", 1);
+	//
+	m_fExerciseStressFactor       = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "exercise_stress_factor", 1);
 }
 
 
@@ -163,7 +165,9 @@ void CActorCondition::UpdateCondition()
 	};
 	//
 	m_fRegenCoef = psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) ? (1 - m_fRadiation) * m_fSatiety : 1;
-
+	//
+	UpdateStress(); //обновление физнагрузки
+	//
 	//UpdateSatiety();
 
 	//inherited::UpdateCondition();
@@ -192,6 +196,11 @@ void CActorCondition::UpdateCondition()
 	clamp(m_fPsyHealth, 0.0f, m_fPsyHealthMax);
 }
 
+float CActorCondition::BleedingSpeed()
+{
+	return inherited::BleedingSpeed() * m_fStressK;
+}
+
 void CActorCondition::UpdateHealth()
 {
 	float bleeding_speed = BleedingSpeed() * m_fDeltaTime * m_change_v.m_fV_Bleeding;
@@ -213,6 +222,7 @@ void CActorCondition::UpdateHealth()
 	Msg("GetMaxHealth = %.2f", GetMaxHealth());
 	Msg("m_fRadiation = %.2f", m_fRadiation);
 #endif //MY_DEBUG
+	Msg("bleeding_speed = %.10f", BleedingSpeed());
 }
 
 void CActorCondition::UpdatePower()
@@ -352,7 +362,7 @@ void CActorCondition::UpdateSatiety()
 
 	if(m_fSatiety>0)
 	{
-		m_fSatiety -=	m_fV_Satiety*m_fDeltaTime;	
+		m_fSatiety -=	m_fV_Satiety * m_fDeltaTime * m_fStressK;	
 		clamp(m_fSatiety,		0.0f,		1.0f);
 	}
 		
@@ -360,6 +370,23 @@ void CActorCondition::UpdateSatiety()
 		m_fDeltaHealth += CanBeHarmed() ?
 			(m_fV_SatietyHealth*(m_fSatiety>m_fSatietyCritical ? 1.f : -1.f)*m_fDeltaTime*m_fRegenCoef) //по идее тут надо сравнить с m_fSatietyCritical
 			: 0;
+}
+
+void CActorCondition::UpdateStress()
+{
+	//float exercise_stress = (g_actor->mstate_real&mcSprint || g_actor->mstate_real&mcSprint) ? m_fExerciseStressFactor : 1;
+	float exercise_stress = psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) && g_actor->get_state()&(mcSprint|mcJump) 
+		? m_fExerciseStressFactor : 1.0f;
+
+	float overweight_stress = psActorFlags.test(AF_SMOOTH_OVERWEIGHT) && object().inventory().TotalWeight() > object().inventory().GetMaxWeight() 
+		? object().inventory().TotalWeight() / object().inventory().GetMaxWeight() : 1.0f;
+
+	/*if (g_actor->get_state()&mcSprint) Msg("mcSprint!");
+	else
+		if (g_actor->get_state()&mcJump) Msg("Jump!");
+	Msg("overweight_stress = %.4f | exercise_stress = %.4f | m_fStressK = %.4f", overweight_stress, exercise_stress, m_fStressK);*/
+
+	m_fStressK = overweight_stress * exercise_stress;
 }
 
 CWound* CActorCondition::ConditionHit(SHit* pHDS)

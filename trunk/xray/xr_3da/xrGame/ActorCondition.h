@@ -10,7 +10,6 @@ template <typename _return_type>
 class CScriptCallbackEx;
 
 
-
 class CActor;
 //class CUIActorSleepVideoPlayer;
 
@@ -48,7 +47,11 @@ public:
 	virtual void		reinit						();
 
 	virtual CWound*		ConditionHit				(SHit* pHDS);
-	virtual void		UpdateCondition				();
+	/*virtual*/ void	UpdateCondition				();
+	//скорость потери крови из всех открытых ран 
+	virtual float		BleedingSpeed               ();
+	//
+	void                UpdateStress                ();
 
 	virtual void 		ChangeAlcohol				(float value);
 	virtual void 		ChangeSatiety				(float value);
@@ -98,17 +101,21 @@ protected:
 	float m_fOverweightJumpK;
 	float m_fAccelK;
 	float m_fSprintK;
+	//
+	float m_fStressK; //коэффициент нагрузки актора
 public:
 	float m_MaxWalkWeight;
-//
+    //
 	float m_fMinPowerHealth;
 	float m_fMinPowerHealthTreshold;
-//
+    //
 	float m_fMinHealthRadiation;
 	float m_fMinHealthRadiationTreshold;
-//
+    //
 	float m_fRegenCoef;            //коэфф. регенрации актора - зависит от сытости и дозы облучения
 	float m_fAlcoholSatietyIntens; //коэфф. для рассчета интенсивности постэффекта опьянения от голода
+	//
+	float m_fExerciseStressFactor; //фактор физнагрузки - множитель для коэффициента нагрузки актора при спринте и прыжке
 protected:
 	mutable bool m_bLimping;
 	mutable bool m_bCantWalk;
