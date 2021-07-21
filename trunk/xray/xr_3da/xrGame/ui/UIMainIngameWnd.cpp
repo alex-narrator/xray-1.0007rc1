@@ -378,68 +378,55 @@ void CUIMainIngameWnd::Draw()
 
 	UIMotionIcon.SetNoise((s16)(0xffff & iFloor(m_pActor->m_snd_noise*100.0f)));
 #ifdef INV_QUICK_SLOT_PANEL
-	if (ShowGearInfo())
-	{
-		m_quickSlotPanel->Draw();
-	}
-	else
-	{
-		m_quickSlotPanel->Hide();
-	}
+	b_ShowGearInfo ? m_quickSlotPanel->Draw() : m_quickSlotPanel->Hide(); //рисуем панель квикслотов
 #endif
 	CUIWindow::Draw();
 
-CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem && ShowDevicesUI()) //не рисум миникарту если ПДА нет в слоте и не нажата кнопка -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
-{
-	UIZoneMap->Render();
-}
+	if (b_ShowPDAHud) UIZoneMap->Render(); //не рисум миникарту если ПДА нет в слоте и не нажата кнопка -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+
 	RenderQuickInfos();
 #ifdef DEBUG
 	draw_adjust_mode			();
 #endif
 }
 
-bool CUIMainIngameWnd::ShowDevicesUI() //показываем миникарту и HUD-иконку радиации если нажата клавиша активного задания/активен слот болта/отключена соотв. настройка меню
+void CUIMainIngameWnd::UpdateHUDShowOnKey()
 {
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if (psHUD_Flags.test(HUD_DEVICES_UI_ON_KEY))
-	{
-		if (Level().IR_GetKeyState(get_action_dik(kSCORES)) || pActor->inventory().GetActiveSlot() == BOLT_SLOT)
-			return true;
-		else
-		    return false;
-	}
-	else
-			return true;
-}
+	b_ShowPDAHud = false;
+	b_ShowDetectorHud = false;
+	b_ShowWeaponInfo = false;
+	b_ShowGearInfo = false;
 
-bool CUIMainIngameWnd::ShowWeaponInfo() //показываем кол-во патронов в оружии/запас патронов если нажата клавиша перезарядки/отключена соотв. настройка меню
-{
-
-	if (psHUD_Flags.test(HUD_WEAPON_INFO_ON_KEY))
+	if (psHUD_Flags.test(HUD_SHOW_ON_KEY))
 	{
+		//HUD устройств
+		if (Level().IR_GetKeyState(get_action_dik(kSCORES)) || g_actor->inventory().GetActiveSlot() == BOLT_SLOT)
+		{
+			//ПДА
+			//if(g_actor->inventory().m_slots[PDA_SLOT].m_pIItem)
+			if (g_actor->GetPDA())
+				b_ShowPDAHud = true;
+			//Детектор
+			if (g_actor->inventory().m_slots[DETECTOR_SLOT].m_pIItem)
+				b_ShowDetectorHud = true;
+		}
+		//Информация об оружии в руках - кол-во/тип заряженных патронов, режим огня
 		if (Level().IR_GetKeyState(get_action_dik(kWPN_RELOAD)))
-			return true;
-		else
-			return false;
-	}
-	else
-		return true;
-}
-
-bool CUIMainIngameWnd::ShowGearInfo() //показываем панель артефактов и быстрых слотов если нажата кнопка проверить карманы/отключена соотв. настройка меню
-{
-
-	if (psHUD_Flags.test(HUD_GEAR_INFO_ON_KEY))
-	{
+			b_ShowWeaponInfo = true;
+		//Информация о снаряжении - панель артефактов, наполнение квикслотов, общее кол-во патронов к оружию в руках
 		if (Level().IR_GetKeyState(get_action_dik(kCHECKGEAR)))
-			return true;
-		else
-			return false;
+			b_ShowGearInfo = true;
 	}
 	else
-		return true;
+	{
+		//ПДА
+		b_ShowPDAHud = g_actor->GetPDA() ? true : false;
+		//Детектор
+		b_ShowDetectorHud = g_actor->inventory().m_slots[DETECTOR_SLOT].m_pIItem ? true : false;
+		//инфо о предмете в руках и артпанель
+		b_ShowWeaponInfo = true;
+		b_ShowGearInfo = true;
+	}
 }
 
 void CUIMainIngameWnd::SetMPChatLog(CUIWindow* pChat, CUIWindow* pLog){
@@ -571,10 +558,8 @@ void CUIMainIngameWnd::Update()
 				//radiation
 			case ewiRadiation:
 			{
-				if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem && ShowDevicesUI()) //удаляем иконку радиации на худе если детектора нет в слоте и/или не нажата кнопка (при выборе соотв. опции меню) -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
-					value = m_pActor->conditions().GetRadiation();
-				else
-					TurnOffWarningIcon(ewiRadiation);
+				//удаляем иконку радиации на худе если детектора нет в слоте и/или не нажата кнопка (при выборе соотв. опции меню) -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
+				b_ShowDetectorHud ? value = m_pActor->conditions().GetRadiation() : TurnOffWarningIcon(ewiRadiation);
 			}	break;
 			case ewiWound:
 				value = m_pActor->conditions().BleedingSpeed();
@@ -618,6 +603,9 @@ void CUIMainIngameWnd::Update()
 		}
 	}
 
+	//обновление худа по клавишам
+	UpdateHUDShowOnKey();
+
 	// health&armor
 	UIHealthBar.SetProgressPos		(m_pActor->GetfHealth()*100.0f);
 	UIMotionIcon.SetPower			(m_pActor->conditions().GetPower()*100.0f);
@@ -632,10 +620,7 @@ void CUIMainIngameWnd::Update()
 	m_quickSlotPanel->Update();
 	#endif
  
-	if (ShowGearInfo())
-		m_artefactPanel->Show(true);
-	else
-		m_artefactPanel->Show(false);
+	m_artefactPanel->Show(b_ShowGearInfo); //отрисовка панели артефактов
 
 	UpdateFlashingIcons(); //обновляем состояние мигающих иконок - UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 
@@ -1021,7 +1006,6 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 	return false;
 }
 
-
 void CUIMainIngameWnd::RenderQuickInfos()
 {
 	if (!m_pActor)
@@ -1049,7 +1033,7 @@ void CUIMainIngameWnd::ReceiveNews(GAME_NEWS_DATA* news)
 	VERIFY(news->texture_name.size());
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 
-	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
+	if (pActor->GetPDA())
 	HUD().GetUI()->m_pMessagesWnd->AddIconedPdaMessage(*(news->texture_name), news->tex_rect, news->SingleLineText(), news->show_time); //не показываем сообщения на худе если нет ПДА в слоте -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 }
 
@@ -1236,7 +1220,7 @@ void CUIMainIngameWnd::UpdateFlashingIcons()
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	for (FlashingIcons_it it = m_FlashingIcons.begin(); it != m_FlashingIcons.end(); ++it)
 	{
-		if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem) //показываем мигающие иконки если ПДА в слоте/отключена соотв. настройка меню  -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+		if (pActor->GetPDA()) //показываем мигающие иконки если ПДА в слоте/отключена соотв. настройка меню  -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 		    it->second->Update();
 		else
 		    it->second->Show(false); 
@@ -1246,7 +1230,7 @@ void CUIMainIngameWnd::UpdateFlashingIcons()
 void CUIMainIngameWnd::AnimateContacts(bool b_snd)
 {
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem) //не играем звук нового контакта если ПДА нет в слоте (а также для перезапуска иконки кол-ва контактов рядом) -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+	if (pActor->GetPDA()) //не играем звук нового контакта если ПДА нет в слоте (а также для перезапуска иконки кол-ва контактов рядом) -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 	{
 		UIPdaOnline.ResetClrAnimation();
 	  if (b_snd)
@@ -1382,7 +1366,7 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 void CUIMainIngameWnd::UpdateActiveItemInfo()
 {
 	PIItem item		=  m_pActor->inventory().ActiveItem();
-	if (item && (ShowWeaponInfo() || ShowGearInfo())) //-- не показываем иконку активного предмета (оружия) если не нажата клавиша перезарядки/клавиша проверки снаряжения (при включении соотв. опции)
+	if (item && (b_ShowWeaponInfo || b_ShowGearInfo)) //-- не показываем иконку активного предмета (оружия) если не нажата клавиша перезарядки/клавиша проверки снаряжения (при включении соотв. опции)
 	{
 		xr_string					str_name;
 		xr_string					icon_sect_name;
@@ -1791,11 +1775,9 @@ void CUIQuickSlotPanel::Update()
 
 			itm_name = itm->object().cNameSect();
 			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
-#ifndef QUICK_SLOT_POCKET_LOGIC
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_0_Text->SetText(str);
             m_CountItemQuickSlot_0_Text->Show(true);
-#endif
 			DrawItemInSlot(itm, m_QuickSlot_0_Icon, m_QuickSlot_0_Icon_Size );
         }
         else

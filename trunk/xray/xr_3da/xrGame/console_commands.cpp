@@ -1427,10 +1427,8 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
 	CMD3(CCC_Mask,              "hud_use_luminosity",   &psHUD_Flags,   HUD_USE_LUMINOSITY); //использование освещённости вместо заметности на худовой шкале
-	CMD3(CCC_Mask,              "hud_devices_ui_on_key",&psHUD_Flags,   HUD_DEVICES_UI_ON_KEY); //миникарта и худ-иконка радиации по клавише
-	CMD3(CCC_Mask,              "hud_wpn_info_on_key",  &psHUD_Flags,   HUD_WEAPON_INFO_ON_KEY); //инфо об активом оружии по клавише
 	CMD3(CCC_Mask,              "hud_round_crosshair",  &psHUD_Flags,   HUD_ROUND_CROSSHAIR); //билдовый круглый курсор
-	CMD3(CCC_Mask,              "hud_gear_info_on_key", &psHUD_Flags,   HUD_GEAR_INFO_ON_KEY); //артпанель и быстрые слоты по клавише
+	CMD3(CCC_Mask,              "hud_show_on_key",      &psHUD_Flags,   HUD_SHOW_ON_KEY);     //элементы HUD выводятся по нажатию клавиш
 
 #ifdef DEBUG
 	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV,		0.1f,	1.0f);

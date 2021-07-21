@@ -1,4 +1,4 @@
-#include "pch_script.h"
+ï»¿#include "pch_script.h"
 #include "uigamesp.h"
 #include "actor.h"
 #include "level.h"
@@ -73,7 +73,6 @@ void CUIGameSP::SetClGame (game_cl_GameState* g)
 }
 
 #include "Inventory.h"
-#include "PDA.h"
 bool CUIGameSP::IR_OnKeyboardPress(int dik) 
 {
 	if(inherited::IR_OnKeyboardPress(dik)) return true;
@@ -81,7 +80,6 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	if( Device.Paused()		) return false;
 
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	CPda* PDA = smart_cast<CPda*>(pActor->inventory().ItemFromSlot(PDA_SLOT));
 	
 	if(!pActor)								return false;
 	if( pActor && !pActor->g_Alive() )		return false;
@@ -91,24 +89,24 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	case kINVENTORY:
 		if( !MainInputReceiver() || MainInputReceiver()==InventoryMenu)
 		{
-			if (pActor->inventory().FreeHands()) //èíâåíòàðü ìîæíî îòêðûòü åñëè â ðóêàõ íåò ïðåäìåòîâ èëè ïðåäìåò "îäíîðó÷íûé" (IsSingleHanded())
+			if (pActor->inventory().FreeHands()) //Ð¸Ð½Ð²ÐµÐ½Ñ‚Ð°Ñ€ÑŒ Ð¼Ð¾Ð¶Ð½Ð¾ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ ÐµÑÐ»Ð¸ Ð² Ñ€ÑƒÐºÐ°Ñ… Ð½ÐµÑ‚ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð¾Ð² Ð¸Ð»Ð¸ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚ "Ð¾Ð´Ð½Ð¾Ñ€ÑƒÑ‡Ð½Ñ‹Ð¹" (IsSingleHanded())
 			{
 				m_game->StartStopMenu(InventoryMenu, true);
 				return true;
 			}
 			else
 			{
-				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //íà âñÿêèé ñëó÷àé óäàëÿåì ñòàòèêè â òîé æå îáëàñòè ýêðàíà
-				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //íà âñÿêèé ñëó÷àé óäàëÿåì ñòàòèêè â òîé æå îáëàñòè ýêðàíà 
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //Ð½Ð° Ð²ÑÑÐºÐ¸Ð¹ ÑÐ»ÑƒÑ‡Ð°Ð¹ ÑƒÐ´Ð°Ð»ÑÐµÐ¼ ÑÑ‚Ð°Ñ‚Ð¸ÐºÐ¸ Ð² Ñ‚Ð¾Ð¹ Ð¶Ðµ Ð¾Ð±Ð»Ð°ÑÑ‚Ð¸ ÑÐºÑ€Ð°Ð½Ð°
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //Ð½Ð° Ð²ÑÑÐºÐ¸Ð¹ ÑÐ»ÑƒÑ‡Ð°Ð¹ ÑƒÐ´Ð°Ð»ÑÐµÐ¼ ÑÑ‚Ð°Ñ‚Ð¸ÐºÐ¸ Ð² Ñ‚Ð¾Ð¹ Ð¶Ðµ Ð¾Ð±Ð»Ð°ÑÑ‚Ð¸ ÑÐºÑ€Ð°Ð½Ð° 
 				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
 				_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
 			}
 		}break;
 		
 	case kACTIVE_JOBS:
-		if ((!MainInputReceiver() || MainInputReceiver() == PdaMenu) && PDA)
+		if ((!MainInputReceiver() || MainInputReceiver() == PdaMenu) && pActor->GetPDA())
 		{
-			if (pActor->inventory().FreeHands()) //îòêðûòü ðàçäåë ÏÄÀ ìîæíî åñëè â ðóêàõ íåò ïðåäìåòîâ èëè ïðåäìåò "îäíîðó÷íûé" (IsSingleHanded())
+			if (pActor->inventory().FreeHands()) //Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ Ñ€Ð°Ð·Ð´ÐµÐ» ÐŸÐ”Ð Ð¼Ð¾Ð¶Ð½Ð¾ ÐµÑÐ»Ð¸ Ð² Ñ€ÑƒÐºÐ°Ñ… Ð½ÐµÑ‚ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð¾Ð² Ð¸Ð»Ð¸ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚ "Ð¾Ð´Ð½Ð¾Ñ€ÑƒÑ‡Ð½Ñ‹Ð¹" (IsSingleHanded())
 			{
 				PdaMenu->SetActiveSubdialog(eptQuests);
 				m_game->StartStopMenu(PdaMenu, true);
@@ -116,17 +114,17 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 			}
 			else
 			{
-				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //íà âñÿêèé ñëó÷àé óäàëÿåì ñòàòèêè â òîé æå îáëàñòè ýêðàíà
-				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //íà âñÿêèé ñëó÷àé óäàëÿåì ñòàòèêè â òîé æå îáëàñòè ýêðàíà 
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //Ð½Ð° Ð²ÑÑÐºÐ¸Ð¹ ÑÐ»ÑƒÑ‡Ð°Ð¹ ÑƒÐ´Ð°Ð»ÑÐµÐ¼ ÑÑ‚Ð°Ñ‚Ð¸ÐºÐ¸ Ð² Ñ‚Ð¾Ð¹ Ð¶Ðµ Ð¾Ð±Ð»Ð°ÑÑ‚Ð¸ ÑÐºÑ€Ð°Ð½Ð°
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //Ð½Ð° Ð²ÑÑÐºÐ¸Ð¹ ÑÐ»ÑƒÑ‡Ð°Ð¹ ÑƒÐ´Ð°Ð»ÑÐµÐ¼ ÑÑ‚Ð°Ñ‚Ð¸ÐºÐ¸ Ð² Ñ‚Ð¾Ð¹ Ð¶Ðµ Ð¾Ð±Ð»Ð°ÑÑ‚Ð¸ ÑÐºÑ€Ð°Ð½Ð° 
 				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
 				_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
 			}
 		}break;
 
 	case kMAP:
-		if ((!MainInputReceiver() || MainInputReceiver() == PdaMenu) && PDA)
+		if ((!MainInputReceiver() || MainInputReceiver() == PdaMenu) && pActor->GetPDA())
 		{
-			if (pActor->inventory().FreeHands()) //îòêðûòü ðàçäåë ÏÄÀ ìîæíî åñëè â ðóêàõ íåò ïðåäìåòîâ èëè ïðåäìåò "îäíîðó÷íûé" (IsSingleHanded())
+			if (pActor->inventory().FreeHands()) //Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ Ñ€Ð°Ð·Ð´ÐµÐ» ÐŸÐ”Ð Ð¼Ð¾Ð¶Ð½Ð¾ ÐµÑÐ»Ð¸ Ð² Ñ€ÑƒÐºÐ°Ñ… Ð½ÐµÑ‚ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð¾Ð² Ð¸Ð»Ð¸ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚ "Ð¾Ð´Ð½Ð¾Ñ€ÑƒÑ‡Ð½Ñ‹Ð¹" (IsSingleHanded())
 			{
 				PdaMenu->SetActiveSubdialog(eptMap);
 				m_game->StartStopMenu(PdaMenu, true);
@@ -134,17 +132,17 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 			}
 			else
 			{
-				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //íà âñÿêèé ñëó÷àé óäàëÿåì ñòàòèêè â òîé æå îáëàñòè ýêðàíà
-				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //íà âñÿêèé ñëó÷àé óäàëÿåì ñòàòèêè â òîé æå îáëàñòè ýêðàíà 
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //Ð½Ð° Ð²ÑÑÐºÐ¸Ð¹ ÑÐ»ÑƒÑ‡Ð°Ð¹ ÑƒÐ´Ð°Ð»ÑÐµÐ¼ ÑÑ‚Ð°Ñ‚Ð¸ÐºÐ¸ Ð² Ñ‚Ð¾Ð¹ Ð¶Ðµ Ð¾Ð±Ð»Ð°ÑÑ‚Ð¸ ÑÐºÑ€Ð°Ð½Ð°
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //Ð½Ð° Ð²ÑÑÐºÐ¸Ð¹ ÑÐ»ÑƒÑ‡Ð°Ð¹ ÑƒÐ´Ð°Ð»ÑÐµÐ¼ ÑÑ‚Ð°Ñ‚Ð¸ÐºÐ¸ Ð² Ñ‚Ð¾Ð¹ Ð¶Ðµ Ð¾Ð±Ð»Ð°ÑÑ‚Ð¸ ÑÐºÑ€Ð°Ð½Ð° 
 				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
 				_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
 			}
 		}break;
 
 	case kCONTACTS:
-		if ((!MainInputReceiver() || MainInputReceiver() == PdaMenu) && PDA)
+		if ((!MainInputReceiver() || MainInputReceiver() == PdaMenu) && pActor->GetPDA())
 		{
-			if (pActor->inventory().FreeHands()) //îòêðûòü ðàçäåë ÏÄÀ ìîæíî åñëè â ðóêàõ íåò ïðåäìåòîâ èëè ïðåäìåò "îäíîðó÷íûé" (IsSingleHanded())
+			if (pActor->inventory().FreeHands()) //Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ Ñ€Ð°Ð·Ð´ÐµÐ» ÐŸÐ”Ð Ð¼Ð¾Ð¶Ð½Ð¾ ÐµÑÐ»Ð¸ Ð² Ñ€ÑƒÐºÐ°Ñ… Ð½ÐµÑ‚ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð¾Ð² Ð¸Ð»Ð¸ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚ "Ð¾Ð´Ð½Ð¾Ñ€ÑƒÑ‡Ð½Ñ‹Ð¹" (IsSingleHanded())
 			{
 				PdaMenu->SetActiveSubdialog(eptContacts);
 				m_game->StartStopMenu(PdaMenu, true);
@@ -152,8 +150,8 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 			}
 			else
 			{
-				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //íà âñÿêèé ñëó÷àé óäàëÿåì ñòàòèêè â òîé æå îáëàñòè ýêðàíà
-				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //íà âñÿêèé ñëó÷àé óäàëÿåì ñòàòèêè â òîé æå îáëàñòè ýêðàíà 
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //Ð½Ð° Ð²ÑÑÐºÐ¸Ð¹ ÑÐ»ÑƒÑ‡Ð°Ð¹ ÑƒÐ´Ð°Ð»ÑÐµÐ¼ ÑÑ‚Ð°Ñ‚Ð¸ÐºÐ¸ Ð² Ñ‚Ð¾Ð¹ Ð¶Ðµ Ð¾Ð±Ð»Ð°ÑÑ‚Ð¸ ÑÐºÑ€Ð°Ð½Ð°
+				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //Ð½Ð° Ð²ÑÑÐºÐ¸Ð¹ ÑÐ»ÑƒÑ‡Ð°Ð¹ ÑƒÐ´Ð°Ð»ÑÐµÐ¼ ÑÑ‚Ð°Ñ‚Ð¸ÐºÐ¸ Ð² Ñ‚Ð¾Ð¹ Ð¶Ðµ Ð¾Ð±Ð»Ð°ÑÑ‚Ð¸ ÑÐºÑ€Ð°Ð½Ð° 
 				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
 				_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
 			}
@@ -161,8 +159,7 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 
 	case kSCORES:
 	{
-		if (PDA)
-		if (pActor->inventory().FreeHands()) //îòêðûòü ðàçäåë ÏÄÀ ìîæíî åñëè â ðóêàõ íåò ïðåäìåòîâ èëè ïðåäìåò "îäíîðó÷íûé" (IsSingleHanded())
+		if (pActor->GetPDA())
 		{
 			SDrawStaticStruct* ss = AddCustomStatic("main_task", true);
 			SGameTaskObjective* o = pActor->GameTaskManager().ActiveObjective();
@@ -170,13 +167,6 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 			    ss->m_static->SetTextST("st_no_active_task");
 			else
 				ss->m_static->SetTextST(*(o->description));
-		}
-		else
-		{
-			HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //íà âñÿêèé ñëó÷àé óäàëÿåì ñòàòèêè â òîé æå îáëàñòè ýêðàíà
-			HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //íà âñÿêèé ñëó÷àé óäàëÿåì ñòàòèêè â òîé æå îáëàñòè ýêðàíà 
-			SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
-			_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
 		}
 	}
 	break;
@@ -187,7 +177,7 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	case kL_STRAFE:
 	case kJUMP:
 	{
-		if (MainInputReceiver() == InventoryMenu && psActorFlags.test(AF_HARD_INV_ACCESS)) //åñëè îòêðûòî îêíî èíâåíòàðÿ è óñòàíîâëåíà îïöèÿ - çàêðîåì åãî
+		if (MainInputReceiver() == InventoryMenu && psActorFlags.test(AF_HARD_INV_ACCESS)) //ÐµÑÐ»Ð¸ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚Ð¾ Ð¾ÐºÐ½Ð¾ Ð¸Ð½Ð²ÐµÐ½Ñ‚Ð°Ñ€Ñ Ð¸ ÑƒÑÑ‚Ð°Ð½Ð¾Ð²Ð»ÐµÐ½Ð° Ð¾Ð¿Ñ†Ð¸Ñ - Ð·Ð°ÐºÑ€Ð¾ÐµÐ¼ ÐµÐ³Ð¾
 			m_game->StartStopMenu(InventoryMenu, true);
 		return true;
 	}

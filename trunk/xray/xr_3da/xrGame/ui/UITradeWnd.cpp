@@ -14,7 +14,6 @@
 #include "../inventoryowner.h"
 #include "../eatable_item.h"
 #include "../inventory.h"
-#include "../PDA.h"
 #include "../level.h"
 #include "../string_table.h"
 #include "../character_info.h"
@@ -198,8 +197,7 @@ void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 	UpdateLists							(eBoth);
 
 // режим бартерной торговли
-	CPda* PDA = smart_cast<CPda*>(g_actor->inventory().ItemFromSlot(PDA_SLOT));
-	if (!PDA)
+	if (!g_actor->GetPDA())
 	{
 		m_uidata->UIOurMoneyStatic.SetText(*CStringTable().translate("ui_st_pda_account_unavailable"));   //закроем статиком кол-во денег актора, т.к. оно еще не обновилось и не ноль
 		m_uidata->UIOtherMoneyStatic.SetText(*CStringTable().translate("ui_st_pda_account_unavailable")); //закроем статиком кол-во денег контрагента, т.к. оно еще не обновилось и не ---
@@ -475,9 +473,7 @@ void CUITradeWnd::UpdatePrices()
 		m_uidata->UIOtherMoneyStatic.SetText(buf);
 	}
 	//
-	CPda* PDA = smart_cast<CPda*>(g_actor->inventory().ItemFromSlot(PDA_SLOT)); //для отлова случая бартера
-	//
-	/*else*/ if (m_pOthersInvOwner->InfinitiveMoney() || (!m_pOthersInvOwner->InfinitiveMoney() && !PDA)) //закроем --- счетчик денег контрагента, если в режиме бартера
+	/*else*/ if (m_pOthersInvOwner->InfinitiveMoney() || (!m_pOthersInvOwner->InfinitiveMoney() && !g_actor->GetPDA())) //закроем --- счетчик денег контрагента, если в режиме бартера
 	{
 		m_uidata->UIOtherMoneyStatic.SetText("---");
 	}

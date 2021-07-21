@@ -175,14 +175,8 @@
 	<string id="ui_mm_artefacts_from_all">
 		<text>Артефакты действуют из всего инвентаря</text>
 	</string>
-	<string id="ui_mm_devices_ui_on_key">
-		<text>Отображать миникарту и HUD-индикатор радиации при удержании кнопки [$$ACTION_SCORES$$]</text>
-	</string>
-	<string id="ui_mm_wpn_info_on_key">
-		<text>Отображать информацию о текущем оружии при удержании кнопки [$$ACTION_WPN_RELOAD$$]</text>
-	</string>
-	<string id="ui_mm_gear_info_on_key">
-		<text>Отображать панель артефактов и быстрых слотов при удержании кнопки [$$ACTION_CHECK_GEAR$$]</text>
+	<string id="ui_mm_hud_show_on_key">
+		<text>Отображать элементы HUD при удержании кнопок [$$ACTION_SCORES$$] | [$$ACTION_WPN_RELOAD$$] | [$$ACTION_CHECK_GEAR$$]</text>
 	</string>
 	<string id="ui_mm_no_auto_reload">
 		<text>Запрет автоматической перезарядки оружия и сброса зума</text>

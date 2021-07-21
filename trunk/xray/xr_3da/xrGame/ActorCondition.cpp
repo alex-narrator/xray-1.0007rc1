@@ -221,8 +221,8 @@ void CActorCondition::UpdateHealth()
 #ifdef MY_DEBUG
 	Msg("GetMaxHealth = %.2f", GetMaxHealth());
 	Msg("m_fRadiation = %.2f", m_fRadiation);
-#endif //MY_DEBUG
 	Msg("bleeding_speed = %.10f", BleedingSpeed());
+#endif //MY_DEBUG
 }
 
 void CActorCondition::UpdatePower()

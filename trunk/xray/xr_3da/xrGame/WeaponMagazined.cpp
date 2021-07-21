@@ -1267,8 +1267,8 @@ void CWeaponMagazined::net_Import(NET_Packet& P)
 #include "ui/UIMainIngameWnd.h"
 void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)
 {
-	bool wpn_info = HUD().GetUI()->UIMainIngameWnd->ShowWeaponInfo();
-	bool gear_info = HUD().GetUI()->UIMainIngameWnd->ShowGearInfo();
+	bool wpn_info = HUD().GetUI()->UIMainIngameWnd->b_ShowWeaponInfo;
+	bool gear_info = HUD().GetUI()->UIMainIngameWnd->b_ShowGearInfo;
 
 	int	AE = GetAmmoElapsed();
 	int	AC = GetAmmoCurrent();

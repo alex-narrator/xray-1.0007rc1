@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include "iinputreceiver.h"
 
@@ -13,11 +13,9 @@ ENGINE_API extern Flags32		psHUD_Flags;
 #define HUD_CROSSHAIR_DYNAMIC	(1<<7)
 #define HUD_CROSSHAIR_RT2		(1<<9)
 #define HUD_DRAW_RT				(1<<10)
-#define HUD_USE_LUMINOSITY		(1<<11) //использование освещённости вместо заметности на худовой шкале
-#define HUD_DEVICES_UI_ON_KEY	(1<<12) //миникарта и худ-иконка радиации по клавише по клавише
-#define HUD_WEAPON_INFO_ON_KEY	(1<<13) //инфо об активом оружии по клавише
-#define HUD_ROUND_CROSSHAIR  	(1<<14) //билдовый круглый курсор
-#define HUD_GEAR_INFO_ON_KEY  	(1<<15) //артпанель и быстрые слоты по клавише
+#define HUD_USE_LUMINOSITY		(1<<11) //РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РѕСЃРІРµС‰С‘РЅРЅРѕСЃС‚Рё РІРјРµСЃС‚Рѕ Р·Р°РјРµС‚РЅРѕСЃС‚Рё РЅР° С…СѓРґРѕРІРѕР№ С€РєР°Р»Рµ
+#define HUD_ROUND_CROSSHAIR  	(1<<12) //Р±РёР»РґРѕРІС‹Р№ РєСЂСѓРіР»С‹Р№ РєСѓСЂСЃРѕСЂ
+#define HUD_SHOW_ON_KEY  	    (1<<13) //СЌР»РµРјРµРЅС‚С‹ HUD РІС‹РІРѕРґСЏС‚СЃСЏ РїРѕ РЅР°Р¶Р°С‚РёСЋ РєР»Р°РІРёС€
 
 class ENGINE_API IRender_Visual;
 class CUI;

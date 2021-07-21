@@ -14,9 +14,6 @@
 #include "../actor.h"
 #include "../alife_registry_wrappers.h"
 
-#include "../inventory.h"
-#include "../PDA.h"
-
 
 #define				TALK_XML				"talk.xml"
 #define				TRADE_CHARACTER_XML		"trade_character.xml"
@@ -112,8 +109,7 @@ void CUITalkDialogWnd::Show()
 	inherited::Enable(true);
 
 // режим бартерной торговли
-	CPda* PDA = smart_cast<CPda*>(g_actor->inventory().ItemFromSlot(PDA_SLOT));
-	if (PDA)
+	if (g_actor->GetPDA())
 		UIToTradeButton.SetText(*CStringTable().translate("ui_st_trade"));  //напишем "торговать" на кнопке, вместо "бартер"
 	else
 		UIToTradeButton.SetText(*CStringTable().translate("ui_st_barter")); //напишем "бартер" на кнопке, вместо "торговать"
