@@ -84,15 +84,6 @@ public:
 	virtual void Draw();
 	virtual void Update();
 
-	//
-	void UpdateHUDShowOnKey(); //обновляем показ худ-элементов по нажатию кнопки
-	//
-	bool b_ShowPDAHud;         //показывать миникарту и статик активного задания
-	bool b_ShowDetectorHud;    //показывать иконку полученной радиации
-	bool b_ShowWeaponInfo;     //показывать инфо об активном оружии - кол-во патронов в магазине, режим огня
-	bool b_ShowGearInfo;       //показывать панель артефактов, быстрых слотов и кол-во патронов к активному оружию
-	//
-
 	bool OnKeyboardPress(int dik);
 	void HudAdjustMode(int);
 
@@ -163,6 +154,16 @@ public:
 		ewiArtefact,
 	};
 
+	// Енумы элементов худа
+	enum EHUDElement
+	{
+		ePDA,
+		eDetector,
+		eWeapon,
+		eGear,
+	};
+	bool                AllowHUDElement                 (EHUDElement element);
+	//
 	void				SetMPChatLog					(CUIWindow* pChat, CUIWindow* pLog);
 
 	// Задаем цвет соответствующей иконке

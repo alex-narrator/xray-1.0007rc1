@@ -240,7 +240,6 @@ void CUIMainIngameWnd::Init()
 	UIStaticArmor.AttachChild	(&UIArmorBar);
 //.	xml_init.InitAutoStaticGroup(uiXml,"static_armor", &UIStaticArmor);
 	xml_init.InitProgressBar	(uiXml, "progress_bar_armor", 0, &UIArmorBar);
-
 	
 
 	// Подсказки, которые возникают при наведении прицела на объект
@@ -378,11 +377,11 @@ void CUIMainIngameWnd::Draw()
 
 	UIMotionIcon.SetNoise((s16)(0xffff & iFloor(m_pActor->m_snd_noise*100.0f)));
 #ifdef INV_QUICK_SLOT_PANEL
-	b_ShowGearInfo ? m_quickSlotPanel->Draw() : m_quickSlotPanel->Hide(); //рисуем панель квикслотов
+	AllowHUDElement(eGear) ? m_quickSlotPanel->Draw() : m_quickSlotPanel->Hide(); //рисуем панель квикслотов
 #endif
 	CUIWindow::Draw();
 
-	if (b_ShowPDAHud) UIZoneMap->Render(); //не рисум миникарту если ПДА нет в слоте и не нажата кнопка -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+	if (AllowHUDElement(ePDA)) UIZoneMap->Render(); //не рисум миникарту если ПДА нет в слоте и не нажата кнопка -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 
 	RenderQuickInfos();
 #ifdef DEBUG
@@ -390,43 +389,32 @@ void CUIMainIngameWnd::Draw()
 #endif
 }
 
-void CUIMainIngameWnd::UpdateHUDShowOnKey()
+bool CUIMainIngameWnd::AllowHUDElement(EHUDElement element)
 {
-	b_ShowPDAHud = false;
-	b_ShowDetectorHud = false;
-	b_ShowWeaponInfo = false;
-	b_ShowGearInfo = false;
+	bool result = false;
+	bool allow_devices_hud = !psHUD_Flags.test(HUD_SHOW_ON_KEY) || Level().IR_GetKeyState(get_action_dik(kSCORES)) || g_actor->inventory().GetActiveSlot() == BOLT_SLOT;
 
-	if (psHUD_Flags.test(HUD_SHOW_ON_KEY))
+	switch (element)
 	{
-		//HUD устройств
-		if (Level().IR_GetKeyState(get_action_dik(kSCORES)) || g_actor->inventory().GetActiveSlot() == BOLT_SLOT)
+		case ePDA: //ПДА
 		{
-			//ПДА
-			//if(g_actor->inventory().m_slots[PDA_SLOT].m_pIItem)
-			if (g_actor->GetPDA())
-				b_ShowPDAHud = true;
-			//Детектор
-			if (g_actor->inventory().m_slots[DETECTOR_SLOT].m_pIItem)
-				b_ShowDetectorHud = true;
-		}
-		//Информация об оружии в руках - кол-во/тип заряженных патронов, режим огня
-		if (Level().IR_GetKeyState(get_action_dik(kWPN_RELOAD)))
-			b_ShowWeaponInfo = true;
-		//Информация о снаряжении - панель артефактов, наполнение квикслотов, общее кол-во патронов к оружию в руках
-		if (Level().IR_GetKeyState(get_action_dik(kCHECKGEAR)))
-			b_ShowGearInfo = true;
+			if (allow_devices_hud && g_actor->GetPDA()) result = true;
+		}break;
+		case eDetector: //Детектор (иконка радиационного заражения)
+		{
+			if (allow_devices_hud && g_actor->GetDetector()) result = true;
+		}break;
+		case eWeapon: //Информация об оружии в руках - кол-во/тип заряженных патронов, режим огня
+		{
+			result = !psHUD_Flags.test(HUD_SHOW_ON_KEY) || Level().IR_GetKeyState(get_action_dik(kWPN_RELOAD));
+		}break;
+		case eGear: //Информация о снаряжении - панель артефактов, наполнение квикслотов, общее кол-во патронов к оружию в руках
+		{
+			result = !psHUD_Flags.test(HUD_SHOW_ON_KEY) || Level().IR_GetKeyState(get_action_dik(kCHECKGEAR));
+		}break;
 	}
-	else
-	{
-		//ПДА
-		b_ShowPDAHud = g_actor->GetPDA() ? true : false;
-		//Детектор
-		b_ShowDetectorHud = g_actor->inventory().m_slots[DETECTOR_SLOT].m_pIItem ? true : false;
-		//инфо о предмете в руках и артпанель
-		b_ShowWeaponInfo = true;
-		b_ShowGearInfo = true;
-	}
+
+	return result;
 }
 
 void CUIMainIngameWnd::SetMPChatLog(CUIWindow* pChat, CUIWindow* pLog){
@@ -559,7 +547,7 @@ void CUIMainIngameWnd::Update()
 			case ewiRadiation:
 			{
 				//удаляем иконку радиации на худе если детектора нет в слоте и/или не нажата кнопка (при выборе соотв. опции меню) -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
-				b_ShowDetectorHud ? value = m_pActor->conditions().GetRadiation() : TurnOffWarningIcon(ewiRadiation);
+				AllowHUDElement(eDetector) ? value = m_pActor->conditions().GetRadiation() : TurnOffWarningIcon(ewiRadiation);
 			}	break;
 			case ewiWound:
 				value = m_pActor->conditions().BleedingSpeed();
@@ -603,9 +591,6 @@ void CUIMainIngameWnd::Update()
 		}
 	}
 
-	//обновление худа по клавишам
-	UpdateHUDShowOnKey();
-
 	// health&armor
 	UIHealthBar.SetProgressPos		(m_pActor->GetfHealth()*100.0f);
 	UIMotionIcon.SetPower			(m_pActor->conditions().GetPower()*100.0f);
@@ -620,7 +605,7 @@ void CUIMainIngameWnd::Update()
 	m_quickSlotPanel->Update();
 	#endif
  
-	m_artefactPanel->Show(b_ShowGearInfo); //отрисовка панели артефактов
+	m_artefactPanel->Show(AllowHUDElement(eGear)); //отрисовка панели артефактов
 
 	UpdateFlashingIcons(); //обновляем состояние мигающих иконок - UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 
@@ -1033,8 +1018,8 @@ void CUIMainIngameWnd::ReceiveNews(GAME_NEWS_DATA* news)
 	VERIFY(news->texture_name.size());
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 
-	if (pActor->GetPDA())
-	HUD().GetUI()->m_pMessagesWnd->AddIconedPdaMessage(*(news->texture_name), news->tex_rect, news->SingleLineText(), news->show_time); //не показываем сообщения на худе если нет ПДА в слоте -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+	if (pActor->GetPDA()) //не показываем сообщения на худе если нет ПДА в слоте -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+	HUD().GetUI()->m_pMessagesWnd->AddIconedPdaMessage(*(news->texture_name), news->tex_rect, news->SingleLineText(), news->show_time);
 }
 
 template <typename T>
@@ -1220,7 +1205,7 @@ void CUIMainIngameWnd::UpdateFlashingIcons()
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	for (FlashingIcons_it it = m_FlashingIcons.begin(); it != m_FlashingIcons.end(); ++it)
 	{
-		if (pActor->GetPDA()) //показываем мигающие иконки если ПДА в слоте/отключена соотв. настройка меню  -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+		if (pActor->GetPDA()) //показываем мигающие иконки если ПДА в слоте -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 		    it->second->Update();
 		else
 		    it->second->Show(false); 
@@ -1366,7 +1351,7 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 void CUIMainIngameWnd::UpdateActiveItemInfo()
 {
 	PIItem item		=  m_pActor->inventory().ActiveItem();
-	if (item && (b_ShowWeaponInfo || b_ShowGearInfo)) //-- не показываем иконку активного предмета (оружия) если не нажата клавиша перезарядки/клавиша проверки снаряжения (при включении соотв. опции)
+	if (item && (AllowHUDElement(eWeapon) || AllowHUDElement(eGear))) //-- не показываем иконку активного предмета (оружия) если не нажата клавиша перезарядки/клавиша проверки снаряжения (при включении соотв. опции)
 	{
 		xr_string					str_name;
 		xr_string					icon_sect_name;

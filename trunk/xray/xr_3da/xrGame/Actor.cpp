@@ -581,8 +581,9 @@ void	CActor::Hit							(SHit* pHDS)
 				if (HDS.hit_type == ALife::eHitTypeTelepatic && psActorFlags.test(AF_CONDITION_INTERDEPENDENCE)) //если хит телепатический и включена соотв. опция
 				{
 					hit_power -= HDS.power * conditions().GetAlcohol(); //уменьшаем телепатический хит если актор пьян
-					Msg("telepatic hit power = %.6f, HDS.power = %.6f, alcohol = %.6f", hit_power, HDS.power, conditions().GetAlcohol());
+					//Msg("telepatic hit power = %.6f, HDS.power = %.6f, alcohol = %.6f", hit_power, HDS.power, conditions().GetAlcohol());
 				}
+				//if (HDS.hit_type == ALife::eHitTypeRadiation) Msg("Radiation hit power = %.6f, HDS.power = %.6f", hit_power, HDS.power);
 				//
 				HDS.power = hit_power;
 				inherited::Hit(&HDS);

@@ -221,6 +221,12 @@ CPda* CInventoryOwner::GetPDA() const
 	return (CPda*)(m_inventory->m_slots[PDA_SLOT].m_pIItem);
 }
 
+//получаем детектор в слоте
+CCUstomDetector* CInventoryOwner::GetDetector() const
+{
+	return (CCUstomDetector*)(m_inventory->m_slots[DETECTOR_SLOT].m_pIItem);
+}
+
 CTrade* CInventoryOwner::GetTrade() 
 {
 	R_ASSERT2(m_pTrade, "trade for object does not init yet");

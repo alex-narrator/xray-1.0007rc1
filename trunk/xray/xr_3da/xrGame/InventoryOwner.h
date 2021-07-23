@@ -16,6 +16,7 @@ class CInventory;
 class CInventoryItem;
 class CTrade;
 class CPda;
+class CCUstomDetector;
 class CGameObject;
 class CEntityAlive;
 class CCustomZone;
@@ -57,7 +58,9 @@ public:
 	virtual bool	CanPutInSlot				(PIItem item, u32 slot){return true;};
 
 
-	CPda* GetPDA		() const;
+	CPda*               GetPDA		    () const;
+	//
+	CCUstomDetector*    GetDetector		() const;
 
 
 	// инвентарь
