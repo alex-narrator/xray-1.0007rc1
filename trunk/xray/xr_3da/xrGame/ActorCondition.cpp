@@ -96,8 +96,9 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 
 	m_MaxWalkWeight				= pSettings->r_float(section,"max_walk_weight");
     //
-	m_fMinPowerHealth             = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_health", 1);
-	m_fMinPowerHealthTreshold     = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_health_treshold", 0);
+/*	m_fMinPowerHealth             = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_health", 1);
+	m_fMinPowerHealthTreshold     = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_health_treshold", 0);*/
+	m_fBleedingPowerDecrease      = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "bleeding_power_dec", 0);
     //
 	m_fMinHealthRadiation         = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_health_radiation", 1);
 	m_fMinHealthRadiationTreshold = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_health_radiation_treshold", 0);
@@ -248,24 +249,25 @@ void CActorCondition::UpdatePower()
 		else
 			k_max_power = 1.0f;
 
-		SetMaxPower(GetMaxPower() - m_fPowerLeakSpeed*m_fDeltaTime*k_max_power);
+		SetMaxPower(GetMaxPower() - m_fPowerLeakSpeed*m_fDeltaTime*k_max_power); //кажется это таки "сонливость" - постоянное уменьшение максимальной выносливости
 	}
 
 	//коэффициенты уменьшения восстановления силы от сытоти и радиации
 	/*float radiation_power_k = 1.f;
 	float satiety_power_k = 1.f;*/
+	float bleeding_power_dec = BleedingSpeed() * /*m_fDeltaTime * m_change_v.m_fV_Bleeding */ m_fBleedingPowerDecrease;
 
 	m_fDeltaPower += m_fV_SatietyPower*
 		//radiation_power_k*
 		//satiety_power_k*
-		m_fDeltaTime * m_fRegenCoef;
+		m_fDeltaTime * m_fRegenCoef - bleeding_power_dec;
 
 //	if (m_fSatiety < m_fMinPowerHealthTreshold)
 		//SetMaxPower(m_fMinPowerSatiety + (1 - m_fMinPowerSatiety) * m_fSatiety); //сытость влияет на максимальную выносливость
-	if (GetHealth() < m_fMinPowerHealthTreshold)
+	/*if (GetHealth() < m_fMinPowerHealthTreshold)
 		SetMaxPower(m_fMinPowerHealth + (1 - m_fMinPowerHealth) * GetHealth()); //здоровье влияет на максимальную выносливость
 	else
-		SetMaxPower(1.0f);
+		SetMaxPower(1.0f);*/
 
 #ifdef MY_DEBUG
 	Msg("m_fSatiety = %.2f", m_fSatiety);
@@ -367,7 +369,7 @@ void CActorCondition::UpdateSatiety()
 	}
 		
 	//сытость увеличивает здоровье только если нет открытых ран
-		m_fDeltaHealth += CanBeHarmed() ?
+		m_fDeltaHealth += CanBeHarmed() && !m_bIsBleeding ?
 			(m_fV_SatietyHealth*(m_fSatiety>m_fSatietyCritical ? 1.f : -1.f)*m_fDeltaTime*m_fRegenCoef) //по идее тут надо сравнить с m_fSatietyCritical
 			: 0;
 }

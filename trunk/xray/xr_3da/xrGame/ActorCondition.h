@@ -106,8 +106,9 @@ protected:
 public:
 	float m_MaxWalkWeight;
     //
-	float m_fMinPowerHealth;
-	float m_fMinPowerHealthTreshold;
+/*	float m_fMinPowerHealth;
+	float m_fMinPowerHealthTreshold;*/
+	float m_fBleedingPowerDecrease;
     //
 	float m_fMinHealthRadiation;
 	float m_fMinHealthRadiationTreshold;
