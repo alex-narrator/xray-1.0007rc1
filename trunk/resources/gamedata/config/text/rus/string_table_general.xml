@@ -183,6 +183,12 @@
 	<string id="st_not_enough_money_npc">
 		<text>у НПС недостаточно денег</text>
 	</string>
+	<string id="st_not_enough_money_to_trade">
+		<text>недостаточно денег для сделки</text>
+	</string>
+	<string id="st_not_enough_money_to_barter">
+		<text>недостаточно товаров для сделки</text>
+	</string>
 	<string id="ui_st_opponent_items">
 		<text>Рюкзак</text>
 	</string>

@@ -251,8 +251,9 @@ void CUITradeWnd::Update()
 	if(m_uidata->UIDealMsg){
 		m_uidata->UIDealMsg->Update();
 		if( !m_uidata->UIDealMsg->IsActual()){
-			HUD().GetUI()->UIGame()->RemoveCustomStatic("not_enough_money_mine");
-			HUD().GetUI()->UIGame()->RemoveCustomStatic("not_enough_money_other");
+			/*HUD().GetUI()->UIGame()->RemoveCustomStatic("not_enough_money_mine");
+			HUD().GetUI()->UIGame()->RemoveCustomStatic("not_enough_money_other");*/
+			HUD().GetUI()->UIGame()->RemoveCustomStatic("not_enough_money");
 			m_uidata->UIDealMsg			= NULL;
 		}
 	}
@@ -281,8 +282,9 @@ void CUITradeWnd::Hide()
 	m_uidata->UIDealMsg				= NULL;
 
 	if(HUD().GetUI()->UIGame()){
-		HUD().GetUI()->UIGame()->RemoveCustomStatic("not_enough_money_mine");
-		HUD().GetUI()->UIGame()->RemoveCustomStatic("not_enough_money_other");
+		/*HUD().GetUI()->UIGame()->RemoveCustomStatic("not_enough_money_mine");
+		HUD().GetUI()->UIGame()->RemoveCustomStatic("not_enough_money_other");*/
+		HUD().GetUI()->UIGame()->RemoveCustomStatic("not_enough_money");
 	}
 
 	m_uidata->UIOurBagList.ClearAll		(true);
@@ -426,12 +428,20 @@ void CUITradeWnd::PerformTrade()
 		TransferItems		(&m_uidata->UIOthersTradeList,	&m_uidata->UIOurBagList,	m_pOthersTrade,	false);
 	}else
 	{
-		if(others_money<0)
+		/*if(others_money<0)
 			m_uidata->UIDealMsg		= HUD().GetUI()->UIGame()->AddCustomStatic("not_enough_money_other", true);
 		else
-			m_uidata->UIDealMsg		= HUD().GetUI()->UIGame()->AddCustomStatic("not_enough_money_mine", true);
-
-
+			m_uidata->UIDealMsg		= HUD().GetUI()->UIGame()->AddCustomStatic("not_enough_money_mine", true);*/
+		//
+		string256				deal_refuse_text; //строка с текстом сообщения-отказа при невозмжности совершить торговую сделку
+		//условия для формирования текста
+		LPCSTR                  trader_name = others_money < 0 ? m_pOthersInvOwner->Name() : m_pInvOwner->Name(); //от чьего имени выдаётся сообщение
+		STRING_ID               refusal_text = g_actor->GetPDA() ? "st_not_enough_money_to_trade" : "st_not_enough_money_to_barter"; //текст сообщения отказа в зависимости от торговля/бартер
+		//показываем статик с текстом отказа
+		m_uidata->UIDealMsg = HUD().GetUI()->UIGame()->AddCustomStatic("not_enough_money", true); //показать статик
+		strconcat(sizeof(deal_refuse_text), deal_refuse_text, trader_name, ": ", *CStringTable().translate(refusal_text)); //сформировать текст
+		m_uidata->UIDealMsg->wnd()->SetText(deal_refuse_text); //задать текст статику
+		//
 		m_uidata->UIDealMsg->m_endTime	= Device.fTimeGlobal+2.0f;// sec
 	}
 	SetCurrentItem			(NULL);
