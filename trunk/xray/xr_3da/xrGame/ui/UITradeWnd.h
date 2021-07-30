@@ -9,6 +9,8 @@ struct CUITradeInternal;
 
 class CUIDragDropListEx;
 class CUICellItem;
+//
+class CUIPropertiesBox;
 
 class CUITradeWnd: public CUIWindow
 {
@@ -31,6 +33,10 @@ public:
 
 	void 				DisableAll					();
 	void 				EnableAll					();
+	//контекстное меню
+	void				ActivatePropertiesBox		();
+	virtual bool		OnKeyboard                  (int dik, EUIMessages keyboard_action);
+	virtual bool		OnMouse                     (float x, float y, EUIMessages mouse_action);
 
 	void 				SwitchToTalk				();
 	void 				StartTrade					();
@@ -71,6 +77,8 @@ protected:
 	CInventoryOwner*	m_pOthersInvOwner;
 	CTrade*				m_pTrade;
 	CTrade*				m_pOthersTrade;
+	//
+	CUIPropertiesBox*	m_pUIPropertiesBox;
 
 	u32					m_iOurTradePrice;
 	u32					m_iOthersTradePrice;
@@ -83,6 +91,11 @@ protected:
 	void				SetCurrentItem				(CUICellItem* itm);
 	CUICellItem*		CurrentItem					();
 	PIItem				CurrentIItem				();
+	//
+	bool                MoveOneFromCell             (CUICellItem* itm);  //переместить один предмет
+	bool                MoveAllFromCell             (CUICellItem* itm);  //переместить стак предметов
+	//
+	bool                b_TakeAllActionKeyHolded;
 
 	bool		xr_stdcall		OnItemDrop			(CUICellItem* itm);
 	bool		xr_stdcall		OnItemStartDrag		(CUICellItem* itm);

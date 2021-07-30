@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "UIDialogWnd.h"
 #include "UIEditBox.h"
@@ -38,6 +38,8 @@ public:
 	void					DisableAll					();
 	void					EnableAll					();
 	virtual bool			OnKeyboard					(int dik, EUIMessages keyboard_action);
+	//восстановление контекстного меню
+	virtual bool			OnMouse                     (float x, float y, EUIMessages mouse_action);
 
 	void					UpdateLists_delayed			();
 
@@ -60,7 +62,7 @@ protected:
 	CUIStatic*				m_pUIOurBagWnd;
 	CUIStatic*				m_pUIOthersBagWnd;
 
-	//���������� � ���������� 
+	//информация о персонажах 
 	CUIStatic*				m_pUIOurIcon;
 	CUIStatic*				m_pUIOthersIcon;
 	CUICharacterInfo*		m_pUICharacterInfoLeft;
@@ -75,15 +77,22 @@ protected:
 	void					ActivatePropertiesBox		();
 	void					EatItem						();
 
-	bool					ToOurBag					();
-	bool					ToOthersBag					();
+/*	bool					ToOurBag					();
+	bool					ToOthersBag					();*/
 	
 	void					SetCurrentItem				(CUICellItem* itm);
 	CUICellItem*			CurrentItem					();
 	PIItem					CurrentIItem				();
 
-	// ����� ���
+	// Взять все
 	void					TakeAll						();
+	//
+	bool                    MoveOneFromCell             (CUICellItem* itm);  //переместить один предмет
+	bool                    MoveAllFromCell             (CUICellItem* itm);  //переместить стак предметов
+	//
+	void					DropItemsfromCell			(bool b_all);        //выбросить предмет/стак предметов
+	//
+	bool                    b_TakeAllActionKeyHolded;
 
 
 	bool		xr_stdcall	OnItemDrop					(CUICellItem* itm);

@@ -42,6 +42,12 @@
 	<string id="st_drop_all">
 		<text>выбросить все</text>
 	</string>
+	<string id="st_move">
+		<text>переместить</text>
+	</string>
+	<string id="st_move_all">
+		<text>переместить все</text>
+	</string>
 	<string id="st_eat">
 		<text>съесть</text>
 	</string>

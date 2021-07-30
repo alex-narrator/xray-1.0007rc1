@@ -1,4 +1,5 @@
 ﻿#include "pch_script.h"
+#include "stdafx.h"
 #include "UICarBodyWnd.h"
 #include "xrUIXmlParser.h"
 #include "UIXmlInit.h"
@@ -288,6 +289,8 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	}
 	else if(pWnd == m_pUIPropertiesBox &&	msg == PROPERTY_CLICKED)
 	{
+		CUICellItem * itm = CurrentItem();
+		//
 		if(m_pUIPropertiesBox->GetClickedItem())
 		{
 			switch(m_pUIPropertiesBox->GetClickedItem()->GetTAG())
@@ -295,15 +298,45 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 			case INVENTORY_EAT_ACTION:	//съесть объект
 				EatItem();
 				break;
+				//
+			case INVENTORY_MOVE_ONE_ACTION:  //переместить один предмет
+				MoveOneFromCell(itm);
+				break;
+			case INVENTORY_MOVE_ALL_ACTION:  //переместить стак предметов
+				MoveAllFromCell(itm);
+				break;
+				//
 			case INVENTORY_UNLOAD_MAGAZINE:
 				{
-				CUICellItem * itm = CurrentItem();
+				//CUICellItem * itm = CurrentItem();
 				(smart_cast<CWeaponMagazined*>((CWeapon*)itm->m_pData))->UnloadMagazine();
 				for(u32 i=0; i<itm->ChildsCount(); ++i)
 				{
 					CUICellItem * child_itm			= itm->Child(i);
 					(smart_cast<CWeaponMagazined*>((CWeapon*)child_itm->m_pData))->UnloadMagazine();
 				}
+				}break;
+				case INVENTORY_DETACH_SCOPE_ADDON:
+				{
+					auto wpn = smart_cast<CWeapon*>(CurrentIItem());
+					wpn->Detach(wpn->GetScopeName().c_str(), true);
+				}break;
+				case INVENTORY_DETACH_SILENCER_ADDON:
+				{
+					auto wpn = smart_cast<CWeapon*>(CurrentIItem());
+					wpn->Detach(wpn->GetSilencerName().c_str(), true);
+				}break;
+				case INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON:
+				{
+					auto wpn = smart_cast<CWeapon*>(CurrentIItem());
+					wpn->Detach(wpn->GetGrenadeLauncherName().c_str(), true);
+				}break;
+				case INVENTORY_DROP_ACTION:
+				{
+					void* d = m_pUIPropertiesBox->GetClickedItem()->GetData();
+					bool b_all = (d == (void*)33);
+
+					DropItemsfromCell(b_all);
 				}break;
 			}
 		}
@@ -414,11 +447,62 @@ void CUICarBodyWnd::TakeAll()
 	}
 }
 
+void SendEvent_Item_Drop(PIItem	pItem)
+{
+	pItem->SetDropManual(TRUE);
+
+	if (OnClient())
+	{
+		NET_Packet P;
+		pItem->object().u_EventGen(P, GE_OWNERSHIP_REJECT, pItem->object().H_Parent()->ID());
+		P.w_u16(pItem->object().ID());
+		pItem->object().u_EventSend(P);
+	}
+}
+
+void CUICarBodyWnd::DropItemsfromCell(bool b_all)
+{
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (!pActor)
+	{
+		return;
+	}
+
+	CUICellItem* ci = CurrentItem();
+	if (!ci)
+	{
+		return;
+	}
+
+	if (b_all)
+	{
+		u32 cnt = ci->ChildsCount();
+
+		for (u32 i = 0; i<cnt; ++i) {
+			CUICellItem*	itm = ci->PopChild();
+			PIItem			iitm = (PIItem)itm->m_pData;
+			SendEvent_Item_Drop(iitm);
+		}
+	}
+
+	PIItem	iitm = (PIItem)ci->m_pData;
+	SendEvent_Item_Drop(CurrentIItem());
+
+	SetCurrentItem(NULL);
+	InventoryUtilities::UpdateWeight(*m_pUIOurBagWnd);
+}
 
 #include "../xr_level_controller.h"
 
 bool CUICarBodyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 {
+	//восстановление контекстного меню
+	if (m_b_need_update)
+		return true;
+
+	if (m_pUIPropertiesBox->GetVisible())
+		m_pUIPropertiesBox->OnKeyboard(dik, keyboard_action);
+	//
 	if( inherited::OnKeyboard(dik,keyboard_action) )return true;
 
 	if(keyboard_action==WINDOW_KEY_PRESSED && is_binded(kUSE, dik)) 
@@ -433,7 +517,124 @@ bool CUICarBodyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 		TakeAll();
 		return true;
 	}
+	//
+	b_TakeAllActionKeyHolded = keyboard_action == WINDOW_KEY_PRESSED && is_binded(kCROUCH, dik);
+
 	return false;
+}
+//восстановление контекстного меню
+bool CUICarBodyWnd::OnMouse(float x, float y, EUIMessages mouse_action)
+{
+	if (m_b_need_update)
+		return true;
+
+	//вызов дополнительного меню по правой кнопке
+	if (mouse_action == WINDOW_RBUTTON_DOWN)
+	{
+		if (m_pUIPropertiesBox->IsShown())
+		{
+			m_pUIPropertiesBox->Hide();
+			return						true;
+		}
+	}
+
+	CUIWindow::OnMouse(x, y, mouse_action);
+
+	return true; // always returns true, because ::StopAnyMove() == true;
+}
+
+bool CUICarBodyWnd::MoveOneFromCell(CUICellItem* itm)
+{
+	CUIDragDropListEx*	old_owner = itm->OwnerList();
+	CUIDragDropListEx*	new_owner = (old_owner == m_pUIOthersBagList) ? m_pUIOurBagList : m_pUIOthersBagList;
+
+	if (m_pOthersObject)
+	{
+		if (TransferItem(CurrentIItem(),
+			(old_owner == m_pUIOthersBagList) ? m_pOthersObject : m_pOurObject,
+			(old_owner == m_pUIOurBagList) ? m_pOthersObject : m_pOurObject,
+			(old_owner == m_pUIOurBagList)
+			)
+			)
+		{
+			CUICellItem* ci = old_owner->RemoveItem(CurrentItem(), false);
+			new_owner->SetItem(ci);
+		}
+	}
+	else
+	{
+		//if (false && old_owner == m_pUIOurBagList) return true;
+		bool bMoveDirection = (old_owner == m_pUIOthersBagList);
+
+		u16 tmp_id = (smart_cast<CGameObject*>(m_pOurObject))->ID();
+		move_item(
+			bMoveDirection ? m_pInventoryBox->ID() : tmp_id,
+			bMoveDirection ? tmp_id : m_pInventoryBox->ID(),
+			CurrentIItem()->object().ID());
+		//.		Actor()->callback		(GameObject::eInvBoxItemTake)(m_pInventoryBox->lua_game_object(), CurrentIItem()->object().lua_game_object() );
+
+	}
+	SetCurrentItem(NULL);
+
+	return						true;
+}
+
+bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
+{
+	u16 tmp_id = 0;
+
+	CUIDragDropListEx* owner_list = itm->OwnerList();
+	if (owner_list != m_pUIOthersBagList)
+	{ //перемещаем в актерский инв.
+		CUICellItem* ci = CurrentItem();
+		for (u32 j = 0; j<ci->ChildsCount(); ++j)
+		{
+			PIItem _itm = (PIItem)(ci->Child(j)->m_pData);
+			if (m_pOthersObject)
+				TransferItem(_itm, m_pOurObject, m_pOthersObject, false);
+			else
+			{
+				move_item(tmp_id, m_pInventoryBox->ID(), _itm->object().ID());
+				// ЭТО ПОХОЖЕ заткнута выдача кэллбэка на взятие предмета из инв. ящика
+				//. Actor()->callback(GameObject::eInvBoxItemTake)( m_pInventoryBox->lua_game_object(), _itm->object().lua_game_object() );
+			}
+		}
+		PIItem itm = (PIItem)(ci->m_pData);
+		if (m_pOthersObject)
+			TransferItem(itm, m_pOurObject, m_pOthersObject, false);
+		else
+		{
+			move_item(tmp_id, m_pInventoryBox->ID(), itm->object().ID());
+			// ЭТО ПОХОЖЕ заткнута выдача кэллбэка на взятие предмета из инв. ящика
+			//. Actor()->callback(GameObject::eInvBoxItemTake)(m_pInventoryBox->lua_game_object(), itm->object().lua_game_object() );
+		}
+	}
+	else
+	{ // перемещаем из актерского в другой инв.
+		CUICellItem* ci = CurrentItem();
+		for (u32 j = 0; j<ci->ChildsCount(); ++j)
+		{
+			PIItem _itm = (PIItem)(ci->Child(j)->m_pData);
+			if (m_pOthersObject)
+				TransferItem(_itm, m_pOthersObject, m_pOurObject, false);
+			else
+			{
+				move_item(m_pInventoryBox->ID(), tmp_id, _itm->object().ID());
+				//ЭТО ПОХОЖЕ заткнута выдача кэллбэка на взятие предмета из инв. ящика
+				//. Actor()->callback(GameObject::eInvBoxItemTake)( m_pInventoryBox->lua_game_object(), _itm->object().lua_game_object() );
+			}
+		}
+		PIItem itm = (PIItem)(ci->m_pData);
+		if (m_pOthersObject)
+			TransferItem(itm, m_pOthersObject, m_pOurObject, false);
+		else
+		{
+			move_item(m_pInventoryBox->ID(), tmp_id, itm->object().ID());
+			// ЭТО ПОХОЖЕ заткнута выдача кэллбэка на взятие предмета из инв. ящика
+			//. Actor()->callback(GameObject::eInvBoxItemTake)(m_pInventoryBox->lua_game_object(), itm->object().lua_game_object() );
+		}
+	}
+	return				true;
 }
 
 #include "../Medkit.h"
@@ -441,18 +642,62 @@ bool CUICarBodyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 
 void CUICarBodyWnd::ActivatePropertiesBox()
 {
-	if(m_pInventoryBox)	return;
+	//if(m_pInventoryBox)	return;
 		
 	m_pUIPropertiesBox->RemoveAll();
 	
-//.	CWeaponMagazined*		pWeapon			= smart_cast<CWeaponMagazined*>(CurrentIItem());
-	CEatableItem*			pEatableItem	= smart_cast<CEatableItem*>(CurrentIItem());
+	CWeaponMagazined*		pWeapon			= smart_cast<CWeaponMagazined*> (CurrentIItem());
+	CEatableItem*			pEatableItem	= smart_cast<CEatableItem*>     (CurrentIItem());
 	CMedkit*				pMedkit			= smart_cast<CMedkit*>			(CurrentIItem());
 	CAntirad*				pAntirad		= smart_cast<CAntirad*>			(CurrentIItem());
 	CBottleItem*			pBottleItem		= smart_cast<CBottleItem*>		(CurrentIItem());
     bool					b_show			= false;
 	
 	LPCSTR _action				= NULL;
+	
+	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
+	bool parent_exists = !m_pInventoryBox || owner == m_pUIOurBagList;
+
+	if (pWeapon && parent_exists)
+	{
+		if (pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
+		{
+			m_pUIPropertiesBox->AddItem("st_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
+			b_show = true;
+		}
+		if (pWeapon->ScopeAttachable() && pWeapon->IsScopeAttached())
+		{
+			m_pUIPropertiesBox->AddItem("st_detach_scope", NULL, INVENTORY_DETACH_SCOPE_ADDON);
+			b_show = true;
+		}
+		if (pWeapon->SilencerAttachable() && pWeapon->IsSilencerAttached())
+		{
+			m_pUIPropertiesBox->AddItem("st_detach_silencer", NULL, INVENTORY_DETACH_SILENCER_ADDON);
+			b_show = true;
+		}
+
+		bool b = (0 != pWeapon->GetAmmoElapsed());
+
+		if (!b)
+		{
+			CUICellItem * itm = CurrentItem();
+			for (u32 i = 0; i<itm->ChildsCount(); ++i)
+			{
+				pWeapon = smart_cast<CWeaponMagazined*>((CWeapon*)itm->Child(i)->m_pData);
+				if (pWeapon->GetAmmoElapsed())
+				{
+					b = true;
+					break;
+				}
+			}
+		}
+
+		if (b) {
+			m_pUIPropertiesBox->AddItem("st_unload_magazine", NULL, INVENTORY_UNLOAD_MAGAZINE);
+			b_show = true;
+		}
+	}
+
 	if(pMedkit || pAntirad)
 	{
 		_action						= "st_use";
@@ -469,6 +714,22 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	if(_action)
 		m_pUIPropertiesBox->AddItem(_action,  NULL, INVENTORY_EAT_ACTION);
 
+	//пункты меню "переместить"
+	b_show = true;
+	//
+	bool many_items_in_cell = CurrentItem()->ChildsCount() > 0;
+	//
+	m_pUIPropertiesBox->AddItem("st_move", NULL, INVENTORY_MOVE_ONE_ACTION); //переместить один предмет
+	if (many_items_in_cell) //предметов в ячейке больше одного
+		m_pUIPropertiesBox->AddItem("st_move_all", NULL, INVENTORY_MOVE_ALL_ACTION); //переместить стак предметов
+	//
+	if (parent_exists)
+	{
+		m_pUIPropertiesBox->AddItem("st_drop", NULL, INVENTORY_DROP_ACTION);
+
+		if (many_items_in_cell)
+			m_pUIPropertiesBox->AddItem("st_drop_all", (void*)33, INVENTORY_DROP_ACTION);
+	}
 
 	if(b_show){
 		m_pUIPropertiesBox->AutoUpdateSize	();
@@ -506,13 +767,12 @@ void CUICarBodyWnd::EatItem()
 
 }
 
-
 bool CUICarBodyWnd::OnItemDrop(CUICellItem* itm)
 {
 	CUIDragDropListEx*	old_owner		= itm->OwnerList();
 	CUIDragDropListEx*	new_owner		= CUIDragDropListEx::m_drag_item->BackList();
 	
-	if(old_owner==new_owner || !old_owner || !new_owner || (false&&new_owner==m_pUIOthersBagList&&m_pInventoryBox))
+/*	if(old_owner==new_owner || !old_owner || !new_owner || (false&&new_owner==m_pUIOthersBagList&&m_pInventoryBox))
 					return true;
 
 	if(m_pOthersObject)
@@ -546,7 +806,11 @@ bool CUICarBodyWnd::OnItemDrop(CUICellItem* itm)
 	}
 	SetCurrentItem					(NULL);
 
-	return				true;
+	return				true;*/
+
+	if (old_owner == new_owner || !old_owner || !new_owner)
+		return true;
+	return MoveOneFromCell(itm);
 }
 
 bool CUICarBodyWnd::OnItemStartDrag(CUICellItem* itm)
@@ -554,9 +818,10 @@ bool CUICarBodyWnd::OnItemStartDrag(CUICellItem* itm)
 	return				false; //default behaviour
 }
 
+#include "../xr_3da/xr_input.h"
 bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 {
-	CUIDragDropListEx*	old_owner		= itm->OwnerList();
+	/*CUIDragDropListEx*	old_owner		= itm->OwnerList();
 	CUIDragDropListEx*	new_owner		= (old_owner==m_pUIOthersBagList)?m_pUIOurBagList:m_pUIOthersBagList;
 
 	if(m_pOthersObject)
@@ -586,7 +851,8 @@ bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 	}
 	SetCurrentItem				(NULL);
 
-	return						true;
+	return						true;*/
+	return b_TakeAllActionKeyHolded ? MoveAllFromCell(itm) : MoveOneFromCell(itm);
 }
 
 bool CUICarBodyWnd::OnItemSelected(CUICellItem* itm)

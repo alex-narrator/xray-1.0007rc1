@@ -99,8 +99,8 @@ void CUITalkWnd::InitTalkDialog()
 	{
 		u_NonBarterMoney = g_actor->get_money(); //получаем деньги на виртуальном ПДА-счете актора
 		if(!m_pOthersInvOwner->InfinitiveMoney()) u_NonBarterMoneyOther = m_pOthersInvOwner->get_money(); //получаем деньги на виртуальном ПДА-счете контрагента, если контрагент не бесконечно богатый торговец
-		Msg("CUITalkWnd::InitTalkDialog() NonBarterMoney = %i", u_NonBarterMoney);
-		Msg("CUITalkWnd::InitTalkDialog() NonBarterMoneyOther = %i", u_NonBarterMoneyOther);
+		/*Msg("CUITalkWnd::InitTalkDialog() NonBarterMoney = %i", u_NonBarterMoney);
+		Msg("CUITalkWnd::InitTalkDialog() NonBarterMoneyOther = %i", u_NonBarterMoneyOther);*/
 		g_actor->set_money(0, true); //обнулим деньги актора для бартера
 		if(!m_pOthersInvOwner->InfinitiveMoney()) m_pOthersInvOwner->set_money(m_pOthersInvOwner->u_BarterMoney, true); //если контрагент не бесконечно богатый торговец то добавим ему денег для бартера
 	}
@@ -278,8 +278,8 @@ void CUITalkWnd::Hide()
 	{
 		g_actor->set_money(u_NonBarterMoney, true);                                                          //вернём деньги с виртуального ПДА-счета актора
 		if(!m_pOthersInvOwner->InfinitiveMoney()) m_pOthersInvOwner->set_money(u_NonBarterMoneyOther, true); //вернём деньги с виртуального ПДА-счета контрагента
-		Msg("CUITalkWnd::Hide() NonBarterMoney = %i", u_NonBarterMoney);
-		Msg("CUITalkWnd::Hide() NonBarterMoneyOther = %i", u_NonBarterMoneyOther);
+		/*Msg("CUITalkWnd::Hide() NonBarterMoney = %i", u_NonBarterMoney);
+		Msg("CUITalkWnd::Hide() NonBarterMoneyOther = %i", u_NonBarterMoneyOther);*/
 	}
 //
 

@@ -7,6 +7,7 @@
 #include "../Entity.h"
 #include "../HUDManager.h"
 #include "../WeaponAmmo.h"
+#include "../WeaponMagazined.h"
 #include "../Actor.h"
 #include "../Trade.h"
 #include "../UIGameSP.h"
@@ -25,6 +26,10 @@
 #include "UIDragDropListEx.h"
 #include "UICellItem.h"
 #include "UICellItemFactory.h"
+//
+#include "UIPropertiesBox.h"
+#include "UIListBoxItem.h"
+#include "../xr_3da/xr_input.h"
 
 
 #define				TRADE_XML			"trade.xml"
@@ -165,6 +170,11 @@ void CUITradeWnd::Init()
 
 	AttachChild							(&m_uidata->UIToTalkButton);
 	xml_init.Init3tButton					(uiXml, "button", 1, &m_uidata->UIToTalkButton);
+	//
+	m_pUIPropertiesBox                  = xr_new<CUIPropertiesBox>(); m_pUIPropertiesBox->SetAutoDelete(true);
+	AttachChild                         (m_pUIPropertiesBox);
+	m_pUIPropertiesBox->Init            (0, 0, 300, 300);
+	m_pUIPropertiesBox->Hide            ();
 
 	m_uidata->UIDealMsg					= NULL;
 
@@ -191,6 +201,9 @@ void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 		
 	m_pTrade							= pOur->GetTrade();
 	m_pOthersTrade						= pOur->GetTrade()->GetPartnerTrade();
+	//
+	m_pUIPropertiesBox->Hide();
+	//
 
 	EnableAll							();
 
@@ -217,6 +230,50 @@ void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	else if(pWnd == &m_uidata->UIPerformTradeButton && msg == BUTTON_CLICKED)
 	{
 		PerformTrade();
+	}
+	//
+	else if (pWnd == m_pUIPropertiesBox && msg == PROPERTY_CLICKED)
+	{
+		if (m_pUIPropertiesBox->GetClickedItem())
+		{
+			CUICellItem * itm = CurrentItem();
+			switch (m_pUIPropertiesBox->GetClickedItem()->GetTAG())
+			{
+				//
+			case INVENTORY_MOVE_ONE_ACTION:  //переместить один предмет
+				MoveOneFromCell(itm);
+				break;
+			case INVENTORY_MOVE_ALL_ACTION:  //переместить стак предметов
+				MoveAllFromCell(itm);
+				break;
+				//
+			case INVENTORY_UNLOAD_MAGAZINE:
+			{
+				//CUICellItem * itm = CurrentItem();
+				(smart_cast<CWeaponMagazined*>((CWeapon*)itm->m_pData))->UnloadMagazine();
+				for (u32 i = 0; i<itm->ChildsCount(); ++i)
+				{
+					CUICellItem * child_itm = itm->Child(i);
+					(smart_cast<CWeaponMagazined*>((CWeapon*)child_itm->m_pData))->UnloadMagazine();
+				}
+			}break;
+			case INVENTORY_DETACH_SCOPE_ADDON:
+			{
+				auto wpn = smart_cast<CWeapon*>(CurrentIItem());
+				wpn->Detach(wpn->GetScopeName().c_str(), true);
+			}break;
+			case INVENTORY_DETACH_SILENCER_ADDON:
+			{
+				auto wpn = smart_cast<CWeapon*>(CurrentIItem());
+				wpn->Detach(wpn->GetSilencerName().c_str(), true);
+			}break;
+			case INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON:
+			{
+				auto wpn = smart_cast<CWeapon*>(CurrentIItem());
+				wpn->Detach(wpn->GetGrenadeLauncherName().c_str(), true);
+			}break;
+			}
+		}
 	}
 
 	CUIWindow::SendMessage(pWnd, msg, pData);
@@ -560,12 +617,114 @@ bool CUITradeWnd::OnItemSelected(CUICellItem* itm)
 	return				false;
 }
 
+#include "../xr_level_controller.h"
+
+bool CUITradeWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+{
+	if (m_pUIPropertiesBox->GetVisible())
+		m_pUIPropertiesBox->OnKeyboard(dik, keyboard_action);
+
+	if (inherited::OnKeyboard(dik, keyboard_action))return true;
+	//
+	b_TakeAllActionKeyHolded = keyboard_action == WINDOW_KEY_PRESSED && is_binded(kCROUCH, dik);
+
+	return false;
+}
+
+bool CUITradeWnd::OnMouse(float x, float y, EUIMessages mouse_action)
+{
+	////вызов дополнительного меню по правой кнопке
+	if (mouse_action == WINDOW_RBUTTON_DOWN)
+	{
+		if (m_pUIPropertiesBox->IsShown())
+		{
+			m_pUIPropertiesBox->Hide();
+			return						true;
+		}
+	}
+
+	CUIWindow::OnMouse(x, y, mouse_action);
+
+	return true; // always returns true, because ::StopAnyMove() == true;
+}
+
+void CUITradeWnd::ActivatePropertiesBox()
+{
+	m_pUIPropertiesBox->RemoveAll();
+	//
+	CWeaponMagazined*		pWeapon = smart_cast<CWeaponMagazined*> (CurrentIItem());
+	bool					b_show = false;
+	//
+	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
+
+	if (pWeapon && owner == &m_uidata->UIOurBagList)
+	{
+		if (pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
+		{
+			m_pUIPropertiesBox->AddItem("st_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
+			b_show = true;
+		}
+		if (pWeapon->ScopeAttachable() && pWeapon->IsScopeAttached())
+		{
+			m_pUIPropertiesBox->AddItem("st_detach_scope", NULL, INVENTORY_DETACH_SCOPE_ADDON);
+			b_show = true;
+		}
+		if (pWeapon->SilencerAttachable() && pWeapon->IsSilencerAttached())
+		{
+			m_pUIPropertiesBox->AddItem("st_detach_silencer", NULL, INVENTORY_DETACH_SILENCER_ADDON);
+			b_show = true;
+		}
+
+		bool b = (0 != pWeapon->GetAmmoElapsed());
+
+		if (!b)
+		{
+			CUICellItem * itm = CurrentItem();
+			for (u32 i = 0; i<itm->ChildsCount(); ++i)
+			{
+				pWeapon = smart_cast<CWeaponMagazined*>((CWeapon*)itm->Child(i)->m_pData);
+				if (pWeapon->GetAmmoElapsed())
+				{
+					b = true;
+					break;
+				}
+			}
+		}
+
+		if (b) {
+			m_pUIPropertiesBox->AddItem("st_unload_magazine", NULL, INVENTORY_UNLOAD_MAGAZINE);
+			b_show = true;
+		}
+	}
+
+	//
+	b_show = true;
+	//
+	bool many_items_in_cell = CurrentItem()->ChildsCount() > 0;
+
+	m_pUIPropertiesBox->AddItem("st_move", NULL, INVENTORY_MOVE_ONE_ACTION); //переместить один предмет
+	if (many_items_in_cell) //предметов в ячейке больше одного
+		m_pUIPropertiesBox->AddItem("st_move_all", NULL, INVENTORY_MOVE_ALL_ACTION); //переместить стак предметов
+	//
+
+	m_pUIPropertiesBox->AutoUpdateSize();
+	m_pUIPropertiesBox->BringAllToTop();
+
+	Fvector2						cursor_pos;
+	Frect							vis_rect;
+
+	GetAbsoluteRect(vis_rect);
+	cursor_pos = GetUICursor()->GetCursorPosition();
+	cursor_pos.sub(vis_rect.lt);
+	m_pUIPropertiesBox->Show(vis_rect, cursor_pos);
+}
+
 bool CUITradeWnd::OnItemRButtonClick(CUICellItem* itm)
 {
 	SetCurrentItem				(itm);
+	ActivatePropertiesBox       ();
 	return						false;
 }
-
 
 bool CUITradeWnd::OnItemDrop(CUICellItem* itm)
 {
@@ -574,7 +733,7 @@ bool CUITradeWnd::OnItemDrop(CUICellItem* itm)
 	if(old_owner==new_owner || !old_owner || !new_owner)
 					return false;
 
-	if(old_owner==&m_uidata->UIOurBagList && new_owner==&m_uidata->UIOurTradeList)
+	/*if(old_owner==&m_uidata->UIOurBagList && new_owner==&m_uidata->UIOurTradeList)
 		ToOurTrade				();
 	else if(old_owner==&m_uidata->UIOurTradeList && new_owner==&m_uidata->UIOurBagList)
 		ToOurBag				();
@@ -583,13 +742,14 @@ bool CUITradeWnd::OnItemDrop(CUICellItem* itm)
 	else if(old_owner==&m_uidata->UIOthersTradeList && new_owner==&m_uidata->UIOthersBagList)
 		ToOthersBag				();
 
-	return true;
+	return true;*/
+	return MoveOneFromCell(itm);
 }
 
 bool CUITradeWnd::OnItemDbClick(CUICellItem* itm)
 {
 	SetCurrentItem						(itm);
-	CUIDragDropListEx*	old_owner		= itm->OwnerList();
+	/*CUIDragDropListEx*	old_owner		= itm->OwnerList();
 	
 	if(old_owner == &m_uidata->UIOurBagList)
 		ToOurTrade				();
@@ -602,9 +762,70 @@ bool CUITradeWnd::OnItemDbClick(CUICellItem* itm)
 	else
 		R_ASSERT2(false, "wrong parent for cell item");
 
+	return true;*/
+	//
+	return b_TakeAllActionKeyHolded ? MoveAllFromCell(itm) : MoveOneFromCell(itm);
+}
+
+bool CUITradeWnd::MoveOneFromCell(CUICellItem* itm)
+{
+	CUIDragDropListEx*	old_owner		= itm->OwnerList();
+
+	if(old_owner == &m_uidata->UIOurBagList)
+	ToOurTrade				();
+	else if(old_owner == &m_uidata->UIOurTradeList)
+	ToOurBag				();
+	else if(old_owner == &m_uidata->UIOthersBagList)
+	ToOthersTrade			();
+	else if(old_owner == &m_uidata->UIOthersTradeList)
+	ToOthersBag				();
+	else
+	R_ASSERT2(false, "wrong parent for cell item");
+
 	return true;
 }
 
+bool CUITradeWnd::MoveAllFromCell(CUICellItem* itm)
+{
+	//CUICellItem* cur_item = CurrentItem();
+
+	//if (!cur_item) return false;
+	
+	//u32 cnt = cur_item->ChildsCount();
+	CUIDragDropListEx* old_owner = itm->OwnerList();
+	//CUIDragDropListEx* to;
+
+	/*if (old_owner == &m_uidata->UIOurBagList)
+		to = &m_uidata->UIOurTradeList;
+	else if (old_owner == &m_uidata->UIOurTradeList)
+		to = &m_uidata->UIOurBagList;
+	else if (old_owner == &m_uidata->UIOthersBagList)
+		to = &m_uidata->UIOthersTradeList;
+	else if (old_owner == &m_uidata->UIOthersTradeList)
+		to = &m_uidata->UIOthersBagList;*/
+
+	u32 cnt = itm->ChildsCount();
+	for (u32 i = 0; i < cnt; ++i)
+	{
+//		CUICellItem* itm = itm->PopChild();
+
+		//to->SetItem(itm);
+		if (old_owner == &m_uidata->UIOurBagList)
+			ToOurTrade();
+		else if (old_owner == &m_uidata->UIOurTradeList)
+			ToOurBag();
+		else if (old_owner == &m_uidata->UIOthersBagList)
+			ToOthersTrade();
+		else if (old_owner == &m_uidata->UIOthersTradeList)
+			ToOthersBag();
+		else
+			R_ASSERT2(false, "wrong parent for cell item");
+	}
+	
+	//return MoveOneFromCell(itm);
+	return MoveOneFromCell(itm);
+	SetCurrentItem(NULL);
+}
 
 CUICellItem* CUITradeWnd::CurrentItem()
 {
