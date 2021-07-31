@@ -35,7 +35,7 @@
 
 	<dragdrop_slot_weapon_1 x="150" y="118" width="117" height="104"
             cell_width = "39" cell_height="52" rows_num="2" cols_num="3"
-            custom_placement="0" condition_progress_bar="1"/>
+            custom_placement="0" condition_progress_bar="1" vertical_placement="1"/>
 			
     <dragdrop_slot_weapon_2 x="300" y="118" width="235" height="104"
             cell_width = "39" cell_height="52" rows_num="2" cols_num="6"

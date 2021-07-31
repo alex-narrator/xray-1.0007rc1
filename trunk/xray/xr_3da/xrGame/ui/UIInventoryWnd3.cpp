@@ -102,15 +102,15 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	}
 #endif
 
-#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
+/*#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
 	if (CurrentIItem() != m_pInv->m_slots[GRENADE_SLOT].m_pIItem)
-#endif
+#endif*/
 	if(CurrentIItem()->Belt() && m_pInv->CanPutInBelt(CurrentIItem()))
 	{
 		UIPropertiesBox.AddItem("st_move_on_belt",  NULL, INVENTORY_TO_BELT_ACTION);
 		b_show			= true;
 	}
-#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
+/*#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
 	if (CurrentIItem()->GetSlot() == GRENADE_SLOT && CurrentIItem()->m_eItemPlace != eItemPlaceRuck)
 	{
 		UIPropertiesBox.AddItem("st_move_to_bag",  NULL, INVENTORY_TO_BAG_ACTION);
@@ -118,7 +118,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		b_show			= true;
 	}
 	else
-#endif
+#endif*/
 	if(CurrentIItem()->Ruck() && m_pInv->CanPutInRuck(CurrentIItem()) && (CurrentIItem()->GetSlot()==u32(-1) || !m_pInv->m_slots[CurrentIItem()->GetSlot()].m_bPersistent) )
 	{
 		if(!pOutfit)

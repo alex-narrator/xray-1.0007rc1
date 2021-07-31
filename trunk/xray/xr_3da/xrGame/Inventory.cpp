@@ -226,11 +226,11 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		bool def_to_slot = true;
 #endif
 
-#if defined(GRENADE_FROM_BELT) && !defined (SHOW_GRENADE_SLOT)
+/*#if defined(GRENADE_FROM_BELT) && !defined (SHOW_GRENADE_SLOT)
 		if (CanPutInSlot(pIItem) && pIItem->GetSlot() != GRENADE_SLOT && def_to_slot)
-#else
+#else*/
 		if (CanPutInSlot(pIItem) && def_to_slot)
-#endif
+//#endif
 		{
 			result = Slot(pIItem, bNotActivate); VERIFY(result);
 		}
@@ -431,10 +431,10 @@ bool CInventory::Belt(PIItem pIItem)
 
 	pIItem->object().processing_activate();
 
-#if defined(GRENADE_FROM_BELT)
+/*#if defined(GRENADE_FROM_BELT)
 	if (pIItem->GetSlot() == GRENADE_SLOT && !m_slots[GRENADE_SLOT].m_pIItem)
 		Slot(pIItem);
-#endif
+#endif*/
 
 	return true;
 }
@@ -596,7 +596,7 @@ bool CInventory::Activate(u32 slot, EActivationReason reason, bool bForce)
 		}
 		else 
 		{
-			if(slot==GRENADE_SLOT)//fake for grenade
+		/*	if(slot==GRENADE_SLOT)//fake for grenade
 			{
 #if defined(GRENADE_FROM_BELT)
 				PIItem gr = SameSlot(GRENADE_SLOT, NULL, false);
@@ -613,7 +613,7 @@ bool CInventory::Activate(u32 slot, EActivationReason reason, bool bForce)
 					goto _finish;
 				}
 
-			}else
+			}else*/
 			{
 				res = false;
 				goto _finish;

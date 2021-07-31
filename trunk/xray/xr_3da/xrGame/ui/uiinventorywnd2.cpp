@@ -188,15 +188,15 @@ void CUIInventoryWnd::InitInventory()
 		CUICellItem* itm				= create_cell_item(_itm);
 
 //вариации отображения и использования слота гранаты - начало		
-#if defined(GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
+//#if defined(GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
 		m_pUIGrenadeList->SetItem(itm);
-#endif
-#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
+//#endif
+/*#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
 		m_pUIBeltList->SetItem(itm);
-#endif
-#if !defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
+#endif*/
+/*#if !defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
 		m_pUIBagList->SetItem			(itm);
-#endif
+#endif*/
 //вариации отображения и использования слота гранаты - конец
 	}
 	
@@ -267,12 +267,12 @@ bool CUIInventoryWnd::ToSlot(CUICellItem* itm, bool force_place)
 			return false;
 		}
 
-		if(_slot == GRENADE_SLOT && !new_owner )
+/*		if(_slot == GRENADE_SLOT && !new_owner )
 #if defined(GRENADE_FROM_BELT)
 			return false;
 #else
 			return true; //fake, sorry (((
-#endif
+#endif*/
 		
 #if defined(INV_MOVE_ITM_INTO_QUICK_SLOTS) 
 		//if (_slot >= SLOT_QUICK_ACCESS_0 && _slot <= SLOT_QUICK_ACCESS_3)
@@ -430,11 +430,11 @@ bool CUIInventoryWnd::ToBelt(CUICellItem* itm, bool b_use_cursor_pos)
 		VERIFY								(result);
 		CUICellItem* i						= old_owner->RemoveItem(itm, (old_owner==new_owner) );
 
-#ifdef GRENADE_FROM_BELT //чтобы не вылетало при генерации ячейки слота гранаты на поясе - xer-urg
+//#ifdef GRENADE_FROM_BELT //чтобы не вылетало при генерации ячейки слота гранаты на поясе - xer-urg
 		result = new_owner->CanSetItem(i);
 		if (result || new_owner->IsAutoGrow())
 		{
-#endif
+//#endif
 		
 	//.	UIBeltList.RearrangeItems();
 		if(b_use_cursor_pos)
@@ -449,7 +449,7 @@ bool CUIInventoryWnd::ToBelt(CUICellItem* itm, bool b_use_cursor_pos)
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 
-#ifdef GRENADE_FROM_BELT //чтобы не вылетало при генерации ячейки слота гранаты на поясе - xer-urg
+//#ifdef GRENADE_FROM_BELT //чтобы не вылетало при генерации ячейки слота гранаты на поясе - xer-urg
 		}
 		else
 		{
@@ -462,11 +462,11 @@ bool CUIInventoryWnd::ToBelt(CUICellItem* itm, bool b_use_cursor_pos)
 		m_b_need_reinit = true;
 		
 		return result;
-#else
+/*#else
 		m_b_need_reinit = true;
 		
 		return true;
-#endif
+#endif*/
 	}
 	return	false;
 }
