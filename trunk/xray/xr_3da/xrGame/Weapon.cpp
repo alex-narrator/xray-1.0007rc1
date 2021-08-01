@@ -808,8 +808,8 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 			{
 				l_newType = (l_newType + 1) % m_ammoTypes.size();
 				b1 = l_newType != m_ammoType;
-				bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !ParentIsActor() || m_pCurrentInventory->m_bInventoryAmmoPlacement;
-				b2 = unlimited_ammo() ? false : (!m_pCurrentInventory->GetAmmo(*m_ammoTypes[l_newType], SearchRuck));
+				//bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !ParentIsActor() || m_pCurrentInventory->m_bInventoryAmmoPlacement;
+				b2 = unlimited_ammo() ? false : (!m_pCurrentInventory->GetAmmo(*m_ammoTypes[l_newType], ParentIsActor()));
 			} while (b1 && b2);
 
 			if (l_newType != m_ammoType)
@@ -962,8 +962,8 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 		/*auto parent = const_cast<CObject*>(H_Parent());
 		auto entity_alive = smart_cast<CEntityAlive*>(parent);
 		bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || entity_alive == NULL || !entity_alive->cast_actor();*/
-		bool SearchRuck = g_actor->m_inventory != m_pCurrentInventory || !psActorFlags.test(AF_AMMO_FROM_BELT);
-		TIItemContainer &list = SearchRuck ? m_pCurrentInventory->m_ruck : m_pCurrentInventory->m_belt;
+		bool for_actor = g_actor->m_inventory != m_pCurrentInventory || !psActorFlags.test(AF_AMMO_FROM_BELT);
+		TIItemContainer &list = for_actor ? m_pCurrentInventory->m_all : m_pCurrentInventory->m_belt;
 		for (TIItemContainer::iterator l_it = list.begin(); list.end() != l_it; ++l_it)
 		{
 			CWeaponAmmo *l_pAmmo = smart_cast<CWeaponAmmo*>(*l_it);

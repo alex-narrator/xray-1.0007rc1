@@ -1,4 +1,4 @@
-#include "pch_script.h"
+п»ї#include "pch_script.h"
 #include "inventory.h"
 #include "actor.h"
 #include "trade.h"
@@ -182,10 +182,10 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	// AF_AMMO_FROM_BELT
 	auto pActor = smart_cast<CActor*>(m_pOwner);
 	auto ammo = smart_cast<CWeaponAmmo*>(pIItem);
-	if (psActorFlags.test(AF_AMMO_FROM_BELT) && ammo && pActor && m_bAmmoSpawnUnloading) //если включены патроны с пояса, то для боеприпасов актора, которые спавнятся при разрядке
+	if (psActorFlags.test(AF_AMMO_FROM_BELT) && ammo && pActor && m_bAmmoSpawnUnloading) //РµСЃР»Рё РІРєР»СЋС‡РµРЅС‹ РїР°С‚СЂРѕРЅС‹ СЃ РїРѕСЏСЃР°, С‚Рѕ РґР»СЏ Р±РѕРµРїСЂРёРїР°СЃРѕРІ Р°РєС‚РѕСЂР°, РєРѕС‚РѕСЂС‹Рµ СЃРїР°РІРЅСЏС‚СЃСЏ РїСЂРё СЂР°Р·СЂСЏРґРєРµ
 	{    
-		if (!m_bInventoryAmmoPlacement) pIItem->m_eItemPlace = eItemPlaceBelt; //укажем патронам попадать на пояс (если не проставлен флаг необходимости сброса в рюкзак)
-		m_bAmmoSpawnUnloading = false; //сбросим флаг спавна патронов при разрядке
+		if (!m_bInventoryAmmoPlacement) pIItem->m_eItemPlace = eItemPlaceBelt; //СѓРєР°Р¶РµРј РїР°С‚СЂРѕРЅР°Рј РїРѕРїР°РґР°С‚СЊ РЅР° РїРѕСЏСЃ (РµСЃР»Рё РЅРµ РїСЂРѕСЃС‚Р°РІР»РµРЅ С„Р»Р°Рі РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё СЃР±СЂРѕСЃР° РІ СЂСЋРєР·Р°Рє)
+		m_bAmmoSpawnUnloading = false; //СЃР±СЂРѕСЃРёРј С„Р»Р°Рі СЃРїР°РІРЅР° РїР°С‚СЂРѕРЅРѕРІ РїСЂРё СЂР°Р·СЂСЏРґРєРµ
 	}
 	//
 
@@ -216,7 +216,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 #endif
 	}
 
-	// Если расположение не установлено или не удалось установить, то пробуем по-умолчанию. Real Wolf.
+	// Р•СЃР»Рё СЂР°СЃРїРѕР»РѕР¶РµРЅРёРµ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ РёР»Рё РЅРµ СѓРґР°Р»РѕСЃСЊ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ, С‚Рѕ РїСЂРѕР±СѓРµРј РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ. Real Wolf.
 	if (!result)
 	{
 #ifdef RUCK_FLAG_PREFERRED
@@ -293,8 +293,8 @@ bool CInventory::DropItem(CGameObject *pObj)
 								item->object().Name_script(), item->object().ID(), 
 								item->object().H_Parent()->Name_script());
 
-			// Real Wolf: Что-то где-то пошло не так. Будем верить, что все будет хорошо.
-			// Есть подозрение на гранаты.
+			// Real Wolf: Р§С‚Рѕ-С‚Рѕ РіРґРµ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє. Р‘СѓРґРµРј РІРµСЂРёС‚СЊ, С‡С‚Рѕ РІСЃРµ Р±СѓРґРµС‚ С…РѕСЂРѕС€Рѕ.
+			// Р•СЃС‚СЊ РїРѕРґРѕР·СЂРµРЅРёРµ РЅР° РіСЂР°РЅР°С‚С‹.
 			if (item != pIItem)
 			{
 				Msg("! Warning! Attempt to drop item [%s] from slot [%d] failed.", pIItem->object().cName().c_str(), pIItem->GetSlot());
@@ -330,7 +330,7 @@ bool CInventory::DropItem(CGameObject *pObj)
 	return							true;
 }
 
-//положить вещь в слот
+//РїРѕР»РѕР¶РёС‚СЊ РІРµС‰СЊ РІ СЃР»РѕС‚
 bool CInventory::Slot(PIItem pIItem, bool bNotActivate) 
 {
 	VERIFY(pIItem);
@@ -358,9 +358,9 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate)
 
 	#if defined(INV_NEW_SLOTS_SYSTEM)
 	/*
-		Вещь была в слоте. Да, такое может быть :).
-		Тут необходимо проверять именно так, потому что
-		GetSlot вернет новый слот, а не старый. Real Wolf.
+		Р’РµС‰СЊ Р±С‹Р»Р° РІ СЃР»РѕС‚Рµ. Р”Р°, С‚Р°РєРѕРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ :).
+		РўСѓС‚ РЅРµРѕР±С…РѕРґРёРјРѕ РїСЂРѕРІРµСЂСЏС‚СЊ РёРјРµРЅРЅРѕ С‚Р°Рє, РїРѕС‚РѕРјСѓ С‡С‚Рѕ
+		GetSlot РІРµСЂРЅРµС‚ РЅРѕРІС‹Р№ СЃР»РѕС‚, Р° РЅРµ СЃС‚Р°СЂС‹Р№. Real Wolf.
 
 	*/
 	for (u32 i = 0; i < m_slots.size(); i++)
@@ -374,7 +374,7 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate)
 	#endif
 
 	m_slots[pIItem->GetSlot()].m_pIItem = pIItem;
-	//удалить из рюкзака или пояса
+	//СѓРґР°Р»РёС‚СЊ РёР· СЂСЋРєР·Р°РєР° РёР»Рё РїРѕСЏСЃР°
 	TIItemContainer::iterator it = std::find(m_ruck.begin(), m_ruck.end(), pIItem);
 	if(m_ruck.end() != it) 
 		m_ruck.erase(it);
@@ -402,7 +402,7 @@ bool CInventory::Belt(PIItem pIItem)
 {
 	if(!CanPutInBelt(pIItem))	return false;
 
-	//вещь была в слоте
+	//РІРµС‰СЊ Р±С‹Р»Р° РІ СЃР»РѕС‚Рµ
 	bool in_slot = InSlot(pIItem);
 	if(in_slot) 
 	{
@@ -444,7 +444,7 @@ bool CInventory::Ruck(PIItem pIItem)
 	if(!CanPutInRuck(pIItem)) return false;
 
 	bool in_slot = InSlot(pIItem);
-	//вещь была в слоте
+	//РІРµС‰СЊ Р±С‹Р»Р° РІ СЃР»РѕС‚Рµ
 	if(in_slot) 
 	{
 		if(m_iActiveSlot == pIItem->GetSlot()) Activate(NO_ACTIVE_SLOT);
@@ -452,7 +452,7 @@ bool CInventory::Ruck(PIItem pIItem)
 	}
 	else
 	{
-		//вещь была на поясе или вообще только поднята с земли
+		//РІРµС‰СЊ Р±С‹Р»Р° РЅР° РїРѕСЏСЃРµ РёР»Рё РІРѕРѕР±С‰Рµ С‚РѕР»СЊРєРѕ РїРѕРґРЅСЏС‚Р° СЃ Р·РµРјР»Рё
 		TIItemContainer::iterator it = std::find(m_belt.begin(), m_belt.end(), pIItem); 
 		if(m_belt.end() != it) m_belt.erase(it);
 	}
@@ -584,7 +584,7 @@ bool CInventory::Activate(u32 slot, EActivationReason reason, bool bForce)
 		goto _finish;
 	}
 
-	//активный слот не выбран
+	//Р°РєС‚РёРІРЅС‹Р№ СЃР»РѕС‚ РЅРµ РІС‹Р±СЂР°РЅ
 	if(m_iActiveSlot == NO_ACTIVE_SLOT)
 	{
 		if(m_slots[slot].m_pIItem)
@@ -620,7 +620,7 @@ bool CInventory::Activate(u32 slot, EActivationReason reason, bool bForce)
 			}
 		}
 	}
-	//активный слот задействован
+	//Р°РєС‚РёРІРЅС‹Р№ СЃР»РѕС‚ Р·Р°РґРµР№СЃС‚РІРѕРІР°РЅ
 	else if(slot == NO_ACTIVE_SLOT || m_slots[slot].m_pIItem)
 	{
 		if(m_slots[m_iActiveSlot].m_pIItem)
@@ -835,7 +835,7 @@ void CInventory::UpdateDropItem(PIItem pIItem)
 	}// dropManual
 }
 
-//ищем item такоже типа в рюкзаке|на поясе
+//РёС‰РµРј item С‚Р°РєРѕР¶Рµ С‚РёРїР° РІ СЂСЋРєР·Р°РєРµ|РЅР° РїРѕСЏСЃРµ
 PIItem CInventory::Same(const PIItem pIItem, bool bSearchRuck) const
 {
 	const TIItemContainer &list = bSearchRuck ? m_ruck : m_belt;
@@ -852,7 +852,7 @@ PIItem CInventory::Same(const PIItem pIItem, bool bSearchRuck) const
 	return NULL;
 }
 
-//ищем на поясе вещь для слота 
+//РёС‰РµРј РЅР° РїРѕСЏСЃРµ РІРµС‰СЊ РґР»СЏ СЃР»РѕС‚Р° 
 
 PIItem CInventory::SameSlot(const u32 slot, PIItem pIItem, bool bSearchRuck) const
 {
@@ -869,7 +869,7 @@ PIItem CInventory::SameSlot(const u32 slot, PIItem pIItem, bool bSearchRuck) con
 	return NULL;
 }
 
-//найти в инвенторе вещь с указанным именем
+//РЅР°Р№С‚Рё РІ РёРЅРІРµРЅС‚РѕСЂРµ РІРµС‰СЊ СЃ СѓРєР°Р·Р°РЅРЅС‹Рј РёРјРµРЅРµРј
 PIItem CInventory::Get(const char *name, bool bSearchRuck) const
 {
 	const TIItemContainer &list = bSearchRuck ? m_ruck : m_belt;
@@ -920,15 +920,18 @@ PIItem CInventory::GetAny(const char *name) const
 	return itm;
 }
 
-// by Karlan // патроны используются только с пояса (в общем получение итема с пояса)
-//получаем айтем из рюкзака или с пояса по условию
-PIItem CInventory::GetAmmo(const char *name, bool SearchRuck) const
+//РїРѕР»СѓС‡Р°РµРј РїР°С‚СЂРѕРЅС‹ РёР· РІСЃРµРіРѕ РёРЅРІРµРЅС‚Р°СЂСЏ РёР»Рё СЃ РїРѕСЏСЃР° РїРѕ СѓСЃР»РѕРІРёСЋ
+PIItem CInventory::GetAmmo(const char *name, BOOL forActor) const
 {
+	bool include_ruck = !forActor || !psActorFlags.test(AF_AMMO_FROM_BELT) || m_bInventoryAmmoPlacement;;
+
 	PIItem itm;
-	if (SearchRuck)
-	    itm = Get(name, true);
-	else
+	if (include_ruck) {
+		itm = GetAny(name);
+	}
+	else {
 		itm = Get(name, false);
+	}
 	return itm;
 }
 
@@ -938,6 +941,23 @@ bool CInventory::FreeHands()
 		return true;
 	else
 		return false;
+}
+
+//РїРѕР»СѓС‡Р°РµРј Р°Р№С‚РµРј РёР· РІСЃРµРіРѕ РёРЅРІРµРЅС‚Р°СЂСЏ РёР»Рё СЃ РїРѕСЏСЃР°
+PIItem CInventory::GetSame(const PIItem pIItem, bool bSearchRuck) const
+{
+	const TIItemContainer &list = bSearchRuck ? m_all : m_belt;
+
+	for (TIItemContainer::const_iterator it = list.begin(); list.end() != it; ++it)
+	{
+		const PIItem l_pIItem = *it;
+
+		if ((l_pIItem != pIItem) &&
+			!xr_strcmp(l_pIItem->object().cNameSect(),
+			pIItem->object().cNameSect()))
+			return l_pIItem;
+	}
+	return NULL;
 }
 
 PIItem CInventory::item(CLASS_ID cls_id) const
@@ -1001,10 +1021,10 @@ u32		CInventory::dwfGetGrenadeCount(LPCSTR caSection, bool SearchAll)
 }
 
 //#if defined(GRENADE_FROM_BELT)
-u32 CInventory::dwfGetItemCount(LPCSTR caSection, bool SearchRuck)
+u32 CInventory::dwfGetItemCount(LPCSTR caSection, bool SearchAll)
 {
-	u32			l_dwCount = 1; //для учета айтема в слоте при выведении худовых каунтеров
-	TIItemContainer	&l_list = SearchRuck ? m_ruck : m_belt;
+	u32			l_dwCount = SearchAll ? 0 : 1; //РґР»СЏ СѓС‡РµС‚Р° Р°Р№С‚РµРјР° РІ СЃР»РѕС‚Рµ РїСЂРё РІС‹РІРµРґРµРЅРёРё С…СѓРґРѕРІС‹С… РєР°СѓРЅС‚РµСЂРѕРІ
+	TIItemContainer	&l_list = SearchAll ? m_all : m_belt;
 	for (TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it)
 	{
 		PIItem	l_pIItem = *l_it;
@@ -1040,14 +1060,14 @@ CInventoryItem *CInventory::get_object_by_id(ALife::_OBJECT_ID tObjectID)
 	return		(0);
 }
 
-//скушать предмет 
+//СЃРєСѓС€Р°С‚СЊ РїСЂРµРґРјРµС‚ 
 #include "game_object_space.h"
 #include "script_callback_ex.h"
 #include "script_game_object.h"
 bool CInventory::Eat(PIItem pIItem)
 {
 	R_ASSERT(pIItem->m_pCurrentInventory==this);
-	//устанаовить съедобна ли вещь
+	//СѓСЃС‚Р°РЅР°РѕРІРёС‚СЊ СЃСЉРµРґРѕР±РЅР° Р»Рё РІРµС‰СЊ
 	CEatableItem* pItemToEat = smart_cast<CEatableItem*>(pIItem);
 	R_ASSERT				(pItemToEat);
 
@@ -1101,13 +1121,13 @@ bool CInventory::CanPutInSlot(PIItem pIItem) const
 
 	if(pIItem->GetSlot() < m_slots.size() && 
 	  ( m_slots[pIItem->GetSlot()].m_pIItem == NULL || 
-	    m_slots[pIItem->GetSlot()].m_pIItem == pIItem ) ) // alpet: бывает странная ситуация, когда предмет сразу и в слоте, и в инвентаре
+	    m_slots[pIItem->GetSlot()].m_pIItem == pIItem ) ) // alpet: Р±С‹РІР°РµС‚ СЃС‚СЂР°РЅРЅР°СЏ СЃРёС‚СѓР°С†РёСЏ, РєРѕРіРґР° РїСЂРµРґРјРµС‚ СЃСЂР°Р·Сѓ Рё РІ СЃР»РѕС‚Рµ, Рё РІ РёРЅРІРµРЅС‚Р°СЂРµ
 		return true;
 	
 	return false;
 }
-//проверяет можем ли поместить вещь на пояс,
-//при этом реально ничего не меняется
+//РїСЂРѕРІРµСЂСЏРµС‚ РјРѕР¶РµРј Р»Рё РїРѕРјРµСЃС‚РёС‚СЊ РІРµС‰СЊ РЅР° РїРѕСЏСЃ,
+//РїСЂРё СЌС‚РѕРј СЂРµР°Р»СЊРЅРѕ РЅРёС‡РµРіРѕ РЅРµ РјРµРЅСЏРµС‚СЃСЏ
 bool CInventory::CanPutInBelt(PIItem pIItem)
 {
 	if(InBelt(pIItem))					return false;
@@ -1117,8 +1137,8 @@ bool CInventory::CanPutInBelt(PIItem pIItem)
 
 	return FreeRoom_inBelt(m_belt, pIItem, BeltWidth(), 1);
 }
-//проверяет можем ли поместить вещь в рюкзак,
-//при этом реально ничего не меняется
+//РїСЂРѕРІРµСЂСЏРµС‚ РјРѕР¶РµРј Р»Рё РїРѕРјРµСЃС‚РёС‚СЊ РІРµС‰СЊ РІ СЂСЋРєР·Р°Рє,
+//РїСЂРё СЌС‚РѕРј СЂРµР°Р»СЊРЅРѕ РЅРёС‡РµРіРѕ РЅРµ РјРµРЅСЏРµС‚СЃСЏ
 bool CInventory::CanPutInRuck(PIItem pIItem) const
 {
 	if(InRuck(pIItem)) return false;
@@ -1175,7 +1195,7 @@ bool CInventory::CanTakeItem(CInventoryItem *inventory_item) const
 	VERIFY3(it == m_all.end(), "item already exists in inventory",*inventory_item->object().cName());
 
 	CActor* pActor = smart_cast<CActor*>(m_pOwner);
-	//актер всегда может взять вещь
+	//Р°РєС‚РµСЂ РІСЃРµРіРґР° РјРѕР¶РµС‚ РІР·СЏС‚СЊ РІРµС‰СЊ
 	if(!pActor && (TotalWeight() + inventory_item->Weight() > m_pOwner->MaxCarryWeight()))
 		return	false;
 

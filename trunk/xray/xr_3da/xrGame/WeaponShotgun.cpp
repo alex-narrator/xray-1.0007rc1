@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "weaponshotgun.h"
 #include "WeaponHUD.h"
 #include "entity.h"
@@ -35,7 +35,7 @@ void CWeaponShotgun::Load	(LPCSTR section)
 {
 	inherited::Load		(section);
 
-	// Звук и анимация для выстрела дуплетом
+	// Р—РІСѓРє Рё Р°РЅРёРјР°С†РёСЏ РґР»СЏ РІС‹СЃС‚СЂРµР»Р° РґСѓРїР»РµС‚РѕРј
 	HUD_SOUND::LoadSound(section, "snd_shoot_duplet", sndShotBoth, m_eSoundShotBoth);
 	animGet	(mhud_shot_boths,	pSettings->r_string(*hud_sect,"anim_shoot_both"));
 
@@ -105,20 +105,20 @@ void CWeaponShotgun::Fire2End ()
 
 void CWeaponShotgun::OnShotBoth()
 {
-	//если патронов меньше, чем 2 
+	//РµСЃР»Рё РїР°С‚СЂРѕРЅРѕРІ РјРµРЅСЊС€Рµ, С‡РµРј 2 
 	if(iAmmoElapsed < iMagazineSize) 
 	{ 
 		OnShot(); 
 		return; 
 	}
 
-	//звук выстрела дуплетом
+	//Р·РІСѓРє РІС‹СЃС‚СЂРµР»Р° РґСѓРїР»РµС‚РѕРј
 	PlaySound			(sndShotBoth,get_LastFP());
 	
 	// Camera
 	AddShotEffector		();
 	
-	// анимация дуплета
+	// Р°РЅРёРјР°С†РёСЏ РґСѓРїР»РµС‚Р°
 	m_pHUD->animPlay			(random_anim(mhud_shot_boths),FALSE,this,GetState());
 	
 	// Shell Drop
@@ -126,11 +126,11 @@ void CWeaponShotgun::OnShotBoth()
 	PHGetLinearVell		(vel);
 	OnShellDrop			(get_LastSP(), vel);
 
-	//огонь из 2х стволов
+	//РѕРіРѕРЅСЊ РёР· 2С… СЃС‚РІРѕР»РѕРІ
 	StartFlameParticles			();
 	StartFlameParticles2		();
 
-	//дым из 2х стволов
+	//РґС‹Рј РёР· 2С… СЃС‚РІРѕР»РѕРІ
 	CParticlesObject* pSmokeParticles = NULL;
 	CShootingObject::StartParticles(pSmokeParticles, *m_sSmokeParticlesCurrent, get_LastFP(),  zero_vel, true);
 	pSmokeParticles = NULL;
@@ -171,7 +171,7 @@ void CWeaponShotgun::switch2_Fire2	()
 		
 		OnShotBoth						();
 
-		//выстрел из обоих стволов
+		//РІС‹СЃС‚СЂРµР» РёР· РѕР±РѕРёС… СЃС‚РІРѕР»РѕРІ
 		FireTrace					(p1,d);
 		FireTrace					(p1,d);
 		fTime						+= fTimeToFire*2.f;
@@ -194,13 +194,13 @@ bool CWeaponShotgun::Action			(s32 cmd, u32 flags)
 
 	if(	m_bTriStateReload && GetState()==eReload &&
 		cmd==kWPN_FIRE && flags&CMD_START &&
-		m_sub_state==eSubstateReloadInProcess		)//остановить перезагрузку
+		m_sub_state==eSubstateReloadInProcess		)//РѕСЃС‚Р°РЅРѕРІРёС‚СЊ РїРµСЂРµР·Р°РіСЂСѓР·РєСѓ
 	{
 		AddCartridge(1);
 		m_sub_state = eSubstateReloadEnd;
 		return true;
 	}
-	//если оружие чем-то занято, то ничего не делать
+	//РµСЃР»Рё РѕСЂСѓР¶РёРµ С‡РµРј-С‚Рѕ Р·Р°РЅСЏС‚Рѕ, С‚Рѕ РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°С‚СЊ
 	if(IsPending()) return false;
 
 	switch(cmd) 
@@ -329,16 +329,16 @@ bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)
 	m_pAmmo = NULL;
 	if(m_pCurrentInventory) 
 	{
-		//попытаться найти в инвентаре патроны текущего типа 
-		bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !ParentIsActor() || m_pCurrentInventory->m_bInventoryAmmoPlacement;
-		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[m_ammoType], SearchRuck));
+		//РїРѕРїС‹С‚Р°С‚СЊСЃСЏ РЅР°Р№С‚Рё РІ РёРЅРІРµРЅС‚Р°СЂРµ РїР°С‚СЂРѕРЅС‹ С‚РµРєСѓС‰РµРіРѕ С‚РёРїР° 
+		//bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !ParentIsActor() || m_pCurrentInventory->m_bInventoryAmmoPlacement;
+		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[m_ammoType], ParentIsActor()));
 
 		if(!m_pAmmo )
 		{
 			for(u32 i = 0; i < m_ammoTypes.size(); ++i) 
 			{
-				//проверить патроны всех подходящих типов
-				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[i], SearchRuck));
+				//РїСЂРѕРІРµСЂРёС‚СЊ РїР°С‚СЂРѕРЅС‹ РІСЃРµС… РїРѕРґС…РѕРґСЏС‰РёС… С‚РёРїРѕРІ
+				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[i], ParentIsActor()));
 
 				if(m_pAmmo) 
 				{ 
@@ -386,7 +386,7 @@ u8 CWeaponShotgun::AddCartridge		(u8 cnt)
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
 
-	//выкинуть коробку патронов, если она пустая
+	//РІС‹РєРёРЅСѓС‚СЊ РєРѕСЂРѕР±РєСѓ РїР°С‚СЂРѕРЅРѕРІ, РµСЃР»Рё РѕРЅР° РїСѓСЃС‚Р°СЏ
 	if(m_pAmmo && !m_pAmmo->m_boxCurr && OnServer()) 
 		m_pAmmo->SetDropManual(TRUE);
 

@@ -213,8 +213,8 @@ void CActor::IR_OnKeyboardPress(int cmd)
 					
 					if(pMedkit || pAntirad || pEatableItem || pBottleItem)
 					{
-						bool SearchRuck = !psActorFlags.test(AF_QUICK_FROM_BELT);
-						PIItem iitm = inventory().Same(itm, SearchRuck);
+						bool SearchAll = !psActorFlags.test(AF_QUICK_FROM_BELT);
+						PIItem iitm = inventory().GetSame(itm, SearchAll);
 						if(iitm)
 						{
 							inventory().Eat(iitm);

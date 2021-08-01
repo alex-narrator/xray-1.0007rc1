@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include "inventory_item.h"
 #include "../../build_config_defines.h"
 
@@ -67,23 +67,24 @@ public:
 	void					ActivateNextItemInActiveSlot();
 	bool					Action				(s32 cmd, u32 flags);
 	void					Update				();
-	// Ищет на поясе аналогичный IItem
+	// РС‰РµС‚ РЅР° РїРѕСЏСЃРµ Р°РЅР°Р»РѕРіРёС‡РЅС‹Р№ IItem
 	PIItem					Same				(const PIItem pIItem, bool bSearchRuck) const;
-	// Ищет на поясе IItem для указанного слота
+	// РС‰РµС‚ РЅР° РїРѕСЏСЃРµ IItem РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ СЃР»РѕС‚Р°
 	PIItem					SameSlot			(const u32 slot, PIItem pIItem, bool bSearchRuck) const;
-	// Ищет на поясе или в рюкзаке IItem с указанным именем (cName())
+	// РС‰РµС‚ РЅР° РїРѕСЏСЃРµ РёР»Рё РІ СЂСЋРєР·Р°РєРµ IItem СЃ СѓРєР°Р·Р°РЅРЅС‹Рј РёРјРµРЅРµРј (cName())
 	PIItem					Get					(const char *name, bool bSearchRuck) const;
-	// Ищет на поясе или в рюкзаке IItem с указанным именем (id)
+	// РС‰РµС‚ РЅР° РїРѕСЏСЃРµ РёР»Рё РІ СЂСЋРєР·Р°РєРµ IItem СЃ СѓРєР°Р·Р°РЅРЅС‹Рј РёРјРµРЅРµРј (id)
 	PIItem					Get					(const u16  id,	 bool bSearchRuck) const;
-	// Ищет на поясе или в рюкзаке IItem с указанным CLS_ID
+	// РС‰РµС‚ РЅР° РїРѕСЏСЃРµ РёР»Рё РІ СЂСЋРєР·Р°РєРµ IItem СЃ СѓРєР°Р·Р°РЅРЅС‹Рј CLS_ID
 	PIItem					Get					(CLASS_ID cls_id,  bool bSearchRuck) const;
 	PIItem					GetAny				(const char *name) const;//search both (ruck and belt)
 	// AMMO_FROM_BELT
-	PIItem					GetAmmo     		(const char *name, bool SearchRuck) const;  //получаем айтем из рюкзака или с пояса по условию
-	bool                    m_bAmmoSpawnUnloading = false;    //флаг на разряжание/смену типа патрона
-	bool                    m_bInventoryAmmoPlacement = false; //флаг инвентарной перезарядки
+	PIItem					GetAmmo     		(const char *name, BOOL forActor) const;  //РїРѕР»СѓС‡Р°РµРј Р°Р№С‚РµРј РёР· РІСЃРµРіРѕ РёРЅРІРµРЅС‚Р°СЂСЏ РёР»Рё СЃ РїРѕСЏСЃР° РїРѕ СѓСЃР»РѕРІРёСЋ
+	PIItem					GetSame				(const PIItem pIItem, bool bSearchAllk) const; //РїРѕР»СѓС‡Р°РµРј Р°Р№С‚РµРј РёР· РІСЃРµРіРѕ РёРЅРІРµРЅС‚Р°СЂСЏ РёР»Рё СЃ РїРѕСЏСЃР°
+	bool                    m_bAmmoSpawnUnloading = false;    //С„Р»Р°Рі РЅР° СЂР°Р·СЂСЏР¶Р°РЅРёРµ/СЃРјРµРЅСѓ С‚РёРїР° РїР°С‚СЂРѕРЅР°
+	bool                    m_bInventoryAmmoPlacement = false; //С„Р»Р°Рі РёРЅРІРµРЅС‚Р°СЂРЅРѕР№ РїРµСЂРµР·Р°СЂСЏРґРєРё
 	// AF_HARD_INV_ACCESS
-	bool                    FreeHands();  //свободна ли хотябы одна рука актора
+	bool                    FreeHands();  //СЃРІРѕР±РѕРґРЅР° Р»Рё С…РѕС‚СЏР±С‹ РѕРґРЅР° СЂСѓРєР° Р°РєС‚РѕСЂР°
 	//
 	PIItem					item				(CLASS_ID cls_id) const;
 	
@@ -91,7 +92,7 @@ public:
 	virtual u32				dwfGetSameItemCount	(LPCSTR caSection, bool SearchAll = false);	
 	virtual u32				dwfGetGrenadeCount	(LPCSTR caSection, bool SearchAll);	
 //#if defined(GRENADE_FROM_BELT)
-	virtual u32				dwfGetItemCount     (LPCSTR caSection, bool SearchRuck); //считаем предметы на поясе или в рюкзаке
+	virtual u32				dwfGetItemCount     (LPCSTR caSection, bool SearchAll); //СЃС‡РёС‚Р°РµРј РїСЂРµРґРјРµС‚С‹ РЅР° РїРѕСЏСЃРµ РёР»Рё РІ СЂСЋРєР·Р°РєРµ
 //#endif
 	// get all the items with the same object id
 	virtual bool			bfCheckForObject	(ALife::_OBJECT_ID tObjectID);	
@@ -121,7 +122,7 @@ public:
 	TIItemContainer			m_ruck, m_belt;
 	TISlotArr				m_slots;
 
-	//возвращает все кроме PDA в слоте и болта
+	//РІРѕР·РІСЂР°С‰Р°РµС‚ РІСЃРµ РєСЂРѕРјРµ PDA РІ СЃР»РѕС‚Рµ Рё Р±РѕР»С‚Р°
 	void				AddAvailableItems			(TIItemContainer& items_container, bool for_trade) const;
 
 	float				GetTakeDist					() const				{return m_fTakeDist;}
@@ -134,7 +135,7 @@ public:
 	inline	CInventoryOwner*GetOwner				() const				{ return m_pOwner; }
 	
 
-	// Объект на который наведен прицел
+	// РћР±СЉРµРєС‚ РЅР° РєРѕС‚РѕСЂС‹Р№ РЅР°РІРµРґРµРЅ РїСЂРёС†РµР»
 	PIItem				m_pTarget;
 
 	friend class CInventoryOwner;
@@ -148,8 +149,8 @@ protected:
 	void					UpdateDropTasks		();
 	void					UpdateDropItem		(PIItem pIItem);
 
-	// Активный слот и слот который станет активным после смены
-    //значения совпадают в обычном состоянии (нет смены слотов)
+	// РђРєС‚РёРІРЅС‹Р№ СЃР»РѕС‚ Рё СЃР»РѕС‚ РєРѕС‚РѕСЂС‹Р№ СЃС‚Р°РЅРµС‚ Р°РєС‚РёРІРЅС‹Рј РїРѕСЃР»Рµ СЃРјРµРЅС‹
+    //Р·РЅР°С‡РµРЅРёСЏ СЃРѕРІРїР°РґР°СЋС‚ РІ РѕР±С‹С‡РЅРѕРј СЃРѕСЃС‚РѕСЏРЅРёРё (РЅРµС‚ СЃРјРµРЅС‹ СЃР»РѕС‚РѕРІ)
 	u32 				m_iActiveSlot;
 	u32 				m_iNextActiveSlot;
 	u32 				m_iPrevActiveSlot;
@@ -159,23 +160,23 @@ protected:
 
 	CInventoryOwner*	m_pOwner;
 
-	//флаг, показывающий наличие пояса в инвенторе
+	//С„Р»Р°Рі, РїРѕРєР°Р·С‹РІР°СЋС‰РёР№ РЅР°Р»РёС‡РёРµ РїРѕСЏСЃР° РІ РёРЅРІРµРЅС‚РѕСЂРµ
 	bool				m_bBeltUseful;
-	//флаг, допускающий использование слотов
+	//С„Р»Р°Рі, РґРѕРїСѓСЃРєР°СЋС‰РёР№ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ СЃР»РѕС‚РѕРІ
 	bool				m_bSlotsUseful;
 
-	// максимальный вес инвентаря
+	// РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РІРµСЃ РёРЅРІРµРЅС‚Р°СЂСЏ
 	float				m_fMaxWeight;
-	// текущий вес в инвентаре
+	// С‚РµРєСѓС‰РёР№ РІРµСЃ РІ РёРЅРІРµРЅС‚Р°СЂРµ
 	float				m_fTotalWeight;
 
-	// Максимальное кол-во объектов
-	//на поясе
+	// РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»-РІРѕ РѕР±СЉРµРєС‚РѕРІ
+	//РЅР° РїРѕСЏСЃРµ
 	u32					m_iMaxBelt;	
-	// Максимальное расстояние на котором можно подобрать объект
+	// РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ СЂР°СЃСЃС‚РѕСЏРЅРёРµ РЅР° РєРѕС‚РѕСЂРѕРј РјРѕР¶РЅРѕ РїРѕРґРѕР±СЂР°С‚СЊ РѕР±СЉРµРєС‚
 	float				 m_fTakeDist;
 
-	//кадр на котором произошло последнее изменение в инвенторе
+	//РєР°РґСЂ РЅР° РєРѕС‚РѕСЂРѕРј РїСЂРѕРёР·РѕС€Р»Рѕ РїРѕСЃР»РµРґРЅРµРµ РёР·РјРµРЅРµРЅРёРµ РІ РёРЅРІРµРЅС‚РѕСЂРµ
 	u32					m_dwModifyFrame;
 
 	bool				m_drop_last_frame;

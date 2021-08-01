@@ -403,8 +403,8 @@ void CGrenade::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_s
 {
 	str_name				= NameShort();
 //#if defined(GRENADE_FROM_BELT)
-	bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT);
-	u32 ThisGrenadeCount = m_pCurrentInventory->dwfGetItemCount(*cNameSect(), SearchRuck);
+	bool SearchAll = !psActorFlags.test(AF_AMMO_FROM_BELT);
+	u32 ThisGrenadeCount = m_pCurrentInventory->dwfGetItemCount(*cNameSect(), SearchAll);
 /*#else
 	u32 ThisGrenadeCount	= m_pCurrentInventory->dwfGetSameItemCount(*cNameSect(), true);
 #endif*/
