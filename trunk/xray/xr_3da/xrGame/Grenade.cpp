@@ -21,7 +21,11 @@
 const float default_grenade_detonation_threshold_hit=100;
 CGrenade::CGrenade(void) 
 {
-
+	//
+	m_flags.set(Fbelt, TRUE);
+	m_weight = .1f;
+	SetSlot(GRENADE_SLOT);
+	//
 	m_eSoundCheckout = ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING);
 }
 

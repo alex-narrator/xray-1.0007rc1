@@ -1,4 +1,4 @@
-// Weapon.cpp: implementation of the CWeapon class.
+Ôªø// Weapon.cpp: implementation of the CWeapon class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -305,9 +305,9 @@ void CWeapon::Load(LPCSTR section)
 	iMagazineSize = pSettings->r_s32(section, "ammo_mag_size");
 
 	////////////////////////////////////////////////////
-	// ‰ËÒÔÂÒËˇ ÒÚÂÎ¸·˚
+	// –¥–∏—Å–ø–µ—Ä—Å–∏—è —Å—Ç—Ä–µ–ª—å–±—ã
 
-	//ÔÓ‰·‡Ò˚‚‡ÌËÂ Í‡ÏÂ˚ ‚Ó ‚ÂÏˇ ÓÚ‰‡˜Ë
+	//–ø–æ–¥–±—Ä–∞—Å—ã–≤–∞–Ω–∏–µ –∫–∞–º–µ—Ä—ã –≤–æ –≤—Ä–µ–º—è –æ—Ç–¥–∞—á–∏
 	camMaxAngle = pSettings->r_float(section, "cam_max_angle");
 	camMaxAngle = deg2rad(camMaxAngle);
 	camRelaxSpeed = pSettings->r_float(section, "cam_relax_speed");
@@ -360,7 +360,7 @@ void CWeapon::Load(LPCSTR section)
 	m_fMinRadius = pSettings->r_float(section, "min_radius");
 	m_fMaxRadius = pSettings->r_float(section, "max_radius");
 
-	// ËÌÙÓÏ‡ˆËˇ Ó ‚ÓÁÏÓÊÌ˚ı ‡Ô„ÂÈ‰‡ı Ë Ëı ‚ËÁÛ‡ÎËÁ‡ˆËË ‚ ËÌ‚ÂÌÚ‡Â
+	// –∏–Ω—Ñ–æ—Ä–º–∞—Ü–∏—è –æ –≤–æ–∑–º–æ–∂–Ω—ã—Ö –∞–ø–≥—Ä–µ–π–¥–∞—Ö –∏ –∏—Ö –≤–∏–∑—É–∞–ª–∏–∑–∞—Ü–∏–∏ –≤ –∏–Ω–≤–µ–Ω—Ç–∞—Ä–µ
 	m_eScopeStatus = (ALife::EWeaponAddonStatus)pSettings->r_s32(section, "scope_status");
 	m_eSilencerStatus = (ALife::EWeaponAddonStatus)pSettings->r_s32(section, "silencer_status");
 	m_eGrenadeLauncherStatus = (ALife::EWeaponAddonStatus)pSettings->r_s32(section, "grenade_launcher_status");
@@ -394,7 +394,7 @@ void CWeapon::Load(LPCSTR section)
 	InitAddons();
 
 	//////////////////////////////////////
-	//‚ÂÏˇ Û·Ë‡ÌËˇ ÓÛÊËˇ Ò ÛÓ‚Ìˇ
+	//–≤—Ä–µ–º—è —É–±–∏—Ä–∞–Ω–∏—è –æ—Ä—É–∂–∏—è —Å —É—Ä–æ–≤–Ω—è
 	if (pSettings->line_exist(section, "weapon_remove_time"))
 		m_dwWeaponRemoveTime = pSettings->r_u32(section, "weapon_remove_time");
 	else
@@ -500,7 +500,7 @@ void CWeapon::net_Destroy()
 {
 	inherited::net_Destroy();
 
-	//Û‰‡ÎËÚ¸ Ó·˙ÂÍÚ˚ Ô‡ÚËÍÎÓ‚
+	//—É–¥–∞–ª–∏—Ç—å –æ–±—ä–µ–∫—Ç—ã –ø–∞—Ä—Ç–∏–∫–ª–æ–≤
 	StopFlameParticles();
 	StopFlameParticles2();
 	StopLight();
@@ -660,7 +660,7 @@ void CWeapon::OnH_B_Independent(bool just_before_destroy)
 	if (m_pHUD)
 		m_pHUD->Hide();
 
-	//Á‡‚Â¯ËÚ¸ ÔËÌÛ‰ËÚÂÎ¸ÌÓ ‚ÒÂ ÔÓˆÂÒÒ˚ ˜ÚÓ ¯ÎË
+	//–∑–∞–≤–µ—Ä—à–∏—Ç—å –ø—Ä–∏–Ω—É–¥–∏—Ç–µ–ª—å–Ω–æ –≤—Å–µ –ø—Ä–æ—Ü–µ—Å—Å—ã —á—Ç–æ —à–ª–∏
 	FireEnd();
 	m_bPending = false;
 	SwitchState(eIdle);
@@ -688,7 +688,7 @@ void CWeapon::OnH_A_Chield()
 void CWeapon::OnActiveItem()
 {
 	inherited::OnActiveItem();
-	//ÂÒÎË Ï˚ Á‡ÌÛÊ‡ÂÏÒˇ Ë ÓÛÊËÂ ·˚ÎÓ ‚ ÛÍ‡ı
+	//–µ—Å–ª–∏ –º—ã –∑–∞–Ω—Ä—É–∂–∞–µ–º—Å—è –∏ –æ—Ä—É–∂–∏–µ –±—ã–ª–æ –≤ —Ä—É–∫–∞—Ö
 	SetState(eIdle);
 	SetNextState(eIdle);
 	if (m_pHUD) m_pHUD->Show();
@@ -716,10 +716,10 @@ void CWeapon::UpdateCL()
 {
 	inherited::UpdateCL();
 	UpdateHUDAddonsVisibility();
-	//ÔÓ‰Ò‚ÂÚÍ‡ ÓÚ ‚˚ÒÚÂÎ‡
+	//–ø–æ–¥—Å–≤–µ—Ç–∫–∞ –æ—Ç –≤—ã—Å—Ç—Ä–µ–ª–∞
 	UpdateLight();
 
-	//Ì‡ËÒÓ‚‡Ú¸ Ô‡ÚËÍÎ˚
+	//–Ω–∞—Ä–∏—Å–æ–≤–∞—Ç—å –ø–∞—Ä—Ç–∏–∫–ª—ã
 	UpdateFlameParticles();
 	UpdateFlameParticles2();
 
@@ -733,11 +733,11 @@ void CWeapon::renderable_Render()
 {
 	UpdateXForm();
 
-	//Ì‡ËÒÓ‚‡Ú¸ ÔÓ‰Ò‚ÂÚÍÛ
+	//–Ω–∞—Ä–∏—Å–æ–≤–∞—Ç—å –ø–æ–¥—Å–≤–µ—Ç–∫—É
 
 	RenderLight();
 
-	//ÂÒÎË Ï˚ ‚ ÂÊËÏÂ ÒÌ‡ÈÔÂÍË, ÚÓ Ò‡Ï HUD ËÒÓ‚‡Ú¸ ÌÂ Ì‡‰Ó
+	//–µ—Å–ª–∏ –º—ã –≤ —Ä–µ–∂–∏–º–µ —Å–Ω–∞–π–ø–µ—Ä–∫–∏, —Ç–æ —Å–∞–º HUD —Ä–∏—Å–æ–≤–∞—Ç—å –Ω–µ –Ω–∞–¥–æ
 	if (IsZoomed() && !IsRotatingToZoom() && ZoomTexture())
 		m_bRenderHud = false;
 	else
@@ -781,7 +781,7 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 	{
 	case kWPN_FIRE:
 	{
-		//ÂÒÎË ÓÛÊËÂ ˜ÂÏ-ÚÓ Á‡ÌˇÚÓ, ÚÓ ÌË˜Â„Ó ÌÂ ‰ÂÎ‡Ú¸
+		//–µ—Å–ª–∏ –æ—Ä—É–∂–∏–µ —á–µ–º-—Ç–æ –∑–∞–Ω—è—Ç–æ, —Ç–æ –Ω–∏—á–µ–≥–æ –Ω–µ –¥–µ–ª–∞—Ç—å
 		{
 			if (flags&CMD_START)
 			{
@@ -889,7 +889,7 @@ void CWeapon::SpawnAmmo(u32 boxCurr, LPCSTR ammoSect, u32 ParentID)
 	if (OnClient())					return;
 	m_bAmmoWasSpawned = true;
 	// AF_AMMO_FROM_BELT
-	m_pCurrentInventory->m_bAmmoSpawnUnloading = true; //ÛÒÚ‡Ì‡‚ÎË‚‡ÂÏ ÙÎ‡„ Ì‡ ÒÓ·˚ÚËÂ ÔÂÂÁ‡ˇ‰ÍË/ÒÏÂÌ˚ ÚËÔ‡ ·ÓÂÔËÔ‡Ò‡
+	m_pCurrentInventory->m_bAmmoSpawnUnloading = true; //—É—Å—Ç–∞–Ω–∞–≤–ª–∏–≤–∞–µ–º —Ñ–ª–∞–≥ –Ω–∞ —Å–æ–±—ã—Ç–∏–µ –ø–µ—Ä–µ–∑–∞—Ä—è–¥–∫–∏/—Å–º–µ–Ω—ã —Ç–∏–ø–∞ –±–æ–µ–ø—Ä–∏–ø–∞—Å–∞
 	//
 	int l_type = 0;
 	l_type %= m_ammoTypes.size();
@@ -948,8 +948,9 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 	int l_count = iAmmoElapsed;
 	if (!m_pCurrentInventory) return l_count;
 
-	//˜ÚÓ· ÌÂ ‰ÂÎ‡Ú¸ ÎË¯ÌËı ÔÂÂÒ˜ÂÚÓ‚
+	//—á—Ç–æ–± –Ω–µ –¥–µ–ª–∞—Ç—å –ª–∏—à–Ω–∏—Ö –ø–µ—Ä–µ—Å—á–µ—Ç–æ–≤
 	if (m_pCurrentInventory->ModifyFrame() <= m_dwAmmoCurrentCalcFrame)
+		if (g_actor->m_inventory != m_pCurrentInventory) //–æ—á–µ–Ω—å –Ω–µ–∫—Ä–∞—Å–∏–≤—ã–π –∫–æ—Å—Ç—ã–ª—å!
 		return l_count + iAmmoCurrent;
 
 	m_dwAmmoCurrentCalcFrame = Device.dwFrame;
@@ -962,8 +963,8 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 		/*auto parent = const_cast<CObject*>(H_Parent());
 		auto entity_alive = smart_cast<CEntityAlive*>(parent);
 		bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || entity_alive == NULL || !entity_alive->cast_actor();*/
-		bool for_actor = g_actor->m_inventory != m_pCurrentInventory || !psActorFlags.test(AF_AMMO_FROM_BELT);
-		TIItemContainer &list = for_actor ? m_pCurrentInventory->m_all : m_pCurrentInventory->m_belt;
+		bool search_all = g_actor->m_inventory != m_pCurrentInventory || !psActorFlags.test(AF_AMMO_FROM_BELT);
+		TIItemContainer &list = search_all ? m_pCurrentInventory->m_all : m_pCurrentInventory->m_belt;
 		for (TIItemContainer::iterator l_it = list.begin(); list.end() != l_it; ++l_it)
 		{
 			CWeaponAmmo *l_pAmmo = smart_cast<CWeaponAmmo*>(*l_it);

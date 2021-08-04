@@ -173,8 +173,8 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 				{
 					l_newType = (l_newType + 1) % pWeapon->m_ammoTypes.size();
 					b1 = l_newType != pWeapon->m_ammoType;
-					bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || pWeapon->m_pCurrentInventory->m_bInventoryAmmoPlacement; //в целом для действий контекстного меню патроны ищем ВСЕГДА в рюкзаке, но пока пусть будет в зависимости от опции/флага
-					b2 = pWeapon->unlimited_ammo() ? false : (!pWeapon->m_pCurrentInventory->GetAmmo(*pWeapon->m_ammoTypes[l_newType], SearchRuck));
+					//bool SearchAll = !psActorFlags.test(AF_AMMO_FROM_BELT) || g_actor->inventory().m_bInventoryAmmoPlacement; //в целом для действий контекстного меню патроны ищем ВСЕГДА в рюкзаке, но пока пусть будет в зависимости от опции/флага
+					b2 = pWeapon->unlimited_ammo() ? false : (!pWeapon->m_pCurrentInventory->GetAmmo(*pWeapon->m_ammoTypes[l_newType], true));
 				} while (b1 && b2);
 
 				if (l_newType != pWeapon->m_ammoType)

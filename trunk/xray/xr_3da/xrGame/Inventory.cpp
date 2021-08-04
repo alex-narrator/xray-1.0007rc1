@@ -181,8 +181,8 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	
 	// AF_AMMO_FROM_BELT
 	auto pActor = smart_cast<CActor*>(m_pOwner);
-	auto ammo = smart_cast<CWeaponAmmo*>(pIItem);
-	if (psActorFlags.test(AF_AMMO_FROM_BELT) && ammo && pActor && m_bAmmoSpawnUnloading) //если включены патроны с пояса, то для боеприпасов актора, которые спавнятся при разрядке
+	auto Ammo = smart_cast<CWeaponAmmo*>(pIItem);
+	if (psActorFlags.test(AF_AMMO_FROM_BELT) && Ammo && pActor && m_bAmmoSpawnUnloading) //если включены патроны с пояса, то для боеприпасов актора, которые спавнятся при разрядке
 	{    
 		if (!m_bInventoryAmmoPlacement) pIItem->m_eItemPlace = eItemPlaceBelt; //укажем патронам попадать на пояс (если не проставлен флаг необходимости сброса в рюкзак)
 		m_bAmmoSpawnUnloading = false; //сбросим флаг спавна патронов при разрядке
