@@ -181,13 +181,16 @@
 	<string id="ui_mm_no_auto_reload">
 		<text>Запрет автоматической перезарядки оружия и сброса зума</text>
 	</string>
+	<string id="ui_mm_wpn_actions_reset_sprint">
+		<text>Действия с оружием сбрасывают спринт</text>
+	</string>
 	<string id="ui_mm_hard_inventory_access">
 		<text>Режим "свободные руки" + нож необходим для обыска мутантов</text>
 	</string>
 	<string id="ui_mm_smooth_overweight">
 		<text>Плавный перегруз без обездвиживания</text>
 	</string>
-	<string id="ui_mm_check_condition_interdependence">
+	<string id="ui_mm_condition_interdependence">
 		<text>Взаимозависимость параметров здоровья ГГ</text>
 	</string>
 <!-- END Новые опции геймплея -->>

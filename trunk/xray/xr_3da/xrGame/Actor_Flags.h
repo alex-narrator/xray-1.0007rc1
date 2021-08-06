@@ -15,6 +15,7 @@ enum{
 		AF_ARTEFACTS_FROM_ALL        =(1<<11), //артефакты работают из всего инвентаря
 		AF_SMOOTH_OVERWEIGHT         =(1<<12), //плавный перегруз без обездвиживания
 		AF_CONDITION_INTERDEPENDENCE =(1<<13), //взаимозависимость параметров здоровья ГГ
+		AF_WPN_ACTIONS_RESET_SPRINT  =(1<<14), //перезарядка/смена типа патрона/бросок гранаты/болта/удар ножом сбрасывают спринт
 };
 
 extern Flags32 psActorFlags;

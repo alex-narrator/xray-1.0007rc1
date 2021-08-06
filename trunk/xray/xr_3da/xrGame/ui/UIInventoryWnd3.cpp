@@ -74,11 +74,11 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	char temp[64];
 	for(u8 i = 0; i < (u8)slots.size(); ++i) 
 	{
-#ifndef SHOW_GRENADE_SLOT
+/*#ifndef SHOW_GRENADE_SLOT
 		if (slots[i] != NO_ACTIVE_SLOT && slots[i] != GRENADE_SLOT)
-#else
+#else*/
 		if (slots[i] != NO_ACTIVE_SLOT)
-#endif
+//#endif
 			if (!m_pInv->m_slots[slots[i]].m_pIItem || m_pInv->m_slots[slots[i]].m_pIItem != CurrentIItem() )
 			{
 #ifndef INV_MOVE_ITM_INTO_QUICK_SLOTS

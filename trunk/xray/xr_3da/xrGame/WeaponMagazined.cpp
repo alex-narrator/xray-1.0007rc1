@@ -779,7 +779,11 @@ bool CWeaponMagazined::Action(s32 cmd, u32 flags)
 #endif
 		if (flags&CMD_START)
 			if (iAmmoElapsed < iMagazineSize || IsMisfire())
+			{
+				if (ParentIsActor() && psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT)) 
+					g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint));
 				Reload();
+			}
 	}
 		return true;
 	case kWPN_FIREMODE_PREV:

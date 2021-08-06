@@ -1390,6 +1390,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"g_artefacts_from_all",        &psActorFlags,	AF_ARTEFACTS_FROM_ALL); //артефакты работают из всего инвентаря
 	CMD3(CCC_Mask,				"g_smooth_overweight",         &psActorFlags,	AF_SMOOTH_OVERWEIGHT); //плавный перегруз без обездвиживания
 	CMD3(CCC_Mask,				"g_condition_interdependence", &psActorFlags,	AF_CONDITION_INTERDEPENDENCE); //взаимозависимость параметров здоровья ГГ
+	CMD3(CCC_Mask,				"g_wpn_actions_reset_sprint",  &psActorFlags,	AF_WPN_ACTIONS_RESET_SPRINT); //перезарядка/смена типа патрона/бросок гранаты/болта/удар ножом сбрасывают спринт
 
 	// alife
 #ifdef DEBUG

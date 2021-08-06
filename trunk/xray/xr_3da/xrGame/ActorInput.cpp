@@ -59,7 +59,8 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	{
 	case kWPN_FIRE:
 		{
-			mstate_wishful &=~mcSprint;
+			if (psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT) && inventory().ActiveItem())
+				mstate_wishful &=~mcSprint;
 			//-----------------------------
 			if (OnServer())
 			{
@@ -478,9 +479,7 @@ void CActor::ActorUse()
 							CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(inventory().ActiveItem());
 							if (Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness) //нож и condition ножа больше либо равен нужному для срезания
 							{
-								//Knife->Fire2Start();
 								pGameSP->StartCarBody(this, m_pPersonWeLookingAt);
-								//Knife->ChangeCondition(-m_pMonsterWeLookingAt->m_fBladeConditionDecOnUse); //уменьшаем condition ножа на значение из конфига монстра
 								return;
 							}
 						}

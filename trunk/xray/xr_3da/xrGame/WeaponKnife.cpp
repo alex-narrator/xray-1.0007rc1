@@ -56,7 +56,7 @@ void CWeaponKnife::Load	(LPCSTR section)
 	
 	knife_material_idx =  GMLib.GetMaterialIdx(KNIFE_MATERIAL_NAME);
 	//
-	m_fFirePowerDec = READ_IF_EXISTS(pSettings, r_float, section, "fire_power_dec", 0.0f);
+	m_fFirePowerDec  = READ_IF_EXISTS(pSettings, r_float, section, "fire_power_dec", 0.0f);
 	m_fFire2PowerDec = READ_IF_EXISTS(pSettings, r_float, section, "fire2_power_dec", m_fFirePowerDec);
 	//
 }
@@ -272,15 +272,20 @@ void CWeaponKnife::Fire2Start ()
 		SwitchState(eFire2);
 	}
 	// Real Wolf: Прерывание спринта при ударе. 17.07.2014.
-#if defined(KNIFE_SPRINT_FIX)
-	if (ParentIsActor() )
+/*#if defined(KNIFE_SPRINT_FIX)
+	if (ParentIsActor() && psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT))
 		g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint) );
-#endif
+#endif*/
 	//
 	if (ParentIsActor())
 	{
-		if(!g_actor->conditions().IsCantWalk()) 
+		if (!g_actor->conditions().IsCantWalk())
+		{
+			if (psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT))
+				g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint));
+			//
 			g_actor->conditions().ChangePower(-m_fFire2PowerDec);
+		}
 		else
 			HUD().GetUI()->AddInfoMessage("cant_walk");
 	}

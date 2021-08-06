@@ -292,10 +292,10 @@ void CMissile::State(u32 state)
 		} break;
 	case MS_THREATEN:
 		{
-#if defined(MISSILE_THREAT_FIX)
+//#if defined(MISSILE_THREAT_FIX)
 			// Real Wolf: Останавливаем спринт при броске. 22.07.2014.
-			g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint) );
-#endif
+			if(psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT)) g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint) );
+//#endif
 			m_bPending = true;
 			m_fThrowForce = m_fMinForce;
 			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimThrowBegin), TRUE, this, GetState());

@@ -822,7 +822,12 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 										m_DefaultCartridge.Load(*m_ammoTypes[m_ammoType], u8(m_ammoType));
 										};
 										*/
-				if (OnServer()) Reload();
+				if (OnServer())
+				{
+					if (ParentIsActor() && psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT))
+						g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint));
+					Reload();
+				}
 			}
 		}
 	}

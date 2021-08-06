@@ -320,7 +320,7 @@ bool CUIInventoryWnd::ToSlot(CUICellItem* itm, bool force_place)
 #endif
 
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-		// îáíîâëÿåì ñòàòèê âåñà â èíâåíòàðå
+		// обновляем статик веса в инвентаре
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 		m_b_need_reinit = true;
@@ -372,7 +372,7 @@ bool CUIInventoryWnd::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 		CUICellItem* i						= old_owner->RemoveItem(itm, (old_owner==new_owner) );
 
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-		// îáíîâëÿåì ñòàòèê âåñà â èíâåíòàðå
+		// обновляем статик веса в инвентаре
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 
@@ -445,7 +445,7 @@ bool CUIInventoryWnd::ToBelt(CUICellItem* itm, bool b_use_cursor_pos)
 		SendEvent_Item2Belt					(iitem);
 
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-		// îáíîâëÿåì ñòàòèê âåñà â èíâåíòàðå
+		// обновляем статик веса в инвентаре
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 
@@ -764,10 +764,10 @@ if (IsGameTypeSingle()) {
 	m_pUISlotQuickAccessList_3->ClearAll	(true);
 }
 #endif
-#ifdef SHOW_GRENADE_SLOT
-m_pUIGrenadeList->ClearAll(true);
-#endif
+//#ifdef SHOW_GRENADE_SLOT
+    m_pUIGrenadeList->ClearAll              (true);
+//#endif
 #if defined(SHOW_ARTEFACT_SLOT)
-m_pUIArtefactList->ClearAll				(true);
+    m_pUIArtefactList->ClearAll				(true);
 #endif
 }

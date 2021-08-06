@@ -31,7 +31,7 @@
 		<text>Контакты в КПК</text>
 	</string>
 	<string id="kb_crouch">
-		<text>Присесть</text>
+		<text>Присесть | Забрать всё из ячейки</text>
 	</string>
 	<string id="kb_crouch_toggle">
 		<text>Всегда в присяди</text>
@@ -112,7 +112,7 @@
 		<text>Выход</text>
 	</string>
 	<string id="kb_reload">
-		<text>Перезарядить [Проверить оружие]</text>
+		<text>Перезарядить | Проверить оружие</text>
 	</string>
 	<string id="kb_repair">
 		<text>Починить</text>
@@ -136,7 +136,7 @@
 		<text>Меню выбора модели</text>
 	</string>
 	<string id="kb_sprint">
-		<text>Бег</text>
+		<text>Бег | Забрать всё</text>
 	</string>
 	<string id="kb_team_menu">
 		<text>Меню выбора команды</text>
@@ -145,7 +145,7 @@
 		<text>Фонарик</text>
 	</string>
 	<string id="kb_turn_engine">
-		<text>Включить</text>
+		<text>Включить двигатель</text>
 	</string>
 	<string id="kb_up">
 		<text>Вверх</text>
