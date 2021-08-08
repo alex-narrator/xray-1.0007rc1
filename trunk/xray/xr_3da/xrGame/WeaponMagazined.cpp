@@ -140,6 +140,13 @@ void CWeaponMagazined::Load(LPCSTR section)
 		}
 		m_iCurFireMode = ModesCount - 1;
 		m_iPrefferedFireMode = READ_IF_EXISTS(pSettings, r_s16, section, "preffered_fire_mode", -1);
+		//
+		if (pSettings->line_exist(section, "preffered_fire_mode"))
+		{
+			fTimeToFirePreffered = READ_IF_EXISTS(pSettings, r_float, section, "preffered_fire_mode_rpm", fTimeToFire); //скорострельность привилегированного режима стрельбы
+			VERIFY(fTimeToFirePreffered>0.f);
+			fTimeToFirePreffered = 60.f / fTimeToFirePreffered;
+		}
 	}
 	else
 		m_bHasDifferentFireModes = false;
@@ -556,10 +563,20 @@ void CWeaponMagazined::state_Fire(float dt)
 	while (!m_magazine.empty() && fTime <= 0 && (IsWorking() || m_bFireSingleShot) && (m_iQueueSize < 0 || m_iShotNum < m_iQueueSize))
 	{
 		m_bFireSingleShot = false;
-
-		VERIFY(fTimeToFire > 0.f);
-		fTime += fTimeToFire;
-
+		//если у оружия есть разные размеры очереди, привилегированный режим очереди не полный автомат и текущий режим очереди является привилегированным или кол-во выстрелов попадает в предел привилегированного режима
+		if (m_bHasDifferentFireModes && m_iPrefferedFireMode != -1 && (GetCurrentFireMode() == m_iPrefferedFireMode || m_iShotNum < m_iPrefferedFireMode))
+		{
+			VERIFY(fTimeToFirePreffered > 0.f);
+			fTime += fTimeToFirePreffered; //установим скорострельность привилегированного режима
+			Msg("fTimeToFirePreffered = %.6f", fTimeToFirePreffered);
+		}
+		else
+		{
+			VERIFY(fTimeToFire > 0.f);
+			fTime += fTimeToFire;
+			Msg("fTimeToFire = %.6f", fTimeToFire);
+		}
+		//
 		++m_iShotNum;
 
 		OnShot();
