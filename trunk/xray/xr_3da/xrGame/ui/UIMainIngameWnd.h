@@ -128,6 +128,10 @@ protected:
 	CUIStatic			UIInvincibleIcon;
 	CUIStatic			UISleepIcon;
 	CUIStatic			UIArtefactIcon;
+	//
+	CUIStatic			UIArmorIcon;
+	CUIStatic			UIHealthIcon;
+	CUIStatic			UIPowerIcon;
 
 	CUIScrollView*		m_UIIcons;
 	CUIWindow*			m_pMPChatWnd;
@@ -149,6 +153,9 @@ public:
 		ewiWound,
 		ewiStarvation,
 		ewiPsyHealth,
+		ewiArmor,
+		ewiHealth,
+		ewiPower,
 		ewiInvincible,
 //		ewiSleep,
 		ewiArtefact,
@@ -159,7 +166,7 @@ public:
 	{
 		ePDA,
 		eDetector,
-		eWeapon,
+		eActiveItem,
 		eGear,
 	};
 	bool                AllowHUDElement                 (EHUDElement element);

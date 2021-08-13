@@ -226,13 +226,13 @@ void CUICarBodyWnd::Hide()
 	if(m_pInventoryBox)
 		m_pInventoryBox->m_in_use				= false;
     //
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	/*CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	CBaseMonster* Monster = smart_cast<CBaseMonster *>(m_pOthersObject);
 	if (pActor)
 	{
 		//ОБЯЗАТЕЛЬНО!!! одинаковая проверка для Hide() и Show(), иначе всё ломается
 		if (psActorFlags.test(AF_HARD_INV_ACCESS) && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //восстановим показ оружия в руках, если обыскиваем не монстра
-	}
+	}*/
     //
 }
 
@@ -375,13 +375,13 @@ void CUICarBodyWnd::Show()
 	SetCurrentItem							(NULL);
 	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd);
 	//
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	/*CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	CBaseMonster* Monster = smart_cast<CBaseMonster *>(m_pOthersObject);
 	if (pActor)
 	{
 		//ОБЯЗАТЕЛЬНО!!! одинаковая проверка для Hide() и Show(), иначе всё ломается
 		if (psActorFlags.test(AF_HARD_INV_ACCESS) && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //спрячем оружие в руках, если обыскиваем не монстра 
-	}
+	}*/
 	//
 }
 

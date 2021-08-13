@@ -88,6 +88,16 @@
 	<artefact_static x="0" y="0" width="48" height="64" stretch="1">
 		<texture>ui_hud_icon_artefact</texture>
 	</artefact_static>
+	
+	<armor_static x="0" y="0" width="48" height="64" stretch="1">
+		<texture>ui_hud_icon_armor_warning</texture>
+	</armor_static>
+	<health_static x="0" y="0" width="48" height="64" stretch="1">
+		<texture>ui_hud_icon_health_warning</texture>
+	</health_static>
+	<power_static x="0" y="0" width="48" height="64" stretch="1">
+		<texture>ui_hud_icon_power_warning</texture>
+	</power_static>
 
 
 	<flashing_icons>
@@ -98,7 +108,7 @@
 
 	<pick_up_item x="437" y="400" width="150" height="100"/>
 
-	<artefact_panel x="130" y="710" width="730" height="50" cell_width="38" cell_height="50" scale="0.75" group_similar = "1"/>
+	<artefact_panel x="130" y="710" width="730" height="50" cell_width="38" cell_height="50" scale="0.75"/>
 	
 	<new_contact_snd>detectors\contact_1</new_contact_snd>	
 </w>

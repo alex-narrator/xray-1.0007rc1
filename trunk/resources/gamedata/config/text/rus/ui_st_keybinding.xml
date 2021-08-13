@@ -112,7 +112,7 @@
 		<text>Выход</text>
 	</string>
 	<string id="kb_reload">
-		<text>Перезарядить | Проверить оружие</text>
+		<text>Перезарядить | Осмотреть предмет в руках</text>
 	</string>
 	<string id="kb_repair">
 		<text>Починить</text>

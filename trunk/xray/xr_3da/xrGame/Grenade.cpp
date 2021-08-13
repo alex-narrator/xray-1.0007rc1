@@ -415,6 +415,9 @@ void CGrenade::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_s
 	string16				stmp;
 	if (HUD().GetUI()->UIMainIngameWnd->AllowHUDElement(CUIMainIngameWnd::eGear))
        sprintf_s			(stmp, "%d", ThisGrenadeCount);
+	else
+	if(HUD().GetUI()->UIMainIngameWnd->AllowHUDElement(CUIMainIngameWnd::eActiveItem))
+	   sprintf_s			(stmp, "");
 	str_count				= stmp;
 	icon_sect_name			= *cNameSect();
 }

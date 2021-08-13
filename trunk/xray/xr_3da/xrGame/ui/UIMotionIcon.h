@@ -16,6 +16,9 @@ public:
 private:
 							EState				m_curren_state;
 							CUIStatic			m_states[stLast];
+							CUIStatic			UIStaticMotionBack;
+							CUIStatic			UIStaticLuminocity;
+							CUIStatic			UIStaticNoise;
 							CUIProgressBar		m_power_progress;
 							CUIProgressBar		m_luminosity_progress;
 							CUIProgressBar		m_noise_progress;
