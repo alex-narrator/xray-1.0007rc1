@@ -752,25 +752,32 @@ void CUITradeWnd::ActivatePropertiesBox()
 	}
 
 	//
-	b_show = true;
+	//b_show = true;
 	//
-	bool many_items_in_cell = CurrentItem()->ChildsCount() > 0;
+	if (CanMoveToOther(CurrentIItem()))
+	{
+		bool many_items_in_cell = CurrentItem()->ChildsCount() > 0;
 
-	m_pUIPropertiesBox->AddItem("st_move", NULL, INVENTORY_MOVE_ONE_ACTION); //переместить один предмет
-	if (many_items_in_cell) //предметов в ячейке больше одного
-		m_pUIPropertiesBox->AddItem("st_move_all", NULL, INVENTORY_MOVE_ALL_ACTION); //переместить стак предметов
+		m_pUIPropertiesBox->AddItem("st_move", NULL, INVENTORY_MOVE_ONE_ACTION); //переместить один предмет
+		b_show = true;
+
+		if (many_items_in_cell) //предметов в ячейке больше одного
+			m_pUIPropertiesBox->AddItem("st_move_all", NULL, INVENTORY_MOVE_ALL_ACTION); //переместить стак предметов
+	}
 	//
+	if (b_show)
+	{
+		m_pUIPropertiesBox->AutoUpdateSize();
+		m_pUIPropertiesBox->BringAllToTop();
 
-	m_pUIPropertiesBox->AutoUpdateSize();
-	m_pUIPropertiesBox->BringAllToTop();
+		Fvector2						cursor_pos;
+		Frect							vis_rect;
 
-	Fvector2						cursor_pos;
-	Frect							vis_rect;
-
-	GetAbsoluteRect(vis_rect);
-	cursor_pos = GetUICursor()->GetCursorPosition();
-	cursor_pos.sub(vis_rect.lt);
-	m_pUIPropertiesBox->Show(vis_rect, cursor_pos);
+		GetAbsoluteRect(vis_rect);
+		cursor_pos = GetUICursor()->GetCursorPosition();
+		cursor_pos.sub(vis_rect.lt);
+		m_pUIPropertiesBox->Show(vis_rect, cursor_pos);
+	}
 }
 
 bool CUITradeWnd::OnItemRButtonClick(CUICellItem* itm)

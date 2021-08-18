@@ -22,9 +22,9 @@
 #define SUN_DIR_NOT_DEBUG			    // Real Wolf: отключение вывода в лог информации вида CurrentEnv.sun_dir...
 //#define ARTEFACTS_FROM_RUCK			// Real Wolf: артефакты будут работать из всего инвентаря (слотов, пояса, рюкзака). //вынесено в опции
 //#define KNIFE_SPRINT_FIX				// Real Wolf: остановка спринта при ударе2. //вынесено в опции
-#define KNIFE_SPRINT_MOTION				// Real Wolf: вопроизведение анимации бега для ножа.
+//#define KNIFE_SPRINT_MOTION			// Real Wolf: вопроизведение анимации бега для ножа. //поведение по умолчанию
 //#define MISSILE_THREAT_FIX			// Real Wolf: остановка спринта при броске гранаты, болта и т.д. //вынесено в опции
-#define GRENADE_FROM_BELT				// Real Wolf: гранаты с пояса.
+//#define GRENADE_FROM_BELT				// Real Wolf: гранаты с пояса. //вынесено в опции
 //#define LOCK_RELOAD_IN_SPRINT			// Real Wolf: блокировка перезарядки по время спринта. //заменено на сброс спринта --вынесено в опции
 #define HIDE_WEAPON_IN_CAR				// Real Wolf: прятать все оружие в машине.
 #define BM16_ANIMS_FIX					// Real Wolf: расширение анимаций для BM16.

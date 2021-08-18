@@ -74,7 +74,8 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 #if defined(INV_NEW_SLOTS_SYSTEM)
 	// Добавим в контекстное меню выбор слота. Real Wolf.
 	auto slots = CurrentIItem()->GetSlots();
-	char temp[64];
+	//char temp[64];
+	string1024 temp;
 	for(u8 i = 0; i < (u8)slots.size(); ++i) 
 	{
 /*#ifndef SHOW_GRENADE_SLOT
