@@ -79,12 +79,13 @@ public:
 	PIItem					Get					(CLASS_ID cls_id,  bool bSearchRuck) const;
 	PIItem					GetAny				(const char *name) const;//search both (ruck and belt)
 	// AMMO_FROM_BELT
-	PIItem					GetAmmo     		(const char *name, BOOL forActor) const;  //получаем айтем из всего инвентаря или с пояса по условию
-	PIItem					GetSame				(const PIItem pIItem, bool bSearchAllk) const; //получаем айтем из всего инвентаря или с пояса
-	bool                    m_bAmmoSpawnUnloading = false;    //флаг на разряжание/смену типа патрона
+	PIItem					GetAmmo     		(const char *name, BOOL forActor) const;       //получаем айтем из всего инвентаря или с пояса по условию
+	PIItem					GetSame				(const PIItem pIItem, bool bSearchRuck) const; //получаем айтем из всего инвентаря или с пояса
+	bool                    m_bAmmoSpawnUnloading = false;     //флаг на разряжание/смену типа патрона
 	bool                    m_bInventoryAmmoPlacement = false; //флаг инвентарной перезарядки
-	// AF_HARD_INV_ACCESS
-	bool                    FreeHands();  //свободна ли хотябы одна рука актора
+	// AF_FREE_HANDS
+	bool                    FreeHands();                             //свободна ли хотябы одна рука актора
+	void                    TryToHideWeapon     (bool b_hide_state); //сокрытие/восстановлени показа оружия в режиме AF_FREE_HANDS
 	//
 	PIItem					item				(CLASS_ID cls_id) const;
 	
@@ -92,7 +93,7 @@ public:
 	virtual u32				dwfGetSameItemCount	(LPCSTR caSection, bool SearchAll = false);	
 	virtual u32				dwfGetGrenadeCount	(LPCSTR caSection, bool SearchAll);	
 //#if defined(GRENADE_FROM_BELT)
-	virtual u32				dwfGetItemCount     (LPCSTR caSection, bool SearchAll); //считаем предметы на поясе или в рюкзаке
+	virtual u32				dwfGetItemCount     (LPCSTR caSection, bool SearchRuck); //считаем предметы на поясе или в рюкзаке
 //#endif
 	// get all the items with the same object id
 	virtual bool			bfCheckForObject	(ALife::_OBJECT_ID tObjectID);	

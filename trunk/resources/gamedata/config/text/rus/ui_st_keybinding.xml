@@ -112,7 +112,7 @@
 		<text>Выход</text>
 	</string>
 	<string id="kb_reload">
-		<text>Перезарядить | Осмотреть предмет в руках</text>
+		<text>Перезарядить</text>
 	</string>
 	<string id="kb_repair">
 		<text>Починить</text>
@@ -234,7 +234,10 @@
 		<text>Свободный обзор камерой</text>
 	</string>
 <!--                            camera modes keys end                            -->
-        <string id="kb_check_gear">
+    <string id="kb_check_active_item">
+		<text>Проверить предмет в руках</text>
+	</string>
+	<string id="kb_check_gear">
 		<text>Проверить карманы</text>
 	</string>
         <string id="kb_check_devices">

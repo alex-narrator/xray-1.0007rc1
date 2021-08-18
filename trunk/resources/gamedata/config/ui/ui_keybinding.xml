@@ -61,7 +61,8 @@
                 <!--                            quick slots use keys end                            -->
 
 		<!--                            ui check keys start                          -->
-		<command id="kb_check_gear"				exe="check_gear"/>
+		<command id="kb_check_active_item"			exe="check_active_item"/>
+		<command id="kb_check_gear"				    exe="check_gear"/>
 		<command id="kb_check_devices"				exe="scores"/>
                 <!--                            ui check keys end                            -->
 	</group>

@@ -226,13 +226,15 @@ void CUICarBodyWnd::Hide()
 	if(m_pInventoryBox)
 		m_pInventoryBox->m_in_use				= false;
     //
-	/*CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	CBaseMonster* Monster = smart_cast<CBaseMonster *>(m_pOthersObject);
 	if (pActor)
 	{
 		//ОБЯЗАТЕЛЬНО!!! одинаковая проверка для Hide() и Show(), иначе всё ломается
-		if (psActorFlags.test(AF_HARD_INV_ACCESS) && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //восстановим показ оружия в руках, если обыскиваем не монстра
-	}*/
+		//if (psActorFlags.test(AF_FREE_HANDS) && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //восстановим показ оружия в руках, если обыскиваем не монстра
+		pActor->inventory().TryToHideWeapon(false);
+		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = false; //сбросим флаг инвентарной перезарядки
+	}
     //
 }
 
@@ -306,6 +308,15 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				MoveAllFromCell(itm);
 				break;
 				//
+			case INVENTORY_RELOAD_MAGAZINE:
+				(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_RELOAD, CMD_START);
+				break;
+			case INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE:
+				(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_FUNC, CMD_START);
+				break;
+			case INVENTORY_NEXT_AMMO_TYPE:
+				(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_NEXT, CMD_START);
+				break;
 			case INVENTORY_UNLOAD_MAGAZINE:
 				{
 				//CUICellItem * itm = CurrentItem();
@@ -316,22 +327,22 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 					(smart_cast<CWeaponMagazined*>((CWeapon*)child_itm->m_pData))->UnloadMagazine();
 				}
 				}break;
-				case INVENTORY_DETACH_SCOPE_ADDON:
+			case INVENTORY_DETACH_SCOPE_ADDON:
 				{
 					auto wpn = smart_cast<CWeapon*>(CurrentIItem());
 					wpn->Detach(wpn->GetScopeName().c_str(), true);
 				}break;
-				case INVENTORY_DETACH_SILENCER_ADDON:
+			case INVENTORY_DETACH_SILENCER_ADDON:
 				{
 					auto wpn = smart_cast<CWeapon*>(CurrentIItem());
 					wpn->Detach(wpn->GetSilencerName().c_str(), true);
 				}break;
-				case INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON:
+			case INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON:
 				{
 					auto wpn = smart_cast<CWeapon*>(CurrentIItem());
 					wpn->Detach(wpn->GetGrenadeLauncherName().c_str(), true);
 				}break;
-				case INVENTORY_DROP_ACTION:
+			case INVENTORY_DROP_ACTION:
 				{
 					void* d = m_pUIPropertiesBox->GetClickedItem()->GetData();
 					bool b_all = (d == (void*)33);
@@ -375,13 +386,15 @@ void CUICarBodyWnd::Show()
 	SetCurrentItem							(NULL);
 	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd);
 	//
-	/*CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	CBaseMonster* Monster = smart_cast<CBaseMonster *>(m_pOthersObject);
 	if (pActor)
 	{
 		//ОБЯЗАТЕЛЬНО!!! одинаковая проверка для Hide() и Show(), иначе всё ломается
-		if (psActorFlags.test(AF_HARD_INV_ACCESS) && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //спрячем оружие в руках, если обыскиваем не монстра 
-	}*/
+		//if (psActorFlags.test(AF_FREE_HANDS) && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //спрячем оружие в руках, если обыскиваем не монстра 
+		pActor->inventory().TryToHideWeapon(true);
+		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = true; //установим флаг инвентарной перезарядки
+	}
 	//
 }
 
@@ -639,14 +652,17 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 
 #include "../Medkit.h"
 #include "../Antirad.h"
-
+#include "../weaponmagazinedwgrenade.h"
 void CUICarBodyWnd::ActivatePropertiesBox()
 {
 	//if(m_pInventoryBox)	return;
 		
 	m_pUIPropertiesBox->RemoveAll();
 	
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+
 	CWeaponMagazined*		pWeapon			= smart_cast<CWeaponMagazined*> (CurrentIItem());
+	CWeaponMagazinedWGrenade*	pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>(CurrentIItem());
 	CEatableItem*			pEatableItem	= smart_cast<CEatableItem*>     (CurrentIItem());
 	CMedkit*				pMedkit			= smart_cast<CMedkit*>			(CurrentIItem());
 	CAntirad*				pAntirad		= smart_cast<CAntirad*>			(CurrentIItem());
@@ -660,6 +676,13 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 
 	if (pWeapon && parent_exists)
 	{
+		if (pWeapon->IsGrenadeLauncherAttached())
+		{
+			const char *switch_gl_text = pWeaponMagWGren->m_bGrenadeMode ? "st_deactivate_gl" : "st_activate_gl";
+			if (pActor->inventory().InSlot(pWeapon))
+				m_pUIPropertiesBox->AddItem(switch_gl_text, NULL, INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE);
+			b_show = true;
+		}
 		if (pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
 		{
 			m_pUIPropertiesBox->AddItem("st_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
@@ -678,6 +701,33 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 
 		bool b = (0 != pWeapon->GetAmmoElapsed());
 
+		if (pActor->inventory().InSlot(pWeapon) && pWeapon->GetAmmoElapsed() < pWeapon->GetAmmoMagSize() && pWeapon->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
+		{
+			const char *reload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_reload_magazine_gl" : "st_reload_magazine") : "st_reload_magazine";
+			m_pUIPropertiesBox->AddItem(reload_text, NULL, INVENTORY_RELOAD_MAGAZINE);
+			b_show = true;
+		}
+
+
+		if (pActor->inventory().InSlot(pWeapon) && pWeapon->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
+		{
+			u32 l_newType = pWeapon->m_ammoType;
+			bool b1, b2;
+			do
+			{
+				l_newType = (l_newType + 1) % pWeapon->m_ammoTypes.size();
+				b1 = l_newType != pWeapon->m_ammoType;
+				//bool SearchAll = !psActorFlags.test(AF_AMMO_FROM_BELT) || g_actor->inventory().m_bInventoryAmmoPlacement; //в целом для действий контекстного меню патроны ищем ВСЕГДА в рюкзаке, но пока пусть будет в зависимости от опции/флага
+				b2 = pWeapon->unlimited_ammo() ? false : (!pWeapon->m_pCurrentInventory->GetAmmo(*pWeapon->m_ammoTypes[l_newType], true));
+			} while (b1 && b2);
+
+			if (l_newType != pWeapon->m_ammoType)
+			{
+				m_pUIPropertiesBox->AddItem("st_next_ammo_type", NULL, INVENTORY_NEXT_AMMO_TYPE);
+				b_show = true;
+			}
+		}
+
 		if (!b)
 		{
 			CUICellItem * itm = CurrentItem();
@@ -693,7 +743,8 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 		}
 
 		if (b) {
-			m_pUIPropertiesBox->AddItem("st_unload_magazine", NULL, INVENTORY_UNLOAD_MAGAZINE);
+			const char *unload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_unload_magazine_gl" : "st_unload_magazine") : "st_unload_magazine";
+			m_pUIPropertiesBox->AddItem(unload_text, NULL, INVENTORY_UNLOAD_MAGAZINE);
 			b_show = true;
 		}
 	}
@@ -908,7 +959,7 @@ bool CUICarBodyWnd::TransferItem(PIItem itm, CInventoryOwner* owner_from, CInven
 	CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(pActor->inventory().ActiveItem());
 	//CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(pActor->inventory().ItemFromSlot(pActor->inventory().GetPrevActiveSlot())); 
 	CBaseMonster* Monster = smart_cast<CBaseMonster*>(go_from);
-	if (psActorFlags.test(AF_HARD_INV_ACCESS) && pActor && Monster)      //если мы забираем что-то из инвентаря монстра в режиме "свободных рук"
+	if (psActorFlags.test(AF_FREE_HANDS) && pActor && Monster)      //если мы забираем что-то из инвентаря монстра в режиме "свободных рук"
 	{
 		if (Knife)                                                       //убедимся что оружие в активном слоте - нож
 		{

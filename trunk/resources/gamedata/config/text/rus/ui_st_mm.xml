@@ -184,7 +184,7 @@
 	<string id="ui_mm_wpn_actions_reset_sprint">
 		<text>Действия с оружием сбрасывают спринт</text>
 	</string>
-	<string id="ui_mm_hard_inventory_access">
+	<string id="ui_mm_free_hands">
 		<text>Режим "свободные руки" + нож необходим для обыска мутантов</text>
 	</string>
 	<string id="ui_mm_smooth_overweight">

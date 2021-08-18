@@ -419,7 +419,7 @@ bool CUIMainIngameWnd::AllowHUDElement(EHUDElement element)
 		}break;
 		case eActiveItem: //Информация об предмете в руках (для оружия - кол-во/тип заряженных патронов, режим огня)
 		{
-			result = g_actor->inventory().ActiveItem() && (!psHUD_Flags.test(HUD_SHOW_ON_KEY) || Level().IR_GetKeyState(get_action_dik(kWPN_RELOAD)));
+			result = g_actor->inventory().ActiveItem() && (!psHUD_Flags.test(HUD_SHOW_ON_KEY) || Level().IR_GetKeyState(get_action_dik(kCHECKACTIVEITEM)));
 		}break;
 		case eGear: //Информация о снаряжении - панель артефактов, наполнение квикслотов, общее кол-во патронов к оружию в руках
 		{
@@ -1800,7 +1800,7 @@ void CUIQuickSlotPanel::Update()
 		string32	str;
 		shared_str itm_name;
 		u32 count;
-		bool SearchAll = !psActorFlags.test(AF_QUICK_FROM_BELT);
+		bool SearchRuck = !psActorFlags.test(AF_QUICK_FROM_BELT);
 
         itm = pActor->inventory().m_slots[SLOT_QUICK_ACCESS_0].m_pIItem;
 
@@ -1811,7 +1811,7 @@ void CUIQuickSlotPanel::Update()
             m_UseQuickSlot_0_Text->Show(true);
 
 			itm_name = itm->object().cNameSect();
-			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchAll);
+			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_0_Text->SetText(str);
             m_CountItemQuickSlot_0_Text->Show(true);
@@ -1833,7 +1833,7 @@ void CUIQuickSlotPanel::Update()
             m_UseQuickSlot_1_Text->Show(true);
 
 			itm_name = itm->object().cNameSect();
-			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchAll);
+			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_1_Text->SetText(str);
             m_CountItemQuickSlot_1_Text->Show(true);
@@ -1855,7 +1855,7 @@ void CUIQuickSlotPanel::Update()
             m_UseQuickSlot_2_Text->Show(true);
 
 			itm_name = itm->object().cNameSect();
-			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchAll);
+			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_2_Text->SetText(str);
             m_CountItemQuickSlot_2_Text->Show(true);
@@ -1877,7 +1877,7 @@ void CUIQuickSlotPanel::Update()
             m_UseQuickSlot_3_Text->Show(true);
 
 			itm_name = itm->object().cNameSect();
-			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchAll);
+			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_3_Text->SetText(str);
             m_CountItemQuickSlot_3_Text->Show(true);

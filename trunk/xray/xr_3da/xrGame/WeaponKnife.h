@@ -8,6 +8,7 @@ class CWeaponKnife: public CWeapon {
 private:
 	typedef CWeapon inherited;
 protected:
+
 	MotionSVec			mhud_idle;
 	MotionSVec			mhud_hide;
 	MotionSVec			mhud_show;
@@ -15,9 +16,9 @@ protected:
 	MotionSVec			mhud_attack2;
 	MotionSVec			mhud_attack_e;
 	MotionSVec			mhud_attack2_e;
-#if defined(KNIFE_SPRINT_MOTION)
+//#if defined(KNIFE_SPRINT_MOTION)
 	MotionSVec			mhud_idle_sprint;
-#endif
+//#endif
 
 	HUD_SOUND			m_sndShot;
 
@@ -74,9 +75,10 @@ public:
 	virtual void		StartIdleAnim					();
 	virtual void		GetBriefInfo					(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 
-#if defined(KNIFE_SPRINT_MOTION)
+//#if defined(KNIFE_SPRINT_MOTION)
 	virtual void		onMovementChanged				(ACTOR_DEFS::EMoveCommand cmd);
-#endif
+	virtual void	    PlayAnimIdle();
+//#endif
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

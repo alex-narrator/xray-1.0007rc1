@@ -15,6 +15,7 @@
 #include "UICellItem.h"
 #include "UIListBoxItem.h"
 #include "../CustomOutfit.h"
+#include "../string_table.h"
 
 
 void CUIInventoryWnd::EatItem(PIItem itm)
@@ -46,6 +47,7 @@ bool is_quick_slot(u32 slot, PIItem item, CInventory *inv)
 
 #include "../Medkit.h"
 #include "../Antirad.h"
+#include "../weaponmagazinedwgrenade.h"
 void CUIInventoryWnd::ActivatePropertiesBox()
 {
 	// Флаг-признак для невлючения пункта контекстного меню: Dreess Outfit, если костюм уже надет
@@ -60,6 +62,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	CCustomOutfit*		pOutfit				= smart_cast<CCustomOutfit*>	(CurrentIItem());
 	CWeapon*			pWeapon				= smart_cast<CWeapon*>			(CurrentIItem());
 	CWeaponMagazined*	pWeaponMag          = smart_cast<CWeaponMagazined*>	(CurrentIItem());
+	CWeaponMagazinedWGrenade*	pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>(CurrentIItem());
 	CScope*				pScope				= smart_cast<CScope*>			(CurrentIItem());
 	CSilencer*			pSilencer			= smart_cast<CSilencer*>		(CurrentIItem());
 	CGrenadeLauncher*	pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>	(CurrentIItem());
@@ -139,6 +142,13 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	//отсоединение аддонов от вещи
 	if(pWeapon)
 	{
+		if (pWeapon->IsGrenadeLauncherAttached())
+		{
+		    const char *switch_gl_text = pWeaponMagWGren->m_bGrenadeMode ? "st_deactivate_gl" : "st_activate_gl";
+		    if (m_pInv->InSlot(pWeapon))
+			UIPropertiesBox.AddItem(switch_gl_text, NULL, INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE);
+		b_show = true;
+		}
 		if(pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
 		{
 			UIPropertiesBox.AddItem("st_detach_gl",  NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
@@ -160,7 +170,8 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 
 			if (m_pInv->InSlot(pWeapon) && pWeapon->GetAmmoElapsed() < pWeapon->GetAmmoMagSize() && pWeaponMag->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
 			{
-				UIPropertiesBox.AddItem("st_reload_magazine", NULL, INVENTORY_RELOAD_MAGAZINE);
+				const char *reload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_reload_magazine_gl" : "st_reload_magazine") : "st_reload_magazine";
+				UIPropertiesBox.AddItem(reload_text, NULL, INVENTORY_RELOAD_MAGAZINE);
 				b_show = true;
 			}
 
@@ -199,7 +210,8 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			}
 
 			if(b){
-				UIPropertiesBox.AddItem("st_unload_magazine",  NULL, INVENTORY_UNLOAD_MAGAZINE);
+				const char *unload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_unload_magazine_gl" : "st_unload_magazine") : "st_unload_magazine";
+				UIPropertiesBox.AddItem(unload_text, NULL, INVENTORY_UNLOAD_MAGAZINE);
 				b_show			= true;
 			}
 		}
@@ -229,8 +241,10 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			 if(m_pInv->m_slots[i].m_pIItem && m_pInv->m_slots[i].m_pIItem->CanAttach(pScope) )
 			 {
 				PIItem tgt = m_pInv->m_slots[i].m_pIItem;
-				sprintf_s(temp, "st_attach_scope_to_%d", i);
-				UIPropertiesBox.AddItem(temp,  (void*)tgt, INVENTORY_ATTACH_ADDON);
+				//sprintf_s(temp, "st_attach_scope_to_%d", i);
+				//
+				strconcat(sizeof(temp), temp, CurrentIItem()->Name(), " ", *CStringTable().translate("st_attach_addon"), ": ", tgt->Name());
+				UIPropertiesBox.AddItem(temp, (void*)tgt, INVENTORY_ATTACH_ADDON);
 				b_show			= true;
 			 }
 		};	
@@ -259,7 +273,10 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			 if(m_pInv->m_slots[i].m_pIItem != NULL && m_pInv->m_slots[i].m_pIItem->CanAttach(pSilencer))
 			 {
 				PIItem tgt = m_pInv->m_slots[i].m_pIItem;
-				sprintf_s(temp, "st_attach_silencer_to_%d", i);
+				//sprintf_s(temp, "st_attach_silencer_to_%d", i);
+				//
+				strconcat(sizeof(temp), temp, CurrentIItem()->Name(), " ", *CStringTable().translate("st_attach_addon"), ": ", tgt->Name());
+				//
 				UIPropertiesBox.AddItem(temp,  (void*)tgt, INVENTORY_ATTACH_ADDON);
 				b_show			= true;
 			 }
@@ -282,7 +299,10 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		 if(m_pInv->m_slots[i].m_pIItem && m_pInv->m_slots[i].m_pIItem->CanAttach(pGrenadeLauncher))
 		 {
 			PIItem tgt = m_pInv->m_slots[i].m_pIItem;
-			sprintf_s(temp, "st_attach_gl_to_%d", i);
+			//sprintf_s(temp, "st_attach_gl_to_%d", i);
+			//
+			strconcat(sizeof(temp), temp, CurrentIItem()->Name(), " ", *CStringTable().translate("st_attach_addon"), ": ", tgt->Name());
+			//
 			UIPropertiesBox.AddItem(temp,  (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show			= true;
 		 }
@@ -434,6 +454,9 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 			break;
 		case INVENTORY_RELOAD_MAGAZINE:
 			(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_RELOAD, CMD_START);
+			break;
+		case INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE:
+			(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_FUNC, CMD_START);
 			break;
 		case INVENTORY_NEXT_AMMO_TYPE:
 			(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_NEXT, CMD_START);

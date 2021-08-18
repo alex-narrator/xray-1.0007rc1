@@ -247,6 +247,15 @@ void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				MoveAllFromCell(itm);
 				break;
 				//
+			case INVENTORY_RELOAD_MAGAZINE:
+				(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_RELOAD, CMD_START);
+				break;
+			case INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE:
+				(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_FUNC, CMD_START);
+				break;
+			case INVENTORY_NEXT_AMMO_TYPE:
+				(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_NEXT, CMD_START);
+				break;
 			case INVENTORY_UNLOAD_MAGAZINE:
 			{
 				//CUICellItem * itm = CurrentItem();
@@ -326,6 +335,9 @@ void CUITradeWnd::Show()
 	SetCurrentItem					(NULL);
 	ResetAll						();
 	m_uidata->UIDealMsg				= NULL;
+	//
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor && psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = true; //установим флаг инвентарной перезарядки
 }
 
 void CUITradeWnd::Hide()
@@ -348,6 +360,9 @@ void CUITradeWnd::Hide()
 	m_uidata->UIOurTradeList.ClearAll	(true);
 	m_uidata->UIOthersBagList.ClearAll	(true);
 	m_uidata->UIOthersTradeList.ClearAll(true);
+	//
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (pActor && psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = false; //сбросим флаг инвентарной перезарядки
 }
 
 void CUITradeWnd::StartTrade()
@@ -648,17 +663,28 @@ bool CUITradeWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 	return true; // always returns true, because ::StopAnyMove() == true;
 }
 
+#include "../weaponmagazinedwgrenade.h"
 void CUITradeWnd::ActivatePropertiesBox()
 {
 	m_pUIPropertiesBox->RemoveAll();
 	//
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+
 	CWeaponMagazined*		pWeapon = smart_cast<CWeaponMagazined*> (CurrentIItem());
+	CWeaponMagazinedWGrenade*	pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>(CurrentIItem());
 	bool					b_show = false;
 	//
 	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
 
 	if (pWeapon && owner == &m_uidata->UIOurBagList)
 	{
+		if (pWeapon->IsGrenadeLauncherAttached())
+		{
+			const char *switch_gl_text = pWeaponMagWGren->m_bGrenadeMode ? "st_deactivate_gl" : "st_activate_gl";
+			if (pActor->inventory().InSlot(pWeapon))
+				m_pUIPropertiesBox->AddItem(switch_gl_text, NULL, INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE);
+			b_show = true;
+		}
 		if (pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
 		{
 			m_pUIPropertiesBox->AddItem("st_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
@@ -677,6 +703,33 @@ void CUITradeWnd::ActivatePropertiesBox()
 
 		bool b = (0 != pWeapon->GetAmmoElapsed());
 
+		if (pActor->inventory().InSlot(pWeapon) && pWeapon->GetAmmoElapsed() < pWeapon->GetAmmoMagSize() && pWeapon->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
+		{
+			const char *reload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_reload_magazine_gl" : "st_reload_magazine") : "st_reload_magazine";
+			m_pUIPropertiesBox->AddItem(reload_text, NULL, INVENTORY_RELOAD_MAGAZINE);
+			b_show = true;
+		}
+
+
+		if (pActor->inventory().InSlot(pWeapon) && pWeapon->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
+		{
+			u32 l_newType = pWeapon->m_ammoType;
+			bool b1, b2;
+			do
+			{
+				l_newType = (l_newType + 1) % pWeapon->m_ammoTypes.size();
+				b1 = l_newType != pWeapon->m_ammoType;
+				//bool SearchAll = !psActorFlags.test(AF_AMMO_FROM_BELT) || g_actor->inventory().m_bInventoryAmmoPlacement; //в целом для действий контекстного меню патроны ищем ВСЕГДА в рюкзаке, но пока пусть будет в зависимости от опции/флага
+				b2 = pWeapon->unlimited_ammo() ? false : (!pWeapon->m_pCurrentInventory->GetAmmo(*pWeapon->m_ammoTypes[l_newType], true));
+			} while (b1 && b2);
+
+			if (l_newType != pWeapon->m_ammoType)
+			{
+				m_pUIPropertiesBox->AddItem("st_next_ammo_type", NULL, INVENTORY_NEXT_AMMO_TYPE);
+				b_show = true;
+			}
+		}
+
 		if (!b)
 		{
 			CUICellItem * itm = CurrentItem();
@@ -692,7 +745,8 @@ void CUITradeWnd::ActivatePropertiesBox()
 		}
 
 		if (b) {
-			m_pUIPropertiesBox->AddItem("st_unload_magazine", NULL, INVENTORY_UNLOAD_MAGAZINE);
+			const char *unload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_unload_magazine_gl" : "st_unload_magazine") : "st_unload_magazine";
+			m_pUIPropertiesBox->AddItem(unload_text, NULL, INVENTORY_UNLOAD_MAGAZINE);
 			b_show = true;
 		}
 	}

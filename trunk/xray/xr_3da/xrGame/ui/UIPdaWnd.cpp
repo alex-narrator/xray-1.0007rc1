@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "UIPdaWnd.h"
 #include "../Pda.h"
 
@@ -80,7 +80,7 @@ void CUIPdaWnd::Init()
 	AttachChild				(UIMainPdaFrame);
 	xml_init.InitStatic		(uiXml, "background_static", 0, UIMainPdaFrame);
 
-	//Элементы автоматического добавления
+	//Р­Р»РµРјРµРЅС‚С‹ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРіРѕ РґРѕР±Р°РІР»РµРЅРёСЏ
 	xml_init.InitAutoStatic	(uiXml, "auto_static", this);
 
 	// Main buttons background
@@ -93,30 +93,30 @@ void CUIPdaWnd::Init()
 	UIMainPdaFrame->AttachChild(UITimerBackground);
 	xml_init.InitFrameLine	(uiXml, "timer_frame_line", 0, UITimerBackground);
 
-	// Oкно карты
+	// OРєРЅРѕ РєР°СЂС‚С‹
 	UIMapWnd				= xr_new<CUIMapWnd>();
 	UIMapWnd->Init			("pda_map.xml","map_wnd");
 
 	if( IsGameTypeSingle() )
 	{
-		// Oкно коммуникaции
+		// OРєРЅРѕ РєРѕРјРјСѓРЅРёРєaС†РёРё
 		UIPdaContactsWnd		= xr_new<CUIPdaContactsWnd>();
 		UIPdaContactsWnd->Init	();
 
 
-		// Oкно новостей
+		// OРєРЅРѕ РЅРѕРІРѕСЃС‚РµР№
 		UIDiaryWnd				= xr_new<CUIDiaryWnd>();
 		UIDiaryWnd->Init		();
 
-		// Окно энциклопедии
+		// РћРєРЅРѕ СЌРЅС†РёРєР»РѕРїРµРґРёРё
 		UIEncyclopediaWnd		= xr_new<CUIEncyclopediaWnd>();
 		UIEncyclopediaWnd->Init	();
 
-		// Окно статистики о актере
+		// РћРєРЅРѕ СЃС‚Р°С‚РёСЃС‚РёРєРё Рѕ Р°РєС‚РµСЂРµ
 		UIActorInfo				= xr_new<CUIActorInfoWnd>();
 		UIActorInfo->Init		();
 
-		// Окно рейтинга сталкеров
+		// РћРєРЅРѕ СЂРµР№С‚РёРЅРіР° СЃС‚Р°Р»РєРµСЂРѕРІ
 		UIStalkersRanking		= xr_new<CUIStalkersRankingWnd>();
 		UIStalkersRanking->Init	();
 
@@ -171,7 +171,8 @@ void CUIPdaWnd::Show()
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if (pActor)
 	{
-		if (psActorFlags.test(AF_HARD_INV_ACCESS)) pActor->SetWeaponHideState(INV_STATE_PDA_WND, true);  //спрячем оружие в руках
+		//if (psActorFlags.test(AF_FREE_HANDS)) pActor->SetWeaponHideState(INV_STATE_PDA_WND, true);  //СЃРїСЂСЏС‡РµРј РѕСЂСѓР¶РёРµ РІ СЂСѓРєР°С…
+		pActor->inventory().TryToHideWeapon(true);
 	}
 }
 
@@ -185,7 +186,8 @@ void CUIPdaWnd::Hide()
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if (pActor)
 	{
-		if (psActorFlags.test(AF_HARD_INV_ACCESS)) pActor->SetWeaponHideState(INV_STATE_PDA_WND, false);  //спрячем оружие в руках
+		//if (psActorFlags.test(AF_FREE_HANDS)) pActor->SetWeaponHideState(INV_STATE_PDA_WND, false);  //СЃРїСЂСЏС‡РµРј РѕСЂСѓР¶РёРµ РІ СЂСѓРєР°С…
+		pActor->inventory().TryToHideWeapon(false);
 	}
 
 }
@@ -215,7 +217,7 @@ void CUIPdaWnd::Update()
 	inherited::Update		();
 	UpdateDateTime			();
 
-	// Real Wolf: если предмет убрали, когда окно было открыто, то закрываем его. 07.08.2014.
+	// Real Wolf: РµСЃР»Рё РїСЂРµРґРјРµС‚ СѓР±СЂР°Р»Рё, РєРѕРіРґР° РѕРєРЅРѕ Р±С‹Р»Рѕ РѕС‚РєСЂС‹С‚Рѕ, С‚Рѕ Р·Р°РєСЂС‹РІР°РµРј РµРіРѕ. 07.08.2014.
 	//if (!g_actor->inventory().m_slots[PDA_SLOT].m_pIItem && IsShown() )
 	CPda* PDA = smart_cast<CPda*>(g_actor->inventory().ItemFromSlot(PDA_SLOT));
 	if (!PDA && IsShown())

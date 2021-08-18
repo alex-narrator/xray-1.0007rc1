@@ -931,27 +931,48 @@ PIItem CInventory::GetAmmo(const char *name, BOOL forActor) const
 	bool include_ruck = !forActor || !psActorFlags.test(AF_AMMO_FROM_BELT) || m_bInventoryAmmoPlacement;;
 
 	PIItem itm;
-	if (include_ruck) {
-		itm = GetAny(name);
+	/*if (include_ruck) {
+		itm = Get(name, true);//GetAny(name);
 	}
 	else {
 		itm = Get(name, false);
-	}
+	}*/
+	itm = Get(name, include_ruck);
 	return itm;
 }
 
 bool CInventory::FreeHands()
 {
-	if (!psActorFlags.test(AF_HARD_INV_ACCESS) || (ActiveItem() && ActiveItem()->IsSingleHanded()) || ActiveItem() == NULL || GetActiveSlot() == NO_ACTIVE_SLOT)
+	if (!psActorFlags.test(AF_FREE_HANDS) || (ActiveItem() && ActiveItem()->IsSingleHanded()) || ActiveItem() == NULL || GetActiveSlot() == NO_ACTIVE_SLOT)
 		return true;
 	else
 		return false;
 }
 
+void CInventory::TryToHideWeapon(bool b_hide_state)
+{
+	if (b_hide_state)
+	{
+		if (psActorFlags.test(AF_FREE_HANDS) && ActiveItem() && !ActiveItem()->IsSingleHanded())
+		{
+			m_iPrevActiveSlot = GetActiveSlot();
+			Activate(NO_ACTIVE_SLOT);
+		}
+	}
+	else
+	{
+		if (psActorFlags.test(AF_FREE_HANDS) && m_iPrevActiveSlot != NO_ACTIVE_SLOT)
+		{
+			Activate(m_iPrevActiveSlot);
+			m_iPrevActiveSlot = NO_ACTIVE_SLOT;
+		}
+	}
+}
+
 //получаем айтем из всего инвентаря или с пояса
 PIItem CInventory::GetSame(const PIItem pIItem, bool bSearchRuck) const
 {
-	const TIItemContainer &list = bSearchRuck ? m_all : m_belt;
+	const TIItemContainer &list = bSearchRuck ? m_ruck : m_belt;
 
 	for (TIItemContainer::const_iterator it = list.begin(); list.end() != it; ++it)
 	{
@@ -1026,10 +1047,10 @@ u32		CInventory::dwfGetGrenadeCount(LPCSTR caSection, bool SearchAll)
 }
 
 //#if defined(GRENADE_FROM_BELT)
-u32 CInventory::dwfGetItemCount(LPCSTR caSection, bool SearchAll)
+u32 CInventory::dwfGetItemCount(LPCSTR caSection, bool SearchRuck)
 {
-	u32			l_dwCount = SearchAll ? 0 : 1; //для учета айтема в слоте при выведении худовых каунтеров
-	TIItemContainer	&l_list = SearchAll ? m_all : m_belt;
+	u32			l_dwCount = 1;//SearchAll ? 0 : 1; //для учета айтема в слоте при выведении худовых каунтеров
+	TIItemContainer	&l_list = SearchRuck ? m_ruck : m_belt;
 	for (TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it)
 	{
 		PIItem	l_pIItem = *l_it;

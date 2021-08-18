@@ -52,8 +52,6 @@ void CActor::IR_OnKeyboardPress(int cmd)
 //	if (conditions().IsSleeping())	return;
 	if (IsTalking())	return;
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
-
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 		
 	switch (cmd)
 	{
@@ -186,8 +184,11 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kUSE_SLOT_QUICK_ACCESS_2:
 	case kUSE_SLOT_QUICK_ACCESS_3:
 		{
-			if (IsGameTypeSingle() && pActor->inventory().FreeHands())
+			if (IsGameTypeSingle() /*&& inventory().FreeHands()*/)
 			{
+				if (!inventory().FreeHands())
+					inventory().Activate(NO_ACTIVE_SLOT);
+				//
 				PIItem itm = 0;
 				switch (cmd){
 				case kUSE_SLOT_QUICK_ACCESS_0:
@@ -214,8 +215,8 @@ void CActor::IR_OnKeyboardPress(int cmd)
 					
 					if(pMedkit || pAntirad || pEatableItem || pBottleItem)
 					{
-						bool SearchAll = !psActorFlags.test(AF_QUICK_FROM_BELT);
-						PIItem iitm = inventory().GetSame(itm, SearchAll);
+						bool SearchRuck = !psActorFlags.test(AF_QUICK_FROM_BELT);
+						PIItem iitm = inventory().GetSame(itm, SearchRuck);
 						if(iitm)
 						{
 							inventory().Eat(iitm);
@@ -227,7 +228,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 							strconcat(sizeof(str),str,*CStringTable().translate("st_item_used"),": ", itm->Name());
 						}
 						HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty");
-						HUD().GetUI()->UIGame()->RemoveCustomStatic("no_free_hands");
+					//	HUD().GetUI()->UIGame()->RemoveCustomStatic("no_free_hands");
 						SDrawStaticStruct* _s		= HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
 						_s->m_endTime				= Device.fTimeGlobal+3.0f;// 3sec
 						_s->wnd()->SetText			(str);
@@ -237,18 +238,18 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				else
 				{
 					HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");
-					HUD().GetUI()->UIGame()->RemoveCustomStatic("no_free_hands");
+				//	HUD().GetUI()->UIGame()->RemoveCustomStatic("no_free_hands");
 					SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("quick_slot_empty", true);
 					_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
 				}
 			}
-			else
+		/*	else
 			{
 				HUD().GetUI()->UIGame()->RemoveCustomStatic("quick_slot_empty"); //на всякий случай удаляем статики в той же области экрана
 				HUD().GetUI()->UIGame()->RemoveCustomStatic("item_used");        //на всякий случай удаляем статики в той же области экрана 
 				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("no_free_hands", true);
 				_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
-			}
+			}*/
 		}break;
 #endif		
 		
@@ -333,7 +334,7 @@ void CActor::IR_OnKeyboardHold(int cmd)
 	case kFWD:		mstate_wishful |= mcFwd;									break;
 	case kBACK:		mstate_wishful |= mcBack;									break;
 	case kCROUCH:	mstate_wishful |= mcCrouch;									break;
-	case kJUMP:     mstate_wishful |= mcJump;                                   break; //без этого при текущей реализации закрытия инвентаря по кнопкам движения в AF_HARD_INV_ACCESS прыжок просто не работал
+	case kJUMP:     mstate_wishful |= mcJump;                                   break; //без этого при текущей реализации закрытия инвентаря по кнопкам движения в AF_FREE_HANDS прыжок просто не работал
 
 	}
 }
@@ -438,8 +439,11 @@ void CActor::ActorUse()
 
 	if (m_pUsableObject)
 	{
-		if (m_pPersonWeLookingAt || inventory().FreeHands()) //чтобы можно было слышать просьбы убрать оружие при попытке поговорить со сталкерами с оружием в руках
+		//if (m_pPersonWeLookingAt || inventory().FreeHands()) //чтобы можно было слышать просьбы убрать оружие при попытке поговорить со сталкерами с оружием в руках
 		{
+			if (!inventory().FreeHands())
+				inventory().Activate(NO_ACTIVE_SLOT);
+			//
 			m_pUsableObject->use(this);
 		}
 	}
@@ -447,7 +451,7 @@ void CActor::ActorUse()
 	if(m_pInvBoxWeLookingAt && m_pInvBoxWeLookingAt->nonscript_usable())
 	{
 		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
-		if (pGameSP && inventory().FreeHands()) pGameSP->StartCarBody(this, m_pInvBoxWeLookingAt);
+		if (pGameSP /*&& inventory().FreeHands()*/) pGameSP->StartCarBody(this, m_pInvBoxWeLookingAt);
 		return;
 	}
 
@@ -474,7 +478,7 @@ void CActor::ActorUse()
 					CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 					if (pGameSP)
 					{
-						if (m_pMonsterWeLookingAt && psActorFlags.test(AF_HARD_INV_ACCESS))
+						if (m_pMonsterWeLookingAt && psActorFlags.test(AF_FREE_HANDS))
 						{
 							CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(inventory().ActiveItem());
 							if (Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness) //нож и condition ножа больше либо равен нужному для срезания
@@ -483,7 +487,7 @@ void CActor::ActorUse()
 								return;
 							}
 						}
-						else if (inventory().FreeHands())
+						else /*if (inventory().FreeHands())*/
 						{
 							pGameSP->StartCarBody(this, m_pPersonWeLookingAt);
 							return;
@@ -503,7 +507,7 @@ void CActor::ActorUse()
 		{
 			if (object->ActorCanCapture() && !character_physics_support()->movement()->PHCapture())
 			{
-				if (inventory().FreeHands())
+				//if (inventory().FreeHands())
 				{
 					if (!conditions().IsCantWalk()) character_physics_support()->movement()->PHCaptureObject(object, element); //таскать предметы можно только если есть силы
 					else HUD().GetUI()->AddInfoMessage("cant_walk");
@@ -525,7 +529,7 @@ void CActor::ActorUse()
 		}
 	}
 
-	if (inventory().FreeHands())
+	//if (inventory().FreeHands())
 		PickupModeOn();
 }
 BOOL CActor::HUDview				( )const 

@@ -41,16 +41,18 @@ void CWeaponKnife::Load	(LPCSTR section)
 
 	// HUD :: Anims
 	R_ASSERT			(m_pHUD);
-	animGet				(mhud_idle,		pSettings->r_string(*hud_sect,"anim_idle"));
+	//animGet				(mhud_idle,		pSettings->r_string(*hud_sect,"anim_idle"));
+	shared_str           m_sAnimIdle = pSettings->r_string(*hud_sect, "anim_idle");
+	animGet             (mhud_idle, *m_sAnimIdle);
 	animGet				(mhud_hide,		pSettings->r_string(*hud_sect,"anim_hide"));
 	animGet				(mhud_show,		pSettings->r_string(*hud_sect,"anim_draw"));
 	animGet				(mhud_attack,	pSettings->r_string(*hud_sect,"anim_shoot1_start"));
 	animGet				(mhud_attack2,	pSettings->r_string(*hud_sect,"anim_shoot2_start"));
 	animGet				(mhud_attack_e,	pSettings->r_string(*hud_sect,"anim_shoot1_end"));
 	animGet				(mhud_attack2_e,pSettings->r_string(*hud_sect,"anim_shoot2_end"));
-#if defined(KNIFE_SPRINT_MOTION)
-	animGet(mhud_idle_sprint, pSettings->r_string(*hud_sect,"anim_idle_sprint") );
-#endif
+//#if defined(KNIFE_SPRINT_MOTION)
+	animGet             (mhud_idle_sprint, READ_IF_EXISTS(pSettings, r_string, *hud_sect, "anim_idle_sprint", *m_sAnimIdle));
+//#endif
 
 	HUD_SOUND::LoadSound(section,"snd_shoot"		, m_sndShot		, ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING)		);
 	
@@ -208,9 +210,9 @@ void CWeaponKnife::switch2_Attacking	(u32 state)
 	if(m_bPending)	return;
 
 	if(state==eFire)
-		m_pHUD->animPlay(random_anim(mhud_attack),		FALSE, this, state);
+		m_pHUD->animPlay(random_anim(mhud_attack), FALSE, this, state);
 	else //eFire2
-		m_pHUD->animPlay(random_anim(mhud_attack2),		FALSE, this, state);
+		m_pHUD->animPlay(random_anim(mhud_attack2), FALSE, this, state);
 
 	m_attackStart	= true;
 	m_bPending		= true;
@@ -218,9 +220,10 @@ void CWeaponKnife::switch2_Attacking	(u32 state)
 
 void CWeaponKnife::switch2_Idle	()
 {
-	VERIFY(GetState()==eIdle);
+	/*VERIFY(GetState()==eIdle);
 
-	m_pHUD->animPlay(random_anim(mhud_idle), TRUE, this, GetState());
+	m_pHUD->animPlay(random_anim(mhud_idle), TRUE, this, GetState());*/
+	PlayAnimIdle();
 	m_bPending = false;
 }
 
@@ -357,15 +360,31 @@ void CWeaponKnife::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, 
 }
 
 // Real Wolf: Анимация бега. 17.07.2014.
-#if defined(KNIFE_SPRINT_MOTION)
+//#if defined(KNIFE_SPRINT_MOTION)
 void CWeaponKnife::onMovementChanged(ACTOR_DEFS::EMoveCommand cmd)
 {
-	if (g_actor->get_state() & mcSprint)
+	/*if (g_actor->get_state() & mcSprint)
 	{
 		SetState(eIdle);
 		m_pHUD->animPlay(random_anim(mhud_idle_sprint), TRUE, this,  eIdle);
 	}
 	else
-		SwitchState(GetState() );
+		SwitchState(GetState() );*/
+	if ((cmd == ACTOR_DEFS::mcSprint) && (GetState() == eIdle))
+		PlayAnimIdle();
 }
-#endif
+
+void CWeaponKnife::PlayAnimIdle() {
+	VERIFY(GetState() == eIdle);
+
+	CActor *actor = smart_cast<CActor*>(H_Parent());
+
+	if (actor)
+		if (actor->get_state() & mcSprint) {
+			m_pHUD->animPlay(random_anim(mhud_idle_sprint), TRUE, this, GetState());
+			return;
+		}
+
+		m_pHUD->animPlay(random_anim(mhud_idle), TRUE, this, GetState());
+}
+//#endif

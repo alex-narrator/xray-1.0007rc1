@@ -968,8 +968,8 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 		/*auto parent = const_cast<CObject*>(H_Parent());
 		auto entity_alive = smart_cast<CEntityAlive*>(parent);
 		bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || entity_alive == NULL || !entity_alive->cast_actor();*/
-		bool search_all = g_actor->m_inventory != m_pCurrentInventory || !psActorFlags.test(AF_AMMO_FROM_BELT);
-		TIItemContainer &list = search_all ? m_pCurrentInventory->m_all : m_pCurrentInventory->m_belt;
+		bool search_ruck = g_actor->m_inventory != m_pCurrentInventory || !psActorFlags.test(AF_AMMO_FROM_BELT);
+		TIItemContainer &list = search_ruck ? m_pCurrentInventory->m_ruck : m_pCurrentInventory->m_belt;
 		for (TIItemContainer::iterator l_it = list.begin(); list.end() != l_it; ++l_it)
 		{
 			CWeaponAmmo *l_pAmmo = smart_cast<CWeaponAmmo*>(*l_it);

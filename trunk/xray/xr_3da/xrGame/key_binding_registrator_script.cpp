@@ -69,6 +69,7 @@ void key_binding_registrator::script_register(lua_State *L)
 				value("kCONSOLE",					int(kCONSOLE)),
 				value("kINVENTORY",					int(kINVENTORY)),
 				value("kCHECKGEAR",					int(kCHECKGEAR)),
+				value("kCHECKACTIVEITEM",			int(kCHECKACTIVEITEM)),
 				value("kBUY",						int(kBUY)),
 				value("kSKIN",						int(kSKIN)),
 				value("kTEAM",						int(kTEAM))							

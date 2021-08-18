@@ -121,19 +121,27 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 	{
 		bool bOnClimbNow			= !!(mstate_real&mcClimb);
 		bool bOnClimbOld			= !!(mstate_old&mcClimb);
+		//
+		bool bIsMoving              = !!(mstate_old&mcAnyMove);
 
-		if (bOnClimbNow != bOnClimbOld )
+		if (bOnClimbNow != bOnClimbOld ) //если начали карабкаться по лестнице
 		{
-			SetWeaponHideState		(INV_STATE_LADDER, bOnClimbNow );
+			//SetWeaponHideState		(INV_STATE_LADDER, bOnClimbNow );
+			inventory().TryToHideWeapon(bOnClimbNow); //скрываем двуручное оружие
+		}
+		else if (bOnClimbNow = bOnClimbOld) //если карабкаемся
+		{
+			inventory().TryToHideWeapon(bIsMoving); //скрываем двуручное оружие в движении (если остановились на лестнице то достаём)
 		};
+	};
+
 	/*
 	if ((mstate_real&mcSprint) != (mstate_old&mcSprint))
 	{
-		CHudItem* pHudItem = smart_cast<CHudItem*>(inventory().ActiveItem());	
+		CHudItem* pHudItem = smart_cast<CHudItem*>(inventory().ActiveItem());
 		if (pHudItem) pHudItem->onMovementChanged(mcSprint);
 	};
 	*/
-	};
 };
 
 void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Jump, float dt)

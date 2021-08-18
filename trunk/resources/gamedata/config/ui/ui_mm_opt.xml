@@ -417,10 +417,10 @@
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_artefacts_from_all</text>
 		</check_artefacts_from_all>
 
-		<check_hard_inventory_access x="20" y="0" width="400" height="21">
-			<options_item entry="g_hard_inventory_access" group="mm_opt_gameplay"/>
-			<text font="letterica16" r="215" g="195" b="170">ui_mm_hard_inventory_access</text>
-		</check_hard_inventory_access>
+		<check_free_hands x="20" y="0" width="400" height="21">
+			<options_item entry="g_free_hands" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_free_hands</text>
+		</check_free_hands>
 		
 		<check_smooth_overweight x="20" y="0" width="400" height="21">
 			<options_item entry="g_smooth_overweight" group="mm_opt_gameplay"/>
