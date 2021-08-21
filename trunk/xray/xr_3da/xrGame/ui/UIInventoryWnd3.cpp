@@ -152,17 +152,23 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		}
 		if(pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
 		{
-			UIPropertiesBox.AddItem("st_detach_gl",  NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
+			//UIPropertiesBox.AddItem("st_detach_gl",  NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetGrenadeLauncherNameText()));
+			UIPropertiesBox.AddItem(temp, NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
 		b_show			= true;
 		}
 		if(pWeapon->ScopeAttachable() && pWeapon->IsScopeAttached())
 		{
-			UIPropertiesBox.AddItem("st_detach_scope",  NULL, INVENTORY_DETACH_SCOPE_ADDON);
+			//UIPropertiesBox.AddItem("st_detach_scope",  NULL, INVENTORY_DETACH_SCOPE_ADDON);
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetScopeNameText()));
+			UIPropertiesBox.AddItem(temp, NULL, INVENTORY_DETACH_SCOPE_ADDON);
 		b_show			= true;
 		}
 		if(pWeapon->SilencerAttachable() && pWeapon->IsSilencerAttached())
 		{
-			UIPropertiesBox.AddItem("st_detach_silencer",  NULL, INVENTORY_DETACH_SILENCER_ADDON);
+			//UIPropertiesBox.AddItem("st_detach_silencer",  NULL, INVENTORY_DETACH_SILENCER_ADDON);
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetSilencerNameText()));
+			UIPropertiesBox.AddItem(temp, NULL, INVENTORY_DETACH_SILENCER_ADDON);
 		b_show			= true;
 		}
 		if(smart_cast<CWeaponMagazined*>(pWeapon) && IsGameTypeSingle())
@@ -244,7 +250,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 				PIItem tgt = m_pInv->m_slots[i].m_pIItem;
 				//sprintf_s(temp, "st_attach_scope_to_%d", i);
 				//
-				strconcat(sizeof(temp), temp, CurrentIItem()->Name(), " ", *CStringTable().translate("st_attach_addon"), ": ", tgt->Name());
+				strconcat(sizeof(temp), temp, /*CurrentIItem()->Name(), " ",*/ *CStringTable().translate("st_attach_addon"), " ", tgt->Name());
 				UIPropertiesBox.AddItem(temp, (void*)tgt, INVENTORY_ATTACH_ADDON);
 				b_show			= true;
 			 }
@@ -276,7 +282,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 				PIItem tgt = m_pInv->m_slots[i].m_pIItem;
 				//sprintf_s(temp, "st_attach_silencer_to_%d", i);
 				//
-				strconcat(sizeof(temp), temp, CurrentIItem()->Name(), " ", *CStringTable().translate("st_attach_addon"), ": ", tgt->Name());
+				strconcat(sizeof(temp), temp, /*CurrentIItem()->Name(), " ",*/ *CStringTable().translate("st_attach_addon"), " ", tgt->Name());
 				//
 				UIPropertiesBox.AddItem(temp,  (void*)tgt, INVENTORY_ATTACH_ADDON);
 				b_show			= true;
@@ -302,7 +308,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			PIItem tgt = m_pInv->m_slots[i].m_pIItem;
 			//sprintf_s(temp, "st_attach_gl_to_%d", i);
 			//
-			strconcat(sizeof(temp), temp, CurrentIItem()->Name(), " ", *CStringTable().translate("st_attach_addon"), ": ", tgt->Name());
+			strconcat(sizeof(temp), temp, /*CurrentIItem()->Name(), " ",*/ *CStringTable().translate("st_attach_addon"), " ", tgt->Name());
 			//
 			UIPropertiesBox.AddItem(temp,  (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show			= true;
@@ -420,6 +426,7 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 			return;
 		}
 #endif
+		CWeapon* pWeapon = smart_cast<CWeapon*>(CurrentIItem());
 		switch(num)
 		{
 		case INVENTORY_TO_SLOT_ACTION:	
@@ -445,22 +452,22 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 			AttachAddon((PIItem)(UIPropertiesBox.GetClickedItem()->GetData()));
 			break;
 		case INVENTORY_DETACH_SCOPE_ADDON:
-			DetachAddon(*(smart_cast<CWeapon*>(CurrentIItem()))->GetScopeName());
+			DetachAddon(*pWeapon->GetScopeName());
 			break;
 		case INVENTORY_DETACH_SILENCER_ADDON:
-			DetachAddon(*(smart_cast<CWeapon*>(CurrentIItem()))->GetSilencerName());
+			DetachAddon(*pWeapon->GetSilencerName());
 			break;
 		case INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON:
-			DetachAddon(*(smart_cast<CWeapon*>(CurrentIItem()))->GetGrenadeLauncherName());
+			DetachAddon(*pWeapon->GetGrenadeLauncherName());
 			break;
 		case INVENTORY_RELOAD_MAGAZINE:
-			(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_RELOAD, CMD_START);
+			pWeapon->Action(kWPN_RELOAD, CMD_START);
 			break;
 		case INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE:
-			(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_FUNC, CMD_START);
+			pWeapon->Action(kWPN_FUNC, CMD_START);
 			break;
 		case INVENTORY_NEXT_AMMO_TYPE:
-			(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_NEXT, CMD_START);
+			pWeapon->Action(kWPN_NEXT, CMD_START);
 			break;
 		case INVENTORY_UNLOAD_MAGAZINE:
 			{

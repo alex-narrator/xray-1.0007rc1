@@ -288,6 +288,9 @@ m_slots_array[GRENADE_SLOT] = m_pUIGrenadeList;
 	AttachChild							(UIExitButton);
 	xml_init.Init3tButton				(uiXml, "exit_button", 0, UIExitButton);
 
+	//colorize
+	u_ColorWeapon                       = pSettings->r_color("colorize_item", "weapon");
+
 //Load sounds
 
 	XML_NODE* stored_root				= uiXml.GetLocalRoot		();

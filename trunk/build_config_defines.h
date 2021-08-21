@@ -36,7 +36,7 @@
 
 // ==================================== Правки от Red Virus ======================================= 
 #define WPN_BOBBING						// Red Virus: bobbing effect from lost alpha
-#define INV_COLORIZE_AMMO				// Red Virus: colorize ammo from lost alpha
+//#define INV_COLORIZE_WEAPON				// Red Virus: colorize ammo from lost alpha + подсветка аддонов к оружию
 //
 #ifdef INV_NEW_SLOTS_SYSTEM
 	#define INV_NO_ACTIVATE_APPARATUS_SLOT  // Red Virus: убирает невозможность сменить оружие клавишами при активных слотах:  фонарика, детектора и тд
@@ -69,7 +69,7 @@
 //#define SATIETY_SET_MAX_POWER          //сытость напрямую влияет на максимальную выносливость //-- вынесено в опции
 #define SIMPLE_ZOOM_SETTINGS           //кратность оптики задаётся через степень увеличения а не fov, прицеливание без оптики не зуммирует (если не указан ironsight_zoom_factor)
 #define ITEMS_ON_AF_PANEL              //на худовой панели артефактов отображаются любые предметы, помещенные на пояс
-#define CARBODY_COLORIZE_ITEM          //подсветка предметов в слотах и на поясе в окне обыска ящиков/трупов
+//#define CARBODY_COLORIZE_ITEM          //подсветка предметов в слотах и на поясе в окне обыска ящиков/трупов
 //#define RADIATION_PARAMS_DEPENDECY     //задаёт пороговые значения радиации больше которых не восстанавливается здоровье, 
 //выносливость и снижается макимальный уровень здоровья (хит радиации здоровью лучше отключить) //-- вынесено в опции
 //#define NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT  //не отображать прогрессбар в инвентаре и иконку радиации на худе если в слоте нет детектора -- поведение по умолчанию

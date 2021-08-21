@@ -132,7 +132,9 @@ void CUICarBodyWnd::Init()
 
 	BindDragDropListEnents			(m_pUIOurBagList);
 	BindDragDropListEnents			(m_pUIOthersBagList);
-
+	//colorize
+	u_ColorEquiped                  = pSettings->r_color("colorize_item", "equiped");
+	u_ColorWeapon                   = pSettings->r_color("colorize_item", "weapon");
 
 }
 
@@ -255,9 +257,9 @@ void CUICarBodyWnd::UpdateLists()
 	{
 		CUICellItem* itm				= create_cell_item(*it);
 		m_pUIOurBagList->SetItem		(itm);
-#ifdef CARBODY_COLORIZE_ITEM
+//#ifdef CARBODY_COLORIZE_ITEM
 		ColorizeItem(itm);
-#endif
+//#endif
 	}
 
 
@@ -292,6 +294,7 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	else if(pWnd == m_pUIPropertiesBox &&	msg == PROPERTY_CLICKED)
 	{
 		CUICellItem * itm = CurrentItem();
+		CWeapon* pWeapon = smart_cast<CWeapon*>(CurrentIItem());
 		//
 		if(m_pUIPropertiesBox->GetClickedItem())
 		{
@@ -309,13 +312,13 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				break;
 				//
 			case INVENTORY_RELOAD_MAGAZINE:
-				(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_RELOAD, CMD_START);
+				pWeapon->Action(kWPN_RELOAD, CMD_START);
 				break;
 			case INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE:
-				(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_FUNC, CMD_START);
+				pWeapon->Action(kWPN_FUNC, CMD_START);
 				break;
 			case INVENTORY_NEXT_AMMO_TYPE:
-				(smart_cast<CWeapon*>(CurrentIItem()))->Action(kWPN_NEXT, CMD_START);
+				pWeapon->Action(kWPN_NEXT, CMD_START);
 				break;
 			case INVENTORY_UNLOAD_MAGAZINE:
 				{
@@ -329,18 +332,15 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				}break;
 			case INVENTORY_DETACH_SCOPE_ADDON:
 				{
-					auto wpn = smart_cast<CWeapon*>(CurrentIItem());
-					wpn->Detach(wpn->GetScopeName().c_str(), true);
+					pWeapon->Detach(pWeapon->GetScopeName().c_str(), true);
 				}break;
 			case INVENTORY_DETACH_SILENCER_ADDON:
 				{
-					auto wpn = smart_cast<CWeapon*>(CurrentIItem());
-					wpn->Detach(wpn->GetSilencerName().c_str(), true);
+					pWeapon->Detach(pWeapon->GetSilencerName().c_str(), true);
 				}break;
 			case INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON:
 				{
-					auto wpn = smart_cast<CWeapon*>(CurrentIItem());
-					wpn->Detach(wpn->GetGrenadeLauncherName().c_str(), true);
+					pWeapon->Detach(pWeapon->GetGrenadeLauncherName().c_str(), true);
 				}break;
 			case INVENTORY_DROP_ACTION:
 				{
@@ -653,6 +653,7 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 #include "../Medkit.h"
 #include "../Antirad.h"
 #include "../weaponmagazinedwgrenade.h"
+#include "../string_table.h"
 void CUICarBodyWnd::ActivatePropertiesBox()
 {
 	//if(m_pInventoryBox)	return;
@@ -670,6 +671,7 @@ void CUICarBodyWnd::ActivatePropertiesBox()
     bool					b_show			= false;
 	
 	LPCSTR _action				= NULL;
+	string1024 temp;
 	
 	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
 	bool parent_exists = !m_pInventoryBox || owner == m_pUIOurBagList;
@@ -685,17 +687,23 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 		}
 		if (pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
 		{
-			m_pUIPropertiesBox->AddItem("st_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
+			//m_pUIPropertiesBox->AddItem("st_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetGrenadeLauncherNameText()));
+			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
 			b_show = true;
 		}
 		if (pWeapon->ScopeAttachable() && pWeapon->IsScopeAttached())
 		{
-			m_pUIPropertiesBox->AddItem("st_detach_scope", NULL, INVENTORY_DETACH_SCOPE_ADDON);
+			//m_pUIPropertiesBox->AddItem("st_detach_scope", NULL, INVENTORY_DETACH_SCOPE_ADDON);
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetScopeNameText()));
+			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_SCOPE_ADDON);
 			b_show = true;
 		}
 		if (pWeapon->SilencerAttachable() && pWeapon->IsSilencerAttached())
 		{
-			m_pUIPropertiesBox->AddItem("st_detach_silencer", NULL, INVENTORY_DETACH_SILENCER_ADDON);
+			//m_pUIPropertiesBox->AddItem("st_detach_silencer", NULL, INVENTORY_DETACH_SILENCER_ADDON);
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetSilencerNameText()));
+			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_SILENCER_ADDON);
 			b_show = true;
 		}
 
@@ -909,6 +917,7 @@ bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 bool CUICarBodyWnd::OnItemSelected(CUICellItem* itm)
 {
 	SetCurrentItem		(itm);
+	ColorizeWeapon		(itm);
 	return				false;
 }
 
@@ -955,7 +964,7 @@ bool CUICarBodyWnd::TransferItem(PIItem itm, CInventoryOwner* owner_from, CInven
 		if(invWeight+itmWeight >=maxWeight)	return false;
 	}
 	//
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(pActor->inventory().ActiveItem());
 	//CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(pActor->inventory().ItemFromSlot(pActor->inventory().GetPrevActiveSlot())); 
 	CBaseMonster* Monster = smart_cast<CBaseMonster*>(go_from);
@@ -983,12 +992,125 @@ void CUICarBodyWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemRButtonClick);
 }
 
-#ifdef CARBODY_COLORIZE_ITEM
+//#ifdef CARBODY_COLORIZE_ITEM
 void                    CUICarBodyWnd::ColorizeItem(CUICellItem* itm)
 {
-	u32 color = pSettings->r_color("colorize_item", "equiped");
+	//u32 color = pSettings->r_color("colorize_item", "equiped");
 	PIItem iitem = (PIItem)itm->m_pData;
 	if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
-		itm->SetTextureColor(color);
+		itm->SetTextureColor(u_ColorEquiped);
 }
-#endif
+//#endif
+
+//#ifdef INV_COLORIZE_WEAPON
+void CUICarBodyWnd::ColorizeWeapon(CUICellItem* itm)
+{
+	CInventoryItem* inventoryitem = (CInventoryItem*)itm->m_pData;
+	if (!inventoryitem) return;
+
+	//clear texture color for our
+	u32 our_item_count = m_pUIOurBagList->ItemsCount();
+	for (u32 i = 0; i<our_item_count; ++i) {
+		CUICellItem* our_item = m_pUIOurBagList->GetItemIdx(i);
+		PIItem invitem = (PIItem)our_item->m_pData;
+
+		//u32 color = pSettings->r_color("colorize_item", "equiped");
+		if (invitem->m_eItemPlace == eItemPlaceSlot || invitem->m_eItemPlace == eItemPlaceBelt)
+			our_item->SetTextureColor(u_ColorEquiped);
+		else
+		our_item->SetTextureColor(0xffffffff);
+	}
+	//clear texture color for other
+	u32 other_item_count = m_pUIOthersBagList->ItemsCount();
+	for (u32 i = 0; i<other_item_count; ++i) {
+		CUICellItem* othert_item = m_pUIOthersBagList->GetItemIdx(i);
+		PIItem invitem = (PIItem)othert_item->m_pData;
+
+		othert_item->SetTextureColor(0xffffffff);
+	}
+
+	CWeaponMagazined* weapon = smart_cast<CWeaponMagazined*>(inventoryitem);
+	if (!weapon) return;
+
+	xr_vector<shared_str> ammo_types = weapon->m_ammoTypes;
+
+	//u32 color = pSettings->r_color("colorize_item", "weapon");
+
+	//our ammo
+	for (size_t id = 0; id<ammo_types.size(); ++id)
+	{
+		u32 our_ammo_count = m_pUIOurBagList->ItemsCount();
+		for (u32 i = 0; i<our_ammo_count; ++i)
+		{
+			CUICellItem* our_ammo = m_pUIOurBagList->GetItemIdx(i);
+			PIItem invitem = (PIItem)our_ammo->m_pData;
+
+			if (invitem && xr_strcmp(invitem->object().cNameSect(), ammo_types[id]) == 0 && invitem->Useful())
+			{
+				our_ammo->SetTextureColor(u_ColorWeapon);
+				break;										//go out from loop, because we can't have 2 CUICellItem's with same section
+			}
+
+		}
+	}
+	//our addons
+	u32 count_our = m_pUIOurBagList->ItemsCount();
+	for (u32 i = 0; i < count_our; ++i)
+	{
+		CUICellItem* our_addon = m_pUIOurBagList->GetItemIdx(i);
+		PIItem invitem = (PIItem)our_addon->m_pData;
+
+		if (weapon->GetGrenadeLauncherName() == invitem->object().cNameSect())
+		{
+			our_addon->SetTextureColor(u_ColorWeapon);
+		}
+		else if (weapon->GetScopeName() == invitem->object().cNameSect())
+		{
+			our_addon->SetTextureColor(u_ColorWeapon);
+		}
+		else if (weapon->GetSilencerName() == invitem->object().cNameSect())
+		{
+			our_addon->SetTextureColor(u_ColorWeapon);
+		}
+
+	}
+
+	//other ammo
+	for (size_t id = 0; id<ammo_types.size(); ++id)
+	{
+		u32 other_ammo_count = m_pUIOthersBagList->ItemsCount();
+		for (u32 i = 0; i<other_ammo_count; ++i)
+		{
+			CUICellItem* other_ammo = m_pUIOthersBagList->GetItemIdx(i);
+			PIItem invitem = (PIItem)other_ammo->m_pData;
+
+			if (invitem && xr_strcmp(invitem->object().cNameSect(), ammo_types[id]) == 0 && invitem->Useful())
+			{
+				other_ammo->SetTextureColor(u_ColorWeapon);
+			}
+
+		}
+	}
+	//other addon
+	u32 count_other = m_pUIOthersBagList->ItemsCount();
+	for (u32 i = 0; i < count_other; ++i)
+	{
+		CUICellItem* other_addon = m_pUIOthersBagList->GetItemIdx(i);
+		PIItem invitem = (PIItem)other_addon->m_pData;
+
+		if (weapon->GetGrenadeLauncherName() == invitem->object().cNameSect())
+		{
+			other_addon->SetTextureColor(u_ColorWeapon);
+		}
+		else if (weapon->GetScopeName() == invitem->object().cNameSect())
+		{
+			other_addon->SetTextureColor(u_ColorWeapon);
+		}
+		else if (weapon->GetSilencerName() == invitem->object().cNameSect())
+		{
+			other_addon->SetTextureColor(u_ColorWeapon);
+		}
+
+	}
+}
+//#endif
