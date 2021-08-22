@@ -1206,7 +1206,7 @@ void CActor::shedule_Update	(u32 DT)
 		{
 			if (!m_pPersonWeLookingAt && m_pUsableObject && m_pUsableObject->tip_text()) //юзабельные предметы типа дверей, замков, но не НПС (НПС исключены чтобы не было "руки заняты" при попытке разговора)
 			{
-					m_sDefaultObjAction = /*inventory().FreeHands() ?*/ CStringTable().translate(m_pUsableObject->tip_text()) /*: m_sNoAnyAction*/;
+					m_sDefaultObjAction = inventory().FreeHands() ? CStringTable().translate(m_pUsableObject->tip_text()) : m_sNoAnyAction;
 			}
 			else if (pEntityAlive)
 			{
@@ -1218,34 +1218,34 @@ void CActor::shedule_Update	(u32 DT)
 				{
 					if (b_allow_drag)
 					{
-							if (m_pMonsterWeLookingAt && psActorFlags.test(AF_FREE_HANDS))
+							if (m_pMonsterWeLookingAt && /*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands != 0)
 							{       //на текущих конфигах нож - одноручный и с ним всегда FreeHands() == true, но вдруг будут двуручные ножи
 								if (Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness) //нож и condition ножа больше либо равен нужному для срезания
-									m_sDefaultObjAction = /*inventory().FreeHands() ?*/ m_sDeadMonsterUseOrDragAction /*: m_sDeadMonsterUseNotDragAction*/; //отрезать и тащить | отрезать/руки заняты
+									m_sDefaultObjAction = inventory().FreeHands() ? m_sDeadMonsterUseOrDragAction : m_sDeadMonsterUseNotDragAction; //отрезать и тащить | отрезать/руки заняты
 								else
-									m_sDefaultObjAction = /*inventory().FreeHands() ?*/ m_sDeadMonsterDragNotUseAction /*: m_sDeadMonsterNotDragNotUse*/;   //нужен острый нож/тащить | нужен острый нож/руки заняты
+									m_sDefaultObjAction = inventory().FreeHands() ? m_sDeadMonsterDragNotUseAction : m_sDeadMonsterNotDragNotUse;   //нужен острый нож/тащить | нужен острый нож/руки заняты
 							}
 							else
-								m_sDefaultObjAction = /*inventory().FreeHands() ?*/ m_sDeadCharacterUseOrDragAction /*: m_sNoAnyAction*/;
+								m_sDefaultObjAction = inventory().FreeHands() ? m_sDeadCharacterUseOrDragAction : m_sNoAnyAction;
 					}
 					else
 					{
-							if (m_pMonsterWeLookingAt && psActorFlags.test(AF_FREE_HANDS))
+							if (m_pMonsterWeLookingAt && /*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands != 0)
 								m_sDefaultObjAction = (Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness) ? m_sDeadMonsterUseAction : m_sDeadMonsterNotUse; //отрезать | нужен острый нож
 							else
-								m_sDefaultObjAction = /*inventory().FreeHands() ?*/ m_sDeadCharacterUseAction /*: m_sNoAnyAction*/;
+								m_sDefaultObjAction = inventory().FreeHands() ? m_sDeadCharacterUseAction : m_sNoAnyAction;
 					}
 
 				}
 			}
 			else if (m_pVehicleWeLookingAt)
-				m_sDefaultObjAction = /*inventory().FreeHands() ?*/ m_sCarCharacterUseAction /*: m_sNoAnyAction*/;
+				m_sDefaultObjAction = inventory().FreeHands() ? m_sCarCharacterUseAction : m_sNoAnyAction;
 
 			else if (inventory().m_pTarget && inventory().m_pTarget->CanTake()) //подобрать предмет
-					m_sDefaultObjAction = /*inventory().FreeHands() ?*/ m_sInventoryItemUseAction /*: m_sNoAnyAction*/;
+					m_sDefaultObjAction = inventory().FreeHands() ? m_sInventoryItemUseAction : m_sNoAnyAction;
 
 			else if (b_allow_drag)
-					m_sDefaultObjAction = /*inventory().FreeHands() ?*/ m_sGameObjectDragAction /*: m_sNoAnyAction*/;
+					m_sDefaultObjAction = inventory().FreeHands() ? m_sGameObjectDragAction : m_sNoAnyAction;
 			//.				else if (m_pInvBoxWeLookingAt)
 			//.					m_sDefaultObjAction = m_sInventoryBoxUseAction;
 			else

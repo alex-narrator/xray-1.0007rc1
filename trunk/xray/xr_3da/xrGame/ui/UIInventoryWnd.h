@@ -37,7 +37,7 @@ public:
 
 	void					InitInventory				();
 	void					InitInventory_delayed		();
-	virtual bool			StopAnyMove                 (){ return !!psActorFlags.test(AF_FREE_HANDS)/*true*/; }
+	virtual bool			StopAnyMove                 (){ return g_FreeHands != 0/*!!psActorFlags.test(AF_FREE_HANDS)*//*true*/; }
 
 	virtual void			SendMessage					(CUIWindow *pWnd, s16 msg, void *pData);
 	virtual bool			OnMouse						(float x, float y, EUIMessages mouse_action);

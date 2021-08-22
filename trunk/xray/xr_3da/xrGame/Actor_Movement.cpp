@@ -126,7 +126,7 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 
 		if (bOnClimbNow != bOnClimbOld ) //если начали карабкаться по лестнице
 		{
-			//SetWeaponHideState		(INV_STATE_LADDER, bOnClimbNow );
+			if(g_FreeHands == 2)SetWeaponHideState		(INV_STATE_LADDER, bOnClimbNow );
 			inventory().TryToHideWeapon(bOnClimbNow); //скрываем двуручное оружие
 		}
 		else if (bOnClimbNow = bOnClimbOld) //если карабкаемся

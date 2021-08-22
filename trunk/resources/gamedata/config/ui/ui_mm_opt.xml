@@ -349,15 +349,15 @@
 	</tab_sound>
 
 	<tab_gameplay>
-		<scroll_view	x="20" y="60" width="435" height="255" 
+		<scroll_view	x="20" y="85" width="435" height="230" 
 					right_ident="0" left_ident="0" top_indent="0" bottom_indent="0" 
 					vert_interval="0" always_show_scroll="0" flip_vert="0"/>
 
-		<cap_difficulty x="20" y="20" width="143" height="21">
+		<cap_difficulty x="20" y="15" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_difficulty</text>			
 		</cap_difficulty>
 
-		<list_difficulty x="194" y="20" width="261" height="21" always_show_scroll="0">	
+		<list_difficulty x="194" y="15" width="261" height="21" always_show_scroll="0" list_length="4">	
 			<options_item entry="g_game_difficulty" group="mm_opt_gameplay"/>
 			<text_color>
 				<e r="216" g="186" b="140"/>
@@ -365,7 +365,20 @@
 			<list_font_s r="240" g="217" b="182"/>
 			<list_font	 r="216" g="186" b="140" font="letterica16"/>
 		</list_difficulty>
-
+<!-- free hands -->
+		<cap_free_hands x="20" y="45" width="280" height="21" complex_mode = "1">
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_free_hands</text>			
+		</cap_free_hands>
+		
+		<list_free_hands x="304" y="45" width="151" height="21" always_show_scroll="0" list_length="3">	
+			<options_item entry="g_free_hands" group="mm_opt_gameplay"/>
+			<text_color>
+				<e r="216" g="186" b="140"/>
+			</text_color>
+			<list_font_s r="240" g="217" b="182"/>
+			<list_font	 r="216" g="186" b="140" font="letterica16"/>
+		</list_free_hands>
+<!-- free hands end-->
 		<check_crosshair x="20" y="0" width="400" height="21">
 			<options_item entry="hud_crosshair" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_show_crosshair</text>
@@ -417,10 +430,10 @@
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_artefacts_from_all</text>
 		</check_artefacts_from_all>
 
-		<check_free_hands x="20" y="0" width="400" height="21">
+<!--		<check_free_hands x="20" y="0" width="400" height="21">
 			<options_item entry="g_free_hands" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_free_hands</text>
-		</check_free_hands>
+		</check_free_hands> -->>
 		
 		<check_smooth_overweight x="20" y="0" width="400" height="21">
 			<options_item entry="g_smooth_overweight" group="mm_opt_gameplay"/>

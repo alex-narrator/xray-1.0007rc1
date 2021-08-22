@@ -1370,6 +1370,14 @@ public:
 	  }
 };
 
+//режимы "свободных рук"
+u32	        g_FreeHands = 0; //освобождение рук для взаимодействия с предметами: 0 - отключено, 1 - автоматически, 2 - вручную
+xr_token	free_hands_token[] = {
+	{ "fh_off",    0 }, //отключено
+	{ "fh_auto",   1 }, //автоосвобождение
+	{ "fh_manual", 2 }, //освобождать вручную
+	{ 0,        0 }
+};
 
 void CCC_RegisterCommands()
 {
@@ -1381,12 +1389,13 @@ void CCC_RegisterCommands()
 	psActorFlags.set(AF_ALWAYSRUN, true);
 	CMD3(CCC_Mask,				"g_always_run",			&psActorFlags,	AF_ALWAYSRUN);
 	CMD1(CCC_GameDifficulty,	"g_game_difficulty"		);
+	//
+	CMD3(CCC_Token,             "g_free_hands",                &g_FreeHands,    free_hands_token); //режимы "свободных рук"
 
 	CMD3(CCC_Mask,				"g_backrun",			       &psActorFlags,	AF_RUN_BACKWARD);
 	CMD3(CCC_Mask,				"g_ammo_from_belt",		       &psActorFlags,	AF_AMMO_FROM_BELT);  //патроны с пояса
 	CMD3(CCC_Mask,				"g_quick_slot_from_belt",      &psActorFlags,	AF_QUICK_FROM_BELT); //наполнение быстрых слотов с пояса
 	CMD3(CCC_Mask,				"g_no_auto_reload",            &psActorFlags,	AF_NO_AUTO_RELOAD);  //запрет автоперезарядки оружия
-	CMD3(CCC_Mask,				"g_free_hands",                &psActorFlags,	AF_FREE_HANDS); //"свободные руки" - сокрытие двуручного оружия при обыске, доступе к инвентарю, работе с ПДА и применении быстрых слотов + обыск монстров с ножом
 	CMD3(CCC_Mask,				"g_artefacts_from_all",        &psActorFlags,	AF_ARTEFACTS_FROM_ALL); //артефакты работают из всего инвентаря
 	CMD3(CCC_Mask,				"g_smooth_overweight",         &psActorFlags,	AF_SMOOTH_OVERWEIGHT); //плавный перегруз без обездвиживания
 	CMD3(CCC_Mask,				"g_condition_interdependence", &psActorFlags,	AF_CONDITION_INTERDEPENDENCE); //взаимозависимость параметров здоровья ГГ

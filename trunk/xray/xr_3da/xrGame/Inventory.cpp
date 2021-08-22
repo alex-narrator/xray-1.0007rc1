@@ -943,25 +943,29 @@ PIItem CInventory::GetAmmo(const char *name, BOOL forActor) const
 
 bool CInventory::FreeHands()
 {
-	if (!psActorFlags.test(AF_FREE_HANDS) || (ActiveItem() && ActiveItem()->IsSingleHanded()) || ActiveItem() == NULL || GetActiveSlot() == NO_ACTIVE_SLOT)
-		return true;
-	else
-		return false;
+	//if (/*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands != 2 || (ActiveItem() && ActiveItem()->IsSingleHanded()) || ActiveItem() == NULL || GetActiveSlot() == NO_ACTIVE_SLOT)
+	//	return true;
+	//else
+	//	return false;
+	bool hands_are_free = g_FreeHands != 2 || (ActiveItem() && ActiveItem()->IsSingleHanded()) || ActiveItem() == NULL || GetActiveSlot() == NO_ACTIVE_SLOT;
+	return hands_are_free;
 }
 
-void CInventory::TryToHideWeapon(bool b_hide_state)
+void CInventory::TryToHideWeapon(bool b_hide_state, bool b_save_prev_slot)
 {
+	if (g_FreeHands != 1) return; //только для авторежима свободных рук
+
 	if (b_hide_state)
 	{
-		if (psActorFlags.test(AF_FREE_HANDS) && ActiveItem() && !ActiveItem()->IsSingleHanded())
+		if (/*psActorFlags.test(AF_FREE_HANDS) &&*/ActiveItem() && !ActiveItem()->IsSingleHanded())
 		{
-			m_iPrevActiveSlot = GetActiveSlot();
+			m_iPrevActiveSlot = b_save_prev_slot ? GetActiveSlot() : NO_ACTIVE_SLOT;
 			Activate(NO_ACTIVE_SLOT);
 		}
 	}
 	else
 	{
-		if (psActorFlags.test(AF_FREE_HANDS) && m_iPrevActiveSlot != NO_ACTIVE_SLOT)
+		if (/*psActorFlags.test(AF_FREE_HANDS) &&*/m_iPrevActiveSlot != NO_ACTIVE_SLOT)
 		{
 			Activate(m_iPrevActiveSlot);
 			m_iPrevActiveSlot = NO_ACTIVE_SLOT;

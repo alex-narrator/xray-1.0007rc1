@@ -85,7 +85,7 @@ public:
 	bool                    m_bInventoryAmmoPlacement = false; //флаг инвентарной перезарядки
 	// AF_FREE_HANDS
 	bool                    FreeHands();                             //свободна ли хотябы одна рука актора
-	void                    TryToHideWeapon     (bool b_hide_state); //сокрытие/восстановлени показа оружия в режиме AF_FREE_HANDS
+	void                    TryToHideWeapon     (bool b_hide_state, bool b_save_prev_slot = true); //сокрытие/восстановлени показа оружия в режиме AF_FREE_HANDS
 	//
 	PIItem					item				(CLASS_ID cls_id) const;
 	
