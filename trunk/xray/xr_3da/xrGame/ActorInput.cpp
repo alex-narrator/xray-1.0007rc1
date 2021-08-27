@@ -480,7 +480,7 @@ void CActor::ActorUse()
 					CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 					if (pGameSP)
 					{
-						if (m_pMonsterWeLookingAt && /*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands != 0)
+						if (m_pMonsterWeLookingAt && /*psActorFlags.test(AF_FREE_HANDS)*//*g_FreeHands != 0*/inventory().FreeHands())
 						{
 							CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(inventory().ActiveItem());
 							if (Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness) //нож и condition ножа больше либо равен нужному для срезания

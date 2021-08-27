@@ -947,7 +947,9 @@ bool CInventory::FreeHands()
 	//	return true;
 	//else
 	//	return false;
-	bool hands_are_free = g_FreeHands != 2 || (ActiveItem() && ActiveItem()->IsSingleHanded()) || ActiveItem() == NULL || GetActiveSlot() == NO_ACTIVE_SLOT;
+	CHudItem* pHudItem = smart_cast<CHudItem*>(ActiveItem());
+
+	bool hands_are_free = g_FreeHands != 2 /*|| pHudItem && !pHudItem->IsPending()*/ || (ActiveItem() && ActiveItem()->IsSingleHanded() && !pHudItem->IsPending()) || ActiveItem() == NULL || GetActiveSlot() == NO_ACTIVE_SLOT;
 	return hands_are_free;
 }
 

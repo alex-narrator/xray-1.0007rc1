@@ -175,6 +175,9 @@
 	<string id="ui_mm_artefacts_from_all">
 		<text>Артефакты действуют из всего инвентаря</text>
 	</string>
+	<string id="ui_mm_artefact_detector_check">
+		<text>Свойства артефактов отображаются после проверки детектором</text>
+	</string>
 	<string id="ui_mm_hud_show_on_key">
 		<text>Отображать элементы HUD при удержании кнопок [$$ACTION_SCORES$$] | [$$ACTION_WPN_RELOAD$$] | [$$ACTION_CHECK_GEAR$$]</text>
 	</string>
@@ -184,7 +187,7 @@
 	<string id="ui_mm_wpn_actions_reset_sprint">
 		<text>Действия с оружием сбрасывают спринт</text>
 	</string>
-	
+
 	<string id="ui_mm_free_hands">
 		<text>Для взаимодействия с предметами нужно освободить руки, нож нужен для обыска мутантов</text>
 	</string>

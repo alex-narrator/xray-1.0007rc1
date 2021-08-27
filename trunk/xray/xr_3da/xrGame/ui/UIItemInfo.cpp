@@ -132,6 +132,7 @@ void CUIItemInfo::Init(float x, float y, float width, float height, LPCSTR xml_n
 
 bool				IsGameTypeSingle();
 
+#include "../Actor_Flags.h"
 void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 {
 	m_pInvItem				= pInvItem;
@@ -165,7 +166,10 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		UIDesc->Clear						();
 		VERIFY								(0==UIDesc->GetSize());
 		TryAddWpnInfo						(pInvItem->object().cNameSect());
+		if (!psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK))
 		TryAddArtefactInfo					(pInvItem->object().cNameSect());
+		else
+		UIArtefactParams->Show              (false);
 		if(m_desc_info.bShowDescrText)
 		{
 			CUIStatic* pItem					= xr_new<CUIStatic>();

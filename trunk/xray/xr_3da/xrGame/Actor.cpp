@@ -1218,7 +1218,7 @@ void CActor::shedule_Update	(u32 DT)
 				{
 					if (b_allow_drag)
 					{
-							if (m_pMonsterWeLookingAt && /*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands != 0)
+							if (m_pMonsterWeLookingAt && /*psActorFlags.test(AF_FREE_HANDS)*//*g_FreeHands != 0*/inventory().FreeHands())
 							{       //на текущих конфигах нож - одноручный и с ним всегда FreeHands() == true, но вдруг будут двуручные ножи
 								if (Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness) //нож и condition ножа больше либо равен нужному для срезания
 									m_sDefaultObjAction = inventory().FreeHands() ? m_sDeadMonsterUseOrDragAction : m_sDeadMonsterUseNotDragAction; //отрезать и тащить | отрезать/руки заняты
@@ -1230,7 +1230,7 @@ void CActor::shedule_Update	(u32 DT)
 					}
 					else
 					{
-							if (m_pMonsterWeLookingAt && /*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands != 0)
+							if (m_pMonsterWeLookingAt && /*psActorFlags.test(AF_FREE_HANDS)*//*g_FreeHands != 0*/inventory().FreeHands())
 								m_sDefaultObjAction = (Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness) ? m_sDeadMonsterUseAction : m_sDeadMonsterNotUse; //отрезать | нужен острый нож
 							else
 								m_sDefaultObjAction = inventory().FreeHands() ? m_sDeadCharacterUseAction : m_sNoAnyAction;

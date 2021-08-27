@@ -30,6 +30,18 @@
 	<string id="st_condition">
 		<text>состояние</text>
 	</string>
+	<string id="st_current_ammo">
+		<text>Снаряженный боеприпас:</text>
+	</string>
+	<string id="st_not_loaded">
+		<text>[не заряжен]</text>
+	</string>
+	<string id="st_mag_size_fire_mode">
+		<text>Размер магазина, текущий режим огня:</text>
+	</string>
+	<string id="st_gl_mode">
+		<text>[гранатомёт]</text>
+	</string>
 	<string id="st_detach_gl">
 		<text>отсоединить гранатомет</text>
 	</string>
@@ -142,6 +154,9 @@
 	</string>
 	<string id="st_next_ammo_type">
 		<text>сменить боеприпас</text>
+	</string>
+	<string id="st_detector_check">
+		<text>проверить детектором</text>
 	</string>
 	<string id="st_use">
 		<text>использовать</text>

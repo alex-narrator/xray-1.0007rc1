@@ -225,6 +225,7 @@ void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 //
 }  
 
+#include "ui_af_params.h"
 void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 {
 	if(pWnd == &m_uidata->UIToTalkButton && msg == BUTTON_CLICKED)
@@ -253,11 +254,17 @@ void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				MoveAllFromCell(itm);
 				break;
 				//
+			case INVENTORY_DETECTOR_CHECK_ACTION:
+				m_uidata->UIItemInfo.UIArtefactParams->Show(true);
+				m_uidata->UIItemInfo.TryAddArtefactInfo(CurrentIItem()->object().cNameSect());
+				break;
 			case INVENTORY_RELOAD_MAGAZINE:
 				pWeapon->Action(kWPN_RELOAD, CMD_START);
+				SetCurrentItem(NULL);
 				break;
 			case INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE:
 				pWeapon->Action(kWPN_FUNC, CMD_START);
+				SetCurrentItem(NULL);
 				break;
 			case INVENTORY_NEXT_AMMO_TYPE:
 				pWeapon->Action(kWPN_NEXT, CMD_START);
@@ -668,6 +675,7 @@ bool CUITradeWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 }
 
 #include "../weaponmagazinedwgrenade.h"
+#include "../Artifact.h"
 #include "../string_table.h"
 void CUITradeWnd::ActivatePropertiesBox()
 {
@@ -677,10 +685,17 @@ void CUITradeWnd::ActivatePropertiesBox()
 
 	CWeaponMagazined*		pWeapon = smart_cast<CWeaponMagazined*> (CurrentIItem());
 	CWeaponMagazinedWGrenade*	pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>(CurrentIItem());
+	CArtefact*		        pArtefact = smart_cast<CArtefact*>		(CurrentIItem());
 	bool					b_show = false;
 	string1024 temp;
 	//
 	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
+
+	if (psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK) && pArtefact && g_actor->GetDetector() && !m_uidata->UIItemInfo.UIArtefactParams->IsShown())
+	{
+		m_pUIPropertiesBox->AddItem("st_detector_check", NULL, INVENTORY_DETECTOR_CHECK_ACTION);
+		b_show = true;
+	}
 
 	if (pWeapon && owner == &m_uidata->UIOurBagList)
 	{
@@ -694,21 +709,21 @@ void CUITradeWnd::ActivatePropertiesBox()
 		if (pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
 		{
 			//m_pUIPropertiesBox->AddItem("st_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
-			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetGrenadeLauncherNameText()));
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetGrenadeLauncherName(), "inv_name")));
 			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
 			b_show = true;
 		}
 		if (pWeapon->ScopeAttachable() && pWeapon->IsScopeAttached())
 		{
 			//m_pUIPropertiesBox->AddItem("st_detach_scope", NULL, INVENTORY_DETACH_SCOPE_ADDON);
-			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetScopeNameText()));
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetScopeName(), "inv_name")));
 			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_SCOPE_ADDON);
 			b_show = true;
 		}
 		if (pWeapon->SilencerAttachable() && pWeapon->IsSilencerAttached())
 		{
 			//m_pUIPropertiesBox->AddItem("st_detach_silencer", NULL, INVENTORY_DETACH_SILENCER_ADDON);
-			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetSilencerNameText()));
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetSilencerName(), "inv_name")));
 			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_SILENCER_ADDON);
 			b_show = true;
 		}

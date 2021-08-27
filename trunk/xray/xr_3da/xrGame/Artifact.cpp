@@ -391,18 +391,22 @@ void CArtefact::OnStateSwitch		(u32 S)
 	switch(S){
 	case eShowing:
 		{
+			m_bPending = true;
 			m_pHUD->animPlay(random_anim(m_anim_show),		FALSE, this, S);
 		}break;
 	case eHiding:
 		{
+			m_bPending = true;
 			m_pHUD->animPlay(random_anim(m_anim_hide),		FALSE, this, S);
 		}break;
 	case eActivating:
 		{
+			m_bPending = true;
 			m_pHUD->animPlay(random_anim(m_anim_activate),	FALSE, this, S);
 		}break;
 	case eIdle:
 		{
+			m_bPending = false;
 			PlayAnimIdle();
 		}break;
 	};

@@ -17,7 +17,6 @@
 #include "../CustomOutfit.h"
 #include "../string_table.h"
 
-
 void CUIInventoryWnd::EatItem(PIItem itm)
 {
 	SetCurrentItem							(NULL);
@@ -48,6 +47,7 @@ bool is_quick_slot(u32 slot, PIItem item, CInventory *inv)
 #include "../Medkit.h"
 #include "../Antirad.h"
 #include "../weaponmagazinedwgrenade.h"
+#include "ui_af_params.h"
 void CUIInventoryWnd::ActivatePropertiesBox()
 {
 	// Флаг-признак для невлючения пункта контекстного меню: Dreess Outfit, если костюм уже надет
@@ -67,6 +67,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	CSilencer*			pSilencer			= smart_cast<CSilencer*>		(CurrentIItem());
 	CGrenadeLauncher*	pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>	(CurrentIItem());
 	CBottleItem*		pBottleItem			= smart_cast<CBottleItem*>		(CurrentIItem());
+	CArtefact*		    pArtefact           = smart_cast<CArtefact*>		(CurrentIItem());
 
 	bool	b_show			= false;
 
@@ -140,6 +141,12 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	}
 #endif
 	
+	if (psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK) && pArtefact && g_actor->GetDetector() && !UIItemInfo.UIArtefactParams->IsShown())
+	{
+		UIPropertiesBox.AddItem("st_detector_check", NULL, INVENTORY_DETECTOR_CHECK_ACTION);
+		b_show = true;
+	}
+
 	//отсоединение аддонов от вещи
 	if(pWeapon)
 	{
@@ -153,21 +160,21 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		if(pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
 		{
 			//UIPropertiesBox.AddItem("st_detach_gl",  NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
-			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetGrenadeLauncherNameText()));
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetGrenadeLauncherName(), "inv_name")));
 			UIPropertiesBox.AddItem(temp, NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
 		b_show			= true;
 		}
 		if(pWeapon->ScopeAttachable() && pWeapon->IsScopeAttached())
 		{
 			//UIPropertiesBox.AddItem("st_detach_scope",  NULL, INVENTORY_DETACH_SCOPE_ADDON);
-			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetScopeNameText()));
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetScopeName(), "inv_name")));
 			UIPropertiesBox.AddItem(temp, NULL, INVENTORY_DETACH_SCOPE_ADDON);
 		b_show			= true;
 		}
 		if(pWeapon->SilencerAttachable() && pWeapon->IsSilencerAttached())
 		{
 			//UIPropertiesBox.AddItem("st_detach_silencer",  NULL, INVENTORY_DETACH_SILENCER_ADDON);
-			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetSilencerNameText()));
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetSilencerName(), "inv_name")));
 			UIPropertiesBox.AddItem(temp, NULL, INVENTORY_DETACH_SILENCER_ADDON);
 		b_show			= true;
 		}
@@ -448,6 +455,10 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 		case INVENTORY_EAT_ACTION:
 			EatItem(CurrentIItem());
 			break;
+		case INVENTORY_DETECTOR_CHECK_ACTION:
+			UIItemInfo.UIArtefactParams->Show(true);
+			UIItemInfo.TryAddArtefactInfo(CurrentIItem()->object().cNameSect());
+			break;
 		case INVENTORY_ATTACH_ADDON:
 			AttachAddon((PIItem)(UIPropertiesBox.GetClickedItem()->GetData()));
 			break;
@@ -462,9 +473,11 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 			break;
 		case INVENTORY_RELOAD_MAGAZINE:
 			pWeapon->Action(kWPN_RELOAD, CMD_START);
+			SetCurrentItem(NULL);
 			break;
 		case INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE:
 			pWeapon->Action(kWPN_FUNC, CMD_START);
+			SetCurrentItem(NULL);
 			break;
 		case INVENTORY_NEXT_AMMO_TYPE:
 			pWeapon->Action(kWPN_NEXT, CMD_START);

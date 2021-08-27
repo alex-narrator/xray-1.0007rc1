@@ -7,6 +7,12 @@
 #include "../ai_space.h"
 #include "../script_engine.h"
 #include "../script_game_object.h"
+//
+#include "../smart_cast.h"
+#include "../string_table.h"
+#include "../weapon.h"
+#include "../weaponmagazined.h"
+#include "../weaponmagazinedwgrenade.h"
 
 struct SLuaWpnParams{
 	luabind::functor<float>		m_functorRPM;
@@ -50,6 +56,9 @@ CUIWpnParams::CUIWpnParams(){
 	AttachChild(&m_progressDamage);
 	AttachChild(&m_progressHandling);
 	AttachChild(&m_progressRPM);
+	//
+	AttachChild(&m_textCurrentAmmo);
+	AttachChild(&m_textMagSizeFiremode);
 }
 
 CUIWpnParams::~CUIWpnParams()
@@ -74,6 +83,9 @@ void CUIWpnParams::InitFromXml(CUIXml& xml_doc){
 	m_progressDamage.SetRange		(0, 100);
 	m_progressHandling.SetRange		(0, 100);
 	m_progressRPM.SetRange			(0, 100);
+	//
+	CUIXmlInit::InitStatic			(xml_doc, "wpn_params:info_current_ammo",	   0, &m_textCurrentAmmo);
+	CUIXmlInit::InitStatic			(xml_doc, "wpn_params:info_mag_size_firemode", 0, &m_textMagSizeFiremode);
 
 }
 
@@ -101,6 +113,21 @@ void CUIWpnParams::SetInfo(CGameObject *wpn)
 	else
 		m_progressDamage.SetProgressPos	(g_lua_wpn_params->m_functorDamageMP(*wpn_section));
 	m_progressHandling.SetProgressPos	(g_lua_wpn_params->m_functorHandling(*wpn_section));
+	//
+	string1024 text_to_show;
+	char temp_text[64];
+	CWeapon* pWeapon = smart_cast<CWeapon*>(wpn);
+	CWeaponMagazined* pWeaponMag = smart_cast<CWeaponMagazined*>(wpn);
+	CWeaponMagazinedWGrenade* pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>(wpn);
+	//кол-во и тип снаряженных боеприпасов
+	sprintf_s(temp_text, " %d | %s", pWeapon->GetAmmoElapsed(), pWeapon->GetCurrentAmmo_ShortName());
+	strconcat(sizeof(text_to_show), text_to_show, *CStringTable().translate("st_current_ammo"), pWeapon->GetAmmoElapsed() ? temp_text : *CStringTable().translate("st_not_loaded"));
+	m_textCurrentAmmo.SetText(text_to_show);
+	//размер магазина и текущий режим огня
+	sprintf_s(temp_text, pWeaponMagWGren && pWeaponMagWGren->m_bGrenadeMode ? *CStringTable().translate("st_gl_mode") : 
+		" %d |%s", pWeapon->GetAmmoMagSize(), pWeaponMag->HasFireModes() ? pWeaponMag->GetCurrentFireModeStr() : " (1)");
+	strconcat(sizeof(text_to_show), text_to_show, *CStringTable().translate("st_mag_size_fire_mode"), temp_text);
+	m_textMagSizeFiremode.SetText(text_to_show);
 }
 
 bool CUIWpnParams::Check(const shared_str& wpn_section){
@@ -112,6 +139,8 @@ bool CUIWpnParams::Check(const shared_str& wpn_section){
             return false;
         if (0==xr_strcmp(wpn_section, "mp_wpn_binoc"))
             return false;
+		if (0==xr_strcmp(wpn_section, "wpn_knife"))
+			return false;
 
         return true;		
 	}

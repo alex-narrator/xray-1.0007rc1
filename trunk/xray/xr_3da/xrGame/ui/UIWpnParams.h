@@ -29,4 +29,7 @@ protected:
 	CUIStatic					m_textHandling;
 	CUIStatic					m_textDamage;
 	CUIStatic					m_textRPM;
+	//
+	CUIStatic					m_textCurrentAmmo;
+	CUIStatic					m_textMagSizeFiremode;
 };

@@ -187,10 +187,6 @@ public:
 	const shared_str& GetGrenadeLauncherName()		{ return m_sGrenadeLauncherName; }
 	const shared_str& GetScopeName()		{ return m_sScopeName; }
 	const shared_str& GetSilencerName()		{ return m_sSilencerName; }
-	//получить инвентарное имя подключаемого аддона
-	const shared_str& GetScopeNameText()		        { return m_sScopeNameText; }
-	const shared_str& GetSilencerNameText()		        { return m_sSilencerNameText; }
-	const shared_str& GetGrenadeLauncherNameText()		{ return m_sGrenadeLauncherNameText; }
 
 	u8		GetAddonsState()		const		{ return m_flagsAddOnState; };
 	void	SetAddonsState(u8 st)	{ m_flagsAddOnState = st; }//dont use!!! for buy menu only!!!
@@ -207,10 +203,6 @@ protected:
 	shared_str		m_sScopeName;
 	shared_str		m_sSilencerName;
 	shared_str		m_sGrenadeLauncherName;
-	//инвентарные имена подключаемых аддонов
-	shared_str		m_sScopeNameText;
-	shared_str		m_sSilencerNameText;
-	shared_str		m_sGrenadeLauncherNameText;
 
 	//смещение иконов апгрейдов в инвентаре
 	int	m_iScopeX, m_iScopeY;

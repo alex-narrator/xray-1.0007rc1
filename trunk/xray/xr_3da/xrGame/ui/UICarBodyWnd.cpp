@@ -285,6 +285,7 @@ void CUICarBodyWnd::UpdateLists()
 	m_b_need_update									= false;
 }
 
+#include "ui_af_params.h"
 void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 {
 	if (BUTTON_CLICKED == msg && m_pUITakeAll == pWnd)
@@ -311,11 +312,17 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				MoveAllFromCell(itm);
 				break;
 				//
+			case INVENTORY_DETECTOR_CHECK_ACTION:
+				m_pUIItemInfo->UIArtefactParams->Show(true);
+				m_pUIItemInfo->TryAddArtefactInfo(CurrentIItem()->object().cNameSect());
+			break;
 			case INVENTORY_RELOAD_MAGAZINE:
 				pWeapon->Action(kWPN_RELOAD, CMD_START);
+				SetCurrentItem(NULL);
 				break;
 			case INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE:
 				pWeapon->Action(kWPN_FUNC, CMD_START);
+				SetCurrentItem(NULL);
 				break;
 			case INVENTORY_NEXT_AMMO_TYPE:
 				pWeapon->Action(kWPN_NEXT, CMD_START);
@@ -528,6 +535,7 @@ bool CUICarBodyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 	if (keyboard_action == WINDOW_KEY_PRESSED && is_binded(kSPRINT_TOGGLE, dik))
 	{
 		TakeAll();
+		SetCurrentItem(NULL);
 		return true;
 	}
 	//
@@ -652,6 +660,7 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 
 #include "../Medkit.h"
 #include "../Antirad.h"
+#include "../Artifact.h"
 #include "../weaponmagazinedwgrenade.h"
 #include "../string_table.h"
 void CUICarBodyWnd::ActivatePropertiesBox()
@@ -668,6 +677,7 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	CMedkit*				pMedkit			= smart_cast<CMedkit*>			(CurrentIItem());
 	CAntirad*				pAntirad		= smart_cast<CAntirad*>			(CurrentIItem());
 	CBottleItem*			pBottleItem		= smart_cast<CBottleItem*>		(CurrentIItem());
+	CArtefact*		        pArtefact       = smart_cast<CArtefact*>		(CurrentIItem());
     bool					b_show			= false;
 	
 	LPCSTR _action				= NULL;
@@ -675,6 +685,12 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	
 	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
 	bool parent_exists = !m_pInventoryBox || owner == m_pUIOurBagList;
+
+	if (psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK) && pArtefact && g_actor->GetDetector() && !m_pUIItemInfo->UIArtefactParams->IsShown())
+	{
+		m_pUIPropertiesBox->AddItem("st_detector_check", NULL, INVENTORY_DETECTOR_CHECK_ACTION);
+		b_show = true;
+	}
 
 	if (pWeapon && parent_exists)
 	{
@@ -688,21 +704,21 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 		if (pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
 		{
 			//m_pUIPropertiesBox->AddItem("st_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
-			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetGrenadeLauncherNameText()));
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetGrenadeLauncherName(), "inv_name")));
 			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
 			b_show = true;
 		}
 		if (pWeapon->ScopeAttachable() && pWeapon->IsScopeAttached())
 		{
 			//m_pUIPropertiesBox->AddItem("st_detach_scope", NULL, INVENTORY_DETACH_SCOPE_ADDON);
-			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetScopeNameText()));
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetScopeName(), "inv_name")));
 			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_SCOPE_ADDON);
 			b_show = true;
 		}
 		if (pWeapon->SilencerAttachable() && pWeapon->IsSilencerAttached())
 		{
 			//m_pUIPropertiesBox->AddItem("st_detach_silencer", NULL, INVENTORY_DETACH_SILENCER_ADDON);
-			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(*pWeapon->GetSilencerNameText()));
+			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetSilencerName(), "inv_name")));
 			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_SILENCER_ADDON);
 			b_show = true;
 		}
