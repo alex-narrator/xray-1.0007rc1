@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "weaponmagazinedwgrenade.h"
 #include "WeaponHUD.h"
 #include "HUDManager.h"
@@ -23,7 +23,7 @@ CWeaponMagazinedWGrenade::CWeaponMagazinedWGrenade(LPCSTR name,ESoundTypes eSoun
 {
 	m_ammoType2 = 0;
     m_bGrenadeMode = false;
-	SetSlot(RIFLE_SLOT); // alpet: ïðåäïîëàãàåòñÿ ÷òî ïèñòîëåòîâ ñ òàêèìè àääîíàìè íå áóäåò )
+	SetSlot(RIFLE_SLOT); // alpet: Ð¿Ñ€ÐµÐ´Ð¿Ð¾Ð»Ð°Ð³Ð°ÐµÑ‚ÑÑ Ñ‡Ñ‚Ð¾ Ð¿Ð¸ÑÑ‚Ð¾Ð»ÐµÑ‚Ð¾Ð² Ñ Ñ‚Ð°ÐºÐ¸Ð¼Ð¸ Ð°Ð´Ð´Ð¾Ð½Ð°Ð¼Ð¸ Ð½Ðµ Ð±ÑƒÐ´ÐµÑ‚ )
 }
 
 CWeaponMagazinedWGrenade::~CWeaponMagazinedWGrenade(void)
@@ -183,14 +183,14 @@ void CWeaponMagazinedWGrenade::OnShot		()
 		
 		AddShotEffector		();
 		
-		//ïàðòèêëû îãíÿ âûëåòà ãðàíàòû èç ïîäñòâîëüíèêà
+		//Ð¿Ð°Ñ€Ñ‚Ð¸ÐºÐ»Ñ‹ Ð¾Ð³Ð½Ñ Ð²Ñ‹Ð»ÐµÑ‚Ð° Ð³Ñ€Ð°Ð½Ð°Ñ‚Ñ‹ Ð¸Ð· Ð¿Ð¾Ð´ÑÑ‚Ð²Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ°
 		StartFlameParticles2();
 	} 
 	else inherited::OnShot();
 }
-//ïåðåõîä â ðåæèì ïîäñòâîëüíèêà èëè âûõîä èç íåãî
-//åñëè ìû â ðåæèìå ñòðåëüáû î÷åðåäÿìè, ïåðåêëþ÷èòüñÿ
-//íà îäèíî÷íûå, à óæå ïîòîì íà ïîäñòâîëüíèê
+//Ð¿ÐµÑ€ÐµÑ…Ð¾Ð´ Ð² Ñ€ÐµÐ¶Ð¸Ð¼ Ð¿Ð¾Ð´ÑÑ‚Ð²Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ° Ð¸Ð»Ð¸ Ð²Ñ‹Ñ…Ð¾Ð´ Ð¸Ð· Ð½ÐµÐ³Ð¾
+//ÐµÑÐ»Ð¸ Ð¼Ñ‹ Ð² Ñ€ÐµÐ¶Ð¸Ð¼Ðµ ÑÑ‚Ñ€ÐµÐ»ÑŒÐ±Ñ‹ Ð¾Ñ‡ÐµÑ€ÐµÐ´ÑÐ¼Ð¸, Ð¿ÐµÑ€ÐµÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒÑÑ
+//Ð½Ð° Ð¾Ð´Ð¸Ð½Ð¾Ñ‡Ð½Ñ‹Ðµ, Ð° ÑƒÐ¶Ðµ Ð¿Ð¾Ñ‚Ð¾Ð¼ Ð½Ð° Ð¿Ð¾Ð´ÑÑ‚Ð²Ð¾Ð»ÑŒÐ½Ð¸Ðº
 bool CWeaponMagazinedWGrenade::SwitchMode() 
 {
 	bool bUsefulStateToSwitch = ((eIdle==GetState())||(eHidden==GetState())||(eMisfire==GetState())||(eMagEmpty==GetState())) && (!IsPending());
@@ -237,13 +237,13 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 	{
 		if (m_bGrenadeMode)
 		{
-			m_fZoomFactor = m_fIronSightZoomFactor; //çàäàäèì çóì â ðåæèìå ãðàíàòîì¸òà
+			m_fZoomFactor = m_fIronSightZoomFactor; //Ð·Ð°Ð´Ð°Ð´Ð¸Ð¼ Ð·ÑƒÐ¼ Ð² Ñ€ÐµÐ¶Ð¸Ð¼Ðµ Ð³Ñ€Ð°Ð½Ð°Ñ‚Ð¾Ð¼Ñ‘Ñ‚Ð°
 			LoadZoomOffset(*hud_sect, "grenade_");
 		}
 		else 
 		{
 			if (IsScopeAttached())
-				m_fZoomFactor = m_fScopeZoomFactor; //åñëè óñòàíîâëåí ïðèöåë, òî ïðè âûõîäå èç ðåæèìà ãðàíàòîì¸òà óñòàíîâèì çóì ïðèöåëà
+				m_fZoomFactor = m_fScopeZoomFactor; //ÐµÑÐ»Ð¸ ÑƒÑÑ‚Ð°Ð½Ð¾Ð²Ð»ÐµÐ½ Ð¿Ñ€Ð¸Ñ†ÐµÐ», Ñ‚Ð¾ Ð¿Ñ€Ð¸ Ð²Ñ‹Ñ…Ð¾Ð´Ðµ Ð¸Ð· Ñ€ÐµÐ¶Ð¸Ð¼Ð° Ð³Ñ€Ð°Ð½Ð°Ñ‚Ð¾Ð¼Ñ‘Ñ‚Ð° ÑƒÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ð¼ Ð·ÑƒÐ¼ Ð¿Ñ€Ð¸Ñ†ÐµÐ»Ð°
 			
 			if(GrenadeLauncherAttachable())
 				LoadZoomOffset(*hud_sect, "grenade_normal_");
@@ -276,7 +276,7 @@ void CWeaponMagazinedWGrenade::state_Fire(float dt)
 {
 	VERIFY(fTimeToFire>0.f);
 
-	//ðåæèì ñòðåëüáû ïîäñòâîëüíèêà
+	//Ñ€ÐµÐ¶Ð¸Ð¼ ÑÑ‚Ñ€ÐµÐ»ÑŒÐ±Ñ‹ Ð¿Ð¾Ð´ÑÑ‚Ð²Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ°
 	if(m_bGrenadeMode)
 	{
 		fTime					-=dt;
@@ -307,6 +307,10 @@ void CWeaponMagazinedWGrenade::state_Fire(float dt)
 
 			++m_iShotNum;
 			OnShot			();
+			//ÑÐ½Ð¸Ð¶Ð°ÐµÐ¼ ÐºÐ¾Ð½Ð´Ð¸Ñ†Ð¸ÑŽ Ð¾Ñ€ÑƒÐ¶Ð¸ Ð¿Ñ€Ð¸ Ð²Ñ‹ÑÑ‚Ñ€ÐµÐ»Ðµ Ð¸Ð· ÐŸÐ“
+			Msg("GetWeaponDeterioration GL = %f", GetWeaponDeterioration());
+			ChangeCondition(-GetWeaponDeterioration());
+			//
 			
 			// Ammo
 			if(Local()) 
@@ -324,7 +328,7 @@ void CWeaponMagazinedWGrenade::state_Fire(float dt)
 		UpdateSounds			();
 		if(m_iShotNum == m_iQueueSize) FireEnd();
 	} 
-	//ðåæèì ñòðåëüáû î÷åðåäÿìè
+	//Ñ€ÐµÐ¶Ð¸Ð¼ ÑÑ‚Ñ€ÐµÐ»ÑŒÐ±Ñ‹ Ð¾Ñ‡ÐµÑ€ÐµÐ´ÑÐ¼Ð¸
 	else inherited::state_Fire(dt);
 }
 
@@ -332,7 +336,7 @@ void CWeaponMagazinedWGrenade::SwitchState(u32 S)
 {
 	inherited::SwitchState(S);
 	
-	//ñòðåëüíóòü èç ïîäñòâîëüíèêà
+	//ÑÑ‚Ñ€ÐµÐ»ÑŒÐ½ÑƒÑ‚ÑŒ Ð¸Ð· Ð¿Ð¾Ð´ÑÑ‚Ð²Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ°
 	if(m_bGrenadeMode && GetState() == eIdle && S == eFire && getRocketCount() ) 
 	{
 		Fvector						p1, d; 
@@ -444,7 +448,7 @@ void CWeaponMagazinedWGrenade::ReloadMagazine()
 {
 	inherited::ReloadMagazine();
 
-	//ïåðåçàðÿäêà ïîäñòâîëüíîãî ãðàíàòîìåòà
+	//Ð¿ÐµÑ€ÐµÐ·Ð°Ñ€ÑÐ´ÐºÐ° Ð¿Ð¾Ð´ÑÑ‚Ð²Ð¾Ð»ÑŒÐ½Ð¾Ð³Ð¾ Ð³Ñ€Ð°Ð½Ð°Ñ‚Ð¾Ð¼ÐµÑ‚Ð°
 	if(iAmmoElapsed && !getRocketCount() && m_bGrenadeMode) 
 	{
 //.		shared_str fake_grenade_name = pSettings->r_string(*m_pAmmo->cNameSect(), "fake_grenade_name");
@@ -535,7 +539,7 @@ bool CWeaponMagazinedWGrenade::Attach(PIItem pIItem, bool b_send_event)
 
 		CRocketLauncher::m_fLaunchSpeed = pGrenadeLauncher->GetGrenadeVel();
 
- 		//óíè÷òîæèòü ïîäñòâîëüíèê èç èíâåíòàðÿ
+ 		//ÑƒÐ½Ð¸Ñ‡Ñ‚Ð¾Ð¶Ð¸Ñ‚ÑŒ Ð¿Ð¾Ð´ÑÑ‚Ð²Ð¾Ð»ÑŒÐ½Ð¸Ðº Ð¸Ð· Ð¸Ð½Ð²ÐµÐ½Ñ‚Ð°Ñ€Ñ
 		if(b_send_event)
 		{
 //.			pIItem->Drop();
@@ -569,9 +573,6 @@ bool CWeaponMagazinedWGrenade::Detach(const char* item_section_name, bool b_spaw
 	else
 		return inherited::Detach(item_section_name, b_spawn_item);
 }
-
-
-
 
 void CWeaponMagazinedWGrenade::InitAddons()
 {	
@@ -612,7 +613,18 @@ float	CWeaponMagazinedWGrenade::CurrentZoomFactor	()
 	return inherited::CurrentZoomFactor();
 }
 
-//âèðòóàëüíûå ôóíêöèè äëÿ ïðîèãðûâàíèÿ àíèìàöèè HUD
+float CWeaponMagazinedWGrenade::GetWeaponDeterioration()
+{
+	if (!m_bGrenadeMode)
+		return inherited::GetWeaponDeterioration();
+
+	shared_str target = GrenadeLauncherAttachable() ? m_sGrenadeLauncherName : cNameSect();
+	conditionDecreasePerShotGL = READ_IF_EXISTS(pSettings, r_float, target, "condition_shot_dec_gl", 0.0f);
+
+	return conditionDecreasePerShotGL;
+}
+
+//Ð²Ð¸Ñ€Ñ‚ÑƒÐ°Ð»ÑŒÐ½Ñ‹Ðµ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ Ð´Ð»Ñ Ð¿Ñ€Ð¾Ð¸Ð³Ñ€Ñ‹Ð²Ð°Ð½Ð¸Ñ Ð°Ð½Ð¸Ð¼Ð°Ñ†Ð¸Ð¸ HUD
 void CWeaponMagazinedWGrenade::PlayAnimShow()
 {
 	VERIFY(GetState()==eShowing);
@@ -677,7 +689,7 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 	VERIFY(GetState()==eFire || GetState()==eFire2);
 	if(this->m_bGrenadeMode)
 	{
-		//àíèìàöèÿ ñòðåëüáû èç ïîäñòâîëüíèêà
+		//Ð°Ð½Ð¸Ð¼Ð°Ñ†Ð¸Ñ ÑÑ‚Ñ€ÐµÐ»ÑŒÐ±Ñ‹ Ð¸Ð· Ð¿Ð¾Ð´ÑÑ‚Ð²Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ°
 		m_pHUD->animPlay(random_anim(mhud_shots_g),TRUE,this, GetState());
 	}
 	else

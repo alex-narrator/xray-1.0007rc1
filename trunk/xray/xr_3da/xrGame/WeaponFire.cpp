@@ -48,6 +48,10 @@ void random_dir(Fvector& tgt_dir, const Fvector& src_dir, float dispersion)
 
 float CWeapon::GetWeaponDeterioration	()
 {
+	//
+	if(IsSilencerAttached() && SilencerAttachable())
+		return conditionDecreasePerShotSilencer;
+	//
 	return conditionDecreasePerShot;
 };
 
@@ -66,6 +70,7 @@ void CWeapon::FireTrace		(const Fvector& P, const Fvector& D)
 	//повысить изношенность оружия с учетом влияния конкретного патрона
 //	float Deterioration = GetWeaponDeterioration();
 //	Msg("Deterioration = %f", Deterioration);
+	Msg("Deterioration = %f", GetWeaponDeterioration());
 	ChangeCondition(-GetWeaponDeterioration()*l_cartridge.m_impair);
 
 	

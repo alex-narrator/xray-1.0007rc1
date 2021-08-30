@@ -377,6 +377,10 @@ protected:
 	float					misfireConditionK;
 	//увеличение изношености при выстреле
 	float					conditionDecreasePerShot;
+	//увеличение изношености при выстреле с глушителем
+	float					conditionDecreasePerShotSilencer;
+	//увеличение изношености при выстреле из подствольника
+	float					conditionDecreasePerShotGL;
 
 	//  [8/2/2005]
 	float					m_fPDM_disp_base;

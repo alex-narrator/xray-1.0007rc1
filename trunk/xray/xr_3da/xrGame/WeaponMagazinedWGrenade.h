@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include "weaponmagazined.h"
 #include "rocketlauncher.h"
 
@@ -51,14 +51,14 @@ public:
 	virtual void	UpdateSounds	();
 	virtual void	StopHUDSounds	();
 
-	//переключение в режим подствольника
+	//РїРµСЂРµРєР»СЋС‡РµРЅРёРµ РІ СЂРµР¶РёРј РїРѕРґСЃС‚РІРѕР»СЊРЅРёРєР°
 	virtual bool	SwitchMode		();
 	void			PerformSwitchGL	();
 	void			OnAnimationEnd	(u32 state);
 
 	virtual bool	IsNecessaryItem	    (const shared_str& item_sect);
 
-	//виртуальные функции для проигрывания анимации HUD
+	//РІРёСЂС‚СѓР°Р»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё РґР»СЏ РїСЂРѕРёРіСЂС‹РІР°РЅРёСЏ Р°РЅРёРјР°С†РёРё HUD
 	virtual void	PlayAnimShow();
 	virtual void	PlayAnimHide();
 	virtual void	PlayAnimReload();
@@ -71,8 +71,8 @@ public:
 	HUD_SOUND			sndSwitch;
 
 
-	//анимации с подключенным подствольником
-	//(режим обычной стрельбы)
+	//Р°РЅРёРјР°С†РёРё СЃ РїРѕРґРєР»СЋС‡РµРЅРЅС‹Рј РїРѕРґСЃС‚РІРѕР»СЊРЅРёРєРѕРј
+	//(СЂРµР¶РёРј РѕР±С‹С‡РЅРѕР№ СЃС‚СЂРµР»СЊР±С‹)
 	MotionSVec			mhud_idle_g;
 	MotionSVec			mhud_idle_g_aim;
 	MotionSVec			mhud_reload_g;
@@ -80,7 +80,7 @@ public:
 	MotionSVec			mhud_switch_g, mhud_switch;
 	MotionSVec			mhud_show_g;
 	MotionSVec			mhud_hide_g;
-	//(режим стрельбы из подствольника)
+	//(СЂРµР¶РёРј СЃС‚СЂРµР»СЊР±С‹ РёР· РїРѕРґСЃС‚РІРѕР»СЊРЅРёРєР°)
 	MotionSVec			mhud_idle_w_gl;
 	MotionSVec			mhud_idle_w_gl_aim;
 	MotionSVec			mhud_reload_w_gl;
@@ -89,8 +89,8 @@ public:
 	MotionSVec			mhud_hide_w_gl;
 
 
-	//дополнительные параметры патронов 
-	//для подствольника
+	//РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РїР°С‚СЂРѕРЅРѕРІ 
+	//РґР»СЏ РїРѕРґСЃС‚РІРѕР»СЊРЅРёРєР°
 	CWeaponAmmo*			m_pAmmo2;
 	shared_str				m_ammoSect2;
 	xr_vector<shared_str>	m_ammoTypes2;
@@ -101,9 +101,11 @@ public:
 	bool					m_bGrenadeMode;
 
 	CCartridge				m_DefaultCartridge2;
+	//РїРѕР»СѓС‡Р°РµРј РёР·РЅРѕСЃ РїСЂРё РІС‹СЃС‚СЂРµР»Рµ РёР· РїРѕРґСЃС‚РІРѕР»СЊРЅРёРєР°
+	virtual float	        GetWeaponDeterioration();
 
 	virtual void UpdateGrenadeVisibility(bool visibility);
 
-	//название косточки для гранаты подствольника в HUD
+	//РЅР°Р·РІР°РЅРёРµ РєРѕСЃС‚РѕС‡РєРё РґР»СЏ РіСЂР°РЅР°С‚С‹ РїРѕРґСЃС‚РІРѕР»СЊРЅРёРєР° РІ HUD
 	shared_str grenade_bone_name;
 };

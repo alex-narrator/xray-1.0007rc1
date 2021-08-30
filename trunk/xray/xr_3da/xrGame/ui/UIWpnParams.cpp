@@ -1,4 +1,4 @@
-#include "pch_script.h"
+п»ї#include "pch_script.h"
 #include "stdafx.h"
 #include "UIWpnParams.h"
 #include "UIXmlInit.h"
@@ -102,7 +102,7 @@ void CUIWpnParams::SetInfo(CGameObject *wpn)
 	if (lua_istable(L, -1))
 	{
 		lua_pushgameobject(L, wpn);
-		lua_setfield(L, -2, "wpn_object"); // alpet: позволит динамически выбрать параметры из скрипта
+		lua_setfield(L, -2, "wpn_object"); // alpet: РїРѕР·РІРѕР»РёС‚ РґРёРЅР°РјРёС‡РµСЃРєРё РІС‹Р±СЂР°С‚СЊ РїР°СЂР°РјРµС‚СЂС‹ РёР· СЃРєСЂРёРїС‚Р°
 	}
 	lua_pop(L, 1);	
 
@@ -119,11 +119,11 @@ void CUIWpnParams::SetInfo(CGameObject *wpn)
 	CWeapon* pWeapon = smart_cast<CWeapon*>(wpn);
 	CWeaponMagazined* pWeaponMag = smart_cast<CWeaponMagazined*>(wpn);
 	CWeaponMagazinedWGrenade* pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>(wpn);
-	//кол-во и тип снаряженных боеприпасов
+	//РєРѕР»-РІРѕ Рё С‚РёРї СЃРЅР°СЂСЏР¶РµРЅРЅС‹С… Р±РѕРµРїСЂРёРїР°СЃРѕРІ
 	sprintf_s(temp_text, " %d | %s", pWeapon->GetAmmoElapsed(), pWeapon->GetCurrentAmmo_ShortName());
 	strconcat(sizeof(text_to_show), text_to_show, *CStringTable().translate("st_current_ammo"), pWeapon->GetAmmoElapsed() ? temp_text : *CStringTable().translate("st_not_loaded"));
 	m_textCurrentAmmo.SetText(text_to_show);
-	//размер магазина и текущий режим огня
+	//СЂР°Р·РјРµСЂ РјР°РіР°Р·РёРЅР° Рё С‚РµРєСѓС‰РёР№ СЂРµР¶РёРј РѕРіРЅСЏ
 	sprintf_s(temp_text, pWeaponMagWGren && pWeaponMagWGren->m_bGrenadeMode ? *CStringTable().translate("st_gl_mode") : 
 		" %d |%s", pWeapon->GetAmmoMagSize(), pWeaponMag->HasFireModes() ? pWeaponMag->GetCurrentFireModeStr() : " (1)");
 	strconcat(sizeof(text_to_show), text_to_show, *CStringTable().translate("st_mag_size_fire_mode"), temp_text);
