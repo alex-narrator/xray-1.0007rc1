@@ -531,7 +531,7 @@ void CActor::ActorUse()
 		}
 	}
 
-	if (inventory().FreeHands())
+	//if (inventory().FreeHands())
 		PickupModeOn();
 }
 BOOL CActor::HUDview				( )const 

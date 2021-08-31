@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "actor.h"
 #include "weapon.h"
 #include "mercuryball.h"
@@ -83,7 +83,7 @@ ICF static BOOL info_trace_callback(collide::rq_result& result, LPVOID params)
 			return			TRUE;
 		}
 	}else{
-		//ïîëó÷èòü òðåóãîëüíèê è óçíàòü åãî ìàòåðèàë
+		//Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ñ‚Ñ€ÐµÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸Ðº Ð¸ ÑƒÐ·Ð½Ð°Ñ‚ÑŒ ÐµÐ³Ð¾ Ð¼Ð°Ñ‚ÐµÑ€Ð¸Ð°Ð»
 		CDB::TRI* T		= Level().ObjectSpace.GetStaticTris()+result.element;
 		if (GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flPassable)) 
 			return TRUE;
@@ -115,10 +115,13 @@ void CActor::PickupModeUpdate()
 	if(!m_bPickupMode) return;
 	if (GameID() != GAME_SINGLE) return;
 
-	//ïîäáèðàíèå îáúåêòà
+	//Ð¿Ð¾Ð´Ð±Ð¸Ñ€Ð°Ð½Ð¸Ðµ Ð¾Ð±ÑŠÐµÐºÑ‚Ð°
+	//
+	bool    b_pickup_alowed = inventory().FreeHands() && (!psActorFlags.test(AF_PICKUP_TARGET_ONLY) || m_pObjectWeLookingAt);
+	//
 	if(inventory().m_pTarget && inventory().m_pTarget->Useful() &&
 		m_pUsableObject && m_pUsableObject->nonscript_usable() &&
-		!Level().m_feel_deny.is_object_denied(smart_cast<CGameObject*>(inventory().m_pTarget)) )
+		!Level().m_feel_deny.is_object_denied(smart_cast<CGameObject*>(inventory().m_pTarget)) && b_pickup_alowed)
 	{
 		NET_Packet P;
 		u_EventGen(P, GE_OWNERSHIP_TAKE, ID());
@@ -205,10 +208,12 @@ void	CActor::PickupModeUpdate_COD	()
 	}
 
 	HUD().GetUI()->UIMainIngameWnd->SetPickUpItem(pNearestItem);
-
-	if (pNearestItem && m_bPickupMode)
+	//
+	bool    b_pickup_alowed = inventory().FreeHands() && (!psActorFlags.test(AF_PICKUP_TARGET_ONLY) || m_pObjectWeLookingAt);
+	//
+	if (pNearestItem && m_bPickupMode && b_pickup_alowed)
 	{
-		//ïîäáèðàíèå îáúåêòà
+		//Ð¿Ð¾Ð´Ð±Ð¸Ñ€Ð°Ð½Ð¸Ðµ Ð¾Ð±ÑŠÐµÐºÑ‚Ð°
 		Game().SendPickUpEvent(ID(), pNearestItem->object().ID());
 		
 		PickupModeOff();

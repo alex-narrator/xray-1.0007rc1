@@ -1401,6 +1401,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"g_condition_interdependence", &psActorFlags,	AF_CONDITION_INTERDEPENDENCE); //взаимозависимость параметров здоровья ГГ
 	CMD3(CCC_Mask,				"g_wpn_actions_reset_sprint",  &psActorFlags,	AF_WPN_ACTIONS_RESET_SPRINT); //перезарядка/смена типа патрона/бросок гранаты/болта/удар ножом сбрасывают спринт
 	CMD3(CCC_Mask,				"g_artefact_detector_check",   &psActorFlags,	AF_ARTEFACT_DETECTOR_CHECK); //свойства артефактов отображаются после проверки детектором
+	CMD3(CCC_Mask,				"g_pickup_target_only",        &psActorFlags,	AF_PICKUP_TARGET_ONLY); //можно подобрать только те предметы на которые непосредственно смотрит прицел
 
 	// alife
 #ifdef DEBUG
