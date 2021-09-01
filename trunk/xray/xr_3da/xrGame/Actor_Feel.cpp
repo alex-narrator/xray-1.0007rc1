@@ -117,7 +117,7 @@ void CActor::PickupModeUpdate()
 
 	//подбирание объекта
 	//
-	bool    b_pickup_alowed = inventory().FreeHands() && (!psActorFlags.test(AF_PICKUP_TARGET_ONLY) || m_pObjectWeLookingAt);
+	bool    b_pickup_alowed = inventory().FreeHands() && (!psActorFlags.test(AF_PICKUP_TARGET_ONLY) || inventory().m_pTarget);
 	//
 	if(inventory().m_pTarget && inventory().m_pTarget->Useful() &&
 		m_pUsableObject && m_pUsableObject->nonscript_usable() &&
@@ -206,11 +206,11 @@ void	CActor::PickupModeUpdate_COD	()
 		if (Level().m_feel_deny.is_object_denied(pNearestItem->cast_game_object()))
 				pNearestItem = NULL;
 	}
+	//
+	bool    b_pickup_alowed = inventory().FreeHands() && (!psActorFlags.test(AF_PICKUP_TARGET_ONLY) || inventory().m_pTarget);
+	//
+	HUD().GetUI()->UIMainIngameWnd->SetPickUpItem(b_pickup_alowed ? pNearestItem : NULL);
 
-	HUD().GetUI()->UIMainIngameWnd->SetPickUpItem(pNearestItem);
-	//
-	bool    b_pickup_alowed = inventory().FreeHands() && (!psActorFlags.test(AF_PICKUP_TARGET_ONLY) || m_pObjectWeLookingAt);
-	//
 	if (pNearestItem && m_bPickupMode && b_pickup_alowed)
 	{
 		//подбирание объекта
