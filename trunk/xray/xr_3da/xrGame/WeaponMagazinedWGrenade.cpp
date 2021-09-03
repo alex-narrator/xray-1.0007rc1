@@ -308,7 +308,7 @@ void CWeaponMagazinedWGrenade::state_Fire(float dt)
 			++m_iShotNum;
 			OnShot			();
 			//снижаем кондицию оружи при выстреле из ПГ
-			Msg("GetWeaponDeterioration GL = %f", GetWeaponDeterioration());
+			//Msg("GetWeaponDeterioration GL = %f", GetWeaponDeterioration());
 			ChangeCondition(-GetWeaponDeterioration());
 			//
 			

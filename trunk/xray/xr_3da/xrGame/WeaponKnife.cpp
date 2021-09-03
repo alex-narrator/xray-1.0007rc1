@@ -15,6 +15,7 @@
 #include "game_cl_single.h"
 #include "../../build_config_defines.h"
 #include "HUDManager.h"
+#include "Level_Bullet_Manager.h"
 
 #define KNIFE_MATERIAL_NAME "objects\\knife"
 
@@ -61,6 +62,7 @@ void CWeaponKnife::Load	(LPCSTR section)
 	m_fFirePowerDec  = READ_IF_EXISTS(pSettings, r_float, section, "fire_power_dec", 0.0f);
 	m_fFire2PowerDec = READ_IF_EXISTS(pSettings, r_float, section, "fire2_power_dec", m_fFirePowerDec);
 	//
+	m_fMinConditionHitPart = READ_IF_EXISTS(pSettings, r_float, section, "min_condition_hit_part", 1.0f);
 }
 
 void CWeaponKnife::OnStateSwitch	(u32 S)
@@ -151,8 +153,20 @@ void CWeaponKnife::KnifeStrike(const Fvector& pos, const Fvector& dir)
 	bool SendHit					= SendHitAllowed(H_Parent());
 
 	PlaySound						(m_sndShot,pos);
-
-	Level().BulletManager().AddBullet(	pos, 
+	//
+	if (ParentIsActor())
+	{
+		if (!fis_zero(conditionDecreasePerShotOnHit))
+		{
+			float condition_k = m_fMinConditionHitPart + (1 - m_fMinConditionHitPart) * GetCondition();
+			fCurrentHit = fCurrentHit * condition_k;
+		}
+		if (fis_zero(GetCondition()))
+			m_eHitType = m_eHitType_ZeroCondition;
+	}
+	//
+	//Level().BulletManager().AddBullet(pos, 
+	SBullet& bullet = Level().BulletManager().AddBullet(pos,
 										dir, 
 										m_fStartBulletSpeed, 
 										fCurrentHit, 
@@ -163,6 +177,9 @@ void CWeaponKnife::KnifeStrike(const Fvector& pos, const Fvector& dir)
 										fireDistance, 
 										cartridge, 
 										SendHit);
+	//
+	if (ParentIsActor())				bullet.setOnBulletHit(true);
+	//Msg("Hit = %.6f, HitType = %d", fCurrentHit, m_eHitType);
 }
 
 
@@ -346,6 +363,8 @@ void CWeaponKnife::LoadFireParams(LPCSTR section, LPCSTR prefix)
 
 	fHitImpulse_2		= pSettings->r_float	(section,strconcat(sizeof(full_name),full_name, prefix, "hit_impulse_2"));
 	m_eHitType_2		= ALife::g_tfString2HitType(pSettings->r_string(section, "hit_type_2"));
+	//
+	m_eHitType_ZeroCondition = ALife::g_tfString2HitType(pSettings->r_string(section, "hit_type_zero_condition"));
 }
 
 void CWeaponKnife::StartIdleAnim()

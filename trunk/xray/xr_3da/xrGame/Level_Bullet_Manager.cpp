@@ -10,6 +10,7 @@
 #include "gamepersistent.h"
 #include "mt_config.h"
 #include "game_cl_base_weapon_usage_statistic.h"
+#include "Weapon.h"
 
 #ifdef DEBUG
 #	include "debug_renderer.h"
@@ -21,7 +22,8 @@
 float CBulletManager::m_fMinBulletSpeed = 2.f;
 
 
-SBullet::SBullet()
+SBullet::SBullet() :
+m_on_bullet_hit(false)
 {
 }
 
@@ -156,7 +158,7 @@ void CBulletManager::Clear		()
 	m_Events.clear			();
 }
 
-void CBulletManager::AddBullet(const Fvector& position,
+/*void*/SBullet& CBulletManager::AddBullet(const Fvector& position,
 							   const Fvector& direction,
 							   float starting_speed,
 							   float power,
@@ -181,6 +183,8 @@ void CBulletManager::AddBullet(const Fvector& position,
 	if (SendHit && GameID() != GAME_SINGLE)
 		Game().m_WeaponUsageStatistic->OnBullet_Fire(&bullet, cartridge);
 	m_Lock.Leave	();
+	//
+	return bullet;
 }
 
 void CBulletManager::UpdateWorkload()
@@ -445,6 +449,17 @@ void CBulletManager::CommitEvents			()	// @ the start of frame
 			{
 				if (E.dynamic)	DynamicObjectHit	(E);
 				else			StaticObjectHit		(E);
+				//
+				if (E.bullet.isOnBulletHit()) 
+				{
+					CObject* O = Level().Objects.net_Find(E.bullet.weapon_id);
+					if (O) 
+					{
+						CWeapon* W = smart_cast<CWeapon*>(O);
+						if (W) W->OnBulletHit();
+					}
+				}
+				//
 			}break;
 		case EVENT_REMOVE:
 			{

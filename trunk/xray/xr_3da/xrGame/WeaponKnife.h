@@ -44,6 +44,8 @@ protected:
 	//
 	float               m_fFirePowerDec;  //снижение выносливости при ударе
 	float               m_fFire2PowerDec; //снижение выносливости при ударе2
+	//
+	float				m_fMinConditionHitPart; //минимальная доля хита при полном износе
 
 protected:	
 	ALife::EHitType		m_eHitType;
@@ -58,6 +60,8 @@ protected:
 	Fvector4			fvHitPower_2;
 	float				fCurrentHit;
 	float				fHitImpulse_2;
+	//
+	ALife::EHitType		m_eHitType_ZeroCondition; //тип хита при полном износе
 protected:
 	virtual void		LoadFireParams					(LPCSTR section, LPCSTR prefix);
 public:

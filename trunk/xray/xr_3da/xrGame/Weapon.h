@@ -381,6 +381,8 @@ protected:
 	float					conditionDecreasePerShotSilencer;
 	//увеличение изношености при выстреле из подствольника
 	float					conditionDecreasePerShotGL;
+	//увеличение изношености при попадании
+	float					conditionDecreasePerShotOnHit;
 
 	//  [8/2/2005]
 	float					m_fPDM_disp_base;
@@ -493,4 +495,6 @@ private:
 
 public:
 	const float				&hit_probability() const;
+	//попадание пули
+	virtual void            OnBulletHit();
 };

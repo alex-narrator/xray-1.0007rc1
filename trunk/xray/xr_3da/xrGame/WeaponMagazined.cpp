@@ -568,13 +568,13 @@ void CWeaponMagazined::state_Fire(float dt)
 		{
 			VERIFY(fTimeToFirePreffered > 0.f);
 			fTime += fTimeToFirePreffered; //установим скорострельность привилегированного режима
-			Msg("fTimeToFirePreffered = %.6f", fTimeToFirePreffered);
+			//Msg("fTimeToFirePreffered = %.6f", fTimeToFirePreffered);
 		}
 		else
 		{
 			VERIFY(fTimeToFire > 0.f);
 			fTime += fTimeToFire;
-			Msg("fTimeToFire = %.6f", fTimeToFire);
+			//Msg("fTimeToFire = %.6f", fTimeToFire);
 		}
 		//
 		++m_iShotNum;
