@@ -9,9 +9,9 @@ class CWeaponCustomPistol: public CWeaponMagazined
 private:
 	typedef CWeaponMagazined inherited;
 public:
-					CWeaponCustomPistol	(LPCSTR name);
-	virtual			~CWeaponCustomPistol();
-	virtual	int		GetCurrentFireMode	() { return 1; };
+					CWeaponCustomPistol		(LPCSTR name);
+	virtual			~CWeaponCustomPistol	();
+	//virtual	int		GetCurrentFireMode		() { return 1; };
 protected:
 	virtual void	FireEnd				();
 	virtual void	switch2_Fire		();

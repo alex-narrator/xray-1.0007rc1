@@ -190,6 +190,25 @@ void CWeaponShotgun::UpdateSounds	()
 
 bool CWeaponShotgun::Action			(s32 cmd, u32 flags) 
 {
+	if (GetCurrentFireMode() == 2)
+	{
+		switch (cmd)
+		{
+		case kWPN_FIRE:
+		{
+			if (flags&CMD_START)
+			{
+				if (IsPending()) return false;
+				Fire2Start();
+			}
+			else
+				Fire2End();
+
+			return true;
+		}
+		}
+	}
+
 	if(inherited::Action(cmd, flags)) return true;
 
 	if(	m_bTriStateReload && GetState()==eReload &&
@@ -201,7 +220,7 @@ bool CWeaponShotgun::Action			(s32 cmd, u32 flags)
 		return true;
 	}
 	//если оружие чем-то занято, то ничего не делать
-	if(IsPending()) return false;
+/*	if(IsPending()) return false;
 
 	switch(cmd) 
 	{
@@ -211,7 +230,7 @@ bool CWeaponShotgun::Action			(s32 cmd, u32 flags)
 				else Fire2End();
 			}
 			return true;
-	}
+	}*/
 	return false;
 }
 
