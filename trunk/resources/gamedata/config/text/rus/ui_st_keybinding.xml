@@ -238,7 +238,7 @@
 		<text>Проверить предмет в руках</text>
 	</string>
 	<string id="kb_check_gear">
-		<text>Проверить карманы</text>
+		<text>Проверить снаряжение</text>
 	</string>
         <string id="kb_check_devices">
 		<text>Проверить устройства</text>

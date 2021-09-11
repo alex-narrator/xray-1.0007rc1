@@ -181,16 +181,14 @@
 	<string id="ui_mm_artefact_detector_check">
 		<text>Свойства артефактов отображаются после проверки детектором</text>
 	</string>
-	<string id="ui_mm_hud_show_on_key">
-		<text>Отображать элементы HUD при удержании кнопок [$$ACTION_SCORES$$] | [$$ACTION_WPN_RELOAD$$] | [$$ACTION_CHECK_GEAR$$]</text>
-	</string>
 	<string id="ui_mm_no_auto_reload">
 		<text>Запрет автоматической перезарядки оружия и сброса зума</text>
 	</string>
 	<string id="ui_mm_wpn_actions_reset_sprint">
 		<text>Действия с оружием сбрасывают спринт</text>
 	</string>
-
+	
+<!-- режимы свободных рук начало -->
 	<string id="ui_mm_free_hands">
 		<text>Для взаимодействия с предметами нужно освободить руки, нож нужен для обыска мутантов</text>
 	</string>
@@ -203,6 +201,22 @@
 	<string id="fh_manual">
 		<text>вручную</text>
 	</string>	
+<!-- режимы свободных рук конец -->	
+
+<!-- HUD по нажатию клавиш начало -->
+	<string id="ui_mm_hud_on_key">
+		<text>Отображать элементы HUD при удержании кнопок [$$ACTION_SCORES$$] | [$$ACTION_WPN_RELOAD$$] | [$$ACTION_CHECK_GEAR$$]</text>
+	</string>
+	<string id="hk_off">
+		<text>отключено</text>
+	</string>	
+	<string id="hk_warning">
+		<text>только иконки-индикаторы</text>
+	</string>	
+	<string id="hk_motion">
+		<text>с иконкой положения персонажа</text>
+	</string>
+<!-- HUD по нажатию клавиш конец -->
 	
 	<string id="ui_mm_smooth_overweight">
 		<text>Плавный перегруз без обездвиживания</text>

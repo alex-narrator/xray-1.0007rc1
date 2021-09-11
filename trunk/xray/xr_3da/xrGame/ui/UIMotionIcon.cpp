@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "UIMainIngameWnd.h"
 #include "UIMotionIcon.h"
 #include "UIXmlInit.h"
@@ -6,6 +6,11 @@
 #include "../game_cl_base.h"
 #include "../level.h"
 #include "../../CustomHUD.h"
+//added for MotionIcon
+#include "../Actor.h"
+#include "../ActorCondition.h"
+#include "../hudmanager.h"
+#include <functional>
 
 const LPCSTR MOTION_ICON_XML = "motion_icon.xml";
 
@@ -79,6 +84,27 @@ void CUIMotionIcon::Init()
 	m_states[stSprint].Show		(false);
 
 	ShowState					(stNormal);
+	//
+	InitStateColorize();
+}
+
+void CUIMotionIcon::InitStateColorize()
+{
+	u_ColorDefault			= pSettings->r_color("motion_icon_indicator_thresholds", "color_default");
+	SmoothColorizeThreshold = READ_IF_EXISTS(pSettings, r_float, "motion_icon_indicator_thresholds", "health_to_colorize", 0.f);
+	// Читаем данные порогов для индикатора
+	shared_str cfgRecord = pSettings->r_string("motion_icon_indicator_thresholds", "health");
+	u32 count = _GetItemCount(*cfgRecord);
+
+	char	singleThreshold[8];
+	float	f = 0;
+	for (u32 k = 0; k < count; ++k)
+	{
+		_GetItem(*cfgRecord, k, singleThreshold);
+		sscanf(singleThreshold, "%f", &f);
+
+		m_Thresholds.push_back(f);
+	}
 }
 
 void CUIMotionIcon::ShowState(EState state)
@@ -113,18 +139,78 @@ void CUIMotionIcon::SetLuminosity(float Pos)
 	m_luminosity			= Pos;
 }
 
-#include "../Actor.h"
-#include "../ActorCondition.h"
-#include "../hudmanager.h"
+void CUIMotionIcon::SetStateWarningColor(EState state)
+{
+	if (g_HudOnKey != 2)
+	{
+		if (m_states[state].GetColor() != u_ColorDefault)
+			m_states[state].SetColor(u_ColorDefault);
+		return;
+	}
+
+	CActor*	m_pActor = smart_cast<CActor*>(Level().CurrentViewEntity());
+
+	float actor_health = m_pActor ? m_pActor->conditions().GetHealth() : 0;
+	
+	if (fis_zero(SmoothColorizeThreshold))
+	{
+		xr_vector<float>::reverse_iterator	rit;
+
+		float value = m_pActor ? 1 - actor_health : 0;
+
+		// Сначала проверяем на точное соответсвие
+		rit = std::find(m_Thresholds.rbegin(), m_Thresholds.rend(), value);
+
+		// Если его нет, то берем последнее меньшее значение ()
+		if (rit == m_Thresholds.rend())
+			rit = std::find_if(m_Thresholds.rbegin(), m_Thresholds.rend(), std::bind2nd(std::less<float>(), value));
+
+		// Минимальное и максимальное значения границы
+		float min = m_Thresholds.front();
+		float max = m_Thresholds.back();
+		if (rit != m_Thresholds.rend())
+		{
+			float v = *rit;
+			m_states[state].SetColor(color_argb(
+				0xFF, 
+				clampr<u32>(static_cast<u32>(255 * ((v - min) / (max - min) * 2)), 0, 255),
+				clampr<u32>(static_cast<u32>(255 * (2.0f - (v - min) / (max - min) * 2)), 0, 255),
+				0
+				));
+		}
+		else
+			m_states[state].SetColor(u_ColorDefault);
+	}
+	else
+	{
+		if (actor_health <= SmoothColorizeThreshold)
+		{
+			float health_k = actor_health / SmoothColorizeThreshold;
+			clamp<float>(health_k, 0.f, 1.f);
+			m_states[state].SetColor(color_argb(
+				0xFF,
+				255,
+				clampr<u32>(static_cast<u32>(255 * health_k), 0, 255),
+				0
+				));
+		}
+		else
+			m_states[state].SetColor(u_ColorDefault);
+	}
+}
+
 void CUIMotionIcon::Update()
 {
-	bool show_motion_icon = !psHUD_Flags.test(HUD_SHOW_ON_KEY);
+	bool show_motion_icon  = g_HudOnKey != 1;
 	bool show_progress_bar = HUD().GetUI()->UIMainIngameWnd->AllowHUDElement(CUIMainIngameWnd::ePDA);
 
+	//статик положения персонажа и выносливости
 	UIStaticMotionBack.Show (show_motion_icon);
+	//раскраска иконки положения персонажа
+	SetStateWarningColor	(m_curren_state);
+	//статики прогресс-баров освещенности/заметности и шума
 	UIStaticLuminocity.Show (show_progress_bar);
 	UIStaticNoise.Show      (show_progress_bar);
-
 	//
 	CActor*	m_pActor = smart_cast<CActor*>(Level().CurrentViewEntity());
 
@@ -132,7 +218,7 @@ void CUIMotionIcon::Update()
 	SetPower(m_pActor->conditions().GetPower()*100.0f);
 	//
 
-	if (!psHUD_Flags.test(HUD_USE_LUMINOSITY)) //������������� ������������ ������ ���������� �� ������� �����
+	if (!psHUD_Flags.test(HUD_USE_LUMINOSITY)) //использование освещённости вместо заметности на худовой шкале
 	{
 		if (m_bchanged)
 		{
@@ -146,7 +232,7 @@ void CUIMotionIcon::Update()
 				SetLuminosity(m_luminosity_progress.GetRange_min());
 		}
 	}
-	else //����� ���� ��� ��� � UIMainIngameWnd, ������������� � ������������
+	else //ранее этот код был в UIMainIngameWnd, использовался в мультиплеере
 	{
 		float		luminocity = smart_cast<CGameObject*>(Level().CurrentEntity())->ROS()->get_luminocity();
 		float		power = log(luminocity > .001f ? luminocity : .001f)*(1.f/*luminocity_factor*/);

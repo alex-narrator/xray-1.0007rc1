@@ -30,6 +30,14 @@
     <texture id="ui_hud_soldier_climb" x="0" y="578" width="65" height="75" />
     <texture id="ui_hud_soldier_run" x="0" y="653" width="65" height="75" />
     <texture id="ui_hud_soldier_crouch" x="65" y="354" width="65" height="75" />
+	<!-- altered motion icons start-->
+	<texture id="ui_hud_soldier_creep_warning" 	x="298" y="428" width="65" height="75" />
+    <texture id="ui_hud_soldier_normal_warning" x="298" y="503" width="65" height="75" />
+    <texture id="ui_hud_soldier_sprint_warning" x="298" y="578" width="65" height="75" />
+    <texture id="ui_hud_soldier_climb_warning" 	x="363" y="428" width="65" height="75" />
+    <texture id="ui_hud_soldier_run_warning" 	x="363" y="503" width="65" height="75" />
+    <texture id="ui_hud_soldier_crouch_warning" x="363" y="578" width="65" height="75" />
+	<!-- altered motion icons end-->
     <texture id="ui_hud_teamF_counter" x="981" y="0" width="36" height="70" />
     <texture id="ui_hud_teamF_line" x="0" y="1020" width="404" height="4" />
     <texture id="ui_hud_teamF_leftS" x="494" y="65" width="39" height="43" />

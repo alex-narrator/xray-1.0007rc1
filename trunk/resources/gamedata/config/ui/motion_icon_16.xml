@@ -6,27 +6,27 @@
 	</background>
 	
 	<state_normal x="15" y="13" width="50" height="75" stretch="1">
-		<texture>ui_hud_soldier_normal</texture>
+		<texture>ui_hud_soldier_normal_warning</texture>
 	</state_normal>
 
 	<state_crouch x="15" y="13" width="50" height="75" stretch="1">
-		<texture>ui_hud_soldier_crouch</texture>
+		<texture>ui_hud_soldier_crouch_warning</texture>
 	</state_crouch>
 
 	<state_creep x="15" y="13" width="50" height="75" stretch="1">
-		<texture>ui_hud_soldier_creep</texture>
+		<texture>ui_hud_soldier_creep_warning</texture>
 	</state_creep>
 
 	<state_climb x="15" y="13" width="50" height="75" stretch="1">
-		<texture>ui_hud_soldier_climb</texture>
+		<texture>ui_hud_soldier_climb_warning</texture>
 	</state_climb>
 
 	<state_run x="15" y="13" width="50" height="75" stretch="1">
-		<texture>ui_hud_soldier_run</texture>
+		<texture>ui_hud_soldier_run_warning</texture>
 	</state_run>
 
 	<state_sprint x="15" y="13" width="50" height="75" stretch="1">
-		<texture>ui_hud_soldier_sprint</texture>
+		<texture>ui_hud_soldier_sprint_warning</texture>
 	</state_sprint>
 
 	<power_progress  x="16" y="91" width="45" height="7" horz="1" min="0" max="100" pos="50">

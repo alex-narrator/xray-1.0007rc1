@@ -15,7 +15,6 @@ ENGINE_API extern Flags32		psHUD_Flags;
 #define HUD_DRAW_RT				(1<<10)
 #define HUD_USE_LUMINOSITY		(1<<11) //использование освещённости вместо заметности на худовой шкале
 #define HUD_ROUND_CROSSHAIR  	(1<<12) //билдовый круглый курсор
-#define HUD_SHOW_ON_KEY  	    (1<<13) //элементы HUD выводятся по нажатию клавиш
 
 class ENGINE_API IRender_Visual;
 class CUI;
@@ -45,3 +44,5 @@ public:
 };
 
 extern ENGINE_API CCustomHUD* g_hud;
+
+extern u32	g_HudOnKey; //элементы HUD выводятся по нажатию клавиш: 0 - отключено, 1 - только warning-иконки, 2 - иконка положения персонажа в качестве warning-иконки здоровья

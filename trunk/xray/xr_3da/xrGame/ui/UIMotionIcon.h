@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 class CUIMotionIcon : public CUIStatic
 {
@@ -48,4 +48,10 @@ public:
 			void			SetLuminosity		(float Pos);
 			void			SetActorVisibility	(u16 who_id, float value);
 			void			ResetVisibility		();
+			//
+			void			InitStateColorize	();
+			u32             u_ColorDefault;
+			float			SmoothColorizeThreshold;
+			void			SetStateWarningColor	(EState state); //раскраска иконки положения персонажа
+			xr_vector<float>						m_Thresholds;	//Пороги изменения цвета индикатора, загружаемые из system.ltx
 };

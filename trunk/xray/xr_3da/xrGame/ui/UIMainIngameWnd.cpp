@@ -405,25 +405,29 @@ void CUIMainIngameWnd::Draw()
 bool CUIMainIngameWnd::AllowHUDElement(EHUDElement element)
 {
 	bool result = false;
-	bool allow_devices_hud = !psHUD_Flags.test(HUD_SHOW_ON_KEY) || Level().IR_GetKeyState(get_action_dik(kSCORES)) || g_actor->inventory().GetActiveSlot() == BOLT_SLOT;
+	bool allow_devices_hud = g_HudOnKey == 0 || Level().IR_GetKeyState(get_action_dik(kSCORES)) || m_pActor->inventory().GetActiveSlot() == BOLT_SLOT;
 
 	switch (element)
 	{
 		case ePDA: //ПДА
 		{
-			if (allow_devices_hud && g_actor->GetPDA()) result = true;
+			if (allow_devices_hud && m_pActor->GetPDA()) result = true;
 		}break;
 		case eDetector: //Детектор (иконка радиационного заражения)
 		{
-			if (allow_devices_hud && g_actor->GetDetector()) result = true;
+			if (allow_devices_hud && m_pActor->GetDetector()) result = true;
 		}break;
 		case eActiveItem: //Информация об предмете в руках (для оружия - кол-во/тип заряженных патронов, режим огня)
 		{
-			result = g_actor->inventory().ActiveItem() && (!psHUD_Flags.test(HUD_SHOW_ON_KEY) || Level().IR_GetKeyState(get_action_dik(kCHECKACTIVEITEM)));
+			result = m_pActor->inventory().ActiveItem() && (g_HudOnKey == 0 || Level().IR_GetKeyState(get_action_dik(kCHECKACTIVEITEM)));
 		}break;
 		case eGear: //Информация о снаряжении - панель артефактов, наполнение квикслотов, общее кол-во патронов к оружию в руках
 		{
-			result = !psHUD_Flags.test(HUD_SHOW_ON_KEY) || Level().IR_GetKeyState(get_action_dik(kCHECKGEAR));
+			result = g_HudOnKey == 0 || Level().IR_GetKeyState(get_action_dik(kCHECKGEAR));
+		}break;
+		case eArmor: //Иконка состояния брони
+		{
+			result = g_HudOnKey != 0 && m_pActor->inventory().ItemFromSlot(OUTFIT_SLOT) && Level().IR_GetKeyState(get_action_dik(kCHECKGEAR));
 		}break;
 	}
 
@@ -534,7 +538,7 @@ void CUIMainIngameWnd::Update()
 
 		// Armor indicator stuff
 		PIItem	Outfit = m_pActor->inventory().ItemFromSlot(OUTFIT_SLOT);
-		if (Outfit && !psHUD_Flags.test(HUD_SHOW_ON_KEY))
+		if (Outfit && g_HudOnKey == 0)
 		{
 			UIArmorBar.Show					(true);
 			UIStaticArmor.Show				(true);
@@ -550,7 +554,7 @@ void CUIMainIngameWnd::Update()
 
 		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 		//
-		bool b_new_warning_icons = !!psHUD_Flags.test(HUD_SHOW_ON_KEY);
+		bool b_replace_progress_bar = g_HudOnKey == 1;//!!psHUD_Flags.test(HUD_SHOW_ON_KEY);
 
 		EWarningIcons i					= ewiWeaponJammed;		
 		while (!external_icon_ctrl && i < ewiInvincible)
@@ -580,15 +584,15 @@ void CUIMainIngameWnd::Update()
 				break;
 				//
 			case ewiArmor:
-				if (b_new_warning_icons && Outfit)
+				if (AllowHUDElement(eArmor))
 					value = 1 - Outfit->GetCondition();
 				break;
 			case ewiHealth:
-				if (b_new_warning_icons)
+				if (b_replace_progress_bar)
 					value = 1 - m_pActor->conditions().GetHealth();
 				break;
 			case ewiPower:
-				if (b_new_warning_icons)
+				if (b_replace_progress_bar)
 					value = 1 - m_pActor->conditions().GetPower();
 				break;
 				//
@@ -622,7 +626,7 @@ void CUIMainIngameWnd::Update()
 	}
 
 	// health&armor
-	if (!psHUD_Flags.test(HUD_SHOW_ON_KEY))
+	if (g_HudOnKey == 0)
 	{
 		UIHealthBar.Show           (true);
 		UIStaticHealth.Show        (true);

@@ -168,6 +168,7 @@ public:
 		eDetector,
 		eActiveItem,
 		eGear,
+		eArmor,
 	};
 	bool                AllowHUDElement                 (EHUDElement element);
 	//
