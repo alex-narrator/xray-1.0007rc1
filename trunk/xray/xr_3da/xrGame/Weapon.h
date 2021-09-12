@@ -378,7 +378,7 @@ protected:
 	//увеличение изношености при выстреле
 	float					conditionDecreasePerShot;
 	//увеличение изношености при выстреле с глушителем
-	float					conditionDecreasePerShotSilencer;
+	float					conditionDecreasePerShotSilencerKoef;
 	//увеличение изношености при выстреле из подствольника
 	float					conditionDecreasePerShotGL;
 	//увеличение изношености при попадании

@@ -49,10 +49,9 @@ void random_dir(Fvector& tgt_dir, const Fvector& src_dir, float dispersion)
 float CWeapon::GetWeaponDeterioration	()
 {
 	//
-	if(IsSilencerAttached() && SilencerAttachable())
-		return conditionDecreasePerShotSilencer;
+	float silencer_dec_k = IsSilencerAttached() && SilencerAttachable() ? conditionDecreasePerShotSilencerKoef : 1.0f;
 	//
-	return conditionDecreasePerShot;
+	return conditionDecreasePerShot * silencer_dec_k;
 };
 
 void CWeapon::FireTrace		(const Fvector& P, const Fvector& D)

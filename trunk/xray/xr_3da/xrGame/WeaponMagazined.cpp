@@ -1249,10 +1249,9 @@ float	CWeaponMagazined::GetWeaponDeterioration()
 	if (!m_bHasDifferentFireModes || m_iPrefferedFireMode == -1 || u32(GetCurrentFireMode()) <= u32(m_iPrefferedFireMode))
 		return inherited::GetWeaponDeterioration();
 	//
-	if (IsSilencerAttached() && SilencerAttachable())
-		return m_iShotNum*conditionDecreasePerShotSilencer;
+	float silencer_dec_k = IsSilencerAttached() && SilencerAttachable() ? conditionDecreasePerShotSilencerKoef : 1.0f;
 	//
-	return m_iShotNum*conditionDecreasePerShot;
+	return m_iShotNum*conditionDecreasePerShot * silencer_dec_k;
 };
 
 void CWeaponMagazined::save(NET_Packet &output_packet)

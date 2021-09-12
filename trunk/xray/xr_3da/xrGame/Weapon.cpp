@@ -385,7 +385,7 @@ void CWeapon::Load(LPCSTR section)
 		m_iSilencerX = pSettings->r_s32(section, "silencer_x");
 		m_iSilencerY = pSettings->r_s32(section, "silencer_y");
 		//увеличение изношености при выстреле с глушителем - из секции съёмного глушителя
-		conditionDecreasePerShotSilencer = READ_IF_EXISTS(pSettings, r_float, m_sSilencerName, "condition_shot_dec", conditionDecreasePerShot);
+		conditionDecreasePerShotSilencerKoef = READ_IF_EXISTS(pSettings, r_float, m_sSilencerName, "condition_shot_dec_k", 1.0f);
 	}
 
 	if (m_eGrenadeLauncherStatus == ALife::eAddonAttachable)
