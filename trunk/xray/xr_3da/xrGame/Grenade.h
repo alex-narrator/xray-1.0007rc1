@@ -20,6 +20,10 @@ public:
 	virtual BOOL 			net_Spawn							(CSE_Abstract* DC);
 	virtual void 			net_Destroy							();
 	virtual void 			net_Relcase							(CObject* O );
+	//
+	virtual void			net_Export							(NET_Packet& P);
+	virtual void			net_Import							(NET_Packet& P);
+	//
 
 	virtual void 			OnH_B_Independent					(bool just_before_destroy);
 	virtual void 			OnH_A_Independent					();
@@ -30,9 +34,8 @@ public:
 	virtual void 			OnAnimationEnd						(u32 state);
 	virtual void 			UpdateCL							();
 
-	virtual void 			Throw();
-	virtual void 			Destroy();
-
+	virtual void 			Throw								();
+	virtual void 			Destroy								();
 	
 	virtual bool			Action								(s32 cmd, u32 flags);
 	virtual bool			Useful								() const;
@@ -49,6 +52,7 @@ public:
 
 	virtual void			Deactivate							();
 	virtual void			GetBriefInfo						(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
+
 protected:
 	ALife::_TIME_ID			m_dwGrenadeRemoveTime;
 	ALife::_TIME_ID			m_dwGrenadeIndependencyTime;

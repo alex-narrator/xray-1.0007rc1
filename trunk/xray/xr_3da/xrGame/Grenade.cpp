@@ -16,6 +16,7 @@
 #include "game_object_space.h"
 #include "script_callback_ex.h"
 #include "script_game_object.h"
+#include "xrServer_Objects_ALife_Items.h"
 
 #define GRENADE_REMOVE_TIME		30000
 const float default_grenade_detonation_threshold_hit=100;
@@ -48,6 +49,18 @@ void CGrenade::Load(LPCSTR section)
 	else
 		m_dwGrenadeRemoveTime = GRENADE_REMOVE_TIME;
 	m_grenade_detonation_threshold_hit=READ_IF_EXISTS(pSettings,r_float,section,"detonation_threshold_hit",default_grenade_detonation_threshold_hit);
+	//
+	LPCSTR str = pSettings->r_string(section, "destroy_time");
+	int cnt = _GetItemCount(str);
+	if (cnt > 1) //заданы границы рандомной задержки до взрыва
+	{
+		Ivector2 m = pSettings->r_ivector2(section, "destroy_time");
+		m_dwDestroyTimeMax = ::Random.randI(m.x, m.y);
+	}
+	else		//жестко заданная задержка до взрыва
+		m_dwDestroyTimeMax = pSettings->r_u32(section, "destroy_time");
+	//debug
+	Msg("Load [%s] (id [%d]) with time to destroy [%d]", cNameSect().c_str(), ID(), m_dwDestroyTimeMax);
 }
 
 void CGrenade::Hit					(SHit* pHDS)
@@ -70,7 +83,32 @@ BOOL CGrenade::net_Spawn(CSE_Abstract* DC)
 	box.mul								(3.f);
 	CExplosive::SetExplosionSize		(box);
 	m_thrown							= false;
+	//
+	if (auto se_grenade = smart_cast<CSE_ALifeItemGrenade*>(DC))
+		if (se_grenade->m_destroy_time_max != NULL)
+			m_dwDestroyTimeMax = se_grenade->m_destroy_time_max;
+	//debug
+	Msg("net_Spawn [%s] (id [%d]) with time to destroy [%d]", cNameSect().c_str(), ID(), m_dwDestroyTimeMax);
 	return								ret;
+}
+
+//
+void CGrenade::net_Export(NET_Packet& P)
+{
+	inherited::net_Export(P);
+	
+	P.w_u32(m_dwDestroyTimeMax);
+
+	//Msg("net_Export [%s] (id [%d]) with time to destroy [%d]", cNameSect().c_str(), ID(), m_dwDestroyTimeMax);
+}
+
+void CGrenade::net_Import(NET_Packet& P)
+{
+	inherited::net_Import(P);
+
+	m_dwDestroyTimeMax = P.r_u32();
+
+	//Msg("net_Import [%s] (id [%d]) with time to destroy [%d]", cNameSect().c_str(), ID(), m_dwDestroyTimeMax);
 }
 
 void CGrenade::net_Destroy() 
@@ -120,9 +158,9 @@ void CGrenade::State(u32 state)
 
 				if (Local())
 				{
-					#ifdef DEBUG
-					Msg("Destroying local grenade[%d][%d]",ID(),Device.dwFrame);
-					#endif
+					//#ifdef DEBUG
+					Msg("Destroying local grenade[%d][%d] with destroy time [%d]", ID(), Device.dwFrame, m_dwDestroyTimeMax);
+					//#endif
 					DestroyObject		();
 				}
 				
@@ -143,6 +181,8 @@ void CGrenade::Throw()
 	
 	if (pGrenade) {
 		pGrenade->set_destroy_time(m_dwDestroyTimeMax);
+		//debug
+		Msg("Throw: [%s] (id [%d]) with time to destroy [%d]", cNameSect().c_str(), ID(), m_dwDestroyTimeMax);
 		//установить ID того кто кинул гранату
 		pGrenade->SetInitiator( H_Parent()->ID() );
 	}
@@ -159,8 +199,6 @@ void CGrenade::Throw()
 	}
 	// Real Wolf.End.18.12.14
 }
-
-
 
 void CGrenade::Destroy() 
 {

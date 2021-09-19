@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
+п»ї////////////////////////////////////////////////////////////////////////////
 //	Module 		: xrServer_Objects_ALife.h
 //	Created 	: 19.09.2002
 //  Modified 	: 04.06.2003
@@ -89,7 +89,7 @@ add_to_type_list(CSE_ALifeItem)
 #define script_type_list save_type_list(CSE_ALifeItem)
 
 SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemTorch,CSE_ALifeItem)
-//флаги
+//С„Р»Р°РіРё
 	enum EStats{
 		eTorchActive				= (1<<0),
 		eNightVisionActive			= (1<<1),
@@ -131,14 +131,14 @@ add_to_type_list(CSE_ALifeItemAmmo)
 
 SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 
-	//возможность подключения аддонов
+	//РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Р°РґРґРѕРЅРѕРІ
 	enum EWeaponAddonStatus{
-		eAddonDisabled				= 0,	//нельзя присоеденить
-		eAddonPermanent				= 1,	//постоянно подключено по умолчанию
-		eAddonAttachable			= 2		//можно присоединять
+		eAddonDisabled				= 0,	//РЅРµР»СЊР·СЏ РїСЂРёСЃРѕРµРґРµРЅРёС‚СЊ
+		eAddonPermanent				= 1,	//РїРѕСЃС‚РѕСЏРЅРЅРѕ РїРѕРґРєР»СЋС‡РµРЅРѕ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
+		eAddonAttachable			= 2		//РјРѕР¶РЅРѕ РїСЂРёСЃРѕРµРґРёРЅСЏС‚СЊ
 	};
 
-	//текущее состояние аддонов
+	//С‚РµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РґРґРѕРЅРѕРІ
 	enum EWeaponAddonState 
 	{
 		eWeaponAddonScope = 0x01,
@@ -255,6 +255,7 @@ add_to_type_list(CSE_ALifeItemDocument)
 
 SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemGrenade,CSE_ALifeItem)
 	u32								m_ef_weapon_type;
+	u32								m_destroy_time_max;		//РІСЂРµРјСЏ РґРѕ РІР·С‹СЂРІР° РіСЂР°РЅР°С‚С‹
 									CSE_ALifeItemGrenade	(LPCSTR caSection);
 	virtual							~CSE_ALifeItemGrenade	();
 	virtual u32						ef_weapon_type			() const;

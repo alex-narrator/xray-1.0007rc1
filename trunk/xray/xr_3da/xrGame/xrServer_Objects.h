@@ -151,8 +151,9 @@
 // 117 - CSE_ALifeLevelChanger			appended with property m_bSilentMode
 // 118 - CALifeHumanBrain				removed property m_tpKnownCustomers, sad but true
 // 119 - CSE_ALifeItemEatable			added class and m_portions_num field
+// 120 - CSE_ALifeItemGrenade			added m_destroy_time_max field to save/load delay to explosion
 //------------------------------------------------------------------------------
-#define SPAWN_VERSION	u16(119)
+#define SPAWN_VERSION	u16(120)
 
 SERVER_ENTITY_DECLARE_BEGIN2(CSE_Shape,ISE_Shape,CShapeData)
 public:
