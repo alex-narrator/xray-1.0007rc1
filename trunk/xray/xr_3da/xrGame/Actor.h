@@ -460,11 +460,6 @@ public:
 
 	bool					is_jump					();	
 
-	void                    UpdateWalkJump          (); //ходьба и прыжок
-	float                   m_fMinPowerWalkJump;
-	float                   m_fAdditionalWalkAccel;
-	float                   m_fAdditionalJumpSpeed;
-
 protected:
 	u32						mstate_wishful;
 	u32						mstate_old;
@@ -474,10 +469,7 @@ protected:
 
 	float					m_fWalkAccel;
 	float					m_fJumpSpeed;
-	//
-	float					m_fWalkAccelBase; //конфиговое значение скорости ходьбы
-	float					m_fJumpSpeedBase; //конфиговое значение высоты прыжка
-	//
+
 	float					m_fRunFactor;
 	float					m_fRunBackFactor;
 	float					m_fWalkBackFactor;

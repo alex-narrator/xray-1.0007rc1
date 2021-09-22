@@ -51,6 +51,7 @@ public:
 	//скорость потери крови из всех открытых ран 
 	virtual float		BleedingSpeed               ();
 	//
+	float				GetSmoothOwerweightKoef		();
 	void                UpdateStress                ();
 
 	virtual void 		ChangeAlcohol				(float value);
@@ -106,14 +107,14 @@ protected:
 public:
 	float m_MaxWalkWeight;
     //
-/*	float m_fMinPowerHealth;
-	float m_fMinPowerHealthTreshold;*/
 	float m_fBleedingPowerDecrease;
+	//
+	float m_fMinPowerWalkJump;
     //
 	float m_fMinHealthRadiation;
 	float m_fMinHealthRadiationTreshold;
     //
-	float m_fRegenCoef;            //коэфф. регенрации актора - зависит от сытости и дозы облучения
+	float m_fRegenCoef;            //коэфф. регенерации актора - зависит от сытости и дозы облучения
 	float m_fAlcoholSatietyIntens; //коэфф. для рассчета интенсивности постэффекта опьянения от голода
 	//
 	float m_fExerciseStressFactor; //фактор физнагрузки - множитель для коэффициента нагрузки актора при спринте и прыжке

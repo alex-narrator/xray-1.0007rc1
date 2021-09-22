@@ -96,10 +96,10 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 
 	m_MaxWalkWeight				= pSettings->r_float(section,"max_walk_weight");
     //
-/*	m_fMinPowerHealth             = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_health", 1);
-	m_fMinPowerHealthTreshold     = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_health_treshold", 0);*/
 	m_fBleedingPowerDecrease      = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "bleeding_power_dec", 0);
     //
+	m_fMinPowerWalkJump			  = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_walk_jump", 1.0f);
+	//
 	m_fMinHealthRadiation         = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_health_radiation", 1);
 	m_fMinHealthRadiationTreshold = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_health_radiation_treshold", 0);
     //
@@ -213,8 +213,8 @@ void CActorCondition::UpdateHealth()
 
 	ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime * m_fRegenCoef);
 
+	//радиация влияет на максимальное здоровье
 	if (m_fRadiation > m_fMinHealthRadiationTreshold) //защита от потенциального деления на 0 если m_fRadiationTreshold = 1
-		//SetMaxHealth(1 - (1 - m_fMinHealthRadiation) * m_fRadiation); //радиация влияет на максимальное здоровье
 		SetMaxHealth(m_fMinHealthRadiation + (1.0f - m_fMinHealthRadiation) * (1.0f - m_fRadiation) / (1.0f - m_fMinHealthRadiationTreshold));
 	else
 		SetMaxHealth(1.0f);
@@ -261,13 +261,6 @@ void CActorCondition::UpdatePower()
 		//radiation_power_k*
 		//satiety_power_k*
 		m_fDeltaTime * m_fRegenCoef - bleeding_power_dec;
-
-//	if (m_fSatiety < m_fMinPowerHealthTreshold)
-		//SetMaxPower(m_fMinPowerSatiety + (1 - m_fMinPowerSatiety) * m_fSatiety); //сытость влияет на максимальную выносливость
-	/*if (GetHealth() < m_fMinPowerHealthTreshold)
-		SetMaxPower(m_fMinPowerHealth + (1 - m_fMinPowerHealth) * GetHealth()); //здоровье влияет на максимальную выносливость
-	else
-		SetMaxPower(1.0f);*/
 
 #ifdef MY_DEBUG
 	Msg("m_fSatiety = %.2f", m_fSatiety);
@@ -374,9 +367,27 @@ void CActorCondition::UpdateSatiety()
 			: 0;
 }
 
+float CActorCondition::GetSmoothOwerweightKoef()
+{
+	float val = 1.0f;
+
+	if (psActorFlags.test(AF_SMOOTH_OVERWEIGHT))
+	{
+
+		float power_k = m_fMinPowerWalkJump + (1.0f - m_fMinPowerWalkJump) * GetPower(); //коэф влияния выносливости
+
+		float overweight_k = object().inventory().TotalWeight() > object().inventory().GetMaxWeight() ? //считаем коэф. только если есть перегруз
+			object().inventory().GetMaxWeight() / object().inventory().TotalWeight() :				//коэф влияния перегруза
+			1.0f;
+
+		val = power_k * overweight_k;
+	}
+	Msg("SmoothOverweightK = %.2f", val);
+	return val;
+}
+
 void CActorCondition::UpdateStress()
 {
-	//float exercise_stress = (g_actor->mstate_real&mcSprint || g_actor->mstate_real&mcSprint) ? m_fExerciseStressFactor : 1;
 	float exercise_stress = psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) && g_actor->get_state()&(mcSprint|mcJump) 
 		? m_fExerciseStressFactor : 1.0f;
 

@@ -319,11 +319,9 @@ void CActor::Load	(LPCSTR section )
 	character_physics_support()->movement()->Load(section);
 
 	//ходьба и прыжок
-	m_fWalkAccelBase    = pSettings->r_float(section, "walk_accel");
-	m_fJumpSpeedBase    = pSettings->r_float(section, "jump_speed");
-	//
-	m_fMinPowerWalkJump = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_walk_jump", 1.0f);
-	//
+	m_fWalkAccel				= pSettings->r_float(section, "walk_accel");
+	m_fJumpSpeed				= pSettings->r_float(section, "jump_speed");
+
 	m_fRunFactor				= pSettings->r_float(section,"run_coef");
 	m_fRunBackFactor			= pSettings->r_float(section,"run_back_coef");
 	m_fWalkBackFactor			= pSettings->r_float(section,"walk_back_coef");
@@ -1266,7 +1264,6 @@ void CActor::shedule_Update	(u32 DT)
 
 //	UpdateSleep									();
 
-	UpdateWalkJump                              (); //ходьба и прыжок
 	//для свойст артефактов, находящихся на поясе
 	UpdateArtefactsOnBelt						();
 	m_pPhysics_support->in_shedule_Update		(DT);
@@ -1571,9 +1568,6 @@ void CActor::UpdateArtefactsOnBelt()
 		update_time		= 0.0f;
 	}
 
-	m_fAdditionalWalkAccel = 0.0f;
-	m_fAdditionalJumpSpeed = 0.0f;
-
 	TIItemContainer &list = psActorFlags.test(AF_ARTEFACTS_FROM_ALL) ? inventory().m_all : inventory().m_belt;
 	for (TIItemContainer::iterator it = list.begin(); list.end() != it; ++it)
 	{
@@ -1587,8 +1581,6 @@ void CActor::UpdateArtefactsOnBelt()
 #ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
 			conditions().ChangeRadiation		(artefact->m_fRadiationRestoreSpeed*f_update_time);
 #endif
-			m_fAdditionalWalkAccel += artefact->m_fAdditionalWalkAccel;
-			m_fAdditionalJumpSpeed += artefact->m_fAdditionalJumpSpeed;
 		}
 
 	} // for belt items
@@ -1632,40 +1624,6 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 #endif
 	res_hit_power_k			-= _af_count;
 	return					res_hit_power_k * hit_power;
-}
-
-void CActor::UpdateWalkJump() //ходьба и прыжок
-{
-	//float hs_k = 1.0f;
-	float power_k = 1.0f;
-	float overweight_k = 1.0f;
-
-	if (psActorFlags.test(AF_SMOOTH_OVERWEIGHT))
-	{
-		//hs_k = m_fMinHealthWalkJump + (1 - m_fMinHealthWalkJump) * GetHealth(); //коэф влияния здоровья на скорость ходьбы и высоту прыжка
-		power_k = m_fMinPowerWalkJump + (1 - m_fMinPowerWalkJump) * conditions().GetPower(); //коэф влияния выносливости на скорость ходьбы и высоту прыжка
-
-		if (inventory().TotalWeight() > inventory().GetMaxWeight())         //считаем коэф. только если есть перегруз
-			overweight_k = inventory().GetMaxWeight() / inventory().TotalWeight();  //коэф влияния перегруза на скорость ходьбы и высоту прыжка
-	}
-	//скорость ходьбы
-	m_fWalkAccel = (m_fWalkAccelBase + m_fAdditionalWalkAccel) * overweight_k * power_k/*hs_k*/;
-
-	//высота прыжка
-	m_fJumpSpeed = (m_fJumpSpeedBase + m_fAdditionalJumpSpeed) * overweight_k * power_k/*hs_k*/;
-	character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed);
-
-#ifdef MY_DEBUG
-	Msg("m_fWalkAccel = %.2f", m_fWalkAccel);
-	Msg("m_fJumpSpeed = %.2f", m_fJumpSpeed);
-	Msg("m_fWalkAccelBase = %.2f", m_fWalkAccelBase);
-	Msg("m_fJumpSpeedBase = %.2f", m_fJumpSpeedBase);
-	Msg("m_fAdditionalWalkAccel = %.2f", m_fAdditionalWalkAccel);
-	Msg("m_fAdditionalJumpSpeed = %.2f", m_fAdditionalJumpSpeed);
-	Msg("power_k = %.2f", power_k);
-	Msg("overweight_k = %.2f", overweight_k);
-	Msg("conditions().GetPower() = %.2f", conditions().GetPower());
-#endif //MY_DEBUG
 }
 
 void	CActor::SetZoomRndSeed		(s32 Seed)

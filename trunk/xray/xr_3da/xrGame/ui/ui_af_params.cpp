@@ -133,7 +133,7 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			_val = READ_IF_EXISTS(pSettings, r_float, af_section, af_item_sect_names[i], 0.f);
 			float _actor_val = pSettings->r_float("actor", af_actor_param_names[i]);
 			if (fis_zero(_val))				continue;
-			_val = (_val / _actor_val)*100.0f;
+			_val *= 100.0f;
 	}
 		else
 //

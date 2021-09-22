@@ -9,6 +9,9 @@
 #include "../CameraBase.h"
 #include "xrMessages.h"
 
+#include "actorcondition.h"
+#include "Artifact.h"
+
 #include "level.h"
 #include "HUDManager.h"
 #include "UI.h"
@@ -204,7 +207,25 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 		{
 			mstate_real			|=	mcJump;
 			m_bJumpKeyPressed	=	TRUE;
-			Jump				= m_fJumpSpeed;
+			//custom jump speed
+			float jump_speed = m_fJumpSpeed;
+			//Msg("m_fJumpSpeed = %.2f", m_fJumpSpeed);
+			TIItemContainer &list = psActorFlags.test(AF_ARTEFACTS_FROM_ALL) ? inventory().m_all : inventory().m_belt;
+			for (TIItemContainer::iterator it = list.begin(); list.end() != it; ++it)
+			{
+				CArtefact*	artefact = smart_cast<CArtefact*>(*it);
+				if (artefact)
+				{
+					jump_speed += m_fJumpSpeed * artefact->m_fAdditionalJumpSpeed;
+				}
+			}
+			//Msg("additional jump_speed = %.2f", jump_speed);
+			jump_speed *= conditions().GetSmoothOwerweightKoef();
+			character_physics_support()->movement()->SetJumpUpVelocity(jump_speed);
+			//debug
+			//Msg("jump_speed = %.2f", jump_speed);
+			//
+			Jump				= jump_speed/*m_fJumpSpeed*/;
 			m_fJumpTime			= s_fJumpTime;
 
 
@@ -269,7 +290,24 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			// normalize and analyze crouch and run
 			float	scale				= vControlAccel.magnitude();
 			if (scale>EPS)	{
-				scale	=	m_fWalkAccel/scale;
+				//custom walk accel
+				float walk_accel = m_fWalkAccel;
+				//Msg("m_fWalkAccel = %.2f", m_fWalkAccel);
+				TIItemContainer &list = psActorFlags.test(AF_ARTEFACTS_FROM_ALL) ? inventory().m_all : inventory().m_belt;
+				for (TIItemContainer::iterator it = list.begin(); list.end() != it; ++it)
+				{
+					CArtefact*	artefact = smart_cast<CArtefact*>(*it);
+					if (artefact)
+					{
+						walk_accel += m_fWalkAccel * artefact->m_fAdditionalWalkAccel;
+					}
+				}
+				//Msg("additional walk_accel = %.2f", walk_accel);
+				walk_accel *= conditions().GetSmoothOwerweightKoef();
+				//debug
+				Msg("walk_accel = %.2f", walk_accel);
+				//
+				scale =	/*m_fWalkAccel*/walk_accel / scale;
 				if (bAccelerated)
 					if (mstate_real&mcBack)
 						scale *= m_fRunBackFactor;
