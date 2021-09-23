@@ -305,7 +305,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 				//Msg("additional walk_accel = %.2f", walk_accel);
 				walk_accel *= conditions().GetSmoothOwerweightKoef();
 				//debug
-				Msg("walk_accel = %.2f", walk_accel);
+				//Msg("walk_accel = %.2f", walk_accel);
 				//
 				scale =	/*m_fWalkAccel*/walk_accel / scale;
 				if (bAccelerated)

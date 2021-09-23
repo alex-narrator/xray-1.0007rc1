@@ -377,26 +377,28 @@ float CActorCondition::GetSmoothOwerweightKoef()
 		float power_k = m_fMinPowerWalkJump + (1.0f - m_fMinPowerWalkJump) * GetPower(); //коэф влияния выносливости
 
 		float overweight_k = object().inventory().TotalWeight() > object().inventory().GetMaxWeight() ? //считаем коэф. только если есть перегруз
-			object().inventory().GetMaxWeight() / object().inventory().TotalWeight() :				//коэф влияния перегруза
-			1.0f;
+			  object().inventory().GetMaxWeight() / object().inventory().TotalWeight() :				//коэф влияния перегруза
+			  1.0f;
 
 		val = power_k * overweight_k;
 	}
-	Msg("SmoothOverweightK = %.2f", val);
+	//Msg("SmoothOverweightK = %.2f", val);
 	return val;
 }
 
 void CActorCondition::UpdateStress()
 {
-	float exercise_stress = psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) && g_actor->get_state()&(mcSprint|mcJump) 
-		? m_fExerciseStressFactor : 1.0f;
+	float exercise_stress = psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) && object().get_state()&(mcSprint|mcJump) ? 
+							m_fExerciseStressFactor : 
+							1.0f;
 
-	float overweight_stress = psActorFlags.test(AF_SMOOTH_OVERWEIGHT) && object().inventory().TotalWeight() > object().inventory().GetMaxWeight() 
-		? object().inventory().TotalWeight() / object().inventory().GetMaxWeight() : 1.0f;
+	float overweight_stress = psActorFlags.test(AF_SMOOTH_OVERWEIGHT) && object().inventory().TotalWeight() > object().inventory().GetMaxWeight() ? 
+		  object().inventory().TotalWeight() / object().inventory().GetMaxWeight() : 
+		  1.0f;
 
-	/*if (g_actor->get_state()&mcSprint) Msg("mcSprint!");
+	/*if (object().get_state()&mcSprint) Msg("mcSprint!");
 	else
-		if (g_actor->get_state()&mcJump) Msg("Jump!");
+		if (object().get_state()&mcJump) Msg("Jump!");
 	Msg("overweight_stress = %.4f | exercise_stress = %.4f | m_fStressK = %.4f", overweight_stress, exercise_stress, m_fStressK);*/
 
 	m_fStressK = overweight_stress * exercise_stress;

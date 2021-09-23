@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
+п»ї////////////////////////////////////////////////////////////////////////////
 //	Module 		: eatable_item.cpp
 //	Created 	: 24.03.2003
 //  Modified 	: 29.01.2004
@@ -86,7 +86,7 @@ bool CEatableItem::Useful() const
 {
 	if(!inherited::Useful()) return false;
 
-	//проверить не все ли еще съедено
+	//РїСЂРѕРІРµСЂРёС‚СЊ РЅРµ РІСЃРµ Р»Рё РµС‰Рµ СЃСЉРµРґРµРЅРѕ
 	if(Empty()) return false;
 
 	return true;
@@ -111,28 +111,37 @@ void CEatableItem::OnH_B_Independent(bool just_before_destroy)
 #include "InventoryOwner.h"
 #include "Inventory.h"
 #include "ui/UIInventoryUtilities.h"
+#include "Actor.h"
 void CEatableItem::UseBy (CEntityAlive* entity_alive)
 {
 	CInventoryOwner* IO	= smart_cast<CInventoryOwner*>(entity_alive);
 	R_ASSERT		(IO);
 	R_ASSERT		(m_pCurrentInventory==IO->m_inventory);
 	R_ASSERT		(object().H_Parent()->ID()==entity_alive->ID());
+	//РІР»РёСЏРЅРёРµ РїРѕРіР»РѕС‰С‘РЅРЅРѕР№ РґРѕР·С‹ СЂР°РґРёР°С†РёРё РЅР° РЅР°СЃС‹С‰РµРЅРёРµ РµРґРѕР№
+	CActor* pActor = smart_cast<CActor*>(IO);
+	float radiation_k = pActor && m_fSatietyInfluence > 0 && psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) ?
+						(1.0f - entity_alive->conditions().GetRadiation()) :
+						 1.0f;
+	Msg("eatable item [%s] used by [%s], radiation_k = %.2f, satiety changed on %.2f", 
+		this->object().cName().c_str(), entity_alive->cName().c_str(), radiation_k, m_fSatietyInfluence * radiation_k);
+	//
 	entity_alive->conditions().ChangeHealth		(m_fHealthInfluence);
 	entity_alive->conditions().ChangePower		(m_fPowerInfluence);
-	entity_alive->conditions().ChangeSatiety	(m_fSatietyInfluence);
+	entity_alive->conditions().ChangeSatiety	(m_fSatietyInfluence * radiation_k);
 	entity_alive->conditions().ChangeRadiation	(m_fRadiationInfluence);
 	entity_alive->conditions().ChangeBleeding	(m_fWoundsHealPerc);
 	
 	entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
 	
-	//уменьшить количество порций
+	//СѓРјРµРЅСЊС€РёС‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕСЂС†РёР№
 	if(m_iPortionsNum > 0)
 		--(m_iPortionsNum);
 	else
 		m_iPortionsNum = 0;
 
 #if defined(EAT_PORTIONS_INFLUENCE)
-	// Real Wolf: Уменьшаем вес и цену после использования.
+	// Real Wolf: РЈРјРµРЅСЊС€Р°РµРј РІРµСЃ Рё С†РµРЅСѓ РїРѕСЃР»Рµ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ.
 	/*auto sect	= object().cNameSect().c_str();
 	auto weight = READ_IF_EXISTS(pSettings, r_float, sect, "inv_weight",	0.0f);
 	auto cost	= READ_IF_EXISTS(pSettings, r_float, sect, "cost",			0.0f);
@@ -147,15 +156,15 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 	SetCost(cost);
 #endif
 
-	/* Real Wolf: После использования предмета, удаляем его иконку и добавляем заново.
-	Таким образом вызовется колбек на группировку, где пользователь решит, группировать или нет предмета. 13.08.2014.*/
+	/* Real Wolf: РџРѕСЃР»Рµ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РїСЂРµРґРјРµС‚Р°, СѓРґР°Р»СЏРµРј РµРіРѕ РёРєРѕРЅРєСѓ Рё РґРѕР±Р°РІР»СЏРµРј Р·Р°РЅРѕРІРѕ.
+	РўР°РєРёРј РѕР±СЂР°Р·РѕРј РІС‹Р·РѕРІРµС‚СЃСЏ РєРѕР»Р±РµРє РЅР° РіСЂСѓРїРїРёСЂРѕРІРєСѓ, РіРґРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЂРµС€РёС‚, РіСЂСѓРїРїРёСЂРѕРІР°С‚СЊ РёР»Рё РЅРµС‚ РїСЂРµРґРјРµС‚Р°. 13.08.2014.*/
 	if (!Empty() && m_cell_item && m_cell_item->ChildsCount() )
 	{
 		auto owner = m_cell_item->OwnerList();
 		auto itm = m_cell_item->PopChild();
 		owner->SetItem(itm);
 		
-		// TODO: После сортировки надо удалять все старые иконки и создавать новые, чтобы было отсортировано.
+		// TODO: РџРѕСЃР»Рµ СЃРѕСЂС‚РёСЂРѕРІРєРё РЅР°РґРѕ СѓРґР°Р»СЏС‚СЊ РІСЃРµ СЃС‚Р°СЂС‹Рµ РёРєРѕРЅРєРё Рё СЃРѕР·РґР°РІР°С‚СЊ РЅРѕРІС‹Рµ, С‡С‚РѕР±С‹ Р±С‹Р»Рѕ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРѕ.
 
 		//TIItemContainer place;
 		//switch (this->m_eItemPlace)
