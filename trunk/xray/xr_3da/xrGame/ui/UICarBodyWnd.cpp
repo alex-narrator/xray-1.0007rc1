@@ -990,7 +990,7 @@ bool CUICarBodyWnd::TransferItem(PIItem itm, CInventoryOwner* owner_from, CInven
 		{
 			Knife->Fire2Start();                                         //нанесём удар ножом
 			itm->ChangeCondition( -(1 - Knife->GetCondition()) );        //уменьшим Condition части монстра на величину износа ножа (1 - Knife->GetCondition())
-			Knife->ChangeCondition(-Monster->m_fBladeConditionDecOnUse); //уменьшим Condition ножа на величину из конфига монстра
+			Knife->ChangeCondition(-Knife->GetCondDecPerShotOnHit() * Monster->m_uStabsToCutOff); //уменьшим Condition ножа кол-во ударов * износ за удар
 		}
 	}
 	//

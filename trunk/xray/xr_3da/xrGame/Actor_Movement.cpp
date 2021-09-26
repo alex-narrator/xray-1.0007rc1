@@ -132,7 +132,7 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 			if(g_FreeHands == 2)SetWeaponHideState		(INV_STATE_LADDER, bOnClimbNow );
 			inventory().TryToHideWeapon(bOnClimbNow); //скрываем двуручное оружие
 		}
-		else if (bOnClimbNow = bOnClimbOld) //если карабкаемся
+		else if (bOnClimbNow/* = bOnClimbOld*/) //если карабкаемся
 		{
 			inventory().TryToHideWeapon(bIsMoving); //скрываем двуручное оружие в движении (если остановились на лестнице то достаём)
 		};

@@ -425,8 +425,8 @@ protected:
 	
 
 public:	
-	float m_fRequiredBladeSharpness; //condition ножа при котором все еще доступен обыск трупа монстра
-	float m_fBladeConditionDecOnUse; //значение на которое уменьшится condition ножа при обыске трупа монстра
+	float					m_fRequiredBladeSharpness;	//condition ножа при котором все еще доступен обыск трупа монстра
+	u32						m_uStabsToCutOff;			//кол-во ударов ножом для срезания части монстра (на неё умножим износ ножа за удар)
 
 //////////////////////////////////////////////////////////////////////////
 // DEBUG stuff

@@ -64,8 +64,8 @@ void CBaseMonster::Load(LPCSTR section)
 	m_melee_rotation_factor			= READ_IF_EXISTS(pSettings,r_float,section,"Melee_Rotation_Factor", 1.5f);
 	berserk_always					= READ_IF_EXISTS(!!pSettings,r_bool,section,"berserk_always", false);
 
-	m_fRequiredBladeSharpness = READ_IF_EXISTS(pSettings, r_float, section, "required_blade_sharpness", 0.f);   //condition ножа при котором все еще доступен обыск трупа монстра
-	m_fBladeConditionDecOnUse = READ_IF_EXISTS(pSettings, r_float, section, "blade_condition_dec_on_use", 0.f); //значение на которое уменьшится condition ножа при обыске трупа монстра
+	m_fRequiredBladeSharpness		= READ_IF_EXISTS(pSettings, r_float, section, "required_blade_sharpness", 0.f);   //condition ножа при котором все еще доступен обыск трупа монстра
+	m_uStabsToCutOff				= READ_IF_EXISTS(pSettings, r_u32, section, "stabs_to_cut_off", 0);	//кол-во ударов ножом для срезания части монстра (на неё умножим износ ножа за удар)
 }
 
 // if sound is absent just do not load that one

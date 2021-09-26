@@ -429,7 +429,8 @@ public:
 	void			SpawnAmmo(u32 boxCurr = 0xffffffff,
 		LPCSTR ammoSect = NULL,
 		u32 ParentID = 0xffffffff);
-
+	//
+	virtual float			GetCondDecPerShotOnHit() const { return conditionDecreasePerShotOnHit; };
 	//  [8/3/2005]
 	virtual	float			Get_PDM_Base()	const	{ return m_fPDM_disp_base; };
 	virtual	float			Get_PDM_Vel_F()	const	{ return m_fPDM_disp_vel_factor; };
@@ -449,7 +450,6 @@ protected:
 	//  [10/5/2005]
 
 	virtual bool			IsNecessaryItem(const shared_str& item_sect);
-
 public:
 	xr_vector<shared_str>	m_ammoTypes;
 
