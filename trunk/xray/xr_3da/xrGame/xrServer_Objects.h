@@ -151,7 +151,8 @@
 // 117 - CSE_ALifeLevelChanger			appended with property m_bSilentMode
 // 118 - CALifeHumanBrain				removed property m_tpKnownCustomers, sad but true
 // 119 - CSE_ALifeItemEatable			added class and m_portions_num field
-// 120 - CSE_ALifeItemGrenade			added m_destroy_time_max field to save/load delay to explosion
+// 120 - CSE_ALifeItemGrenade			added m_dwDestroyTimeMax field to save/load delay to explosion
+//     - CSE_ALifeItemArtefact			added m_fRandomK field to save/load random koef for artefact properties
 //------------------------------------------------------------------------------
 #define SPAWN_VERSION	u16(120)
 

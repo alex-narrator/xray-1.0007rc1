@@ -742,6 +742,7 @@ void CSE_ALifeItemDetector::FillProps		(LPCSTR pref, PropItemVec& items)
 CSE_ALifeItemArtefact::CSE_ALifeItemArtefact(LPCSTR caSection) : CSE_ALifeItem(caSection)
 {
 	m_fAnomalyValue				= 100.f;
+	m_fRandomK					= NULL;
 }
 
 CSE_ALifeItemArtefact::~CSE_ALifeItemArtefact()
@@ -761,11 +762,16 @@ void CSE_ALifeItemArtefact::STATE_Write		(NET_Packet	&tNetPacket)
 void CSE_ALifeItemArtefact::UPDATE_Read		(NET_Packet	&tNetPacket)
 {
 	inherited::UPDATE_Read		(tNetPacket);
+	//
+	if (m_wVersion > 119)
+		m_fRandomK = tNetPacket.r_float();
 }
 
 void CSE_ALifeItemArtefact::UPDATE_Write	(NET_Packet	&tNetPacket)
 {
 	inherited::UPDATE_Write		(tNetPacket);
+	//
+	tNetPacket.w_float(m_fRandomK);
 }
 
 void CSE_ALifeItemArtefact::FillProps		(LPCSTR pref, PropItemVec& items)
@@ -907,13 +913,13 @@ CSE_ALifeItemGrenade::CSE_ALifeItemGrenade	(LPCSTR caSection): CSE_ALifeItem(caS
 	if (cnt > 1) //заданы границы рандомной задержки до взрыва
 	{
 		Ivector2 m = pSettings->r_ivector2(caSection, "destroy_time");
-		m_destroy_time_max = ::Random.randI(m.x, m.y);
+		m_dwDestroyTimeMax = ::Random.randI(m.x, m.y);
 	}
 	else		//жестко заданная задержка до взрыва
-		m_destroy_time_max = pSettings->r_u32(caSection, "destroy_time");*/
-	m_destroy_time_max = NULL;
+		m_dwDestroyTimeMax = pSettings->r_u32(caSection, "destroy_time");*/
+	m_dwDestroyTimeMax = NULL;
 	//debug
-	Msg("CSE_ALifeItemGrenade created grenade with m_destroy_time_max = [%d]", m_destroy_time_max);
+	Msg("CSE_ALifeItemGrenade created grenade with m_dwDestroyTimeMax = [%d]", m_dwDestroyTimeMax);
 }
 
 CSE_ALifeItemGrenade::~CSE_ALifeItemGrenade	()
@@ -941,18 +947,18 @@ void CSE_ALifeItemGrenade::UPDATE_Read		(NET_Packet	&tNetPacket)
 	inherited::UPDATE_Read		(tNetPacket);
 	//
 	if (m_wVersion > 119)
-		m_destroy_time_max = tNetPacket.r_u32();
+		m_dwDestroyTimeMax = tNetPacket.r_u32();
 	//debug
-		//Msg("UPDATE_Read m_destroy_time_max = [%d]", m_destroy_time_max);
+		//Msg("UPDATE_Read m_dwDestroyTimeMax = [%d]", m_dwDestroyTimeMax);
 }
 
 void CSE_ALifeItemGrenade::UPDATE_Write		(NET_Packet	&tNetPacket)
 {
 	inherited::UPDATE_Write		(tNetPacket);
 	//
-	tNetPacket.w_u32(m_destroy_time_max);
+	tNetPacket.w_u32(m_dwDestroyTimeMax);
 	//debug
-	//Msg("UPDATE_Write m_destroy_time_max = [%d]", m_destroy_time_max);
+	//Msg("UPDATE_Write m_dwDestroyTimeMax = [%d]", m_dwDestroyTimeMax);
 }
 
 void CSE_ALifeItemGrenade::FillProps			(LPCSTR pref, PropItemVec& items)

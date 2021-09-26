@@ -98,7 +98,7 @@ void CUIOutfitInfo::SetItem(u32 hitType, bool force_add)
 	_val_af				= Actor()->HitArtefactsOnBelt(1.0f,ALife::EHitType(hitType));
 	_val_af				= 1.0f - _val_af;
 
-	if(fsimilar(_val_outfit, 0.0f) && fsimilar(_val_af, 0.0f) && !force_add)
+	if (/*fsimilar(_val_outfit, 0.0f) && fsimilar(_val_af, 0.0f)*/fis_zero(_val_outfit) && fis_zero(_val_af) && !force_add)
 	{
 		if(_s->GetParent()!=NULL)
 			m_listWnd->RemoveWindow(_s);
@@ -111,7 +111,7 @@ void CUIOutfitInfo::SetItem(u32 hitType, bool force_add)
 	int _sz			= sprintf_s	(_buff,sizeof(_buff),"%s ", _imm_name);
 	_sz				+= sprintf_s	(_buff+_sz,sizeof(_buff)-_sz,"%s %+3.0f%%", (_val_outfit>0.0f)?"%c[green]":"%c[red]", _val_outfit*100.0f);
 
-	if( !fsimilar(_val_af, 0.0f) )
+	if (!fis_zero(_val_af)/*fsimilar(_val_af, 0.0f)*/)
 	{
 		_sz		+= sprintf_s	(_buff+_sz,sizeof(_buff)-_sz,"%s %+3.0f%%", (_val_af>0.0f)?"%c[green]":"%c[red]", _val_af*100.0f);
 	}

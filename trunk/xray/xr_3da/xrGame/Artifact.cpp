@@ -11,6 +11,7 @@
 #include "phworld.h"
 #include "restriction_space.h"
 #include "../IGame_Persistent.h"
+#include "xrServer_Objects_ALife_Items.h"
 #include "../../build_config_defines.h"
 
 #define	FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
@@ -70,6 +71,12 @@ CArtefact::CArtefact(void)
 #ifdef SHOW_ARTEFACT_SLOT
 	SetSlot (ARTEFACT_SLOT);
 #endif
+	//
+	m_fRandomK					= NULL;
+	//
+	m_ArtefactHitImmunities.resize(ALife::eHitTypeMax);
+	for (int i = 0; i<ALife::eHitTypeMax; i++)
+		m_ArtefactHitImmunities[i] = 0.0f;
 }
 
 
@@ -100,15 +107,34 @@ void CArtefact::Load(LPCSTR section)
 		m_fSatietyRestoreSpeed = pSettings->r_float		(section,"satiety_restore_speed"	);
 		m_fPowerRestoreSpeed = pSettings->r_float		(section,"power_restore_speed"		);
 		m_fBleedingRestoreSpeed = pSettings->r_float	(section,"bleeding_restore_speed"	);
-		if(pSettings->section_exist(/**cNameSect(), */pSettings->r_string(section,"hit_absorbation_sect")))
-			m_ArtefactHitImmunities.LoadImmunities(pSettings->r_string(section,"hit_absorbation_sect"),pSettings);
+		//if (pSettings->section_exist(/**cNameSect(), */pSettings->r_string(section, "hit_absorbation_sect")))
+			//m_ArtefactHitImmunities.LoadImmunities(pSettings->r_string(section,"hit_absorbation_sect"),pSettings);
+		LPCSTR hit_sect = pSettings->r_string(section, "hit_absorbation_sect");
+		if (pSettings->section_exist(hit_sect))
+		{
+			m_ArtefactHitImmunities[ALife::eHitTypeBurn]			= READ_IF_EXISTS(pSettings, r_float, hit_sect, "burn_immunity",					0.0f);
+			m_ArtefactHitImmunities[ALife::eHitTypeStrike]			= READ_IF_EXISTS(pSettings, r_float, hit_sect, "strike_immunity",				0.0f);
+			m_ArtefactHitImmunities[ALife::eHitTypeShock]			= READ_IF_EXISTS(pSettings, r_float, hit_sect, "shock_immunity",				0.0f);
+			m_ArtefactHitImmunities[ALife::eHitTypeWound]			= READ_IF_EXISTS(pSettings, r_float, hit_sect, "wound_immunity",				0.0f);
+			m_ArtefactHitImmunities[ALife::eHitTypeRadiation]		= READ_IF_EXISTS(pSettings, r_float, hit_sect, "radiation_immunity",			0.0f);
+			m_ArtefactHitImmunities[ALife::eHitTypeTelepatic]		= READ_IF_EXISTS(pSettings, r_float, hit_sect, "telepatic_immunity",			0.0f);
+			m_ArtefactHitImmunities[ALife::eHitTypeChemicalBurn]	= READ_IF_EXISTS(pSettings, r_float, hit_sect, "chemical_burn_immunity",		0.0f);
+			m_ArtefactHitImmunities[ALife::eHitTypeExplosion]		= READ_IF_EXISTS(pSettings, r_float, hit_sect, "explosion_immunity",			0.0f);
+			m_ArtefactHitImmunities[ALife::eHitTypeFireWound]		= READ_IF_EXISTS(pSettings, r_float, hit_sect, "fire_wound_immunity",			0.0f);
+			m_ArtefactHitImmunities[ALife::eHitTypeWound_2]			= READ_IF_EXISTS(pSettings, r_float, hit_sect, "wound_2_immunity",				0.0f);
+			m_ArtefactHitImmunities[ALife::eHitTypePhysicStrike]	= READ_IF_EXISTS(pSettings, r_float, hit_sect, "physic_strike_wound_immunity",	0.0f);
+		}
 		//
 		m_fAdditionalWalkAccel = READ_IF_EXISTS(pSettings, r_float, section, "additional_walk_accel", 0.f);
 		m_fAdditionalJumpSpeed = READ_IF_EXISTS(pSettings, r_float, section, "additional_jump_speed", 0.f);
-
 	}
 	m_bCanSpawnZone = !!pSettings->line_exist("artefact_spawn_zones", section);
 
+	//random koef
+	m_fRandomKMin = READ_IF_EXISTS(pSettings, r_float, section, "random_k_min", 1.0f);
+	m_fRandomKMax = READ_IF_EXISTS(pSettings, r_float, section, "random_k_max", 1.0f);
+	Msg("Load [%s] (id [%d]) with random k [%.4f]", cNameSect().c_str(), ID(), GetRandomKoef());
+	//
 
 	animGet				(m_anim_idle,					pSettings->r_string(*hud_sect,"anim_idle"));
 	animGet				(m_anim_idle_sprint,			pSettings->r_string(*hud_sect,"anim_idle_sprint"));
@@ -140,9 +166,33 @@ BOOL CArtefact::net_Spawn(CSE_Abstract* DC)
 	o_fastmode					= FALSE	;		// start initially with fast-mode enabled
 	o_render_frame				= 0		;
 	SetState					(eHidden);
+	//
+	if (auto se_artefact = smart_cast<CSE_ALifeItemArtefact*>(DC))
+		if (se_artefact->m_fRandomK != NULL)
+			m_fRandomK = se_artefact->m_fRandomK;
+		else
+			m_fRandomK = ::Random.randF(m_fRandomKMin, m_fRandomKMax);
+	//debug
+	Msg("net_Spawn [%s] (id [%d]) with random k [%.4f]", cNameSect().c_str(), ID(), GetRandomKoef());
 
 	return result;	
 }
+
+//
+void CArtefact::net_Export(NET_Packet& P)
+{
+	inherited::net_Export(P);
+
+	P.w_float(m_fRandomK);
+}
+
+void CArtefact::net_Import(NET_Packet& P)
+{
+	inherited::net_Import(P);
+
+	m_fRandomK = P.r_float();
+}
+//
 
 void CArtefact::net_Destroy() 
 {

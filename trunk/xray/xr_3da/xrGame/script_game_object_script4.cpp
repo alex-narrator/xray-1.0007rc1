@@ -80,9 +80,9 @@ CHitImmunity *get_obj_immunities(CScriptGameObject *script_obj)
 		return smart_cast<CHitImmunity*> (cond);
 
 	CGameObject *obj = &script_obj->object();	
-	CArtefact *pArt = smart_cast<CArtefact*> (obj);
+	/*CArtefact *pArt = smart_cast<CArtefact*> (obj);
 	if (pArt)
-		return &pArt->m_ArtefactHitImmunities;
+		return &pArt->m_ArtefactHitImmunities;*/
 	return NULL;
 }
 

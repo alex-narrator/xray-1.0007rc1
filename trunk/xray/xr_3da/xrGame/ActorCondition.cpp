@@ -343,7 +343,6 @@ void CActorCondition::UpdateAlcohol()
 		{
 			if (ce) RemoveEffector(m_object, effAlcohol);
 		}
-
 		//смерть при максимальном опьянении
 		if (GetAlcohol() == 1)
 			SetMaxHealth(0.0f);
@@ -373,12 +372,11 @@ float CActorCondition::GetSmoothOwerweightKoef()
 
 	if (psActorFlags.test(AF_SMOOTH_OVERWEIGHT))
 	{
+		float power_k		= m_fMinPowerWalkJump + (1.0f - m_fMinPowerWalkJump) * GetPower();				//коэф влияния выносливости
 
-		float power_k = m_fMinPowerWalkJump + (1.0f - m_fMinPowerWalkJump) * GetPower(); //коэф влияния выносливости
-
-		float overweight_k = object().inventory().TotalWeight() > object().inventory().GetMaxWeight() ? //считаем коэф. только если есть перегруз
-			  object().inventory().GetMaxWeight() / object().inventory().TotalWeight() :				//коэф влияния перегруза
-			  1.0f;
+		float overweight_k	= object().inventory().TotalWeight() > object().inventory().GetMaxWeight() ?	//считаем коэф. только если есть перегруз
+								object().inventory().GetMaxWeight() / object().inventory().TotalWeight() :	//коэф влияния перегруза
+								1.0f;
 
 		val = power_k * overweight_k;
 	}
@@ -388,13 +386,13 @@ float CActorCondition::GetSmoothOwerweightKoef()
 
 void CActorCondition::UpdateStress()
 {
-	float exercise_stress = psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) && object().get_state()&(mcSprint|mcJump) ? 
-							m_fExerciseStressFactor : 
-							1.0f;
+	float exercise_stress	= psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) && object().get_state()&(mcSprint|mcJump) ? 
+								m_fExerciseStressFactor : 
+								1.0f;
 
 	float overweight_stress = psActorFlags.test(AF_SMOOTH_OVERWEIGHT) && object().inventory().TotalWeight() > object().inventory().GetMaxWeight() ? 
-		  object().inventory().TotalWeight() / object().inventory().GetMaxWeight() : 
-		  1.0f;
+								object().inventory().TotalWeight() / object().inventory().GetMaxWeight() : 
+								1.0f;
 
 	/*if (object().get_state()&mcSprint) Msg("mcSprint!");
 	else

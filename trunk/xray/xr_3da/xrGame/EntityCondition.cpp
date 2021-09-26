@@ -365,7 +365,7 @@ CWound* CEntityCondition::ConditionHit(SHit* pHDS)
 	//кто нанес последний хит
 	m_pWho = pHDS->who;
 	m_iWhoID = (NULL != pHDS->who) ? pHDS->who->ID() : 0;
-
+	Msg("[%s] get hit [%f], hit type [%d]", m_object->Name(), pHDS->damage(), pHDS->hit_type);
 	float hit_power_org = pHDS->damage();
 	float hit_power = hit_power_org;
 	hit_power = HitOutfitEffect(hit_power, pHDS->hit_type, pHDS->boneID, pHDS->ap);
@@ -431,6 +431,9 @@ CWound* CEntityCondition::ConditionHit(SHit* pHDS)
 	}
 
 	if (bDebug) Msg("%s hitted in %s with %f[%f]", m_object->Name(), smart_cast<CKinematics*>(m_object->Visual())->LL_BoneName_dbg(pHDS->boneID), m_fHealthLost*100.0f, hit_power_org);
+	//
+	Msg("[%s] take hit [%f], hit type [%d]", m_object->Name(), hit_power, pHDS->hit_type);
+	Msg("[%s] hitted in [%s] with health lost [%f], hit power[%f]", m_object->Name(), smart_cast<CKinematics*>(m_object->Visual())->LL_BoneName_dbg(pHDS->boneID), m_fHealthLost*100.0f, hit_power_org);
 	//раны добавляются только живому
 	if(bAddWound && GetHealth()>0)
 		return AddWound(hit_power*m_fWoundBoneScale, pHDS->hit_type, pHDS->boneID);

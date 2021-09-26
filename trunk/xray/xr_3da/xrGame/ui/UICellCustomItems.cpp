@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "UICellCustomItems.h"
 #include "UIInventoryUtilities.h"
 #include "../Weapon.h"
@@ -9,6 +9,7 @@
 #include "../script_callback_ex.h"
 #include "../script_game_object.h"
 #include "../Actor.h"
+#include "../Artifact.h"
 
 
 #define INV_GRID_WIDTHF			50.0f
@@ -38,9 +39,12 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 {
 	CUIInventoryCellItem* ci = smart_cast<CUIInventoryCellItem*>(itm);
 	if(!itm)				return false;
-	// Real Wolf: Колбек на группировку и само регулирование группировкой предметов. 12.08.2014.
+	// Real Wolf: РљРѕР»Р±РµРє РЅР° РіСЂСѓРїРїРёСЂРѕРІРєСѓ Рё СЃР°РјРѕ СЂРµРіСѓР»РёСЂРѕРІР°РЅРёРµ РіСЂСѓРїРїРёСЂРѕРІРєРѕР№ РїСЂРµРґРјРµС‚РѕРІ. 12.08.2014.
 	auto item1 = (CInventoryItem*)m_pData;
 	auto item2 = (CInventoryItem*)itm->m_pData;
+	//
+	CArtefact* artefact_1 = smart_cast<CArtefact*>(item1);
+	CArtefact* artefact_2 = smart_cast<CArtefact*>(item2);
 
 	g_actor->callback(GameObject::eUIGroupItems)(item1->object().lua_game_object(), item2->object().lua_game_object() );
 
@@ -55,10 +59,12 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 
 	return					(
 								fsimilar(object()->GetCondition(), ci->object()->GetCondition(), 0.01f) &&
-								(object()->object().cNameSect() == ci->object()->object().cNameSect() && 
-								fsimilar(object()->m_eItemPlace == eItemPlaceSlot, ci->object()->m_eItemPlace == eItemPlaceSlot) && //группирует преметы в слоте
-								fsimilar(object()->m_eItemPlace == eItemPlaceBelt, ci->object()->m_eItemPlace == eItemPlaceBelt) //группирует преметы на поясе
-								)
+								(
+								object()->object().cNameSect() == ci->object()->object().cNameSect() && 
+								fsimilar(object()->m_eItemPlace == eItemPlaceSlot, ci->object()->m_eItemPlace == eItemPlaceSlot) &&			//РіСЂСѓРїРїРёСЂСѓРµС‚ РїСЂРµРјРµС‚С‹ РІ СЃР»РѕС‚Рµ
+								fsimilar(object()->m_eItemPlace == eItemPlaceBelt, ci->object()->m_eItemPlace == eItemPlaceBelt)			//РіСЂСѓРїРїРёСЂСѓРµС‚ РїСЂРµРјРµС‚С‹ РЅР° РїРѕСЏСЃРµ
+								) && 
+								!(artefact_1 && artefact_2) || artefact_1 && artefact_2 && fsimilar(artefact_1->GetRandomKoef(), artefact_2->GetRandomKoef(), 0.01f) //РіСЂСѓРїРїРёСЂСѓРµС‚ РѕРґРёРЅР°РєРѕРІС‹Рµ Р°СЂС‚РµС„Р°РєС‚С‹
 							);
 }
 
@@ -98,15 +104,15 @@ CUIDragItem* CUIInventoryCellItem::CreateDragItem()
 	CUIDragItem* i		= inherited::CreateDragItem();
 	CUIStatic* s		= NULL;
 	
-	// в отдельном случае не требуется автоматика(!)
+	// РІ РѕС‚РґРµР»СЊРЅРѕРј СЃР»СѓС‡Р°Рµ РЅРµ С‚СЂРµР±СѓРµС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёРєР°(!)
 	//if (b_auto_drag_childs)
 	//{
-		// Real Wolf: Вместо частного решения, сделаем общее для всех детей-статиков. Необходимые параметры добавляйте сами. 25.07.2014.
+		// Real Wolf: Р’РјРµСЃС‚Рѕ С‡Р°СЃС‚РЅРѕРіРѕ СЂРµС€РµРЅРёСЏ, СЃРґРµР»Р°РµРј РѕР±С‰РµРµ РґР»СЏ РІСЃРµС… РґРµС‚РµР№-СЃС‚Р°С‚РёРєРѕРІ. РќРµРѕР±С…РѕРґРёРјС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РґРѕР±Р°РІР»СЏР№С‚Рµ СЃР°РјРё. 25.07.2014.
 		for (auto it = this->m_ChildWndList.begin(); it != this->m_ChildWndList.end(); ++it)
 		{
 			if (auto s_child = smart_cast<CUIStatic*>(*it))
 			{
-				// Real Wolf: Скопируем все кроме аддонов, для них по-другому.
+				// Real Wolf: РЎРєРѕРїРёСЂСѓРµРј РІСЃРµ РєСЂРѕРјРµ Р°РґРґРѕРЅРѕРІ, РґР»СЏ РЅРёС… РїРѕ-РґСЂСѓРіРѕРјСѓ.
 				if (s_child->WindowName() != "upgrade")
 				{
 					s = xr_new<CUIStatic>();
@@ -130,7 +136,7 @@ CUIDragItem* CUIInventoryCellItem::CreateDragItem()
 		}
 	//}
 
-	// Real Wolf: цвет как у родителя + стандартная прозрачность. 27.12.14
+	// Real Wolf: С†РІРµС‚ РєР°Рє Сѓ СЂРѕРґРёС‚РµР»СЏ + СЃС‚Р°РЅРґР°СЂС‚РЅР°СЏ РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ. 27.12.14
 	auto	color = GetColor();
 	auto	R = color_get_R(color);
 	auto	G = color_get_G(color);
@@ -193,7 +199,7 @@ CUIWeaponCellItem::CUIWeaponCellItem(CWeapon* itm)
 	m_addons[eScope]		= NULL;
 	m_addons[eLauncher]		= NULL;
 
-	m_cell_size.set (INV_GRID_WIDTHF, INV_GRID_HEIGHTF); // alpet: это просто значения по умолчанию
+	m_cell_size.set (INV_GRID_WIDTHF, INV_GRID_HEIGHTF); // alpet: СЌС‚Рѕ РїСЂРѕСЃС‚Рѕ Р·РЅР°С‡РµРЅРёСЏ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 
 	if(itm->SilencerAttachable())
 		m_addon_offset[eSilencer].set(object()->GetSilencerX(), object()->GetSilencerY());
@@ -227,7 +233,7 @@ bool CUIWeaponCellItem::is_launcher()
 
 void CUIWeaponCellItem::CreateIcon(eAddonType t)
 {
-	if (GetIcon(t)) return;  // накапливаются дочерние статитики из-за добавления вертикального отображения. Не работает автоудаление?
+	if (GetIcon(t)) return;  // РЅР°РєР°РїР»РёРІР°СЋС‚СЃСЏ РґРѕС‡РµСЂРЅРёРµ СЃС‚Р°С‚РёС‚РёРєРё РёР·-Р·Р° РґРѕР±Р°РІР»РµРЅРёСЏ РІРµСЂС‚РёРєР°Р»СЊРЅРѕРіРѕ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ. РќРµ СЂР°Р±РѕС‚Р°РµС‚ Р°РІС‚РѕСѓРґР°Р»РµРЅРёРµ?
 	m_addons[t]					= xr_new<CUIStatic>();	
 	m_addons[t]->SetAutoDelete	(true);
 	AttachChild					(m_addons[t]);
@@ -337,24 +343,24 @@ void CUIWeaponCellItem::InitAddon(CUIStatic* s, LPCSTR section, Fvector2 addon_o
 
 		inventory_size.x = INV_GRID_WIDTHF  * m_grid_size.x;
 		inventory_size.y = INV_GRID_HEIGHTF * m_grid_size.y;
-		// m_grid_size содержит информацию об размерах иконки оружия Columns x Rows
+		// m_grid_size СЃРѕРґРµСЂР¶РёС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± СЂР°Р·РјРµСЂР°С… РёРєРѕРЅРєРё РѕСЂСѓР¶РёСЏ Columns x Rows
 		expected_size.x = m_cell_size.x * m_grid_size.x; // vert: cell_size = 40x50, grid_size = 5x2 
 		expected_size.y = m_cell_size.y * m_grid_size.y; 			
 		if (Heading())
 		{   // h = 250, w = 80, i.x = 300, i.y = 100	
 			if (1 == method)
-			{   // надо поменять местами height & width.
+			{   // РЅР°РґРѕ РїРѕРјРµРЅСЏС‚СЊ РјРµСЃС‚Р°РјРё height & width.
 				expected_size.x = m_cell_size.y * m_grid_size.x;
 				expected_size.y = m_cell_size.x * m_grid_size.y;
 			}			
 			if (2 == method)
-			{   // надо поменять местами height & width + пропорции
+			{   // РЅР°РґРѕ РїРѕРјРµРЅСЏС‚СЊ РјРµСЃС‚Р°РјРё height & width + РїСЂРѕРїРѕСЂС†РёРё
 				expected_size.x = m_cell_size.y * m_grid_size.y;
 				expected_size.y = m_cell_size.x * m_grid_size.x;
 			}
 
-			base_scale.x = GetHeight() / inventory_size.x;  // допущение, что происходит стретч сетки, вместо появления полосы прокрутки
-			base_scale.y = GetWidth()  / inventory_size.y;  // или, что указанные размеры контрола в конфиге полностью пропорциональны его сетке
+			base_scale.x = GetHeight() / inventory_size.x;  // РґРѕРїСѓС‰РµРЅРёРµ, С‡С‚Рѕ РїСЂРѕРёСЃС…РѕРґРёС‚ СЃС‚СЂРµС‚С‡ СЃРµС‚РєРё, РІРјРµСЃС‚Рѕ РїРѕСЏРІР»РµРЅРёСЏ РїРѕР»РѕСЃС‹ РїСЂРѕРєСЂСѓС‚РєРё
+			base_scale.y = GetWidth()  / inventory_size.y;  // РёР»Рё, С‡С‚Рѕ СѓРєР°Р·Р°РЅРЅС‹Рµ СЂР°Р·РјРµСЂС‹ РєРѕРЅС‚СЂРѕР»Р° РІ РєРѕРЅС„РёРіРµ РїРѕР»РЅРѕСЃС‚СЊСЋ РїСЂРѕРїРѕСЂС†РёРѕРЅР°Р»СЊРЅС‹ РµРіРѕ СЃРµС‚РєРµ
 			
 		}else
 		{
@@ -363,14 +369,14 @@ void CUIWeaponCellItem::InitAddon(CUIStatic* s, LPCSTR section, Fvector2 addon_o
 		} 
 
 		if (method > 0)
-		{   // тестовый метод, если размеры ячеек не подстраиваются под размеры окна
+		{   // С‚РµСЃС‚РѕРІС‹Р№ РјРµС‚РѕРґ, РµСЃР»Рё СЂР°Р·РјРµСЂС‹ СЏС‡РµРµРє РЅРµ РїРѕРґСЃС‚СЂР°РёРІР°СЋС‚СЃСЏ РїРѕРґ СЂР°Р·РјРµСЂС‹ РѕРєРЅР°
 			base_scale.x = expected_size.x / inventory_size.x;
 			base_scale.y = expected_size.y / inventory_size.y;
 		}		
 
 		Fvector2				cell_size;
 
-		cell_size.x				= pSettings->r_u32(section, "inv_grid_width")*INV_GRID_WIDTHF; // это допущение, что ячейки инвентаря 50х50 всегда? )
+		cell_size.x				= pSettings->r_u32(section, "inv_grid_width")*INV_GRID_WIDTHF; // СЌС‚Рѕ РґРѕРїСѓС‰РµРЅРёРµ, С‡С‚Рѕ СЏС‡РµР№РєРё РёРЅРІРµРЅС‚Р°СЂСЏ 50С…50 РІСЃРµРіРґР°? )
 		cell_size.y				= pSettings->r_u32(section, "inv_grid_height")*INV_GRID_HEIGHTF;
 
 		tex_rect.x1				= pSettings->r_u32(section, "inv_grid_x")*INV_GRID_WIDTHF;
@@ -460,7 +466,7 @@ Ivector2 CUIWeaponCellItem::GetGridSize(bool with_childs)
 {
 	auto child_grid_size = m_grid_size;
 
-	// Real Wolf: Для того, чтобы размер ячейки учитывал и размеры улучшений.01.02.15.
+	// Real Wolf: Р”Р»СЏ С‚РѕРіРѕ, С‡С‚РѕР±С‹ СЂР°Р·РјРµСЂ СЏС‡РµР№РєРё СѓС‡РёС‚С‹РІР°Р» Рё СЂР°Р·РјРµСЂС‹ СѓР»СѓС‡С€РµРЅРёР№.01.02.15.
 	if (with_childs && !Heading())
 	{
 		Fvector2	inventory_size;

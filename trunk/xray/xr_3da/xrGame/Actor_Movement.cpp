@@ -216,7 +216,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 				CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 				if (artefact)
 				{
-					jump_speed += m_fJumpSpeed * artefact->m_fAdditionalJumpSpeed;
+					jump_speed += m_fJumpSpeed * artefact->m_fAdditionalJumpSpeed * artefact->GetRandomKoef();
 				}
 			}
 			//Msg("additional jump_speed = %.2f", jump_speed);
@@ -299,7 +299,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 					CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 					if (artefact)
 					{
-						walk_accel += m_fWalkAccel * artefact->m_fAdditionalWalkAccel;
+						walk_accel += m_fWalkAccel * artefact->m_fAdditionalWalkAccel * artefact->GetRandomKoef();
 					}
 				}
 				//Msg("additional walk_accel = %.2f", walk_accel);

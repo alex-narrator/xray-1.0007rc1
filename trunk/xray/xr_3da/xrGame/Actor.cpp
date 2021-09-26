@@ -563,8 +563,8 @@ void	CActor::Hit							(SHit* pHDS)
 	{
 	case GAME_SINGLE:		
 		{
+			Msg("actor get hit [%f], hit type [%d]", HDS.damage(), HDS.hit_type);
 			float hit_power	= HitArtefactsOnBelt(HDS.damage(), HDS.hit_type);
-
 			if (GodMode())//psActorFlags.test(AF_GODMODE))
 			{
 				HDS.power = 0.0f;
@@ -585,6 +585,7 @@ void	CActor::Hit							(SHit* pHDS)
 				//
 				HDS.power = hit_power;
 				inherited::Hit(&HDS);
+				Msg("actor take hit [%f], hit type [%d]", HDS.damage(), HDS.hit_type);
 			};
 		}
 		break;
@@ -1574,12 +1575,14 @@ void CActor::UpdateArtefactsOnBelt()
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		if (artefact)
 		{
-			conditions().ChangeBleeding(artefact->m_fBleedingRestoreSpeed*f_update_time);
-			conditions().ChangeHealth(artefact->m_fHealthRestoreSpeed*f_update_time);
-			conditions().ChangePower(artefact->m_fPowerRestoreSpeed*f_update_time);
-			conditions().ChangeSatiety(artefact->m_fSatietyRestoreSpeed*f_update_time);
+			float random_k = artefact->GetRandomKoef();
+			//
+			conditions().ChangeBleeding	(artefact->m_fBleedingRestoreSpeed	* f_update_time * random_k);
+			conditions().ChangeHealth	(artefact->m_fHealthRestoreSpeed	* f_update_time * random_k);
+			conditions().ChangePower	(artefact->m_fPowerRestoreSpeed		* f_update_time * random_k);
+			conditions().ChangeSatiety	(artefact->m_fSatietyRestoreSpeed	* f_update_time * random_k);
 #ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
-			conditions().ChangeRadiation		(artefact->m_fRadiationRestoreSpeed*f_update_time);
+			conditions().ChangeRadiation(artefact->m_fRadiationRestoreSpeed * f_update_time * random_k);
 #endif
 		}
 
@@ -1603,8 +1606,12 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 	for (TIItemContainer::iterator it = list.begin(); list.end() != it; ++it)
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
-		if(artefact){
-			res_hit_power_k	+= artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+		if (artefact && artefact->m_ArtefactHitImmunities[hit_type])
+		{
+			float random_k = artefact->GetRandomKoef();
+			//
+			//res_hit_power_k += artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+			res_hit_power_k += 1.0f - artefact->m_ArtefactHitImmunities[hit_type] * random_k;
 			_af_count		+= 1.0f;
 		}
 	}
@@ -1615,8 +1622,10 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 		PIItem helmet = inventory().m_slots[HELMET_SLOT].m_pIItem;
 		if (helmet){
 			CArtefact* helmet_artefact = smart_cast<CArtefact*>(helmet);
-			if (helmet_artefact){
-				res_hit_power_k += helmet_artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+			if (helmet_artefact && helmet_artefact->m_ArtefactHitImmunities[hit_type])
+			{
+				//res_hit_power_k += helmet_artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+				res_hit_power_k += 1.0f - helmet_artefact->m_ArtefactHitImmunities[hit_type];
 				_af_count += 1.0f;
 			}
 		}

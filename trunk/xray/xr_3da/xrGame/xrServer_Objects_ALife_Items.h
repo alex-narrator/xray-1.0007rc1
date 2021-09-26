@@ -226,6 +226,7 @@ add_to_type_list(CSE_ALifeItemDetector)
 
 SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemArtefact,CSE_ALifeItem)
 	float							m_fAnomalyValue;
+	float							m_fRandomK;
 									CSE_ALifeItemArtefact	(LPCSTR caSection);
 	virtual							~CSE_ALifeItemArtefact	();
 	virtual BOOL					Net_Relevant			();
@@ -255,7 +256,7 @@ add_to_type_list(CSE_ALifeItemDocument)
 
 SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemGrenade,CSE_ALifeItem)
 	u32								m_ef_weapon_type;
-	u32								m_destroy_time_max;		//время до взырва гранаты
+	u32								m_dwDestroyTimeMax;		//время до взырва гранаты
 									CSE_ALifeItemGrenade	(LPCSTR caSection);
 	virtual							~CSE_ALifeItemGrenade	();
 	virtual u32						ef_weapon_type			() const;

@@ -20,7 +20,10 @@ public:
 	
 	virtual BOOL					net_Spawn						(CSE_Abstract* DC);
 	virtual void					net_Destroy						();
-
+	//
+	virtual void					net_Export						(NET_Packet& P);
+	virtual void					net_Import						(NET_Packet& P);
+	//
 	virtual void					OnH_A_Chield					();
 	virtual void					OnH_B_Independent				(bool just_before_destroy);
 	
@@ -75,10 +78,17 @@ public:
 	float 							m_fSatietyRestoreSpeed;
 	float							m_fPowerRestoreSpeed;
 	float							m_fBleedingRestoreSpeed;
-	CHitImmunity 					m_ArtefactHitImmunities;
+	//CHitImmunity 					m_ArtefactHitImmunities;
+	HitImmunity::HitTypeSVec		m_ArtefactHitImmunities;
 
 	float                           m_fAdditionalWalkAccel;
 	float                           m_fAdditionalJumpSpeed;
+	//
+	float							m_fRandomKMin;
+	float							m_fRandomKMax;
+	float							m_fRandomK;
+	float							GetRandomKoef						()				{ return m_fRandomK; };
+	//
 
 protected:
 	MotionSVec						m_anim_idle;
