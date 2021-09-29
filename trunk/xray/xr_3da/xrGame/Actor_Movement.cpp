@@ -132,7 +132,7 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 			if(g_FreeHands == 2)SetWeaponHideState		(INV_STATE_LADDER, bOnClimbNow );
 			inventory().TryToHideWeapon(bOnClimbNow); //скрываем двуручное оружие
 		}
-		else if (bOnClimbNow/* = bOnClimbOld*/) //если карабкаемся
+		else if (bOnClimbNow) //если карабкаемся
 		{
 			inventory().TryToHideWeapon(bIsMoving); //скрываем двуручное оружие в движении (если остановились на лестнице то достаём)
 		};
@@ -222,6 +222,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			//Msg("additional jump_speed = %.2f", jump_speed);
 			jump_speed *= conditions().GetSmoothOwerweightKoef();
 			character_physics_support()->movement()->SetJumpUpVelocity(jump_speed);
+			clamp(jump_speed, 0.0f, jump_speed);
 			//debug
 			//Msg("jump_speed = %.2f", jump_speed);
 			//
@@ -304,6 +305,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 				}
 				//Msg("additional walk_accel = %.2f", walk_accel);
 				walk_accel *= conditions().GetSmoothOwerweightKoef();
+				clamp(walk_accel, 0.0f, walk_accel);
 				//debug
 				//Msg("walk_accel = %.2f", walk_accel);
 				//

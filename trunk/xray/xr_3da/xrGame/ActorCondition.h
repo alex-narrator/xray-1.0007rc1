@@ -5,6 +5,7 @@
 
 #include "EntityCondition.h"
 #include "actor_defs.h"
+#include "actor_flags.h"
 
 template <typename _return_type>
 class CScriptCallbackEx;
@@ -29,6 +30,7 @@ private:
 	Flags16											m_condition_flags;
 private:
 	CActor*											m_object;
+	bool											m_bFlagState;
 	void				UpdateTutorialThresholds	();
 	void 				UpdateSatiety				();
 	//вычисление параметров с ходом игрового времени - лично для актора
@@ -36,7 +38,6 @@ private:
 	void                UpdatePower();
 	void                UpdateRadiation();
 	void                UpdatePsyHealth();
-	void                UpdateEntityMorale();
 	void                UpdateAlcohol();
 	//
 public:
@@ -52,7 +53,12 @@ public:
 	virtual float		BleedingSpeed               ();
 	//
 	float				GetSmoothOwerweightKoef		();
-	void                UpdateStress                ();
+	//коэфф. выносливости - на будущее для влияния на удар ножа, бросок гранаты и т.д.
+	float				GetPowerKoef				() { return psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) ? GetPower() : 1.0f; };
+	//коэфф. регенерации актора - зависит от сытости и дозы облучения
+	float				GetRegenKoef				() { return psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) ? (1.0f - GetRadiation()) * GetSatiety() : 1.0f; };
+	//коэффициент нагрузки актора
+	float               GetStress					();
 
 	virtual void 		ChangeAlcohol				(float value);
 	virtual void 		ChangeSatiety				(float value);
@@ -102,8 +108,6 @@ protected:
 	float m_fOverweightJumpK;
 	float m_fAccelK;
 	float m_fSprintK;
-	//
-	float m_fStressK; //коэффициент нагрузки актора
 public:
 	float m_MaxWalkWeight;
     //
@@ -114,7 +118,6 @@ public:
 	float m_fMinHealthRadiation;
 	float m_fMinHealthRadiationTreshold;
     //
-	float m_fRegenCoef;            //коэфф. регенерации актора - зависит от сытости и дозы облучения
 	float m_fAlcoholSatietyIntens; //коэфф. для рассчета интенсивности постэффекта опьянения от голода
 	//
 	float m_fExerciseStressFactor; //фактор физнагрузки - множитель для коэффициента нагрузки актора при спринте и прыжке

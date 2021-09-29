@@ -45,6 +45,8 @@ CActorCondition::CActorCondition(CActor *object) :
 	VERIFY						(object);
 	m_object					= object;
 	m_condition_flags.zero		();
+	//
+	m_bFlagState				= !!psActorFlags.test(AF_CONDITION_INTERDEPENDENCE);
 
 }
 
@@ -119,87 +121,31 @@ void CActorCondition::UpdateCondition()
 	if (!object().g_Alive())	return;
 	if (!object().Local() && m_object != Level().CurrentViewEntity())		return;
 
-	//вычисление параметров с ходом игрового времени - лично для актора
-	if (GetHealth() <= 0)			return;
-	//-----------------------------------------
-	bool CriticalHealth = false;
-
-	if (m_fDeltaHealth + GetHealth() <= 0)
+	if ((object().mstate_real&mcAnyMove)) 
 	{
-		CriticalHealth = true;
-		m_object->OnCriticalHitHealthLoss();
-	}
-	else
-	{
-		if (m_fDeltaHealth<0) m_object->OnHitHealthLoss(GetHealth() + m_fDeltaHealth);
-	}
-	//-----------------------------------------
-	UpdateHealth();
-	//-----------------------------------------
-	if (!CriticalHealth && m_fDeltaHealth + GetHealth() <= 0)
-	{
-		CriticalHealth = true;
-		m_object->OnCriticalWoundHealthLoss();
-	};
-	//-----------------------------------------
-	UpdatePower();
-	UpdateSatiety();
-	UpdateRadiation();
-	//-----------------------------------------
-	if (!CriticalHealth && m_fDeltaHealth + GetHealth() <= 0)
-	{
-		CriticalHealth = true;
-		m_object->OnCriticalRadiationHealthLoss();
-	};
-	//-----------------------------------------
-	UpdatePsyHealth();
-	UpdateEntityMorale();
-	//
-	UpdateAlcohol();
-	//
-
-	if ((object().mstate_real&mcAnyMove)) {
 		ConditionWalk(object().inventory().TotalWeight() / object().inventory().GetMaxWeight(), isActorAccelerated(object().mstate_real, object().IsZoomAimingMode()), (object().mstate_real&mcSprint) != 0);
 	}
-	else {
+	else 
+	{
 		ConditionStand(object().inventory().TotalWeight() / object().inventory().GetMaxWeight());
 	};
 	//
-	m_fRegenCoef = psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) ? (1 - m_fRadiation) * m_fSatiety : 1;
+	UpdateHealth();
+	UpdatePower();
+	UpdateRadiation();
+	UpdatePsyHealth();
+	UpdateAlcohol();
+	UpdateSatiety();
 	//
-	UpdateStress(); //обновление физнагрузки
-	//
-	//UpdateSatiety();
-
-	//inherited::UpdateCondition();
+	inherited::UpdateCondition();
 
 	if (IsGameTypeSingle())
 		UpdateTutorialThresholds();
-
-	//
-	health() += m_fDeltaHealth;
-	m_fPower += m_fDeltaPower;
-	m_fPsyHealth += m_fDeltaPsyHealth;
-	m_fEntityMorale += m_fDeltaEntityMorale;
-	m_fRadiation += m_fDeltaRadiation;
-
-	m_fDeltaHealth = 0;
-	m_fDeltaPower = 0;
-	m_fDeltaRadiation = 0;
-	m_fDeltaPsyHealth = 0;
-	m_fDeltaCircumspection = 0;
-	m_fDeltaEntityMorale = 0;
-
-	clamp(health(), -0.01f, max_health());
-	clamp(m_fPower, 0.0f, m_fPowerMax);
-	clamp(m_fRadiation, 0.0f, m_fRadiationMax);
-	clamp(m_fEntityMorale, 0.0f, m_fEntityMoraleMax);
-	clamp(m_fPsyHealth, 0.0f, m_fPsyHealthMax);
 }
 
 float CActorCondition::BleedingSpeed()
 {
-	return inherited::BleedingSpeed() * m_fStressK;
+	return inherited::BleedingSpeed() * GetStress();
 }
 
 void CActorCondition::UpdateHealth()
@@ -208,22 +154,23 @@ void CActorCondition::UpdateHealth()
 	m_bIsBleeding = fis_zero(bleeding_speed) ? false : true;
 	m_fDeltaHealth -= CanBeHarmed() ? bleeding_speed : 0;
 
-	m_fDeltaHealth += m_fDeltaTime * m_change_v.m_fV_HealthRestore * m_fRegenCoef;
+	m_fDeltaHealth += m_fDeltaTime * m_change_v.m_fV_HealthRestore * GetRegenKoef();
 	VERIFY(_valid(m_fDeltaHealth));
 
-	ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime * m_fRegenCoef);
+	ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime * GetRegenKoef());
 
 	//радиация влияет на максимальное здоровье
-	if (m_fRadiation > m_fMinHealthRadiationTreshold) //защита от потенциального деления на 0 если m_fRadiationTreshold = 1
+	if (psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) && m_fRadiation > m_fMinHealthRadiationTreshold) //защита от потенциального деления на 0 если m_fRadiationTreshold = 1
 		SetMaxHealth(m_fMinHealthRadiation + (1.0f - m_fMinHealthRadiation) * (1.0f - m_fRadiation) / (1.0f - m_fMinHealthRadiationTreshold));
 	else
 		SetMaxHealth(1.0f);
 
-#ifdef MY_DEBUG
-	Msg("GetMaxHealth = %.2f", GetMaxHealth());
-	Msg("m_fRadiation = %.2f", m_fRadiation);
-	Msg("bleeding_speed = %.10f", BleedingSpeed());
-#endif //MY_DEBUG
+	//debug
+	/*Msg("Max_Health [%f]", GetMaxHealth());
+	Msg("regen_koef [%f]", GetRegenKoef());
+	Msg("stress [%f]", GetStress());
+	Msg("bleeding_speed [%f]", BleedingSpeed());
+	Msg("ChangeBleeding [%f]", m_change_v.m_fV_WoundIncarnation * m_fDeltaTime * GetRegenKoef());*/
 }
 
 void CActorCondition::UpdatePower()
@@ -260,12 +207,7 @@ void CActorCondition::UpdatePower()
 	m_fDeltaPower += m_fV_SatietyPower*
 		//radiation_power_k*
 		//satiety_power_k*
-		m_fDeltaTime * m_fRegenCoef - bleeding_power_dec;
-
-#ifdef MY_DEBUG
-	Msg("m_fSatiety = %.2f", m_fSatiety);
-	Msg("GetMaxPower = %.2f", GetMaxPower());
-#endif //MY_DEBUG
+		m_fDeltaTime * GetRegenKoef() - bleeding_power_dec;
 }
 
 void CActorCondition::UpdatePsyHealth()
@@ -308,16 +250,8 @@ void CActorCondition::UpdateRadiation()
 	if (m_fRadiation>0)
 	{
 		m_fDeltaRadiation -= m_change_v.m_fV_Radiation*m_fDeltaTime;
-
-		m_fDeltaHealth -= CanBeHarmed() ? m_change_v.m_fV_RadiationHealth*m_fRadiation*m_fDeltaTime : 0.0f;
-	}
-}
-
-void CActorCondition::UpdateEntityMorale()
-{
-	if (m_fEntityMorale<m_fEntityMoraleMax)
-	{
-		m_fDeltaEntityMorale += m_change_v.m_fV_EntityMorale*m_fDeltaTime;
+		//радиация постоянно отнимает здоровье только если выкючена опция взаимозависимости параметров
+		m_fDeltaHealth -= CanBeHarmed() && !psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) ? m_change_v.m_fV_RadiationHealth*m_fRadiation*m_fDeltaTime : 0.0f;
 	}
 }
 
@@ -326,6 +260,8 @@ void CActorCondition::UpdateAlcohol()
 	m_fAlcohol += m_fV_Alcohol*m_fDeltaTime;
 	clamp(m_fAlcohol, 0.0f, 1.0f);
 
+	bool flag_state = !!psActorFlags.test(AF_CONDITION_INTERDEPENDENCE);
+
 	if (IsGameTypeSingle())
 	{
 		CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effAlcohol);
@@ -333,10 +269,15 @@ void CActorCondition::UpdateAlcohol()
 		{
 			if (!ce)
 			{
-				if (psActorFlags.test(AF_CONDITION_INTERDEPENDENCE))
-					AddEffector(m_object, effAlcohol, "effector_alcohol", GET_KOEFF_FUNC(this, &CActorCondition::AlcoholSatiety));
-				else
-					AddEffector(m_object, effAlcohol, "effector_alcohol", GET_KOEFF_FUNC(this, &CActorCondition::GetAlcohol));
+				AddEffector(m_object, effAlcohol, "effector_alcohol", GET_KOEFF_FUNC(this, flag_state ?
+					&CActorCondition::AlcoholSatiety : 
+					&CActorCondition::GetAlcohol));
+			}
+			else if (m_bFlagState != flag_state) //удалим эффектор для его передобавления если опцию изменили в процессе
+			{
+					RemoveEffector(m_object, effAlcohol);
+					m_bFlagState = flag_state;
+					//Msg("Restart effector");
 			}
 		}
 		else
@@ -344,10 +285,10 @@ void CActorCondition::UpdateAlcohol()
 			if (ce) RemoveEffector(m_object, effAlcohol);
 		}
 		//смерть при максимальном опьянении
-		if (GetAlcohol() == 1)
-			SetMaxHealth(0.0f);
+		if (fsimilar(GetAlcohol(), 1.0f))
+			health() = 0.0f;
 	}
-
+	//Msg("Alcohol [%f], Satiety [%f], AlcoSat [%f]", GetAlcohol(), GetSatiety(), AlcoholSatiety());
 }
 
 void CActorCondition::UpdateSatiety()
@@ -356,13 +297,12 @@ void CActorCondition::UpdateSatiety()
 
 	if(m_fSatiety>0)
 	{
-		m_fSatiety -=	m_fV_Satiety * m_fDeltaTime * m_fStressK;	
+		m_fSatiety -=	m_fV_Satiety * m_fDeltaTime * GetStress();	
 		clamp(m_fSatiety,		0.0f,		1.0f);
-	}
-		
+	}		
 	//сытость увеличивает здоровье только если нет открытых ран
 		m_fDeltaHealth += CanBeHarmed() && !m_bIsBleeding ?
-			(m_fV_SatietyHealth*(m_fSatiety>m_fSatietyCritical ? 1.f : -1.f)*m_fDeltaTime*m_fRegenCoef) //по идее тут надо сравнить с m_fSatietyCritical
+			(m_fV_SatietyHealth*(m_fSatiety>m_fSatietyCritical ? 1.f : -1.f)*m_fDeltaTime*GetRegenKoef()) //по идее тут надо сравнить с m_fSatietyCritical
 			: 0;
 }
 
@@ -380,11 +320,11 @@ float CActorCondition::GetSmoothOwerweightKoef()
 
 		val = power_k * overweight_k;
 	}
-	//Msg("SmoothOverweightK = %.2f", val);
+	//Msg("SmoothOverweightK = %f", val);
 	return val;
 }
 
-void CActorCondition::UpdateStress()
+float CActorCondition::GetStress()
 {
 	float exercise_stress	= psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) && object().get_state()&(mcSprint|mcJump) ? 
 								m_fExerciseStressFactor : 
@@ -397,9 +337,9 @@ void CActorCondition::UpdateStress()
 	/*if (object().get_state()&mcSprint) Msg("mcSprint!");
 	else
 		if (object().get_state()&mcJump) Msg("Jump!");
-	Msg("overweight_stress = %.4f | exercise_stress = %.4f | m_fStressK = %.4f", overweight_stress, exercise_stress, m_fStressK);*/
+	Msg("overweight_stress = %f | exercise_stress = %f | m_fStressK = %f", overweight_stress, exercise_stress, m_fStressK);*/
 
-	m_fStressK = overweight_stress * exercise_stress;
+	return overweight_stress * exercise_stress;
 }
 
 CWound* CActorCondition::ConditionHit(SHit* pHDS)
@@ -425,7 +365,7 @@ void CActorCondition::ConditionWalk(float weight, bool accel, bool sprint)
 
 void CActorCondition::ConditionStand(float weight)
 {	
-	float power = m_fStandPower * m_fRegenCoef;
+	float power = m_fStandPower * GetRegenKoef();
 	power *= m_fDeltaTime;
 	m_fPower -= power;
 }
