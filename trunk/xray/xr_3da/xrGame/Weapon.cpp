@@ -906,6 +906,7 @@ void CWeapon::SpawnAmmo(u32 boxCurr, LPCSTR ammoSect, u32 ParentID)
 	if (OnClient())					return;
 	m_bAmmoWasSpawned = true;
 	// AF_AMMO_FROM_BELT
+	if (g_actor->m_inventory == m_pCurrentInventory)
 	m_pCurrentInventory->m_bAmmoSpawnUnloading = true; //устанавливаем флаг на событие перезарядки/смены типа боеприпаса
 	//
 	int l_type = 0;

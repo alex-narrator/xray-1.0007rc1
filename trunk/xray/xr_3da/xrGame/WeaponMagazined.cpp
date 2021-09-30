@@ -293,14 +293,17 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 	xr_map<LPCSTR, u16>::iterator l_it;
 	for (l_it = l_ammo.begin(); l_ammo.end() != l_it; ++l_it)
 	{
-		//bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !ParentIsActor() || m_pCurrentInventory->m_bInventoryAmmoPlacement;
-		CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(l_it->first, ParentIsActor()));
-		
-		if (l_pA)
-		{
-			u16 l_free = l_pA->m_boxSize - l_pA->m_boxCurr;
-			l_pA->m_boxCurr = l_pA->m_boxCurr + (l_free < l_it->second ? l_free : l_it->second);
-			l_it->second = l_it->second - (l_free < l_it->second ? l_free : l_it->second);
+		if (m_pCurrentInventory)
+		{	
+			//bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !ParentIsActor() || m_pCurrentInventory->m_bInventoryAmmoPlacement;
+			CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(l_it->first, ParentIsActor()));
+
+			if (l_pA)
+			{
+				u16 l_free = l_pA->m_boxSize - l_pA->m_boxCurr;
+				l_pA->m_boxCurr = l_pA->m_boxCurr + (l_free < l_it->second ? l_free : l_it->second);
+				l_it->second = l_it->second - (l_free < l_it->second ? l_free : l_it->second);
+			}
 		}
 		if (l_it->second && !unlimited_ammo()) SpawnAmmo(l_it->second, l_it->first);
 	}

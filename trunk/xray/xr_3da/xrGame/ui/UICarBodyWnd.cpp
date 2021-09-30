@@ -357,6 +357,20 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 					DropItemsfromCell(b_all);
 				}break;
 			}
+			//в случае инвентарных ящиков нужно обновить окошко
+			switch (m_pUIPropertiesBox->GetClickedItem()->GetTAG())
+			{
+			case INVENTORY_UNLOAD_MAGAZINE:
+			case INVENTORY_DETACH_SCOPE_ADDON:
+			case INVENTORY_DETACH_SILENCER_ADDON:
+			case INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON:
+			{
+				if (m_pInventoryBox)
+				{
+					UpdateLists_delayed();
+				}
+			}break;
+			}
 		}
 	}
 
@@ -682,9 +696,6 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	
 	LPCSTR _action				= NULL;
 	string1024 temp;
-	
-	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
-	bool parent_exists = !m_pInventoryBox || owner == m_pUIOurBagList;
 
 	if (psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK) && pArtefact && g_actor->GetDetector() && !m_pUIItemInfo->UIArtefactParams->IsShown())
 	{
@@ -692,7 +703,7 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 		b_show = true;
 	}
 
-	if (pWeapon && parent_exists)
+	if (pWeapon)
 	{
 		if (pWeapon->IsGrenadeLauncherAttached())
 		{
@@ -798,7 +809,7 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	if (many_items_in_cell) //предметов в ячейке больше одного
 		m_pUIPropertiesBox->AddItem("st_move_all", NULL, INVENTORY_MOVE_ALL_ACTION); //переместить стак предметов
 	//
-	if (parent_exists)
+	if (!m_pInventoryBox)
 	{
 		m_pUIPropertiesBox->AddItem("st_drop", NULL, INVENTORY_DROP_ACTION);
 
