@@ -1049,6 +1049,24 @@ public:
 		Level().g_cl_Spawn(args, 0xff, M_SPAWN_OBJECT_LOCAL, Actor()->Position());
 	}
 };
+
+class CCC_SetWeather : public IConsole_Command {
+public:
+	CCC_SetWeather(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = false; };
+	virtual void	Execute(LPCSTR args)
+	{
+		if (!g_pGamePersistent) return;
+		if (!g_pGameLevel)		return;
+
+		string256				weather_name;
+		weather_name[0] = 0;
+		sscanf(args, "%s", weather_name);
+		if (!weather_name[0])	return;
+		g_pGamePersistent->Environment().SetWeather(weather_name, true);
+	};
+
+//	virtual void	Info(TInfo& I){ strcpy(I, "Set new weather"); }
+};
 //#endif // MASTER_GOLD
 
 #include "GamePersistent.h"
@@ -1400,7 +1418,8 @@ void CCC_RegisterCommands()
 	CMD1(CCC_GameDifficulty,	"g_game_difficulty"		);
 
 	CMD3(CCC_Mask,				"g_backrun",			       &psActorFlags,	AF_RUN_BACKWARD);
-
+	//
+	CMD3(CCC_Mask,				"g_pause_after_loading",	   &psActorFlags,	AF_PAUSE_AFTER_LOADING);		//пауза после загрузки сохранения
 	//взаимодействие с предметами
 	CMD3(CCC_Token,             "g_free_hands",                &g_FreeHands,    free_hands_token);				//режимы "свободных рук"
 	CMD3(CCC_Mask,				"g_pickup_target_only",        &psActorFlags,	AF_PICKUP_TARGET_ONLY);			//можно подобрать только те предметы на которые непосредственно смотрит прицел
@@ -1563,17 +1582,18 @@ void CCC_RegisterCommands()
 
 
 //#ifndef MASTER_GOLD
-	CMD1(CCC_JumpToLevel,	"jump_to_level"		);
-	CMD1(CCC_Spawn,			"g_spawn");
-	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE	);
+	CMD1(CCC_JumpToLevel,	"jump_to_level"										);
+	CMD1(CCC_Spawn,			"g_spawn"											);
+	CMD1(CCC_SetWeather,	"set_weather"										); //установить погоду
+	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE		);
 	CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);
-	CMD1(CCC_Script,		"run_script");
-	CMD1(CCC_ScriptCommand,	"run_string");
-	CMD1(CCC_TimeFactor,	"time_factor");		
+	CMD1(CCC_Script,		"run_script"										);
+	CMD1(CCC_ScriptCommand,	"run_string"										);
+	CMD1(CCC_TimeFactor,	"time_factor"										);		
 //#endif // MASTER_GOLD
 
-	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
-	CMD1(CCC_LuaHelp,   "lua_help");
+	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP	);
+	CMD1(CCC_LuaHelp,   "lua_help"												);
 
 #ifdef DEBUG
 	

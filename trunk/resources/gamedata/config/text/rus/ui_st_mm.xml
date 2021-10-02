@@ -224,6 +224,9 @@
 	<string id="ui_mm_condition_interdependence">
 		<text>Взаимозависимость параметров здоровья ГГ</text>
 	</string>
+	<string id="ui_mm_pause_after_loading">
+		<text>Пауза после загрузки сохранения</text>
+	</string>
 <!-- END Новые опции геймплея -->>
 	<string id="ui_mm_eax">
 		<text>EAX</text>

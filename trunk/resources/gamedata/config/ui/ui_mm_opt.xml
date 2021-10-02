@@ -477,10 +477,10 @@
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_wpn_actions_reset_sprint</text>
 		</check_wpn_actions_reset_sprint>
 
-<!-- 		<check_hud_show_on_key x="20" y="0" width="400" height="21">
-			<options_item entry="hud_show_on_key" group="mm_opt_gameplay"/>
-			<text font="letterica16" r="215" g="195" b="170">ui_mm_hud_show_on_key</text>
-		</check_hud_show_on_key> -->
+		<check_pause_after_loading x="20" y="0" width="400" height="21">
+			<options_item entry="g_pause_after_loading" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_pause_after_loading</text>
+		</check_pause_after_loading>
 <!-- END Новые опции геймплея -->>
 
 		<btn_check_updates x="342" y="330" width="111" height="29">

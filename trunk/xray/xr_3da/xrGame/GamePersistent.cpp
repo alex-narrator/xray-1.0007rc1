@@ -1,4 +1,4 @@
-#include "pch_script.h"
+п»ї#include "pch_script.h"
 #include "gamepersistent.h"
 #include "../fmesh.h"
 #include "../xr_ioconsole.h"
@@ -11,6 +11,7 @@
 #include "level.h"
 #include "ParticlesObject.h"
 #include "actor.h"
+#include "actor_flags.h"
 #include "game_base_space.h"
 #include "weaponhud.h"
 #include "stalker_animation_data_storage.h"
@@ -218,7 +219,7 @@ void CGamePersistent::WeathersUpdate()
 		int data_set				= (Random.randF()<(1.f-Environment().CurrentEnv.weight))?0:1; 
 		CEnvDescriptor* _env		= Environment().Current[data_set]; VERIFY(_env);
 		if (!_env)
-			Msg("!ERROR: Environment().Current[%d] == NULL", data_set); // alpet: сия проблема всплывает, при вызове level.on_frame в скриптах
+			Msg("!ERROR: Environment().Current[%d] == NULL", data_set); // alpet: СЃРёСЏ РїСЂРѕР±Р»РµРјР° РІСЃРїР»С‹РІР°РµС‚, РїСЂРё РІС‹Р·РѕРІРµ level.on_frame РІ СЃРєСЂРёРїС‚Р°С…
 		CEnvAmbient* env_amb		= _env ? _env->env_ambient : NULL; // _env->env_ambient; // 
 		if (env_amb){
 			// start sound
@@ -345,6 +346,12 @@ void CGamePersistent::OnFrame	()
 
 	if(!g_pGameLevel)			return;
 	if(!g_pGameLevel->bReady)	return;
+
+	//РїР°СѓР·Р° РїРѕСЃР»Рµ Р·Р°РіСЂСѓР·РєРё СЃРѕС…СЂР°РЅРµРЅРёСЏ
+	if (CanBePaused() && Device.dwPrecacheFrame == 3 && psActorFlags.test(AF_PAUSE_AFTER_LOADING))
+	{
+		Device.Pause(!Device.Paused(), TRUE, TRUE, "pause_after_loadind");
+	}
 
 	if(Device.Paused()){
 #ifndef MASTER_GOLD
@@ -520,7 +527,7 @@ void CGamePersistent::OnRenderPPUI_PP()
 void CGamePersistent::LoadTitle(LPCSTR str)
 {
 	string512			buff;	
-	LPCSTR alt_text = try_call_luafunc("on_load_title", str); // позволяет дополнительно менять загрузочные экраны
+	LPCSTR alt_text = try_call_luafunc("on_load_title", str); // РїРѕР·РІРѕР»СЏРµС‚ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ РјРµРЅСЏС‚СЊ Р·Р°РіСЂСѓР·РѕС‡РЅС‹Рµ СЌРєСЂР°РЅС‹
 	if (strstr(alt_text, "#ERROR") || strstr(alt_text, "#OK"));
 	else
 		str = alt_text;
