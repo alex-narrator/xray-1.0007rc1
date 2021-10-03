@@ -470,23 +470,26 @@ void CEntityCondition::UpdatePower()
 {
 }
 
-void CEntityCondition::UpdatePsyHealth(float k)
+void CEntityCondition::UpdatePsyHealth(/*float k*/)
 {
 	if(m_fPsyHealth>0)
 	{
-		m_fDeltaPsyHealth += m_change_v.m_fV_PsyHealth*k*m_fDeltaTime;
+		m_fDeltaPsyHealth += m_change_v.m_fV_PsyHealth*
+			//k*
+			m_fDeltaTime;
 	}
 }
 
-void CEntityCondition::UpdateRadiation(float k)
+void CEntityCondition::UpdateRadiation(/*float k*/)
 {
 	if(m_fRadiation>0)
 	{
 		m_fDeltaRadiation -= m_change_v.m_fV_Radiation*
-							k*
+							//k*
 							m_fDeltaTime;
 
 		m_fDeltaHealth -= CanBeHarmed() ? m_change_v.m_fV_RadiationHealth*m_fRadiation*m_fDeltaTime : 0.0f;
+		Msg("CEntityCondition m_fDeltaHealth [%f]", m_fDeltaHealth);
 	}
 }
 

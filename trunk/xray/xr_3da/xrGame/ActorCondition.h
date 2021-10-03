@@ -33,12 +33,12 @@ private:
 	bool											m_bFlagState;
 	void				UpdateTutorialThresholds	();
 	void 				UpdateSatiety				();
-	//вычисление параметров с ходом игрового времени - лично для актора
-	void                UpdateHealth();
-	void                UpdatePower();
-	void                UpdateRadiation();
-	void                UpdatePsyHealth();
-	void                UpdateAlcohol();
+	void                UpdateAlcohol				();
+	//виртуальные методы CEntityCondition
+	virtual void		UpdateHealth				();
+	virtual void		UpdatePower					();
+	virtual void		UpdateRadiation				();
+	virtual void		UpdatePsyHealth				();
 	//
 public:
 						CActorCondition				(CActor *object);

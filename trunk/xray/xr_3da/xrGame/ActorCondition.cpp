@@ -130,10 +130,11 @@ void CActorCondition::UpdateCondition()
 		ConditionStand(object().inventory().TotalWeight() / object().inventory().GetMaxWeight());
 	};
 	//
-	UpdateHealth();
+	/*UpdateHealth();
 	UpdatePower();
 	UpdateRadiation();
-	UpdatePsyHealth();
+	UpdatePsyHealth();*/
+	//этого нет в EntityCondition
 	UpdateAlcohol();
 	UpdateSatiety();
 	//
@@ -175,7 +176,8 @@ void CActorCondition::UpdateHealth()
 
 void CActorCondition::UpdatePower()
 {
-	if (IsGameTypeSingle()){
+	if (IsGameTypeSingle())
+	{
 
 		float k_max_power = 1.0f;
 
@@ -212,10 +214,11 @@ void CActorCondition::UpdatePower()
 
 void CActorCondition::UpdatePsyHealth()
 {
-	if (m_fPsyHealth>0)
+	/*if (m_fPsyHealth>0)
 	{
 		m_fDeltaPsyHealth += m_change_v.m_fV_PsyHealth*m_fDeltaTime;
-	}
+	}*/
+	inherited::UpdatePsyHealth();
 
 	if (IsGameTypeSingle())
 	{
@@ -252,6 +255,7 @@ void CActorCondition::UpdateRadiation()
 		m_fDeltaRadiation -= m_change_v.m_fV_Radiation*m_fDeltaTime;
 		//радиация постоянно отнимает здоровье только если выкючена опция взаимозависимости параметров
 		m_fDeltaHealth -= CanBeHarmed() && !psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) ? m_change_v.m_fV_RadiationHealth*m_fRadiation*m_fDeltaTime : 0.0f;
+		Msg("CActorCondition m_fDeltaHealth [%f]", m_fDeltaHealth);
 	}
 }
 
