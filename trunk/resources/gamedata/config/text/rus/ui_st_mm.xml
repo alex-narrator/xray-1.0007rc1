@@ -227,6 +227,9 @@
 	<string id="ui_mm_pause_after_loading">
 		<text>Пауза после загрузки сохранения</text>
 	</string>
+	<string id="ui_mm_ammo_box_as_magazine">
+		<text>Перезарядка оружия кол-вом патронов в пачке</text>
+	</string>
 <!-- END Новые опции геймплея -->>
 	<string id="ui_mm_eax">
 		<text>EAX</text>

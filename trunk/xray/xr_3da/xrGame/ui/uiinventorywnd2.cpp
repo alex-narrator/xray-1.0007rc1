@@ -40,10 +40,16 @@ void CUIInventoryWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	if(pWnd == &UIPropertiesBox &&	msg==PROPERTY_CLICKED)
 	{
 		ProcessPropertiesBoxClicked	();
-	}else 
+	}
+	else 
 	if (UIExitButton == pWnd && BUTTON_CLICKED == msg)
 	{
 		GetHolder()->StartStopMenu			(this,true);
+	}
+	else
+	if (UIRepackAmmoButton == pWnd && BUTTON_CLICKED == msg)
+	{
+		g_actor->inventory().RepackAmmo();
 	}
 
 	CUIWindow::SendMessage(pWnd, msg, pData);

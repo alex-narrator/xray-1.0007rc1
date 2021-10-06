@@ -241,6 +241,17 @@
 			<h r="0"	g="0"	b="0"/>
 		</text_color>
     </exit_button>
+	
+	<repack_ammo_button x="680" y="725" width="157" height="48" stretch="1">
+        <texture>ui_button_main02</texture>
+        <text font="graffiti19" r="238" g="153" b="26">ui_inv_repack_ammo</text>
+        <text_color>
+			<e r="240"	g="217" b="182"/>				
+			<t r="0"	g="0"	b="0"/>				
+			<d r="135"	g="123" b="116"/>
+			<h r="0"	g="0"	b="0"/>
+		</text_color>
+    </repack_ammo_button>
 
 	<action_sounds>
 		<snd_open>interface\inv_open</snd_open>

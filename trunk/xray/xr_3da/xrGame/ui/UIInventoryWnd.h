@@ -83,6 +83,7 @@ protected:
 	CUIFrameWindow				UIPersonalWnd;
 
 	CUI3tButton*				UIExitButton;
+	CUI3tButton*				UIRepackAmmoButton;
 
 	CUIStatic					UIStaticBottom;
 	CUIStatic					UIStaticTime;

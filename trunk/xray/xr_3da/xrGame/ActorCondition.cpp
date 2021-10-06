@@ -255,7 +255,7 @@ void CActorCondition::UpdateRadiation()
 		m_fDeltaRadiation -= m_change_v.m_fV_Radiation*m_fDeltaTime;
 		//радиация постоянно отнимает здоровье только если выкючена опция взаимозависимости параметров
 		m_fDeltaHealth -= CanBeHarmed() && !psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) ? m_change_v.m_fV_RadiationHealth*m_fRadiation*m_fDeltaTime : 0.0f;
-		Msg("CActorCondition m_fDeltaHealth [%f]", m_fDeltaHealth);
+		//Msg("CActorCondition m_fDeltaHealth [%f]", m_fDeltaHealth);
 	}
 }
 

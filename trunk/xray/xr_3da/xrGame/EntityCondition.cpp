@@ -489,7 +489,7 @@ void CEntityCondition::UpdateRadiation(/*float k*/)
 							m_fDeltaTime;
 
 		m_fDeltaHealth -= CanBeHarmed() ? m_change_v.m_fV_RadiationHealth*m_fRadiation*m_fDeltaTime : 0.0f;
-		Msg("CEntityCondition m_fDeltaHealth [%f]", m_fDeltaHealth);
+		//Msg("CEntityCondition m_fDeltaHealth [%f]", m_fDeltaHealth);
 	}
 }
 

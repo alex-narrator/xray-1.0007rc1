@@ -81,6 +81,7 @@ public:
 	// AMMO_FROM_BELT
 	PIItem					GetAmmo     		(const char *name, BOOL forActor) const;       //получаем айтем из всего инвентаря или с пояса по условию
 	PIItem					GetSame				(const PIItem pIItem, bool bSearchRuck) const; //получаем айтем из всего инвентаря или с пояса
+	void					RepackAmmo			();
 	bool                    m_bAmmoSpawnUnloading = false;     //флаг на разряжание/смену типа патрона
 	bool                    m_bInventoryAmmoPlacement = false; //флаг инвентарной перезарядки
 	// AF_FREE_HANDS

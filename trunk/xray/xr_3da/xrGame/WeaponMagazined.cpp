@@ -293,7 +293,7 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 	xr_map<LPCSTR, u16>::iterator l_it;
 	for (l_it = l_ammo.begin(); l_ammo.end() != l_it; ++l_it)
 	{
-		if (m_pCurrentInventory)
+		if (m_pCurrentInventory && !psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE)) //доложить разряжаемые патроны в пачку к имеющимся
 		{	
 			//bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !ParentIsActor() || m_pCurrentInventory->m_bInventoryAmmoPlacement;
 			CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(l_it->first, ParentIsActor()));
@@ -362,7 +362,7 @@ void CWeaponMagazined::ReloadMagazine()
 	//разрядить магазин, если загружаем патронами другого типа
 	if (!m_bLockType && !m_magazine.empty() &&
 		(!m_pAmmo || xr_strcmp(m_pAmmo->cNameSect(),
-		*m_magazine.back().m_ammoSect)))
+		*m_magazine.back().m_ammoSect) || psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && !unlimited_ammo())) //разряжать магазин и при перезарядке, если включена опция
 		UnloadMagazine();
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
@@ -388,7 +388,7 @@ void CWeaponMagazined::ReloadMagazine()
 	if (m_pAmmo && !m_pAmmo->m_boxCurr && OnServer())
 		m_pAmmo->SetDropManual(TRUE);
 
-	if (iMagazineSize > iAmmoElapsed)
+	if (iMagazineSize > iAmmoElapsed && !psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE)) //дозарядить оружие до полного магазина, если опция выключена
 	{
 		m_bLockType = true;
 		ReloadMagazine();
