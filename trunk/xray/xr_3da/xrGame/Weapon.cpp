@@ -820,7 +820,6 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 			{
 				l_newType = (l_newType + 1) % m_ammoTypes.size();
 				b1 = l_newType != m_ammoType;
-				//bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || !ParentIsActor() || m_pCurrentInventory->m_bInventoryAmmoPlacement;
 				b2 = unlimited_ammo() ? false : (!m_pCurrentInventory->GetAmmo(*m_ammoTypes[l_newType], ParentIsActor()));
 			} while (b1 && b2);
 
@@ -905,10 +904,7 @@ void CWeapon::SpawnAmmo(u32 boxCurr, LPCSTR ammoSect, u32 ParentID)
 	if (!m_ammoTypes.size())			return;
 	if (OnClient())					return;
 	m_bAmmoWasSpawned = true;
-	// AF_AMMO_FROM_BELT
-	if (g_actor->m_inventory == m_pCurrentInventory)
-	m_pCurrentInventory->m_bAmmoSpawnUnloading = true; //устанавливаем флаг на событие перезарядки/смены типа боеприпаса
-	//
+
 	int l_type = 0;
 	l_type %= m_ammoTypes.size();
 

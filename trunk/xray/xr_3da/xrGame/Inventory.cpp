@@ -180,19 +180,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		pIItem->m_eItemPlace = eItemPlaceUndefined;
 	
 	// AF_AMMO_FROM_BELT
-	auto pActor = smart_cast<CActor*>(m_pOwner);
-	auto Ammo = smart_cast<CWeaponAmmo*>(pIItem);
-	if (psActorFlags.test(AF_AMMO_FROM_BELT) && pActor && Ammo && m_bAmmoSpawnUnloading) //если включены патроны с пояса, то для боеприпасов актора, которые спавнятся при разрядке
-	{    
-		if (!m_bInventoryAmmoPlacement)
-		{
-			pIItem->m_eItemPlace = eItemPlaceBelt; //укажем патронам попадать на пояс (если не проставлен флаг необходимости сброса в рюкзак)
-			if (!CanPutInBelt(pIItem)) //если патроны не помещаются на пояс
-				pIItem->SetDropManual(TRUE); //уронить пароны на землю
-		}
-		m_bAmmoSpawnUnloading = false; //сбросим флаг спавна патронов при разрядке
-	}
-	//
+	if (smart_cast<CWeaponAmmo*>(pIItem)) TryAmmoToBelt(pIItem);
 
 	bool result = false;
 	switch (pIItem->m_eItemPlace)
@@ -928,17 +916,30 @@ PIItem CInventory::GetAny(const char *name) const
 //получаем патроны из всего инвентаря или с пояса по условию
 PIItem CInventory::GetAmmo(const char *name, BOOL forActor) const
 {
-	bool include_ruck = !forActor || !psActorFlags.test(AF_AMMO_FROM_BELT) || m_bInventoryAmmoPlacement;;
+	bool include_ruck = !forActor || !psActorFlags.test(AF_AMMO_FROM_BELT) || m_bRuckAmmoPlacement;
 
-	PIItem itm;
-	/*if (include_ruck) {
-		itm = Get(name, true);//GetAny(name);
-	}
-	else {
-		itm = Get(name, false);
-	}*/
-	itm = Get(name, include_ruck);
+	PIItem itm = Get(name, include_ruck);
 	return itm;
+}
+
+void CInventory::TryAmmoToBelt(CInventoryItem *pIItem)
+{
+	auto pActor = smart_cast<CActor*>(m_pOwner);
+	if (!pActor) return;
+
+	auto pWeapon = smart_cast<CWeapon*>(ActiveItem());
+	if (!pWeapon) return;
+
+	if (psActorFlags.test(AF_AMMO_FROM_BELT) && pWeapon->GetAmmoWasSpawned()) //если включены патроны с пояса, то для боеприпасов актора, которые спавнятся при разрядке
+	{
+		if (!m_bRuckAmmoPlacement)
+		{
+			pIItem->m_eItemPlace = eItemPlaceBelt;	//укажем патронам попадать на пояс (если не проставлен флаг необходимости сброса в рюкзак)
+			if (!CanPutInBelt(pIItem))				//если патроны не помещаются на пояс
+				pIItem->SetDropManual(TRUE);		//уронить пароны на землю
+		}
+		pWeapon->SetAmmoWasSpawned(false);			//сбрасываем флажок спавна патронов
+	}
 }
 
 void CInventory::RepackAmmo() 
@@ -1000,13 +1001,12 @@ void CInventory::RepackAmmo()
 
 bool CInventory::FreeHands()
 {
-	//if (/*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands != 2 || (ActiveItem() && ActiveItem()->IsSingleHanded()) || ActiveItem() == NULL || GetActiveSlot() == NO_ACTIVE_SLOT)
-	//	return true;
-	//else
-	//	return false;
 	CHudItem* pHudItem = smart_cast<CHudItem*>(ActiveItem());
 
-	bool hands_are_free = g_FreeHands != 2 /*|| pHudItem && !pHudItem->IsPending()*/ || (ActiveItem() && ActiveItem()->IsSingleHanded() && !pHudItem->IsPending()) || ActiveItem() == NULL || GetActiveSlot() == NO_ACTIVE_SLOT;
+	bool hands_are_free = g_FreeHands != 2  || 
+		(ActiveItem() && ActiveItem()->IsSingleHanded() && !pHudItem->IsPending()) || 
+		ActiveItem() == NULL || 
+		GetActiveSlot() == NO_ACTIVE_SLOT;
 	return hands_are_free;
 }
 

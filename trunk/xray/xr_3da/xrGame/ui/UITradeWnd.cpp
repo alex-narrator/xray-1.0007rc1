@@ -247,12 +247,16 @@ void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 			switch (m_pUIPropertiesBox->GetClickedItem()->GetTAG())
 			{
 				//
-			case INVENTORY_MOVE_ONE_ACTION:  //переместить один предмет
-				MoveOneFromCell(itm);
-				break;
-			case INVENTORY_MOVE_ALL_ACTION:  //переместить стак предметов
-				MoveAllFromCell(itm);
-				break;
+			case INVENTORY_MOVE_ACTION:
+			{
+				void* d = m_pUIPropertiesBox->GetClickedItem()->GetData();
+				bool b_all = (d == (void*)33);
+
+				if (b_all)
+					MoveAllFromCell(itm);	//переместить стак предметов
+				else
+					MoveOneFromCell(itm);	//переместить один предмет
+			}break;
 				//
 			case INVENTORY_DETECTOR_CHECK_ACTION:
 				m_uidata->UIItemInfo.UIArtefactParams->Show(true);
@@ -347,7 +351,7 @@ void CUITradeWnd::Show()
 	m_uidata->UIDealMsg				= NULL;
 	//
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if (pActor && psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = true; //установим флаг инвентарной перезарядки
+	if (pActor && psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = true; //установим флаг перезарядки из рюкзака
 }
 
 void CUITradeWnd::Hide()
@@ -372,7 +376,7 @@ void CUITradeWnd::Hide()
 	m_uidata->UIOthersTradeList.ClearAll(true);
 	//
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if (pActor && psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = false; //сбросим флаг инвентарной перезарядки
+	if (pActor && psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = false; //сбросим флаг перезарядки из рюкзака
 }
 
 void CUITradeWnd::StartTrade()
@@ -746,7 +750,6 @@ void CUITradeWnd::ActivatePropertiesBox()
 			{
 				l_newType = (l_newType + 1) % pWeapon->m_ammoTypes.size();
 				b1 = l_newType != pWeapon->m_ammoType;
-				//bool SearchAll = !psActorFlags.test(AF_AMMO_FROM_BELT) || g_actor->inventory().m_bInventoryAmmoPlacement; //в целом для действий контекстного меню патроны ищем ВСЕГДА в рюкзаке, но пока пусть будет в зависимости от опции/флага
 				b2 = pWeapon->unlimited_ammo() ? false : (!pWeapon->m_pCurrentInventory->GetAmmo(*pWeapon->m_ammoTypes[l_newType], true));
 			} while (b1 && b2);
 
@@ -785,11 +788,11 @@ void CUITradeWnd::ActivatePropertiesBox()
 	{
 		bool many_items_in_cell = CurrentItem()->ChildsCount() > 0;
 
-		m_pUIPropertiesBox->AddItem("st_move", NULL, INVENTORY_MOVE_ONE_ACTION); //переместить один предмет
+		m_pUIPropertiesBox->AddItem("st_move", NULL, INVENTORY_MOVE_ACTION); //переместить один предмет
 		b_show = true;
 
 		if (many_items_in_cell) //предметов в ячейке больше одного
-			m_pUIPropertiesBox->AddItem("st_move_all", NULL, INVENTORY_MOVE_ALL_ACTION); //переместить стак предметов
+			m_pUIPropertiesBox->AddItem("st_move_all", (void*)33, INVENTORY_MOVE_ACTION); //переместить стак предметов
 	}
 	//
 	if (b_show)

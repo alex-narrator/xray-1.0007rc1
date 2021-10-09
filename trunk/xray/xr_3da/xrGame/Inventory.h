@@ -82,8 +82,8 @@ public:
 	PIItem					GetAmmo     		(const char *name, BOOL forActor) const;       //получаем айтем из всего инвентаря или с пояса по условию
 	PIItem					GetSame				(const PIItem pIItem, bool bSearchRuck) const; //получаем айтем из всего инвентаря или с пояса
 	void					RepackAmmo			();
-	bool                    m_bAmmoSpawnUnloading = false;     //флаг на разряжание/смену типа патрона
-	bool                    m_bInventoryAmmoPlacement = false; //флаг инвентарной перезарядки
+	void					TryAmmoToBelt		(CInventoryItem *pIItem);
+	bool                    m_bRuckAmmoPlacement	= false; //класть/брать патроны из рюкзака (для AF_AMMO_FROM_BELT)
 	// AF_FREE_HANDS
 	bool                    FreeHands();                             //свободна ли хотябы одна рука актора
 	void                    TryToHideWeapon     (bool b_hide_state, bool b_save_prev_slot = true); //сокрытие/восстановлени показа оружия в режиме AF_FREE_HANDS

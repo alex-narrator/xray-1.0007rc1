@@ -490,7 +490,7 @@ void CUIInventoryWnd::Show()
 	{
 		if (/*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands == 2) pActor->SetWeaponHideState(INV_STATE_INV_WND, true); //спрячем оружие в руках
 		pActor->inventory().TryToHideWeapon(true);
-		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = true; //установим флаг инвентарной перезарядки
+		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = true; //установим флаг перезарядки из рюкзака
 	}
 	//
 	UIRepackAmmoButton->Show(!!psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE)); //покажем кнопку перепаковки патронов, если опция включена
@@ -529,7 +529,7 @@ void CUIInventoryWnd::Hide()
 	{
 		if (/*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands == 2) pActor->SetWeaponHideState(INV_STATE_INV_WND, false); //восстановим показ оружия в руках
 		pActor->inventory().TryToHideWeapon(false);
-		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = false; //сбросим флаг инвентарной перезарядки
+		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = false; //сбросим флаг перезарядки из рюкзака
 		//
 		if (!psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE)) pActor->inventory().RepackAmmo(); //перепакуем патроны автоматически, если опция выключена
 	}

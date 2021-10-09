@@ -438,6 +438,8 @@ public:
 	virtual	float			Get_PDM_Crouch()	const	{ return m_fPDM_disp_crouch; };
 	virtual	float			Get_PDM_Crouch_NA()	const	{ return m_fPDM_disp_crouch_no_acc; };
 	//  [8/3/2005]
+	bool GetAmmoWasSpawned	()			{ return m_bAmmoWasSpawned; };
+	void SetAmmoWasSpawned	(bool value){ m_bAmmoWasSpawned = value; };
 protected:
 	int						iAmmoElapsed;		// ammo in magazine, currently
 	int						iMagazineSize;		// size (in bullets) of magazine

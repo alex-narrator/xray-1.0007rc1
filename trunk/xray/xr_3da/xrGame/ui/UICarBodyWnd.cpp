@@ -235,7 +235,7 @@ void CUICarBodyWnd::Hide()
 		//ОБЯЗАТЕЛЬНО!!! одинаковая проверка для Hide() и Show(), иначе всё ломается
 		if (/*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands == 2 && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //восстановим показ оружия в руках, если обыскиваем не монстра
 		pActor->inventory().TryToHideWeapon(false);
-		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = false; //сбросим флаг инвентарной перезарядки
+		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = false; //сбросим флаг перезарядки из рюкзака
 	}
     //
 }
@@ -305,12 +305,17 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				EatItem();
 				break;
 				//
-			case INVENTORY_MOVE_ONE_ACTION:  //переместить один предмет
-				MoveOneFromCell(itm);
-				break;
-			case INVENTORY_MOVE_ALL_ACTION:  //переместить стак предметов
-				MoveAllFromCell(itm);
-				break;
+			case INVENTORY_MOVE_ACTION:  
+			{
+				void* d = m_pUIPropertiesBox->GetClickedItem()->GetData();
+				bool b_all = (d == (void*)33);
+
+				if (b_all)
+					MoveAllFromCell(itm);	//переместить стак предметов
+				else
+					MoveOneFromCell(itm);	//переместить один предмет
+			}
+			break;
 				//
 			case INVENTORY_DETECTOR_CHECK_ACTION:
 				m_pUIItemInfo->UIArtefactParams->Show(true);
@@ -329,7 +334,6 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				break;
 			case INVENTORY_UNLOAD_MAGAZINE:
 				{
-				//CUICellItem * itm = CurrentItem();
 				(smart_cast<CWeaponMagazined*>((CWeapon*)itm->m_pData))->UnloadMagazine();
 				for(u32 i=0; i<itm->ChildsCount(); ++i)
 				{
@@ -414,7 +418,7 @@ void CUICarBodyWnd::Show()
 		//ОБЯЗАТЕЛЬНО!!! одинаковая проверка для Hide() и Show(), иначе всё ломается
 		if (/*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands == 2 && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //спрячем оружие в руках, если обыскиваем не монстра 
 		pActor->inventory().TryToHideWeapon(true);
-		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bInventoryAmmoPlacement = true; //установим флаг инвентарной перезарядки
+		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = true; //установим флаг перезарядки из рюкзака
 	}
 	//
 }
@@ -481,14 +485,14 @@ void CUICarBodyWnd::TakeAll()
 	}
 }
 
-void SendEvent_Item_Drop(PIItem	pItem)
+void SendEvent_Item_Drop(PIItem	pItem, u16 owner_id)
 {
 	pItem->SetDropManual(TRUE);
 
-	if (OnClient())
+	//if (OnClient())
 	{
 		NET_Packet P;
-		pItem->object().u_EventGen(P, GE_OWNERSHIP_REJECT, pItem->object().H_Parent()->ID());
+		pItem->object().u_EventGen(P, GE_OWNERSHIP_REJECT, /*pItem->object().H_Parent()->ID()*/owner_id);
 		P.w_u16(pItem->object().ID());
 		pItem->object().u_EventSend(P);
 	}
@@ -508,6 +512,17 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 		return;
 	}
 
+	CUIDragDropListEx* owner_list = ci->OwnerList();
+	u16 owner_id = 0;
+	if (owner_list == m_pUIOthersBagList)
+	{
+		owner_id = (m_pInventoryBox) ? m_pInventoryBox->ID() : smart_cast<CGameObject*>(m_pOthersObject)->ID();
+	}
+	else
+	{
+		owner_id = smart_cast<CGameObject*>(m_pOurObject)->ID();
+	}
+
 	if (b_all)
 	{
 		u32 cnt = ci->ChildsCount();
@@ -515,12 +530,15 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 		for (u32 i = 0; i<cnt; ++i) {
 			CUICellItem*	itm = ci->PopChild();
 			PIItem			iitm = (PIItem)itm->m_pData;
-			SendEvent_Item_Drop(iitm);
+			SendEvent_Item_Drop(iitm, owner_id);
 		}
 	}
 
 	PIItem	iitm = (PIItem)ci->m_pData;
-	SendEvent_Item_Drop(CurrentIItem());
+	//SendEvent_Item_Drop(CurrentIItem());
+	SendEvent_Item_Drop(iitm, owner_id);
+
+	owner_list->RemoveItem(ci, b_all);
 
 	SetCurrentItem(NULL);
 	InventoryUtilities::UpdateWeight(*m_pUIOurBagWnd);
@@ -752,7 +770,6 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 			{
 				l_newType = (l_newType + 1) % pWeapon->m_ammoTypes.size();
 				b1 = l_newType != pWeapon->m_ammoType;
-				//bool SearchAll = !psActorFlags.test(AF_AMMO_FROM_BELT) || g_actor->inventory().m_bInventoryAmmoPlacement; //в целом для действий контекстного меню патроны ищем ВСЕГДА в рюкзаке, но пока пусть будет в зависимости от опции/флага
 				b2 = pWeapon->unlimited_ammo() ? false : (!pWeapon->m_pCurrentInventory->GetAmmo(*pWeapon->m_ammoTypes[l_newType], true));
 			} while (b1 && b2);
 
@@ -805,11 +822,11 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	//
 	bool many_items_in_cell = CurrentItem()->ChildsCount() > 0;
 	//
-	m_pUIPropertiesBox->AddItem("st_move", NULL, INVENTORY_MOVE_ONE_ACTION); //переместить один предмет
+	m_pUIPropertiesBox->AddItem("st_move", NULL, INVENTORY_MOVE_ACTION); //переместить один предмет
 	if (many_items_in_cell) //предметов в ячейке больше одного
-		m_pUIPropertiesBox->AddItem("st_move_all", NULL, INVENTORY_MOVE_ALL_ACTION); //переместить стак предметов
+		m_pUIPropertiesBox->AddItem("st_move_all", (void*)33, INVENTORY_MOVE_ACTION); //переместить стак предметов
 	//
-	if (!m_pInventoryBox)
+	//if (!m_pInventoryBox)
 	{
 		m_pUIPropertiesBox->AddItem("st_drop", NULL, INVENTORY_DROP_ACTION);
 
@@ -858,42 +875,6 @@ bool CUICarBodyWnd::OnItemDrop(CUICellItem* itm)
 	CUIDragDropListEx*	old_owner		= itm->OwnerList();
 	CUIDragDropListEx*	new_owner		= CUIDragDropListEx::m_drag_item->BackList();
 	
-/*	if(old_owner==new_owner || !old_owner || !new_owner || (false&&new_owner==m_pUIOthersBagList&&m_pInventoryBox))
-					return true;
-
-	if(m_pOthersObject)
-	{
-		if( TransferItem		(	CurrentIItem(),
-								(old_owner==m_pUIOthersBagList)?m_pOthersObject:m_pOurObject, 
-								(old_owner==m_pUIOurBagList)?m_pOthersObject:m_pOurObject, 
-								(old_owner==m_pUIOurBagList)
-							)
-			)
-		{
-			CUICellItem* ci					= old_owner->RemoveItem(CurrentItem(), false);
-			new_owner->SetItem				(ci);
-		}
-	}else
-	{
-		u16 tmp_id	= (smart_cast<CGameObject*>(m_pOurObject))->ID();
-
-		bool bMoveDirection		= (old_owner==m_pUIOthersBagList);
-
-		move_item				(
-								bMoveDirection?m_pInventoryBox->ID():tmp_id,
-								bMoveDirection?tmp_id:m_pInventoryBox->ID(),
-								CurrentIItem()->object().ID());
-
-
-//		Actor()->callback		(GameObject::eInvBoxItemTake)(m_pInventoryBox->lua_game_object(), CurrentIItem()->object().lua_game_object() );
-
-		CUICellItem* ci			= old_owner->RemoveItem(CurrentItem(), false);
-		new_owner->SetItem		(ci);
-	}
-	SetCurrentItem					(NULL);
-
-	return				true;*/
-
 	if (old_owner == new_owner || !old_owner || !new_owner)
 		return true;
 	return MoveOneFromCell(itm);
@@ -907,37 +888,6 @@ bool CUICarBodyWnd::OnItemStartDrag(CUICellItem* itm)
 #include "../xr_3da/xr_input.h"
 bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 {
-	/*CUIDragDropListEx*	old_owner		= itm->OwnerList();
-	CUIDragDropListEx*	new_owner		= (old_owner==m_pUIOthersBagList)?m_pUIOurBagList:m_pUIOthersBagList;
-
-	if(m_pOthersObject)
-	{
-		if( TransferItem		(	CurrentIItem(),
-								(old_owner==m_pUIOthersBagList)?m_pOthersObject:m_pOurObject, 
-								(old_owner==m_pUIOurBagList)?m_pOthersObject:m_pOurObject, 
-								(old_owner==m_pUIOurBagList)
-								)
-			)
-		{
-			CUICellItem* ci			= old_owner->RemoveItem(CurrentItem(), false);
-			new_owner->SetItem		(ci);
-		}
-	}else
-	{
-		if(false && old_owner==m_pUIOurBagList) return true;
-		bool bMoveDirection		= (old_owner==m_pUIOthersBagList);
-
-		u16 tmp_id				= (smart_cast<CGameObject*>(m_pOurObject))->ID();
-		move_item				(
-								bMoveDirection?m_pInventoryBox->ID():tmp_id,
-								bMoveDirection?tmp_id:m_pInventoryBox->ID(),
-								CurrentIItem()->object().ID());
-//.		Actor()->callback		(GameObject::eInvBoxItemTake)(m_pInventoryBox->lua_game_object(), CurrentIItem()->object().lua_game_object() );
-
-	}
-	SetCurrentItem				(NULL);
-
-	return						true;*/
 	return b_TakeAllActionKeyHolded ? MoveAllFromCell(itm) : MoveOneFromCell(itm);
 }
 
