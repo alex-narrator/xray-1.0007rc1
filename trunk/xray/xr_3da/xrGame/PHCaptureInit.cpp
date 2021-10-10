@@ -297,7 +297,7 @@ void CPHCapture::Release()
 	{
 		//предотвращенеи залипания режима переноски при отпускании схваченного предмета
 		m_character->SetObjectContactCallback(0); //зададим отсутствие контакта. т.е. разъединяем физоболочки актора и объекта
-		m_throw_force = A->m_fCaptureReleaseThrowForce*m_taget_element->PhysicsShell()->getMass(); //установим силу для отбрасывания предмета в зависимости от его массы (для более-менее равномерного броска разномассовых предметов)
+		m_throw_force = A->m_fThrowImpulse*m_taget_element->PhysicsShell()->getMass(); //установим силу для отбрасывания предмета в зависимости от его массы (для более-менее равномерного броска разномассовых предметов)
 		m_taget_element->applyImpulse(A->Direction(), m_throw_force); //придадим предмету который больше не тащит актор некоторый импульс в направлении взгляда актора
 		m_taget_object->IsHoldedByActor = false; //сбросим флаг удержания предмета актором (предмет можно уничтожить)
 		//

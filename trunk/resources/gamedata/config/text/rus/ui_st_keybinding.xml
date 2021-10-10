@@ -240,7 +240,10 @@
 	<string id="kb_check_gear">
 		<text>Проверить снаряжение</text>
 	</string>
-        <string id="kb_check_devices">
+    <string id="kb_check_devices">
 		<text>Проверить устройства</text>
+	</string>
+	<string id="kb_kick">
+		<text>Пинок</text>
 	</string>
 </string_table>

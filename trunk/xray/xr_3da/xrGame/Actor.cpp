@@ -429,7 +429,8 @@ if(!g_dedicated_server)
 //---------------------------------------------------------------------
 	m_sHeadShotParticle	= READ_IF_EXISTS(pSettings,r_string,section,"HeadShotParticle",0);
 
-	m_fCaptureReleaseThrowForce = READ_IF_EXISTS(pSettings, r_float, "actor_capture", "throw_force", 0.0f); //сила с которой актор отбрасывает предмет
+	m_fThrowImpulse		= READ_IF_EXISTS(pSettings, r_float, "actor_capture", "throw_impulse", 0.0f);		//сила с которой актор отбрасывает предмет
+	m_fKickImpulse		= READ_IF_EXISTS(pSettings, r_float, "actor_capture", "kick_impulse", 250.f);	//сила с которой актор пинает предмет
 }
 
 void CActor::PHHit(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_object_space, float impulse, ALife::EHitType hit_type /* = ALife::eHitTypeWound */)

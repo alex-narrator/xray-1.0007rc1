@@ -280,6 +280,8 @@ protected:
 	bool					use_Vehicle				(CHolderCustom* object);
 	bool					use_MountedWeapon		(CHolderCustom* object);
 	void					ActorUse				();
+	//
+	void					ActorKick				();
 
 
 	/////////////////////////////////////////////////////////
@@ -638,7 +640,9 @@ public:
 	virtual void			PH_A_CrPr		(); // actions & operations after phisic correction-prediction steps
 //	virtual void			UpdatePosStack	( u32 Time0, u32 Time1 );
 	virtual void			MoveActor		(Fvector NewPos, Fvector NewDir);
-	        float           m_fCaptureReleaseThrowForce; //сила с которой актор отбрасывает предмет
+	//
+			float           m_fThrowImpulse;	//сила с которой актор отбрасывает предмет
+			float			m_fKickImpulse;		//сила с которой актор пинает предмет
 
 	virtual void			SpawnAmmoForWeapon		(CInventoryItem *pIItem);
 	virtual void			RemoveAmmoForWeapon		(CInventoryItem *pIItem);

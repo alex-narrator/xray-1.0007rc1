@@ -107,6 +107,7 @@ _action  actions[]		= {
 #endif																	
 	{ "check_gear",			kCHECKGEAR				,_sp},		
 	{ "check_active_item",	kCHECKACTIVEITEM		,_sp},	
+	{ "kick",				kKICK					,_sp},
 	{ NULL, 				kLASTACTION				,_both}		
 };															
 

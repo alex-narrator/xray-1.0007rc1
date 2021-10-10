@@ -99,6 +99,7 @@ enum	EGameActions
 #endif	
 	kCHECKGEAR,
 	kCHECKACTIVEITEM,
+	kKICK,
 
 	kLASTACTION,
 	kNOTBINDED,

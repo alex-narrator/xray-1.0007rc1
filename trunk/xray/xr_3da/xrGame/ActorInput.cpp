@@ -252,6 +252,9 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				_s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
 			}
 		}break;
+	case kKICK:
+		ActorKick();
+		break;
 #endif		
 		
 	}
@@ -534,6 +537,85 @@ void CActor::ActorUse()
 	//if (inventory().FreeHands())
 		PickupModeOn();
 }
+//
+void CActor::ActorKick()
+{
+	CGameObject *O = ObjectWeLookingAt();
+	if (!O)
+		return;
+
+	if (conditions().IsCantWalk())
+	{
+		HUD().GetUI()->AddInfoMessage("cant_walk");
+		return;
+	}
+
+	float mass_f = 100.f;
+
+	CEntityAlive *EA = smart_cast<CEntityAlive*>(O);
+	if (EA)
+	{
+		if (EA->character_physics_support())
+			mass_f = EA->character_physics_support()->movement()->GetMass();
+		else
+			mass_f = EA->GetMass();
+
+		if (EA->g_Alive() && mass_f > 20.0f) //ability to kick tuskano and rat
+			return;
+	}
+	else
+	{
+		CPhysicsShellHolder *sh = smart_cast<CPhysicsShellHolder*>(O);
+		if (sh)
+			mass_f = sh->GetMass();
+
+		PIItem itm = smart_cast<PIItem>(O);
+		if (itm)
+			mass_f = itm->Weight();
+	}
+
+	CInventoryOwner *io = smart_cast<CInventoryOwner*> (O);
+	if (io)
+		mass_f += io->inventory().TotalWeight();
+
+	//static float kick_impulse = READ_IF_EXISTS(pSettings, r_float, "actor", "kick_impulse", 250.f);
+	float kick_impulse = m_fKickImpulse * conditions().GetPowerKoef();
+	Fvector dir = Direction();
+	dir.y = sin(15.f * PI / 180.f);
+	dir.normalize();
+
+	u16 bone_id = 0;
+	collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+	if (RQ.O == O && RQ.element != 0xffff)
+		bone_id = (u16)RQ.element;
+
+	clamp<float>(mass_f, 1.0f, 100.f); // ограничить параметры хита
+
+	// The smaller the mass, the more damage given capped at 60 mass. 60+ mass take 0 damage
+	float hit_power = (100.f * ((mass_f / 100.f) - 0.6f) / (0.f - 0.6f)) * conditions().GetPowerKoef();
+	clamp<float>(hit_power, 0.f, 100.f);
+	hit_power /= 100;
+
+	//shell->applyForce(dir, kick_power * conditions().GetPower());
+	Fvector h_pos = O->Position();
+	SHit hit = SHit(hit_power, dir, this, bone_id, h_pos, kick_impulse, ALife::eHitTypeStrike, 0.f, false);
+	O->Hit(&hit);
+	if (EA)
+	{
+		static float alive_kick_power = 3.f;
+		float real_imp = kick_impulse / mass_f;
+		dir.mul(pow(real_imp, alive_kick_power));
+		if (EA->character_physics_support())
+		{
+			EA->character_physics_support()->movement()->AddControlVel(dir);
+			EA->character_physics_support()->movement()->ApplyImpulse(dir.normalize(), kick_impulse * alive_kick_power);
+		}
+	}
+
+	if (!GodMode())
+	conditions().ConditionJump(mass_f / 50);
+}
+//
 BOOL CActor::HUDview				( )const 
 { 
 	return IsFocused()
