@@ -31,7 +31,6 @@ Fvector				m_capture_pos;
 float				m_back_force;
 float				m_pull_force;
 float				m_capture_force;
-float               m_throw_force; //установим силу для отбрасывания предмета
 float				m_capture_distance;
 float				m_pull_distance;
 u32					m_capture_time;
@@ -69,8 +68,12 @@ private:
 static void object_contactCallbackFun(bool& do_colide,bool bo1,dContact& c,SGameMtl* /*material_1*/,SGameMtl* /*material_2*/);
 
 ///////////CPHObject/////////////////////////////
-	virtual void PhDataUpdate(dReal step);
-	virtual void PhTune(dReal step);
-
+	virtual void PhDataUpdate	(dReal step);
+	virtual void PhTune			(dReal step);
+	//
+	Fvector	GetCapturePosition();
+	//
+public:
+	CPhysicsShellHolder*	taget_object	() const { return m_taget_object; };
 };
 #endif

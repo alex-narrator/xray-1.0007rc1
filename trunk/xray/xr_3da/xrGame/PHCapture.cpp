@@ -8,6 +8,7 @@
 #include "phmovementcontrol.h"
 #include "../skeletoncustom.h"
 #include "characterphysicssupport.h"
+#include "Actor.h"
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -91,10 +92,11 @@ void CPHCapture::PullingUpdate()
 	}
 
 	Fvector dir;
-	Fvector capture_bone_position;
+	Fvector capture_bone_position = GetCapturePosition();
+	/*Fvector capture_bone_position;
 	CObject* object=smart_cast<CObject*>(m_character->PhysicsRefObject());
 	capture_bone_position.set(m_capture_bone->mTransform.c);
-	object->XFORM().transform_tiny(capture_bone_position);
+	object->XFORM().transform_tiny(capture_bone_position);*/
 	m_taget_element->GetGlobalPositionDynamic(&dir);
 	dir.sub(capture_bone_position,dir);
 	float dist=dir.magnitude();
@@ -229,7 +231,9 @@ void CPHCapture::CapturedUpdate()
 		m_taget_element->Enable();
 	}
 
-	if(!m_taget_element->isActive()||dDOT(m_joint_feedback.f2,m_joint_feedback.f2)>m_capture_force*m_capture_force) 
+	//if(!m_taget_element->isActive()||dDOT(m_joint_feedback.f2,m_joint_feedback.f2)>m_capture_force*m_capture_force) 
+	CActor* A = smart_cast<CActor*>(m_character->PhysicsRefObject());
+	if (!m_taget_element->isActive() || (!A && dDOT(m_joint_feedback.f2, m_joint_feedback.f2) > m_capture_force*m_capture_force))
 	{
 		Release();
 		return;
@@ -245,10 +249,11 @@ void CPHCapture::CapturedUpdate()
 		m_character->ApplyForce(m_joint_feedback.f1[0]/f,m_joint_feedback.f1[1]/f,m_joint_feedback.f1[2]/f);
 	}
 
-	Fvector capture_bone_position;
+	Fvector capture_bone_position = GetCapturePosition();
+	/*Fvector capture_bone_position;
 	CObject* object=smart_cast<CObject*>(m_character->PhysicsRefObject());
 	capture_bone_position.set(m_capture_bone->mTransform.c);
-	object->XFORM().transform_tiny(capture_bone_position);
+	object->XFORM().transform_tiny(capture_bone_position);*/
 	dBodySetPosition(m_body,capture_bone_position.x,capture_bone_position.y,capture_bone_position.z);
 }
 
@@ -322,4 +327,16 @@ void CPHCapture::net_Relcase(CObject* O)
 	{
 		Deactivate();
 	}
+}
+//
+Fvector CPHCapture::GetCapturePosition() 
+{
+	Fvector pos;
+	CObject* object = smart_cast<CObject*>(m_character->PhysicsRefObject());
+	pos.set(m_capture_bone->mTransform.c);
+	object->XFORM().transform_tiny(pos);
+	CActor* A = smart_cast<CActor*>(m_character->PhysicsRefObject());
+	if (A)
+		pos.mad(pos, A->Direction(), A->m_fHoldingDistance);
+	return pos;
 }

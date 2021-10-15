@@ -75,3 +75,4 @@
 //#define NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT  //не отображать прогрессбар в инвентаре и иконку радиации на худе если в слоте нет детектора -- поведение по умолчанию
 //
 #define ANIMATED_PHYSICS_OBJECT_SUPPORT //??
+#define SHOW_LIMITED_TIME_TASKS

@@ -904,7 +904,12 @@ Fmatrix CPHMovementControl::PHCaptureGetNearestElemTransform(CPhysicsShellHolder
 
 void CPHMovementControl::PHReleaseObject()
 {
-	if(m_capture) m_capture->Release();
+	//if(m_capture) m_capture->Release();
+	if (m_capture) 
+	{
+		m_capture->Release();
+		xr_delete(m_capture);
+	}
 }
 
 void	CPHMovementControl::DestroyCharacter()

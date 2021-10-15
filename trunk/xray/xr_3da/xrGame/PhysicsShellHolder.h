@@ -45,7 +45,6 @@ class CPhysicsShellHolder:  public CGameObject,
 public:
 	void	SheduleRegister		(){if(!IsSheduled())shedule_register();b_sheduled=true;}
 	void	SheduleUnregister	(){if(IsSheduled())shedule_unregister();b_sheduled=false;}
-	bool    IsHoldedByActor;    //актор держит объект
 IC	bool	IsSheduled			(){return b_sheduled;}	
 public:
 

@@ -9,6 +9,7 @@
 #endif
 #include "hit.h"
 #include "PHDestroyable.h"
+#include "PHCapture.h"
 #include "Car.h"
 #include "HudManager.h"
 #include "UIGameSP.h"
@@ -435,6 +436,7 @@ void CActor::ActorUse()
 				
 	if (character_physics_support()->movement()->PHCapture())
 	{
+		ActorThrow();
 		character_physics_support()->movement()->PHReleaseObject();
 		return;
 	}
@@ -538,6 +540,42 @@ void CActor::ActorUse()
 		PickupModeOn();
 }
 //
+void CActor::ActorThrow()
+{
+	CPHCapture* capture = character_physics_support()->movement()->PHCapture();
+	if (!capture->taget_object())
+		return;
+
+	if (conditions().IsCantWalk())
+	{
+		HUD().GetUI()->AddInfoMessage("cant_walk");
+		return;
+	}
+
+	float mass_f = GetTotalMass(capture->taget_object());
+
+	bool drop_not_throw = !!Level().IR_GetKeyState(DIK_LSHIFT); //отпустить или отбросить предмет
+
+	float throw_impulse = drop_not_throw ?
+		0.5f :											//отпустить
+		m_fThrowImpulse * conditions().GetPowerKoef();	//бросить
+
+	Fvector dir = Direction();	//направлении взгляда актора
+	if (drop_not_throw)
+		dir = { 0, -1, 0 };		//если отпускаем а не бросаем то вектор просто вниз
+
+	dir.normalize();
+
+	float real_imp = throw_impulse * mass_f;
+
+	capture->taget_object()->PPhysicsShell()->applyImpulse(dir, real_imp); //придадим предмету импульс в заданном направлении
+	//Msg("throw_impulse [%f], real_imp [%f]", throw_impulse, real_imp);
+
+	if (!GodMode())
+		if (!drop_not_throw) conditions().ConditionJump(mass_f / 50);
+	//Msg("power decreased on [%f]", mass_f / 50);
+}
+//
 void CActor::ActorKick()
 {
 	CGameObject *O = ObjectWeLookingAt();
@@ -550,35 +588,12 @@ void CActor::ActorKick()
 		return;
 	}
 
-	float mass_f = 100.f;
+	float mass_f = GetTotalMass(O);
 
 	CEntityAlive *EA = smart_cast<CEntityAlive*>(O);
-	if (EA)
-	{
-		if (EA->character_physics_support())
-			mass_f = EA->character_physics_support()->movement()->GetMass();
-		else
-			mass_f = EA->GetMass();
+	if (EA && EA->g_Alive() && mass_f > 20.0f) //ability to kick tuskano and rat
+		return;
 
-		if (EA->g_Alive() && mass_f > 20.0f) //ability to kick tuskano and rat
-			return;
-	}
-	else
-	{
-		CPhysicsShellHolder *sh = smart_cast<CPhysicsShellHolder*>(O);
-		if (sh)
-			mass_f = sh->GetMass();
-
-		PIItem itm = smart_cast<PIItem>(O);
-		if (itm)
-			mass_f = itm->Weight();
-	}
-
-	CInventoryOwner *io = smart_cast<CInventoryOwner*> (O);
-	if (io)
-		mass_f += io->inventory().TotalWeight();
-
-	//static float kick_impulse = READ_IF_EXISTS(pSettings, r_float, "actor", "kick_impulse", 250.f);
 	float kick_impulse = m_fKickImpulse * conditions().GetPowerKoef();
 	Fvector dir = Direction();
 	dir.y = sin(15.f * PI / 180.f);
@@ -613,7 +628,7 @@ void CActor::ActorKick()
 	}
 
 	if (!GodMode())
-	conditions().ConditionJump(mass_f / 50);
+		conditions().ConditionJump(mass_f / 50);
 }
 //
 BOOL CActor::HUDview				( )const 

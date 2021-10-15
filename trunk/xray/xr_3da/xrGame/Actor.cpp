@@ -53,6 +53,7 @@
 #include "artifact.h"
 #include "WeaponKnife.h"
 #include "CharacterPhysicsSupport.h"
+#include "PHCapture.h"
 #include "material_manager.h"
 #include "IColisiondamageInfo.h"
 #include "ui/UIMainIngameWnd.h"
@@ -425,12 +426,15 @@ if(!g_dedicated_server)
 	m_sCarCharacterUseAction        = "car_character_use";
 	m_sInventoryItemUseAction       = "inventory_item_use";
 	m_sGameObjectDragAction         = "game_object_drag";              //Тащить предмет
+	m_sGameObjectThrowDropAction	= "game_object_throw_drop";        //Отбросить/отпустить предмет
 	m_sInventoryBoxUseAction        = "inventory_box_use";
 //---------------------------------------------------------------------
 	m_sHeadShotParticle	= READ_IF_EXISTS(pSettings,r_string,section,"HeadShotParticle",0);
 
-	m_fThrowImpulse		= READ_IF_EXISTS(pSettings, r_float, "actor_capture", "throw_impulse", 0.0f);		//сила с которой актор отбрасывает предмет
-	m_fKickImpulse		= READ_IF_EXISTS(pSettings, r_float, "actor_capture", "kick_impulse", 250.f);	//сила с которой актор пинает предмет
+	m_fThrowImpulse		= READ_IF_EXISTS(pSettings, r_float, "actor_capture", "throw_impulse",		5.0f);	//сила с которой актор отбрасывает предмет
+	m_fKickImpulse		= READ_IF_EXISTS(pSettings, r_float, "actor_capture", "kick_impulse",		250.f);	//сила с которой актор пинает предмет
+	m_fHoldingDistance	= READ_IF_EXISTS(pSettings, r_float, "actor_capture", "holding_distance",	.5f);	//расстояние перед актором на котором находится удерживаемый предмет
+	clamp(m_fHoldingDistance, 0.0f, inventory().GetTakeDist());
 }
 
 void CActor::PHHit(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_object_space, float impulse, ALife::EHitType hit_type /* = ALife::eHitTypeWound */)
@@ -1197,14 +1201,20 @@ void CActor::shedule_Update	(u32 DT)
 		m_pVehicleWeLookingAt			= smart_cast<CHolderCustom*>(game_object);
 		CEntityAlive* pEntityAlive		= smart_cast<CEntityAlive*>(game_object);
 		//
-		CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(inventory().ActiveItem());
+		CWeaponKnife* Knife				= smart_cast<CWeaponKnife*>(inventory().ActiveItem());
+		//
+		CPHCapture* capture				= character_physics_support()->movement()->PHCapture();
 		//
 		auto ph_shell_holder = smart_cast<CPhysicsShellHolder*>(RQ.O);
 		bool b_allow_drag = ph_shell_holder && ph_shell_holder->ActorCanCapture();
 
 		if (GameID() == GAME_SINGLE )
 		{
-			if (!m_pPersonWeLookingAt && m_pUsableObject && m_pUsableObject->tip_text()) //юзабельные предметы типа дверей, замков, но не НПС (НПС исключены чтобы не было "руки заняты" при попытке разговора)
+			if (capture && capture->taget_object()) //тащим что-то в руках
+			{
+				m_sDefaultObjAction = m_sGameObjectThrowDropAction;
+			}
+			else if (!m_pPersonWeLookingAt && m_pUsableObject && m_pUsableObject->tip_text()) //юзабельные предметы типа дверей, замков, но не НПС (НПС исключены чтобы не было "руки заняты" при попытке разговора)
 			{
 					m_sDefaultObjAction = inventory().FreeHands() ? CStringTable().translate(m_pUsableObject->tip_text()) : m_sNoAnyAction;
 			}
@@ -1781,7 +1791,19 @@ CVisualMemoryManager	*CActor::visual_memory	() const
 {
 	return							(&memory().visual());
 }
+//
+float		CActor::GetCarryWeight() const
+{
+	float add = 0;
+	CPHCapture* capture = character_physics_support()->movement()->PHCapture();
+	if (capture && capture->taget_object() && psActorFlags.test(AF_CONDITION_INTERDEPENDENCE))
+	{
+		add = GetTotalMass(capture->taget_object(), 0.1f);
+	}
 
+	return CInventoryOwner::GetCarryWeight() + add;
+}
+//
 float		CActor::GetMass				()
 {
 	return g_Alive()?character_physics_support()->movement()->GetMass():m_pPhysicsShell?m_pPhysicsShell->getMass():0; 

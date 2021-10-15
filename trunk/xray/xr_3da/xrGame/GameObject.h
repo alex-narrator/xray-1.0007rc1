@@ -1,4 +1,4 @@
-// GameObject.h: interface for the CGameObject class.
+п»ї// GameObject.h: interface for the CGameObject class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -44,7 +44,7 @@ class animation_movement_controller;
 class CBlend;
 
 
-// alpet: для добавления свойства property
+// alpet: РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ СЃРІРѕР№СЃС‚РІР° property
 template <typename T>
 LPCSTR get_class_name(T *src)
 {
@@ -73,7 +73,7 @@ class CGameObject :
 	animation_movement_controller	*m_anim_mov_ctrl;	
 protected:
 	shared_str						m_class_name;
-	//время удаления объекта
+	//РІСЂРµРјСЏ СѓРґР°Р»РµРЅРёСЏ РѕР±СЉРµРєС‚Р°
 	bool					m_bObjectRemoved;
 public:
 	CGameObject();
@@ -143,7 +143,7 @@ public:
 	virtual void			SetHitInfo(CObject* who, CObject* weapon, s16 element, Fvector Pos, Fvector Dir)	{};
 	virtual	BOOL			BonePassBullet(int boneID) { return FALSE; }
 
-	//игровое имя объекта
+	//РёРіСЂРѕРІРѕРµ РёРјСЏ РѕР±СЉРµРєС‚Р°
 	virtual LPCSTR			Name() const;
 
 	//virtual void			OnH_A_Independent	();
@@ -301,8 +301,8 @@ private:
 
 public:
 #ifdef OBJECTS_RADIOACTIVE
-	float 							m_fRadiationAccumFactor;          // alpet: скорость появления вторичной радиактивности
-	float 							m_fRadiationAccumLimit;			  // alpet: предел вторичной радиоактивности 
+	float 							m_fRadiationAccumFactor;          // alpet: СЃРєРѕСЂРѕСЃС‚СЊ РїРѕСЏРІР»РµРЅРёСЏ РІС‚РѕСЂРёС‡РЅРѕР№ СЂР°РґРёР°РєС‚РёРІРЅРѕСЃС‚Рё
+	float 							m_fRadiationAccumLimit;			  // alpet: РїСЂРµРґРµР» РІС‚РѕСЂРёС‡РЅРѕР№ СЂР°РґРёРѕР°РєС‚РёРІРЅРѕСЃС‚Рё 
 	float 							m_fRadiationRestoreSpeed;	
 #endif
 
@@ -311,10 +311,13 @@ public:
 
 	virtual	void			On_B_NotCurrentEntity() {};
 
-	CSE_ALifeDynamicObject* alife_object() const; // alpet: возвращает серверный экземпляр для этого объекта
-	virtual void			UpdateXFORM(const Fmatrix &upd); // alpet: для обновления позиции и направления
-	virtual float			GetHealth() const  { return -1;  } // alpet: для универсального доступа к переменным класса вроде fHealth
+	CSE_ALifeDynamicObject* alife_object() const; // alpet: РІРѕР·РІСЂР°С‰Р°РµС‚ СЃРµСЂРІРµСЂРЅС‹Р№ СЌРєР·РµРјРїР»СЏСЂ РґР»СЏ СЌС‚РѕРіРѕ РѕР±СЉРµРєС‚Р°
+	virtual void			UpdateXFORM(const Fmatrix &upd); // alpet: РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ РїРѕР·РёС†РёРё Рё РЅР°РїСЂР°РІР»РµРЅРёСЏ
+	virtual float			GetHealth() const  { return -1;  } // alpet: РґР»СЏ СѓРЅРёРІРµСЂСЃР°Р»СЊРЅРѕРіРѕ РґРѕСЃС‚СѓРїР° Рє РїРµСЂРµРјРµРЅРЅС‹Рј РєР»Р°СЃСЃР° РІСЂРѕРґРµ fHealth
 	virtual void			SetHealth(float h) { }
+
+	//РІРµСЂРЅС‘С‚ С„РёР·РјР°СЃСЃСѓ РѕР±СЉРµРєС‚Р° + РјР°СЃСЃСѓ РїСЂРµРґРјРµС‚РѕРІ РІ РёРЅРІРµРЅС‚Р°СЂРµ, РµСЃР»Рё С‚Р°РєРѕРІРѕР№ РёРјРµРµС‚СЃСЏ
+	float					GetTotalMass(CObject* object, float k = 1.0f) const;
 };
 
 #endif // !defined(AFX_GAMEOBJECT_H__3DA72D03_C759_4688_AEBB_89FA812AA873__INCLUDED_)

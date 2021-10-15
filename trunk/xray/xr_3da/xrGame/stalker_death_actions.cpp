@@ -32,7 +32,7 @@ CStalkerActionDead::CStalkerActionDead	(CAI_Stalker *object, LPCSTR action_name)
 
 bool CStalkerActionDead::fire			() const
 {
-	if (object().inventory().TotalWeight() <= 0)
+	if (object().GetCarryWeight() <= 0)
 		return							(false);
 	
 	CWeapon								*weapon = smart_cast<CWeapon*>(object().inventory().ActiveItem());

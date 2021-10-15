@@ -98,36 +98,45 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 
 	m_MaxWalkWeight				= pSettings->r_float(section,"max_walk_weight");
     //
-	m_fBleedingPowerDecrease      = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "bleeding_power_dec", 0);
+	m_fBleedingPowerDecrease		= READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "bleeding_power_dec",						0.f);
     //
-	m_fMinPowerWalkJump			  = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_walk_jump", 1.0f);
+	m_fMinPowerWalkJump				= READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_walk_jump",						1.0f);
 	//
-	m_fMinHealthRadiation         = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_health_radiation", 1);
-	m_fMinHealthRadiationTreshold = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_health_radiation_treshold", 0);
+	m_fMinHealthRadiation			= READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_health_radiation",						1.0f);
+	m_fMinHealthRadiationTreshold	= READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_health_radiation_treshold",			0.f);
     //
-	m_fAlcoholSatietyIntens       = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "satiety_to_alcohol_effector_intensity", 1);
+	m_fAlcoholSatietyIntens			= READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "satiety_to_alcohol_effector_intensity",	1.0f);
 	//
-	m_fExerciseStressFactor       = READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "exercise_stress_factor", 1);
+	m_fExerciseStressFactor			= READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "exercise_stress_factor",					1.0f);
 }
 
 
 //вычисление параметров с ходом времени
 #include "UI.h"
 #include "HUDManager.h"
-
+#include "CharacterPhysicsSupport.h"
 void CActorCondition::UpdateCondition()
 {
 	if (GodMode())				return;
 	if (!object().g_Alive())	return;
 	if (!object().Local() && m_object != Level().CurrentViewEntity())		return;
-
+	//
+	if (IsCantWalk() && object().character_physics_support()->movement()->PHCapture())
+		object().character_physics_support()->movement()->PHReleaseObject();
+	//
+	float weight = object().GetCarryWeight();
+	float max_weight = object().inventory().GetMaxWeight();
+	float weight_coef = weight / max_weight;
+	//
 	if ((object().mstate_real&mcAnyMove)) 
 	{
-		ConditionWalk(object().inventory().TotalWeight() / object().inventory().GetMaxWeight(), isActorAccelerated(object().mstate_real, object().IsZoomAimingMode()), (object().mstate_real&mcSprint) != 0);
+		ConditionWalk(weight_coef,
+			isActorAccelerated(object().mstate_real, object().IsZoomAimingMode()), 
+			(object().mstate_real&mcSprint) != 0);
 	}
 	else 
 	{
-		ConditionStand(object().inventory().TotalWeight() / object().inventory().GetMaxWeight());
+		ConditionStand(weight_coef);
 	};
 	//
 	/*UpdateHealth();
@@ -183,7 +192,8 @@ void CActorCondition::UpdatePower()
 
 		if (true)
 		{
-			float weight = object().inventory().TotalWeight();
+			//float weight = object().inventory().TotalWeight();
+			float weight = object().GetCarryWeight();
 
 			float base_w = object().MaxCarryWeight();
 			/*
@@ -318,8 +328,8 @@ float CActorCondition::GetSmoothOwerweightKoef()
 	{
 		float power_k		= m_fMinPowerWalkJump + (1.0f - m_fMinPowerWalkJump) * GetPower();				//коэф влияния выносливости
 
-		float overweight_k	= object().inventory().TotalWeight() > object().inventory().GetMaxWeight() ?	//считаем коэф. только если есть перегруз
-								object().inventory().GetMaxWeight() / object().inventory().TotalWeight() :	//коэф влияния перегруза
+		float overweight_k = object().GetCarryWeight() > object().inventory().GetMaxWeight() ?	//считаем коэф. только если есть перегруз
+			object().inventory().GetMaxWeight() / object().GetCarryWeight() :	//коэф влияния перегруза
 								1.0f;
 
 		val = power_k * overweight_k;
@@ -334,8 +344,8 @@ float CActorCondition::GetStress()
 								m_fExerciseStressFactor : 
 								1.0f;
 
-	float overweight_stress = psActorFlags.test(AF_SMOOTH_OVERWEIGHT) && object().inventory().TotalWeight() > object().inventory().GetMaxWeight() ? 
-								object().inventory().TotalWeight() / object().inventory().GetMaxWeight() : 
+	float overweight_stress = psActorFlags.test(AF_SMOOTH_OVERWEIGHT) && object().GetCarryWeight() > object().inventory().GetMaxWeight() ?
+								object().GetCarryWeight() / object().inventory().GetMaxWeight() : 
 								1.0f;
 
 	/*if (object().get_state()&mcSprint) Msg("mcSprint!");
@@ -395,7 +405,7 @@ bool CActorCondition::IsCantWalkWeight()
 		if(outfit)
 			max_w += outfit->m_additional_weight;
 
-		if( object().inventory().TotalWeight() > max_w )
+		if(object().GetCarryWeight() > max_w)
 		{
 			m_condition_flags.set			(eCantWalkWeight, TRUE);
 			return true;

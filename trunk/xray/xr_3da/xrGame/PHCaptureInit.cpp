@@ -8,6 +8,7 @@
 #include "inventory_item.h"
 #include "../skeletoncustom.h"
 #include "Actor.h"
+#include "ActorCondition.h"
 #include "Inventory.h"
 extern	class CPHWorld	*ph_world;
 ///////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +86,8 @@ CPHCapture::CPHCapture	(CPHCharacter   *a_character, CPhysicsShellHolder	*a_tage
 		
 
 
-	m_taget_element					=m_taget_object->m_pPhysicsShell->NearestToPoint(m_capture_bone->mTransform.c);
+	//m_taget_element					=m_taget_object->m_pPhysicsShell->NearestToPoint(m_capture_bone->mTransform.c);
+	m_taget_element = m_taget_object->m_pPhysicsShell->NearestToPoint(GetCapturePosition());
 
 	Init(ini);
 
@@ -217,10 +219,11 @@ CPHCapture::CPHCapture(CPHCharacter   *a_character,CPhysicsShellHolder	*a_taget_
 void CPHCapture::Init(CInifile* ini)
 {
 	Fvector dir;
-	Fvector capture_bone_position;
-	capture_bone_position.set(m_capture_bone->mTransform.c);
+	Fvector capture_bone_position = GetCapturePosition();
+	/*Fvector capture_bone_position;
+	capture_bone_position.set(m_capture_bone->mTransform.c);*/
 	b_character_feedback=true;
-	(m_character->PhysicsRefObject())->XFORM().transform_tiny(capture_bone_position);
+	//(m_character->PhysicsRefObject())->XFORM().transform_tiny(capture_bone_position);
 
 
 	m_taget_element->GetGlobalPositionDynamic(&dir);
@@ -255,7 +258,6 @@ void CPHCapture::Init(CInifile* ini)
 	CActor* A=smart_cast<CActor*>(m_character->PhysicsRefObject());
 	if(A)
 	{
-		m_taget_object->IsHoldedByActor = true; //взведём флаг удержания предмета актором (предмет запрещено уничтожать)
 		A->SetWeaponHideState(INV_STATE_BLOCK_ALL,true);
 	}
 }
@@ -290,20 +292,16 @@ void CPHCapture::Release()
 		m_taget_element->set_DynamicLimits();
 	}
 
-	e_state=cstReleased;
+	b_failed = false;
+	//
 	b_collide=true;
 	CActor* A=smart_cast<CActor*>(m_character->PhysicsRefObject());
 	if(A)
 	{
-		//предотвращенеи залипания режима переноски при отпускании схваченного предмета
-		m_character->SetObjectContactCallback(0); //зададим отсутствие контакта. т.е. разъединяем физоболочки актора и объекта
-		m_throw_force = A->m_fThrowImpulse*m_taget_element->PhysicsShell()->getMass(); //установим силу для отбрасывания предмета в зависимости от его массы (для более-менее равномерного броска разномассовых предметов)
-		m_taget_element->applyImpulse(A->Direction(), m_throw_force); //придадим предмету который больше не тащит актор некоторый импульс в направлении взгляда актора
-		m_taget_object->IsHoldedByActor = false; //сбросим флаг удержания предмета актором (предмет можно уничтожить)
-		//
 		A->SetWeaponHideState(INV_STATE_BLOCK_ALL,false);
 //.		A->inventory().setSlotsBlocked(false);
 	}
+	e_state = cstReleased;
 }
 
 void CPHCapture::Deactivate()

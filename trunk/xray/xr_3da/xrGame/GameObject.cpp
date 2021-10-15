@@ -1,4 +1,4 @@
-#include "pch_script.h"
+﻿#include "pch_script.h"
 #include "GameObject.h"
 #include "../fbasicvisual.h"
 #include "PhysicsShell.h"
@@ -823,7 +823,7 @@ void CGameObject::DestroyObject()
 
 void CGameObject::shedule_Update(u32 dt)
 {
-	//����������
+	//уничтожить
 	if (!IsGameTypeSingle() && OnServer() && NeedToDestroyObject())
 	{
 #ifdef DEBUG
@@ -844,7 +844,7 @@ BOOL CGameObject::net_SaveRelevant()
 	return	(CScriptBinder::net_SaveRelevant());
 }
 
-//������� ��� �������
+//игровое имя объекта
 LPCSTR CGameObject::Name() const
 {
 	return	(*cName());
@@ -940,7 +940,7 @@ void	CGameObject::UpdateXFORM(const Fmatrix &upd)
 	if (pK)
 	{
 		pK->vis.sphere.P = upd.c;		
-		pK->CalculateBones_Invalidate();	 // �������� ������� ������� ���������� � ����� �����			
+		pK->CalculateBones_Invalidate();	 // позволит объекту быстрее объявиться в новой точке			
 	}
 
 	// OnChangePosition processing
@@ -985,3 +985,37 @@ void	CGameObject::destroy_anim_mov_ctrl()
 {
 	xr_delete(m_anim_mov_ctrl);
 }
+//
+#include "entity_alive.h"
+#include "InventoryOwner.h"
+#include "CharacterPhysicsSupport.h"
+#include "PHMovementControl.h"
+float CGameObject::GetTotalMass(CObject* object, float k) const
+{
+	float mass_f = 0.f;
+
+	CEntityAlive *EA = smart_cast<CEntityAlive*>(object);
+	if (EA)
+	{
+		if (EA->character_physics_support())
+			mass_f = EA->character_physics_support()->movement()->GetMass();
+		else
+			mass_f = EA->GetMass();
+	}
+	else
+	{
+		CPhysicsShellHolder *sh = smart_cast<CPhysicsShellHolder*>(object);
+		if (sh)
+			mass_f = sh->GetMass() * k; //физмасса таскаемых объектов окружения великовата для прямого учёта в нагруженность актора
+
+		PIItem itm = smart_cast<PIItem>(object);
+		if (itm)
+			mass_f = itm->Weight();
+	}
+
+	CInventoryOwner *io = smart_cast<CInventoryOwner*> (object);
+	if (io)
+		mass_f += io->GetCarryWeight();
+
+	return mass_f;
+};

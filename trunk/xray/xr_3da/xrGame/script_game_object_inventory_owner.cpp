@@ -962,7 +962,7 @@ float CScriptGameObject::GetTotalWeight() const
 		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CInventoryOwner : cannot access class member GetTotalWeight!");
 		return			(false);
 	}
-	return				(inventory_owner->inventory().TotalWeight());
+	return				(inventory_owner->GetCarryWeight());
 }
 // получить вес предмета
 float CScriptGameObject::Weight() const

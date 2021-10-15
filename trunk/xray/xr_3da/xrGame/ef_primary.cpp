@@ -239,7 +239,7 @@ float CEnemyRukzakWeightFunction::ffGetValue()
 	if (ef_storage().non_alife().member()) {
 		const CInventoryOwner	*tpInventoryOwner = smart_cast<const CInventoryOwner*>(ef_storage().non_alife().member());
 		if (tpInventoryOwner)
-			m_fLastValue	= tpInventoryOwner->inventory().TotalWeight();
+			m_fLastValue	= tpInventoryOwner->GetCarryWeight();
 		else
 			m_fLastValue	= 0;
 	}

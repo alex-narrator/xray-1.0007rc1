@@ -14,6 +14,7 @@
 #include "ai_space.h"
 #include "game_graph.h"
 #include "PHDestroyable.h"
+
 #define F_MAX         3.402823466e+38F
 
 u32 CPHSkeleton::existence_time=5000;
@@ -148,7 +149,7 @@ void CPHSkeleton::Update(u32 dt)
 	if(b_removing&&
 		Device.dwTimeGlobal>m_remove_time &&
 		//(Device.dwTimeGlobal-m_unsplit_time)*phTimefactor>remove_time&&
-		m_unsplited_shels.empty() && !obj->IsHoldedByActor)
+		m_unsplited_shels.empty())
 	{
 		if (obj->Local())	obj->DestroyObject();
 		b_removing=false;

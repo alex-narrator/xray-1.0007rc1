@@ -39,6 +39,9 @@
     <string id="game_object_drag">
 	    <text>Тащить предмет [SHIFT+$$ACTION_USE$$]</text>
     </string>
+	<string id="game_object_throw_drop">
+	    <text>Отбросить предмет [$$ACTION_USE$$]\n Отпустить предмет [SHIFT+$$ACTION_USE$$]</text>
+    </string>
 	<string id="general_complete_task">
 		<text>Задание выполнено:</text>
 	</string>

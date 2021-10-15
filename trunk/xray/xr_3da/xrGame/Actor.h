@@ -186,7 +186,9 @@ public:
 	virtual void						HitSignal		(float P, Fvector &vLocalDir,	CObject* who, s16 element);
 			void						HitSector		(CObject* who, CObject* weapon);
 			void						HitMark			(float P, Fvector dir,			CObject* who, s16 element, Fvector position_in_bone_space, float impulse,  ALife::EHitType hit_type);
-
+	//
+	virtual float						GetCarryWeight		() const;
+	//
 	virtual float						GetMass				() ;
 	virtual float						Radius				() const;
 	virtual void						g_PerformDrop		();
@@ -281,6 +283,7 @@ protected:
 	bool					use_MountedWeapon		(CHolderCustom* object);
 	void					ActorUse				();
 	//
+	void					ActorThrow				();
 	void					ActorKick				();
 
 
@@ -420,7 +423,8 @@ protected:
 	shared_str              m_sNoAnyAction;                 //руки заняты
 	shared_str				m_sCarCharacterUseAction;
 	shared_str				m_sInventoryItemUseAction;
-	shared_str				m_sGameObjectDragAction;         //Тащить предмет
+	shared_str				m_sGameObjectDragAction;        //Тащить предмет
+	shared_str				m_sGameObjectThrowDropAction;	//Отбросить/отпустить предмет
 	shared_str				m_sInventoryBoxUseAction;
 
 	//режим подбирания предметов
@@ -643,6 +647,7 @@ public:
 	//
 			float           m_fThrowImpulse;	//сила с которой актор отбрасывает предмет
 			float			m_fKickImpulse;		//сила с которой актор пинает предмет
+			float			m_fHoldingDistance; //расстояние перед актором на котором находится удерживаемый предмет
 
 	virtual void			SpawnAmmoForWeapon		(CInventoryItem *pIItem);
 	virtual void			RemoveAmmoForWeapon		(CInventoryItem *pIItem);

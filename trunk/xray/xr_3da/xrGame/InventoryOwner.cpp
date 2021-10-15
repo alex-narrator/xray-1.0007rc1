@@ -331,7 +331,12 @@ float  CInventoryOwner::MaxCarryWeight () const
 
 	return ret;
 }
-
+//
+float CInventoryOwner::GetCarryWeight() const
+{
+	return inventory().TotalWeight();
+}
+//
 void CInventoryOwner::spawn_supplies		()
 {
 	CGameObject								*game_object = smart_cast<CGameObject*>(this);

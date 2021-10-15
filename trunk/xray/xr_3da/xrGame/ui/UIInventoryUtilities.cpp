@@ -306,7 +306,7 @@ void InventoryUtilities::UpdateWeight(CUIStatic &wnd, bool withPrefix)
 	string128 buf;
 	ZeroMemory(buf, sizeof(buf));
 
-	float total = pInvOwner->inventory().CalcTotalWeight();
+	float total = pInvOwner->GetCarryWeight();//pInvOwner->inventory().CalcTotalWeight();
 	float max	= pInvOwner->MaxCarryWeight();
 
 	string16 cl;
