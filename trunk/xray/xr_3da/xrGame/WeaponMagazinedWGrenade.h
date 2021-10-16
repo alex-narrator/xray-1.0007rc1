@@ -45,6 +45,8 @@ public:
 	virtual void	SwitchState		(u32 S);
 	virtual void	OnEvent			(NET_Packet& P, u16 type);
 	virtual void	ReloadMagazine	();
+	//считаем что в режиме подствольника стрельба только одиночными
+	virtual bool	HasFireModes()	{ return m_bHasDifferentFireModes && !m_bGrenadeMode; }; 
 
 	virtual bool	Action			(s32 cmd, u32 flags);
 
