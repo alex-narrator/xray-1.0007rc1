@@ -55,23 +55,21 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 		return false;
 
 	//
-	CArtefact* artefact_1 = smart_cast<CArtefact*>(item1);
-	CArtefact* artefact_2 = smart_cast<CArtefact*>(item2);
+	CArtefact* artefact_1 = smart_cast<CArtefact*>(object());
+	CArtefact* artefact_2 = smart_cast<CArtefact*>(ci->object());
 
-	bool b_equal_artefact = artefact_1->cNameSect() == artefact_2->cNameSect() &&
+	bool b_equal_artefact = !(artefact_1 && artefact_2) || artefact_1 && artefact_2 &&
+		artefact_1->cNameSect() == artefact_2->cNameSect() &&
 		fsimilar(artefact_1->GetRandomKoef(), artefact_2->GetRandomKoef(), 0.01f) &&
 		fsimilar(artefact_1->GetCondition(), artefact_2->GetCondition(), 0.01f); //группирует одинаковые артефакты
-
-	if (artefact_1 && artefact_2)
-		return b_equal_artefact;
-	//
 
 	return					(
 								fsimilar(object()->GetCondition(), ci->object()->GetCondition(), 0.01f) &&
 								(
 								object()->object().cNameSect() == ci->object()->object().cNameSect() && 
 								fsimilar(object()->m_eItemPlace == eItemPlaceSlot, ci->object()->m_eItemPlace == eItemPlaceSlot) &&			//группирует преметы в слоте
-								fsimilar(object()->m_eItemPlace == eItemPlaceBelt, ci->object()->m_eItemPlace == eItemPlaceBelt)			//группирует преметы на поясе
+								fsimilar(object()->m_eItemPlace == eItemPlaceBelt, ci->object()->m_eItemPlace == eItemPlaceBelt) &&			//группирует преметы на поясе
+								b_equal_artefact
 								)
 							);
 }
