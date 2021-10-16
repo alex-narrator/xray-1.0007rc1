@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "../xr_ioconsole.h"
 #include "customzone.h"
 #include "hit.h"
@@ -19,8 +19,8 @@
 #include "../../build_config_defines.h"
 
 //////////////////////////////////////////////////////////////////////////
-#define PREFETCHED_ARTEFACTS_NUM 1	//количество предварительно проспавненых артефактов
-#define WIND_RADIUS (4*Radius())	//расстояние до актера, когда появляется ветер 
+#define PREFETCHED_ARTEFACTS_NUM 1	//РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅРѕ РїСЂРѕСЃРїР°РІРЅРµРЅС‹С… Р°СЂС‚РµС„Р°РєС‚РѕРІ
+#define WIND_RADIUS (4*Radius())	//СЂР°СЃСЃС‚РѕСЏРЅРёРµ РґРѕ Р°РєС‚РµСЂР°, РєРѕРіРґР° РїРѕСЏРІР»СЏРµС‚СЃСЏ РІРµС‚РµСЂ 
 #define FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
 
 CCustomZone::CCustomZone(void) 
@@ -57,6 +57,8 @@ CCustomZone::CCustomZone(void)
 	m_effector					= NULL;
 	m_bIdleObjectParticlesDontStop = FALSE;
 	m_b_always_fastmode			= FALSE;
+	//
+	m_bBornOnBlowoutFlag		= false;
 }
 
 CCustomZone::~CCustomZone(void) 
@@ -90,8 +92,11 @@ void CCustomZone::Load(LPCSTR section)
 #ifdef SHORT_LIVED_ANOMS
 	m_zone_ttl = READ_IF_EXISTS(pSettings, r_u32, section, "time_to_live", 40);
 #endif
-
-	//загрузить времена для зоны
+	// bak
+	m_zone_flags.set(eBirthOnNonAlive,READ_IF_EXISTS(pSettings, r_bool, section, "birth_on_nonalive", false));
+	m_zone_flags.set(eBirthOnAlive,READ_IF_EXISTS(pSettings, r_bool, section, "birth_on_alive", false));
+	m_zone_flags.set(eBirthOnDead,READ_IF_EXISTS(pSettings, r_bool, section, "birth_on_dead", false));
+	//Р·Р°РіСЂСѓР·РёС‚СЊ РІСЂРµРјРµРЅР° РґР»СЏ Р·РѕРЅС‹
 	m_StateTime[eZoneStateIdle]			= -1;
 	m_StateTime[eZoneStateAwaking]		= pSettings->r_s32(section, "awaking_time");
 	m_StateTime[eZoneStateBlowout]		= pSettings->r_s32(section, "blowout_time");
@@ -238,7 +243,7 @@ void CCustomZone::Load(LPCSTR section)
 		m_fBlowoutWindPowerMax = pSettings->r_float(section,"blowout_wind_power");
 	}
 
-	//загрузить параметры световой вспышки от взрыва
+	//Р·Р°РіСЂСѓР·РёС‚СЊ РїР°СЂР°РјРµС‚СЂС‹ СЃРІРµС‚РѕРІРѕР№ РІСЃРїС‹С€РєРё РѕС‚ РІР·СЂС‹РІР°
 	m_zone_flags.set(eBlowoutLight, pSettings->r_bool (section, "blowout_light"));
 
 	if(m_zone_flags.test(eBlowoutLight) ){
@@ -250,7 +255,7 @@ void CCustomZone::Load(LPCSTR section)
 		m_fLightHeight		= pSettings->r_float(section,"light_height");
 	}
 
-	//загрузить параметры idle подсветки
+	//Р·Р°РіСЂСѓР·РёС‚СЊ РїР°СЂР°РјРµС‚СЂС‹ idle РїРѕРґСЃРІРµС‚РєРё
 	m_zone_flags.set(eIdleLight,	pSettings->r_bool (section, "idle_light"));
 	if( m_zone_flags.test(eIdleLight) )
 	{
@@ -262,11 +267,12 @@ void CCustomZone::Load(LPCSTR section)
 	}
 
 
-	//загрузить параметры для разбрасывания артефактов
+	//Р·Р°РіСЂСѓР·РёС‚СЊ РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ СЂР°Р·Р±СЂР°СЃС‹РІР°РЅРёСЏ Р°СЂС‚РµС„Р°РєС‚РѕРІ
 	m_zone_flags.set(eSpawnBlowoutArtefacts,	pSettings->r_bool(section,"spawn_blowout_artefacts"));
 	if( m_zone_flags.test(eSpawnBlowoutArtefacts) )
 	{
 		m_fArtefactSpawnProbability	= pSettings->r_float (section,"artefact_spawn_probability");
+		m_fArtefactSpawnOnDeathProbability	= READ_IF_EXISTS(pSettings, r_float, section, "birth_on_death_probability", 0.0f);
 		if(pSettings->line_exist(section,"artefact_spawn_particles")) 
 			m_sArtefactSpawnParticles = pSettings->r_string(section,"artefact_spawn_particles");
 		else
@@ -301,7 +307,7 @@ void CCustomZone::Load(LPCSTR section)
 		}
 
 		R_ASSERT3(!fis_zero(total_probability), "The probability of artefact spawn is zero!",*cName());
-		//нормализировать вероятности
+		//РЅРѕСЂРјР°Р»РёР·РёСЂРѕРІР°С‚СЊ РІРµСЂРѕСЏС‚РЅРѕСЃС‚Рё
 		for(i=0; i<m_ArtefactSpawn.size(); ++i)
 		{
 			m_ArtefactSpawn[i].probability = m_ArtefactSpawn[i].probability/total_probability;
@@ -343,7 +349,7 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	m_StartTime					= Device.dwTimeGlobal;
 	m_zone_flags.set			(eUseOnOffTime,	(m_TimeToDisable!=0)&&(m_TimeToEnable!=0) );
 
-	//добавить источники света
+	//РґРѕР±Р°РІРёС‚СЊ РёСЃС‚РѕС‡РЅРёРєРё СЃРІРµС‚Р°
 	if ( m_zone_flags.test(eIdleLight) )
 	{
 		m_pIdleLight = ::Render->light_create();
@@ -487,7 +493,7 @@ void CCustomZone::UpdateWorkload	(u32 dt)
 	default: NODEFAULT;
 	}
 
-	//вычислить время срабатывания зоны
+	//РІС‹С‡РёСЃР»РёС‚СЊ РІСЂРµРјСЏ СЃСЂР°Р±Р°С‚С‹РІР°РЅРёСЏ Р·РѕРЅС‹
 	if(m_bZoneActive)	m_dwDeltaTime	+=	dt;
 	else				m_dwDeltaTime	=	0;
 
@@ -527,8 +533,8 @@ void CCustomZone::shedule_Update(u32 dt)
 		// update
 		feel_touch_update		(P,s.R);
 
-		//пройтись по всем объектам в зоне
-		//и проверить их состояние
+		//РїСЂРѕР№С‚РёСЃСЊ РїРѕ РІСЃРµРј РѕР±СЉРµРєС‚Р°Рј РІ Р·РѕРЅРµ
+		//Рё РїСЂРѕРІРµСЂРёС‚СЊ РёС… СЃРѕСЃС‚РѕСЏРЅРёРµ
 		for(OBJECT_INFO_VEC_IT it = m_ObjectInfoMap.begin(); 
 			m_ObjectInfoMap.end() != it; ++it) 
 		{
@@ -539,6 +545,10 @@ void CCustomZone::shedule_Update(u32 dt)
 
 			info.time_in_zone += dt;
 
+			if(pEntityAlive && !pEntityAlive->g_Alive() && info.death_in_zone != true){
+				info.death_in_zone = true;
+				m_bBornOnBlowoutFlag = true;
+			}
 			if((!info.small_object && m_iDisableHitTime != -1 && (int)info.time_in_zone > m_iDisableHitTime) ||
 				(info.small_object && m_iDisableHitTimeSmall != -1 && (int)info.time_in_zone > m_iDisableHitTimeSmall))
 			{
@@ -551,8 +561,8 @@ void CCustomZone::shedule_Update(u32 dt)
 					StopObjectIdleParticles(smart_cast<CPhysicsShellHolder*>(pObject));
 			}
 
-			//если есть хотя бы один не дисабленый объект, то
-			//зона считается активной
+			//РµСЃР»Рё РµСЃС‚СЊ С…РѕС‚СЏ Р±С‹ РѕРґРёРЅ РЅРµ РґРёСЃР°Р±Р»РµРЅС‹Р№ РѕР±СЉРµРєС‚, С‚Рѕ
+			//Р·РѕРЅР° СЃС‡РёС‚Р°РµС‚СЃСЏ Р°РєС‚РёРІРЅРѕР№
 			if(info.zone_ignore == false) 
 				m_bZoneActive = true;
 		}
@@ -604,8 +614,14 @@ void CCustomZone::feel_touch_new	(CObject* O)
 	SZoneObjectInfo object_info		;
 	object_info.object = pGameObject;
 
-	if(pEntityAlive && pEntityAlive->g_Alive())
-		object_info.nonalive_object = false;
+	if(pEntityAlive){
+		if(pEntityAlive->g_Alive())
+			object_info.nonalive_object = false;
+		else{
+			object_info.nonalive_object = true;
+			object_info.death_in_zone = true;
+		}
+	}	
 	else
 		object_info.nonalive_object = true;
 
@@ -697,7 +713,7 @@ void CCustomZone::SetMaxPower(float p)
 {
 	m_fMaxPower = p;	
 #ifdef LUAICP_COMPAT
-	// сохранение значения в серверном объекте
+	// СЃРѕС…СЂР°РЅРµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏ РІ СЃРµСЂРІРµСЂРЅРѕРј РѕР±СЉРµРєС‚Рµ
 	CSE_ALifeDynamicObject     *e = alife_object();
 	if (e)
 	{
@@ -761,7 +777,7 @@ void CCustomZone::UpdateIdleLight	()
 	VERIFY(m_pIdleLAnim);
 
 	int frame = 0;
-	u32 clr					= m_pIdleLAnim->CalculateBGR(Device.fTimeGlobal,frame); // возвращает в формате BGR
+	u32 clr					= m_pIdleLAnim->CalculateBGR(Device.fTimeGlobal,frame); // РІРѕР·РІСЂР°С‰Р°РµС‚ РІ С„РѕСЂРјР°С‚Рµ BGR
 	Fcolor					fclr;
 	fclr.set				((float)color_get_B(clr)/255.f,(float)color_get_G(clr)/255.f,(float)color_get_R(clr)/255.f,1.f);
 	
@@ -839,7 +855,7 @@ void CCustomZone::PlayEntranceParticles(CGameObject* pObject)
 	else 
 		vel.set(0,0,0);
 	
-	//выбрать случайную косточку на объекте
+	//РІС‹Р±СЂР°С‚СЊ СЃР»СѓС‡Р°Р№РЅСѓСЋ РєРѕСЃС‚РѕС‡РєСѓ РЅР° РѕР±СЉРµРєС‚Рµ
 	CParticlesPlayer* PP = smart_cast<CParticlesPlayer*>(pObject);
 	if (PP){
 		u16 play_bone = PP->GetRandomBone(); 
@@ -892,7 +908,7 @@ void CCustomZone::PlayObjectIdleParticles(CGameObject* pObject)
 
 	shared_str particle_str = NULL;
 
-	//разные партиклы для объектов разного размера
+	//СЂР°Р·РЅС‹Рµ РїР°СЂС‚РёРєР»С‹ РґР»СЏ РѕР±СЉРµРєС‚РѕРІ СЂР°Р·РЅРѕРіРѕ СЂР°Р·РјРµСЂР°
 	if(pObject->Radius()<SMALL_OBJECT_RADIUS)
 	{
 		if(!m_sIdleObjectParticlesSmall) return;
@@ -905,7 +921,7 @@ void CCustomZone::PlayObjectIdleParticles(CGameObject* pObject)
 	}
 
 	
-	//запустить партиклы на объекте
+	//Р·Р°РїСѓСЃС‚РёС‚СЊ РїР°СЂС‚РёРєР»С‹ РЅР° РѕР±СЉРµРєС‚Рµ
 	//. new
 	PP->StopParticles (particle_str, BI_NONE, true);
 
@@ -929,7 +945,7 @@ void CCustomZone::StopObjectIdleParticles(CGameObject* pObject)
 	
 	
 	shared_str particle_str = NULL;
-	//разные партиклы для объектов разного размера
+	//СЂР°Р·РЅС‹Рµ РїР°СЂС‚РёРєР»С‹ РґР»СЏ РѕР±СЉРµРєС‚РѕРІ СЂР°Р·РЅРѕРіРѕ СЂР°Р·РјРµСЂР°
 	if(pObject->Radius()<SMALL_OBJECT_RADIUS)
 	{
 		if(!m_sIdleObjectParticlesSmall) return;
@@ -1042,7 +1058,7 @@ void CCustomZone::UpdateBlowout()
 		m_dwBlowoutExplosionTime<(u32)m_iStateTime)
 	{
 		AffectObjects();
-		BornArtefact();
+		BornArtefact(false);
 	}
 }
 
@@ -1127,7 +1143,13 @@ void CCustomZone::OnOwnershipTake(u16 id)
 	artefact->setVisible(FALSE);
 	artefact->setEnabled(FALSE);
 
-	m_SpawnedArtefacts.push_back(artefact);
+	if (Local())	
+	{
+		NET_Packet						P;
+		u_EventGen						(P,GE_OWNERSHIP_REJECT,ID());
+		P.w_u16							(id);
+		u_EventSend						(P);
+	}
 }
 
 void CCustomZone::OnStateSwitch	(EZoneState new_state)
@@ -1209,8 +1231,8 @@ void CCustomZone::ZoneDisable()
 
 void CCustomZone::SpawnArtefact()
 {
-	//вычислить согласно распределению вероятностей
-	//какой артефакт из списка ставить
+	//РІС‹С‡РёСЃР»РёС‚СЊ СЃРѕРіР»Р°СЃРЅРѕ СЂР°СЃРїСЂРµРґРµР»РµРЅРёСЋ РІРµСЂРѕСЏС‚РЅРѕСЃС‚РµР№
+	//РєР°РєРѕР№ Р°СЂС‚РµС„Р°РєС‚ РёР· СЃРїРёСЃРєР° СЃС‚Р°РІРёС‚СЊ
 	float rnd = ::Random.randF(.0f,1.f-EPS_L);
 	float prob_threshold = 0.f;
 	
@@ -1222,39 +1244,71 @@ void CCustomZone::SpawnArtefact()
 	}
 	R_ASSERT(i<m_ArtefactSpawn.size());
 
+	Msg("SpawnArtefact[%s] %s",cName().c_str(), *m_ArtefactSpawn[i].section );
 	Fvector pos;
 	Center(pos);
 	Level().spawn_item(*m_ArtefactSpawn[i].section, pos, (g_dedicated_server)?u32(-1):ai_location().level_vertex_id(), ID());
 }
 
 
-void CCustomZone::BornArtefact()
+void CCustomZone::BornArtefact(bool forced)
 {
-	if(!m_zone_flags.test(eSpawnBlowoutArtefacts) || m_SpawnedArtefacts.empty()) return;
+	Msg("BornArtefact[%s] prob %f cnt2 %f forced %d",cName().c_str(),m_fArtefactSpawnProbability,(float)m_ArtefactSpawn.size(),forced );
+	if(!m_zone_flags.test(eSpawnBlowoutArtefacts) || m_ArtefactSpawn.empty()) return;
+	if(Device.dwPrecacheFrame)					return;
+	
+	bool can_birth = false;
+	if (forced == true)
+		can_birth = true;
+	else if(m_bBornOnBlowoutFlag == true && ::Random.randF(0.f, 1.f) < m_fArtefactSpawnOnDeathProbability)
+		can_birth = true;
 
-	if(::Random.randF(0.f, 1.f)> m_fArtefactSpawnProbability) return;
-
-	PrefetchArtefacts						();
-	CArtefact* pArtefact					= m_SpawnedArtefacts.back(); VERIFY(pArtefact);
-	m_SpawnedArtefacts.pop_back				();
-
-	if (Local())	{
-		if (pArtefact->H_Parent() && (pArtefact->H_Parent()->ID() == this->ID())  )	//. todo: need to remove on actual message parsing
+	if (can_birth != true){
+		if (::Random.randF(0.f, 1.f)> m_fArtefactSpawnProbability) return;
+		OBJECT_INFO_VEC_IT it;
+		for(it = m_ObjectInfoMap.begin(); m_ObjectInfoMap.end() != it; ++it) 
 		{
-			NET_Packet						P;
-			u_EventGen						(P,GE_OWNERSHIP_REJECT,ID());
-			P.w_u16							(pArtefact->ID());
-			u_EventSend						(P);
+			SZoneObjectInfo& info = (*it);
+			if( !info.zone_ignore && !info.object->getDestroy() ){
+				if( info.nonalive_object == true ){
+					if (m_zone_flags.test(eBirthOnNonAlive)){
+						can_birth = true;
+						break;
+					}
+				}
+				else{
+					CEntityAlive*	pEntityAlive	= smart_cast<CEntityAlive*>(info.object);
+					if (pEntityAlive && pEntityAlive->g_Alive()){
+						if (m_zone_flags.test(eBirthOnAlive)){
+							can_birth = true;
+							break;
+						}
+					}
+					else if (m_zone_flags.test(eBirthOnDead)){
+						can_birth = true;
+						break;
+					}
+				}
+			}
 		}
 	}
-
+	if (can_birth != true) return;
+	
+	m_bBornOnBlowoutFlag = false;
+	
+//	for(u8 i = 0; i < 16; ++i) 
+//	{
+	SpawnArtefact();
+//	}
 }
 
 void CCustomZone::ThrowOutArtefact(CArtefact* pArtefact)
 {
-	pArtefact->XFORM().c.set(Position());
-	pArtefact->XFORM().c.y += m_fArtefactSpawnHeight;
-
+	Fvector pos;
+	pos.set(Position());
+	pos.y += m_fArtefactSpawnHeight;
+	pArtefact->XFORM().c.set(pos);
+	
 	if(*m_sArtefactSpawnParticles)
 	{
 		CParticlesObject* pParticles;
@@ -1263,10 +1317,16 @@ void CCustomZone::ThrowOutArtefact(CArtefact* pArtefact)
 		pParticles->Play();
 	}
 
-	m_ArtefactBornSound.play_at_pos(0, pArtefact->Position());
+	m_ArtefactBornSound.play_at_pos(0, pos);
 
+	NET_Packet						PP;
+	CGameObject::u_EventGen			(PP,GE_CHANGE_POS, pArtefact->ID());
+	PP.w_vec3						(pos);
+	CGameObject::u_EventSend		(PP);
+	
 	Fvector dir;
 	dir.random_dir();
+dir.normalize();
 	pArtefact->m_pPhysicsShell->applyImpulse (dir, m_fThrowOutPower);
 }
 
