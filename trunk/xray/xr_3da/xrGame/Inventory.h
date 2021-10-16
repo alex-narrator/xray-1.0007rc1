@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "inventory_item.h"
 #include "../../build_config_defines.h"
 

@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "UIPdaWnd.h"
 #include "../Pda.h"
 

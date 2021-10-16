@@ -1,4 +1,4 @@
-﻿// Weapon.cpp: implementation of the CWeapon class.
+// Weapon.cpp: implementation of the CWeapon class.
 //
 //////////////////////////////////////////////////////////////////////
 

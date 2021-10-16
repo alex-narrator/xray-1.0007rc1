@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "customdetector.h"
 #include "customzone.h"
 #include "hudmanager.h"

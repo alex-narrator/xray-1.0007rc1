@@ -1,4 +1,4 @@
-﻿// Weapon.h: interface for the CWeapon class.
+// Weapon.h: interface for the CWeapon class.
 #pragma once
 
 #include "PhysicsShell.h"

@@ -1,4 +1,4 @@
-﻿#include "pch_script.h"
+#include "pch_script.h"
 #include "inventory.h"
 #include "actor.h"
 #include "trade.h"

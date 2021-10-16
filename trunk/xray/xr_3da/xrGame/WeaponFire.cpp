@@ -1,4 +1,4 @@
-﻿// WeaponFire.cpp: implementation of the CWeapon class.
+// WeaponFire.cpp: implementation of the CWeapon class.
 // function responsible for firing with CWeapon
 //////////////////////////////////////////////////////////////////////
 

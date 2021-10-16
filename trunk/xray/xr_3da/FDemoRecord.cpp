@@ -1,4 +1,4 @@
-﻿// CDemoRecord.cpp: implementation of the CDemoRecord class.
+// CDemoRecord.cpp: implementation of the CDemoRecord class.
 //
 //////////////////////////////////////////////////////////////////////
 

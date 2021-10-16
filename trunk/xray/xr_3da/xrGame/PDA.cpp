@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "pda.h"
 #include "hudmanager.h"
 #include "PhysicsShell.h"

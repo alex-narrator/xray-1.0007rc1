@@ -1,4 +1,4 @@
-﻿#include "pch_script.h"
+#include "pch_script.h"
 #include "GameObject.h"
 #include "../fbasicvisual.h"
 #include "PhysicsShell.h"

@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "weaponmagazinedwgrenade.h"
 #include "WeaponHUD.h"
 #include "HUDManager.h"

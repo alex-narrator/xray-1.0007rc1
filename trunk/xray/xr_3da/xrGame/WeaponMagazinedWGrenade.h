@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "weaponmagazined.h"
 #include "rocketlauncher.h"
 

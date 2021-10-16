@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "space_restrictor.h"
 #include "../feel_touch.h"

@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "UITalkWnd.h"
 
 #include "UITradeWnd.h"

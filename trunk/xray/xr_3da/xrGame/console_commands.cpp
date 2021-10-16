@@ -1,4 +1,4 @@
-﻿#include "pch_script.h"
+#include "pch_script.h"
 #include "../xr_ioconsole.h"
 #include "../xr_ioc_cmd.h"
 #include "../customhud.h"
