@@ -59,12 +59,6 @@ protected:
 
 	void				PerformTrade				();
 	void				UpdatePrices				();
-	//
-	void				ColorizeItem				(CUICellItem* itm, bool b);
-	void				ColorizeWeapon              (CUICellItem* itm);
-	u32                 u_ColorEquiped;
-	u32                 u_ColorUntradeable;
-	u32                 u_ColorWeapon;
 
 	enum EListType{eNone,e1st,e2nd,eBoth};
 	void				UpdateLists					(EListType);

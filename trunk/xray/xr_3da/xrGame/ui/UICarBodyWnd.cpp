@@ -132,10 +132,6 @@ void CUICarBodyWnd::Init()
 
 	BindDragDropListEnents			(m_pUIOurBagList);
 	BindDragDropListEnents			(m_pUIOthersBagList);
-	//colorize
-	u_ColorEquiped                  = pSettings->r_color("colorize_item", "equiped");
-	u_ColorWeapon                   = pSettings->r_color("colorize_item", "weapon");
-
 }
 
 void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryBox* pInvBox)
@@ -257,9 +253,7 @@ void CUICarBodyWnd::UpdateLists()
 	{
 		CUICellItem* itm				= create_cell_item(*it);
 		m_pUIOurBagList->SetItem		(itm);
-//#ifdef CARBODY_COLORIZE_ITEM
-		ColorizeItem(itm);
-//#endif
+		itm->ColorizeEquipped			(itm);
 	}
 
 
@@ -894,7 +888,7 @@ bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 bool CUICarBodyWnd::OnItemSelected(CUICellItem* itm)
 {
 	SetCurrentItem		(itm);
-	ColorizeWeapon		(itm);
+	itm->ColorizeWeapon	(m_pUIOurBagList, m_pUIOthersBagList);
 	return				false;
 }
 
@@ -968,126 +962,3 @@ void CUICarBodyWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemSelected);
 	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemRButtonClick);
 }
-
-//#ifdef CARBODY_COLORIZE_ITEM
-void                    CUICarBodyWnd::ColorizeItem(CUICellItem* itm)
-{
-	//u32 color = pSettings->r_color("colorize_item", "equiped");
-	PIItem iitem = (PIItem)itm->m_pData;
-	if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
-		itm->SetTextureColor(u_ColorEquiped);
-}
-//#endif
-
-//#ifdef INV_COLORIZE_WEAPON
-void CUICarBodyWnd::ColorizeWeapon(CUICellItem* itm)
-{
-	CInventoryItem* inventoryitem = (CInventoryItem*)itm->m_pData;
-	if (!inventoryitem) return;
-
-	//clear texture color for our
-	u32 our_item_count = m_pUIOurBagList->ItemsCount();
-	for (u32 i = 0; i<our_item_count; ++i) {
-		CUICellItem* our_item = m_pUIOurBagList->GetItemIdx(i);
-		PIItem invitem = (PIItem)our_item->m_pData;
-
-		//u32 color = pSettings->r_color("colorize_item", "equiped");
-		if (invitem->m_eItemPlace == eItemPlaceSlot || invitem->m_eItemPlace == eItemPlaceBelt)
-			our_item->SetTextureColor(u_ColorEquiped);
-		else
-		our_item->SetTextureColor(0xffffffff);
-	}
-	//clear texture color for other
-	u32 other_item_count = m_pUIOthersBagList->ItemsCount();
-	for (u32 i = 0; i<other_item_count; ++i) {
-		CUICellItem* othert_item = m_pUIOthersBagList->GetItemIdx(i);
-		PIItem invitem = (PIItem)othert_item->m_pData;
-
-		othert_item->SetTextureColor(0xffffffff);
-	}
-
-	CWeaponMagazined* weapon = smart_cast<CWeaponMagazined*>(inventoryitem);
-	if (!weapon) return;
-
-	xr_vector<shared_str> ammo_types = weapon->m_ammoTypes;
-
-	//u32 color = pSettings->r_color("colorize_item", "weapon");
-
-	//our ammo
-	for (size_t id = 0; id<ammo_types.size(); ++id)
-	{
-		u32 our_ammo_count = m_pUIOurBagList->ItemsCount();
-		for (u32 i = 0; i<our_ammo_count; ++i)
-		{
-			CUICellItem* our_ammo = m_pUIOurBagList->GetItemIdx(i);
-			PIItem invitem = (PIItem)our_ammo->m_pData;
-
-			if (invitem && xr_strcmp(invitem->object().cNameSect(), ammo_types[id]) == 0 && invitem->Useful())
-			{
-				our_ammo->SetTextureColor(u_ColorWeapon);
-				break;										//go out from loop, because we can't have 2 CUICellItem's with same section
-			}
-
-		}
-	}
-	//our addons
-	u32 count_our = m_pUIOurBagList->ItemsCount();
-	for (u32 i = 0; i < count_our; ++i)
-	{
-		CUICellItem* our_addon = m_pUIOurBagList->GetItemIdx(i);
-		PIItem invitem = (PIItem)our_addon->m_pData;
-
-		if (weapon->GetGrenadeLauncherName() == invitem->object().cNameSect())
-		{
-			our_addon->SetTextureColor(u_ColorWeapon);
-		}
-		else if (weapon->GetScopeName() == invitem->object().cNameSect())
-		{
-			our_addon->SetTextureColor(u_ColorWeapon);
-		}
-		else if (weapon->GetSilencerName() == invitem->object().cNameSect())
-		{
-			our_addon->SetTextureColor(u_ColorWeapon);
-		}
-
-	}
-
-	//other ammo
-	for (size_t id = 0; id<ammo_types.size(); ++id)
-	{
-		u32 other_ammo_count = m_pUIOthersBagList->ItemsCount();
-		for (u32 i = 0; i<other_ammo_count; ++i)
-		{
-			CUICellItem* other_ammo = m_pUIOthersBagList->GetItemIdx(i);
-			PIItem invitem = (PIItem)other_ammo->m_pData;
-
-			if (invitem && xr_strcmp(invitem->object().cNameSect(), ammo_types[id]) == 0 && invitem->Useful())
-			{
-				other_ammo->SetTextureColor(u_ColorWeapon);
-			}
-
-		}
-	}
-	//other addon
-	u32 count_other = m_pUIOthersBagList->ItemsCount();
-	for (u32 i = 0; i < count_other; ++i)
-	{
-		CUICellItem* other_addon = m_pUIOthersBagList->GetItemIdx(i);
-		PIItem invitem = (PIItem)other_addon->m_pData;
-
-		if (weapon->GetGrenadeLauncherName() == invitem->object().cNameSect())
-		{
-			other_addon->SetTextureColor(u_ColorWeapon);
-		}
-		else if (weapon->GetScopeName() == invitem->object().cNameSect())
-		{
-			other_addon->SetTextureColor(u_ColorWeapon);
-		}
-		else if (weapon->GetSilencerName() == invitem->object().cNameSect())
-		{
-			other_addon->SetTextureColor(u_ColorWeapon);
-		}
-
-	}
-}
-//#endif

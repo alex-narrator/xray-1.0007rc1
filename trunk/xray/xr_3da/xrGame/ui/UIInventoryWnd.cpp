@@ -292,9 +292,6 @@ m_slots_array[GRENADE_SLOT] = m_pUIGrenadeList;
 	AttachChild							(UIRepackAmmoButton);
 	xml_init.Init3tButton				(uiXml, "repack_ammo_button", 0, UIRepackAmmoButton);
 
-	//colorize
-	u_ColorWeapon                       = pSettings->r_color("colorize_item", "weapon");
-
 //Load sounds
 
 	XML_NODE* stored_root				= uiXml.GetLocalRoot		();

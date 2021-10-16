@@ -13,6 +13,10 @@
 #include "../Weapon.h"
 #include "../CustomOutfit.h"
 
+#include "xr_ini.h"
+#include "../smart_cast.h"
+#include "../WeaponMagazinedWGrenade.h"
+
 CUICellItem::CUICellItem()
 {
 	m_pParentList		= NULL;
@@ -52,6 +56,11 @@ void CUICellItem::init()
 	AttachChild(m_pConditionState);
 	CUIXmlInit::InitProgressBar(uiXml, "condition_progess_bar", 0, m_pConditionState);
 	m_pConditionState->Show(true);
+
+	//colorize
+	u_ColorWeapon		= READ_IF_EXISTS(pSettings, r_color, "colorize_item", "weapon",		0xffffffff);
+	u_ColorEquipped		= READ_IF_EXISTS(pSettings, r_color, "colorize_item", "equipped",	0xffffffff);
+	u_ColorUntradeable	= READ_IF_EXISTS(pSettings, r_color, "colorize_item", "untrade",	0xffffffff);
 }
 
 void CUICellItem::Draw()
@@ -228,6 +237,75 @@ void CUICellItem::Update()
  
 }
 
+//
+void CUICellItem::ColorizeEquipped(CUICellItem* itm, bool b_can_trade)
+{
+	PIItem iitem = (PIItem)itm->m_pData;
+
+	if (!b_can_trade)
+		itm->SetTextureColor(u_ColorUntradeable);
+	else if (iitem->m_eItemPlace == eItemPlaceSlot || iitem->m_eItemPlace == eItemPlaceBelt)
+		itm->SetTextureColor(u_ColorEquipped);
+}
+//
+void CUICellItem::ColorizeWeapon(CUIDragDropListEx* List1, CUIDragDropListEx* List2, CUIDragDropListEx* List3, CUIDragDropListEx* List4)
+{
+	auto inventoryitem = (CInventoryItem*)this->m_pData;
+	if (!inventoryitem)
+		return;
+
+	auto ClearTextureColor = [=](CUIDragDropListEx* DdListEx) 
+	{
+		for (u32 i = 0, item_count = DdListEx->ItemsCount(); i < item_count; ++i) 
+		{
+			CUICellItem* CellItem = DdListEx->GetItemIdx(i);
+			if (CellItem->GetTextureColor() == u_ColorWeapon)
+				CellItem->SetTextureColor(0xffffffff);
+		}
+	};
+
+	ClearTextureColor(List1);
+	ClearTextureColor(List2);
+	if (List3)
+		ClearTextureColor(List3);
+	if (List4)
+		ClearTextureColor(List4);
+
+	auto Wpn = smart_cast<CWeaponMagazined*>(inventoryitem);
+	if (!Wpn)
+		return;
+
+	xr_vector<shared_str> ColorizeSects;
+	std::copy(Wpn->m_ammoTypes.begin(), Wpn->m_ammoTypes.end(), std::back_inserter(ColorizeSects));
+	if (auto WpnGl = smart_cast<CWeaponMagazinedWGrenade*>(inventoryitem))
+		std::copy(WpnGl->m_ammoTypes2.begin(), WpnGl->m_ammoTypes2.end(), std::back_inserter(ColorizeSects));
+	if (Wpn->SilencerAttachable())
+		ColorizeSects.push_back(Wpn->GetSilencerName());
+	if (Wpn->ScopeAttachable())
+		ColorizeSects.push_back(Wpn->GetScopeName());
+	if (Wpn->GrenadeLauncherAttachable())
+		ColorizeSects.push_back(Wpn->GetGrenadeLauncherName());
+
+	auto ProcessColorize = [=](CUIDragDropListEx* DdListEx) 
+	{
+		for (u32 i = 0, item_count = DdListEx->ItemsCount(); i < item_count; ++i) 
+		{
+			CUICellItem* CellItem = DdListEx->GetItemIdx(i);
+			auto invitem = (CInventoryItem*)CellItem->m_pData;
+			if (invitem && (std::find(ColorizeSects.begin(), ColorizeSects.end(), invitem->object().cNameSect()) != ColorizeSects.end()))
+				if (CellItem->GetTextureColor() == 0xffffffff)
+					CellItem->SetTextureColor(u_ColorWeapon);
+		}
+	};
+
+	ProcessColorize(List1);
+	ProcessColorize(List2);
+	if (List3)
+		ProcessColorize(List3);
+	if (List4)
+		ProcessColorize(List4);
+}
+//
 
 void CUICellItem::SetCustomDraw			(ICustomDrawCell* c){
 	if (m_custom_draw)

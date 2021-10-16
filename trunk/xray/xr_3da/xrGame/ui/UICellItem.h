@@ -64,6 +64,12 @@ public:
 				int			m_index;
 				bool		m_b_already_drawn;
 				bool		m_b_destroy_childs;
+				//colorize
+				void		ColorizeWeapon		(CUIDragDropListEx*, CUIDragDropListEx*, CUIDragDropListEx* = nullptr, CUIDragDropListEx* = nullptr);
+				void		ColorizeEquipped	(CUICellItem* itm, bool b_can_trade = true);
+				u32         u_ColorWeapon;
+				u32         u_ColorEquipped;
+				u32         u_ColorUntradeable;
 };
 
 class CUIDragItem: public CUIWindow, public pureRender, public pureFrame

@@ -183,10 +183,6 @@ protected:
 	void						DetachAddon					(const char* addon_name);
 
 	void						SetCurrentItem				(CUICellItem* itm);
-//#ifdef INV_COLORIZE_WEAPON
-	void						ColorizeWeapon				(CUICellItem* itm);
-	u32                         u_ColorWeapon;
-//#endif
 	CUICellItem*				CurrentItem					();
 	
 
