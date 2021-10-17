@@ -7,6 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "pch_script.h"
+#include "../../StdAfx.h"
+#include "../../smart_cast.h"
 #include "ai_stalker.h"
 #include "ai_stalker_impl.h"
 #include "../../script_entity_action.h"

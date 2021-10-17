@@ -42,9 +42,6 @@ protected:
 	float				fWallmarkSize;
 	u16					knife_material_idx;
 	//
-	float               m_fFirePowerDec;  //снижение выносливости при ударе
-	float               m_fFire2PowerDec; //снижение выносливости при ударе2
-	//
 	float				m_fMinConditionHitPart; //минимальная доля хита при полном износе
 
 protected:	

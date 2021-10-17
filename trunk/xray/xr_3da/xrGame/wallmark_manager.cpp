@@ -19,7 +19,7 @@ void CWalmarkManager::Clear()
 {
 	m_wallmarks.clear();
 }
-
+/*
 void CWalmarkManager::AddWallmark(const Fvector& dir, const Fvector& start_pos, 
 								  float range, float wallmark_size,
 								  SHADER_VECTOR& wallmarks_vector,int t)
@@ -47,7 +47,7 @@ void CWalmarkManager::AddWallmark(const Fvector& dir, const Fvector& start_pos,
 		}
 	}
 }
-
+*/
 /*
 void CWalmarkManager::PlaceWallmark(const Fvector& dir, const Fvector& start_pos, 
 									  float trace_dist, float wallmark_size,

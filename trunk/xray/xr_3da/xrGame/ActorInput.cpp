@@ -717,10 +717,13 @@ float	CActor::GetLookFactor()
 	
 	float factor	= 1.f;
 
+	//чем больше устал тем тяжелее вертеться по сторонам
+	factor += (1.f - conditions().GetPowerKoef());
+	//
 	PIItem pItem	= inventory().ActiveItem();
 
 	if (pItem)
-		factor *= pItem->GetControlInertionFactor();
+		factor *= (pItem->GetControlInertionFactor() + sqrtf(pItem->Weight()));
 
 	VERIFY(!fis_zero(factor));
 

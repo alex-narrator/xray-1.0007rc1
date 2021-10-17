@@ -59,9 +59,6 @@ void CWeaponKnife::Load	(LPCSTR section)
 	
 	knife_material_idx =  GMLib.GetMaterialIdx(KNIFE_MATERIAL_NAME);
 	//
-	m_fFirePowerDec  = READ_IF_EXISTS(pSettings, r_float, section, "fire_power_dec", 0.0f);
-	m_fFire2PowerDec = READ_IF_EXISTS(pSettings, r_float, section, "fire2_power_dec", m_fFirePowerDec);
-	//
 	m_fMinConditionHitPart = READ_IF_EXISTS(pSettings, r_float, section, "min_condition_hit_part", 1.0f);
 }
 
@@ -278,8 +275,8 @@ void CWeaponKnife::FireStart()
 	//
 	if (ParentIsActor())
 	{
-		if(!g_actor->conditions().IsCantWalk())
-			g_actor->conditions().ChangePower(-m_fFirePowerDec);
+		if (!g_actor->conditions().IsCantWalk())
+			g_actor->conditions().ConditionJump(this->Weight() * 0.1f);
 		else
 			HUD().GetUI()->AddInfoMessage("cant_walk");
 	}
@@ -306,7 +303,7 @@ void CWeaponKnife::Fire2Start ()
 			if (psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT))
 				g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint));
 			//
-			g_actor->conditions().ChangePower(-m_fFire2PowerDec);
+			g_actor->conditions().ConditionJump(this->Weight() * 0.1f);
 		}
 		else
 			HUD().GetUI()->AddInfoMessage("cant_walk");
