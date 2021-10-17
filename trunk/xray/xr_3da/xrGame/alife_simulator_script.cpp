@@ -347,7 +347,7 @@ void assign_story_id		(CALifeSimulator *alife, ALife::_OBJECT_ID id, ALife::_STO
 
 LPCSTR get_save_name(CALifeSimulator *sim) 
 {
-	// alpet: îáåðòêà ïðåäîòâðàùàåò âûëåò, ïðè îáðàùåíèè ê ñâîéñòâó íà ðàííåé ñòàäèè  èíèöèàëèçàöèè
+	// alpet: Ð¾Ð±ÐµÑ€Ñ‚ÐºÐ° Ð¿Ñ€ÐµÐ´Ð¾Ñ‚Ð²Ñ€Ð°Ñ‰Ð°ÐµÑ‚ Ð²Ñ‹Ð»ÐµÑ‚, Ð¿Ñ€Ð¸ Ð¾Ð±Ñ€Ð°Ñ‰ÐµÐ½Ð¸Ð¸ Ðº ÑÐ²Ð¾Ð¹ÑÑ‚Ð²Ñƒ Ð½Ð° Ñ€Ð°Ð½Ð½ÐµÐ¹ ÑÑ‚Ð°Ð´Ð¸Ð¸  Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸
 	LPCSTR result = NULL;
 	if (sim) result = sim->save_name(FALSE);
 	return result ? result : "NULL";

@@ -16,8 +16,8 @@ public:
 	CGameFont*	pFont;
 
 	float		fFPS,fRFPS,fTPS		;			// FPS, RenderFPS, TPS
-	float		fAvgFPS, fAvgRFPS	;			// усредненный фреймрейт
-	float		fMaxFrameTime		;			// максимальное время кадра из 1000			
+	float		fAvgFPS, fAvgRFPS	;			// СѓСЃСЂРµРґРЅРµРЅРЅС‹Р№ С„СЂРµР№РјСЂРµР№С‚
+	float		fMaxFrameTime		;			// РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РІСЂРµРјСЏ РєР°РґСЂР° РёР· 1000			
 	float		fMem_calls			;
 	u32			dwMem_calls			;
 	u32			dwSND_Played,dwSND_Allocated;	// Play/Alloc

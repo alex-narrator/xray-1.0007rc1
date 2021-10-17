@@ -306,7 +306,7 @@ void		CHW::CreateDevice		(HWND m_hWnd)
     // Create the device
 	u32 GPU		= selectGPU();	
 #ifdef GPU_EXTRA_CONFIG
-	GPU |= D3DCREATE_FPU_PRESERVE;	// вероятно решит некоторые проблемы с Lua
+	GPU |= D3DCREATE_FPU_PRESERVE;	// РІРµСЂРѕСЏС‚РЅРѕ СЂРµС€РёС‚ РЅРµРєРѕС‚РѕСЂС‹Рµ РїСЂРѕР±Р»РµРјС‹ СЃ Lua
 #endif
 	 
 	HRESULT R	= HW.pD3D->CreateDevice(DevAdapter,

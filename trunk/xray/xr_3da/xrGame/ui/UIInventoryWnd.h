@@ -117,7 +117,7 @@ protected:
 //#ifdef SHOW_GRENADE_SLOT
 	CUIDragDropListEx*			m_pUIGrenadeList;
 //#endif
-	CUIDragDropListEx*			m_slots_array [SLOTS_TOTAL];  // alpet: для индексированного доступа
+	CUIDragDropListEx*			m_slots_array [SLOTS_TOTAL];  // alpet: РґР»СЏ РёРЅРґРµРєСЃРёСЂРѕРІР°РЅРЅРѕРіРѕ РґРѕСЃС‚СѓРїР°
 
 #if defined(INV_OUTFIT_FULL_ICON_HIDE)
 	CUIDragDropListEx*		m_pUIOutfitList;
@@ -139,7 +139,7 @@ protected:
 
 
 	CUIStatic					UIProgressBack;
-	CUIStatic					UIProgressBackRadiation; //отдельная подложка для убираемого прогрессбара радиации
+	CUIStatic					UIProgressBackRadiation; //РѕС‚РґРµР»СЊРЅР°СЏ РїРѕРґР»РѕР¶РєР° РґР»СЏ СѓР±РёСЂР°РµРјРѕРіРѕ РїСЂРѕРіСЂРµСЃСЃР±Р°СЂР° СЂР°РґРёР°С†РёРё
 	CUIStatic					UIProgressBack_rank;
 	CUIProgressBar				UIProgressBarHealth;	
 	CUIProgressBar				UIProgressBarPsyHealth;
@@ -148,7 +148,7 @@ protected:
 
 	CUIPropertiesBox			UIPropertiesBox;
 	
-	//информация о персонаже
+	//РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїРµСЂСЃРѕРЅР°Р¶Рµ
 	CUIOutfitInfo				UIOutfitInfo;
 	CUIItemInfo					UIItemInfo;
 

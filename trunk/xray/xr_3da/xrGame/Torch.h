@@ -92,7 +92,7 @@ public:
 	virtual void	afterDetach				();
 	virtual void	renderable_Render		();
 
-	// alpet: управление светом фонаря
+	// alpet: СѓРїСЂР°РІР»РµРЅРёРµ СЃРІРµС‚РѕРј С„РѕРЅР°СЂСЏ
 	IRender_Light  *GetLight(int target = 0);
 
 	void			SetAnimation(LPCSTR name);
@@ -108,7 +108,7 @@ public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 
-CTorch *get_torch(CScriptGameObject *script_obj); // alpet: для экспорта в объект CScriptGameObject
+CTorch *get_torch(CScriptGameObject *script_obj); // alpet: РґР»СЏ СЌРєСЃРїРѕСЂС‚Р° РІ РѕР±СЉРµРєС‚ CScriptGameObject
 
 add_to_type_list(CTorch)
 #undef script_type_list

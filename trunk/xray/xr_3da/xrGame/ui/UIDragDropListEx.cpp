@@ -128,7 +128,7 @@ Fvector2 CUIDragDropListEx::GetDragItemPosition()
 
 void CUIDragDropListEx::OnItemStartDragging(CUIWindow* w, void* pData)
 {
-	// Èçáåãàåì ñëó÷àÿ äâîéíîãî äðàãà. Real Wolf. 12.11.14.
+	// Ð˜Ð·Ð±ÐµÐ³Ð°ÐµÐ¼ ÑÐ»ÑƒÑ‡Ð°Ñ Ð´Ð²Ð¾Ð¹Ð½Ð¾Ð³Ð¾ Ð´Ñ€Ð°Ð³Ð°. Real Wolf. 12.11.14.
 	if (m_drag_item)
 		return;
 
@@ -313,7 +313,7 @@ void CUIDragDropListEx::ReinitScroll()
 		m_vScrollBar->SetPageSize	(iFloor(GetWndSize().y/float(CellSize().y)));
 
 
-		m_vScrollBar->SetScrollPos(m_vScrollBar->GetScrollPos()); // alpet: âìåñòî ñáðîñà ïîçèöèè
+		m_vScrollBar->SetScrollPos(m_vScrollBar->GetScrollPos()); // alpet: Ð²Ð¼ÐµÑÑ‚Ð¾ ÑÐ±Ñ€Ð¾ÑÐ° Ð¿Ð¾Ð·Ð¸Ñ†Ð¸Ð¸
 
 		m_container->SetWndPos		(0,0);
 }

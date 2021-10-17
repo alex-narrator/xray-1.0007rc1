@@ -277,7 +277,7 @@ void CSheduler::Pop					()
 	Items.pop_back	();
 }
 
-// #pragma optimize("gyt", on) // для отладки следующей секции кода, закомментировать эту прагму
+// #pragma optimize("gyt", on) // РґР»СЏ РѕС‚Р»Р°РґРєРё СЃР»РµРґСѓСЋС‰РµР№ СЃРµРєС†РёРё РєРѕРґР°, Р·Р°РєРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ СЌС‚Сѓ РїСЂР°РіРјСѓ
 
 void CSheduler::ProcessStep			()
 {
@@ -466,7 +466,7 @@ void CSheduler::Update				()
 	Msg								("SCHEDULER: PROCESS STEP FINISHED %d",Device.dwFrame);
 #endif // DEBUG_SCHEDULER
 #if defined(ECO_RENDER) || defined(LUAICP_COMPAT)
-	clamp							(psShedulerTarget,3.f,50.f); // занимать до 50 мс в кадре (клинч неписей вероятен, если много в онлайне объектов).
+	clamp							(psShedulerTarget,3.f,50.f); // Р·Р°РЅРёРјР°С‚СЊ РґРѕ 50 РјСЃ РІ РєР°РґСЂРµ (РєР»РёРЅС‡ РЅРµРїРёСЃРµР№ РІРµСЂРѕСЏС‚РµРЅ, РµСЃР»Рё РјРЅРѕРіРѕ РІ РѕРЅР»Р°Р№РЅРµ РѕР±СЉРµРєС‚РѕРІ).
 	if (Device.dwFrame % 10000 == 0)
 	{
 		Msg("# Sheduler Items.size = %5d, ItemsRT.size = %5d ", Items.size(), ItemsRT.size());

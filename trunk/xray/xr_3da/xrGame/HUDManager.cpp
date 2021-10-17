@@ -211,7 +211,7 @@ void CHUDManager::Render_Actor_Shadow()	// added by KD
 }
 extern void draw_wnds_rects();
 extern ENGINE_API BOOL bShowPauseString;
-//отрисовка элементов интерфейса
+//РѕС‚СЂРёСЃРѕРІРєР° СЌР»РµРјРµРЅС‚РѕРІ РёРЅС‚РµСЂС„РµР№СЃР°
 #include "string_table.h"
 void  CHUDManager::RenderUI()
 {

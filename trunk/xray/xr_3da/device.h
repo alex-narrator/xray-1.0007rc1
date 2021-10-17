@@ -34,7 +34,7 @@ private:
 	CTimer_paused							Timer;
 	CTimer_paused							TimerGlobal;
 	CTimer									TimerMM;
-	CTimer									frame_timer;   // TODO: проверить, не дублируется-ли схожий таймер
+	CTimer									frame_timer;   // TODO: РїСЂРѕРІРµСЂРёС‚СЊ, РЅРµ РґСѓР±Р»РёСЂСѓРµС‚СЃСЏ-Р»Рё СЃС…РѕР¶РёР№ С‚Р°Р№РјРµСЂ
 
 	void									_Create		(LPCSTR shName);
 	void									_Destroy	(BOOL	bKeepTextures);

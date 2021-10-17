@@ -141,7 +141,7 @@ void InitEngine		()
 				if (init)
 					init(NULL);
 			}
-	//if (IsDebuggerPresent()) // для проверки адекватности трассировки стека вызовов
+	//if (IsDebuggerPresent()) // РґР»СЏ РїСЂРѕРІРµСЂРєРё Р°РґРµРєРІР°С‚РЅРѕСЃС‚Рё С‚СЂР°СЃСЃРёСЂРѕРІРєРё СЃС‚РµРєР° РІС‹Р·РѕРІРѕРІ
 	//__try
 	//{
 	//	Msg((LPCSTR)0x100);
@@ -505,10 +505,10 @@ struct damn_keys_filter {
 #undef dwFilterKeysStructSize
 #undef dwToggleKeysStructSize
 
-// Приблудина для SecuROM-а
+// РџСЂРёР±Р»СѓРґРёРЅР° РґР»СЏ SecuROM-Р°
 #include "securom_api.h"
 
-// Фунция для тупых требований THQ и тупых американских пользователей
+// Р¤СѓРЅС†РёСЏ РґР»СЏ С‚СѓРїС‹С… С‚СЂРµР±РѕРІР°РЅРёР№ THQ Рё С‚СѓРїС‹С… Р°РјРµСЂРёРєР°РЅСЃРєРёС… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
 BOOL IsOutOfVirtualMemory()
 {
 #define VIRT_ERROR_SIZE 256
@@ -532,7 +532,7 @@ BOOL IsOutOfVirtualMemory()
 	dwPageFileInMB = ( DWORD ) ( statex.ullTotalPageFile / ( 1024 * 1024 ) ) ;
 	dwPhysMemInMB = ( DWORD ) ( statex.ullTotalPhys / ( 1024 * 1024 ) ) ;
 
-	// Довольно отфонарное условие
+	// Р”РѕРІРѕР»СЊРЅРѕ РѕС‚С„РѕРЅР°СЂРЅРѕРµ СѓСЃР»РѕРІРёРµ
 	if ( ( dwPhysMemInMB > 500 ) && ( ( dwPageFileInMB + dwPhysMemInMB ) > 2500  ) )
 		return 0;
 
@@ -635,11 +635,11 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 #endif // DEDICATED_SERVER
 
 #ifdef LUAICP_COMPAT
-	// alpet: на первом ядре процессора любят сидеть фоновые процессы винды, так что лучше выбрать эксклюзив попытаться 
+	// alpet: РЅР° РїРµСЂРІРѕРј СЏРґСЂРµ РїСЂРѕС†РµСЃСЃРѕСЂР° Р»СЋР±СЏС‚ СЃРёРґРµС‚СЊ С„РѕРЅРѕРІС‹Рµ РїСЂРѕС†РµСЃСЃС‹ РІРёРЅРґС‹, С‚Р°Рє С‡С‚Рѕ Р»СѓС‡С€Рµ РІС‹Р±СЂР°С‚СЊ СЌРєСЃРєР»СЋР·РёРІ РїРѕРїС‹С‚Р°С‚СЊСЃСЏ 
 	SetThreadAffinityMask		(GetCurrentThread(), 2 + 4 + 8);	
-	SetThreadPriority			(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);  // чтобы вытеснить остальных из планировщика винды на занятом ядре
+	SetThreadPriority			(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);  // С‡С‚РѕР±С‹ РІС‹С‚РµСЃРЅРёС‚СЊ РѕСЃС‚Р°Р»СЊРЅС‹С… РёР· РїР»Р°РЅРёСЂРѕРІС‰РёРєР° РІРёРЅРґС‹ РЅР° Р·Р°РЅСЏС‚РѕРј СЏРґСЂРµ
 	SetProcessPriorityBoost		(GetCurrentProcess(), FALSE);
-	SetPriorityClass			(GetCurrentProcess(), HIGH_PRIORITY_CLASS);          // при подвисании это конечно накажет, но есть быстрые клавиши суицида процесса игры. 
+	SetPriorityClass			(GetCurrentProcess(), HIGH_PRIORITY_CLASS);          // РїСЂРё РїРѕРґРІРёСЃР°РЅРёРё СЌС‚Рѕ РєРѕРЅРµС‡РЅРѕ РЅР°РєР°Р¶РµС‚, РЅРѕ РµСЃС‚СЊ Р±С‹СЃС‚СЂС‹Рµ РєР»Р°РІРёС€Рё СЃСѓРёС†РёРґР° РїСЂРѕС†РµСЃСЃР° РёРіСЂС‹. 
 #else
 	SetThreadAffinityMask		(GetCurrentThread(),1);
 #endif
@@ -673,7 +673,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 		sscanf					(strstr(lpCmdLine,fsgame_ltx_name)+sz,"%[^ ] ",fsgame);
 	}
 
-	// alpet: получение фильтров для условного логгирования
+	// alpet: РїРѕР»СѓС‡РµРЅРёРµ С„РёР»СЊС‚СЂРѕРІ РґР»СЏ СѓСЃР»РѕРІРЅРѕРіРѕ Р»РѕРіРіРёСЂРѕРІР°РЅРёСЏ
 	LPCSTR						verb_filters_name = "-verb_filters ";
 	string4096					verb_filters;
 	if (LPCSTR arg = strstr(lpCmdLine, verb_filters_name)) {

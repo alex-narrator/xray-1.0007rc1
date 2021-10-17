@@ -82,7 +82,7 @@ void CObjectFactory::register_script	() const
 		instance.enum_			("_clsid")[luabind::value(*(*I)->script_clsid(),int(I - B))];
 
 	lua_State *L				= ai().script_engine().lua();
-	luabind::module				(L)[instance]; // это представление нельзя обработать как таблицу
+	luabind::module				(L)[instance]; // СЌС‚Рѕ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ РЅРµР»СЊР·СЏ РѕР±СЂР°Р±РѕС‚Р°С‚СЊ РєР°Рє С‚Р°Р±Р»РёС†Сѓ
 
 	lua_newtable(L);
 	I = B;
@@ -91,7 +91,7 @@ void CObjectFactory::register_script	() const
 		lua_pushinteger ( L, int(I - B));
 		lua_setfield (L, -2, *(*I)->script_clsid());
 	}
-	lua_setglobal(L, "clsid_table");   // это представление можно обработать как таблицу :)	
+	lua_setglobal(L, "clsid_table");   // СЌС‚Рѕ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ РјРѕР¶РЅРѕ РѕР±СЂР°Р±РѕС‚Р°С‚СЊ РєР°Рє С‚Р°Р±Р»РёС†Сѓ :)	
 }
 
 #pragma optimize("s",on)

@@ -143,7 +143,7 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 #ifdef AF_SHOW_DYNAMIC_PARAMS
 			float _actor_val	= pActor->conditions().GetParamByName(af_actor_param_names[i]);			
 			float CArtefact::* pRestoreSpeed = af_prop_offsets[i];
-			_val = (art->*pRestoreSpeed); // alpet: èñïîëüçóåòñÿ óêàçàòåëü íà äàííûå êëàññà
+			_val = (art->*pRestoreSpeed); // alpet: Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÑ‚ÑÑ ÑƒÐºÐ°Ð·Ð°Ñ‚ÐµÐ»ÑŒ Ð½Ð° Ð´Ð°Ð½Ð½Ñ‹Ðµ ÐºÐ»Ð°ÑÑÐ°
 #else
 			_val = READ_IF_EXISTS(pSettings, r_float, af_section, af_item_sect_names[i], 0.f);
 			float _actor_val	= pSettings->r_float	("actor_condition", af_actor_param_names[i]);

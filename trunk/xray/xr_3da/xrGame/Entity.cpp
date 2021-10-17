@@ -81,7 +81,7 @@ void CEntity::Die(CObject* who)
 		VERIFY				(m_registered_member);
 	}
 	
-	if (m_registered_member) // alpet: без этого ограничения, при массовом убийстве вертолетов на агро, в CGroupHierarchyHolder::unregister_in_group возникает повреждение кучи
+	if (m_registered_member) // alpet: Р±РµР· СЌС‚РѕРіРѕ РѕРіСЂР°РЅРёС‡РµРЅРёСЏ, РїСЂРё РјР°СЃСЃРѕРІРѕРј СѓР±РёР№СЃС‚РІРµ РІРµСЂС‚РѕР»РµС‚РѕРІ РЅР° Р°РіСЂРѕ, РІ CGroupHierarchyHolder::unregister_in_group РІРѕР·РЅРёРєР°РµС‚ РїРѕРІСЂРµР¶РґРµРЅРёРµ РєСѓС‡Рё
 	{
 		m_registered_member = false;
 		if (IsGameTypeSingle())
@@ -89,7 +89,7 @@ void CEntity::Die(CObject* who)
 	}
 }
 
-//обновление состояния
+//РѕР±РЅРѕРІР»РµРЅРёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ
 float CEntity::CalcCondition(float hit)
 {
 
@@ -153,7 +153,7 @@ void CEntity::Load		(LPCSTR section)
 #pragma todo("Jim to Dima: no specific figures or comments needed")	
 	m_fMorale			= 66.f;
 
-	//время убирания тела с уровня
+	//РІСЂРµРјСЏ СѓР±РёСЂР°РЅРёСЏ С‚РµР»Р° СЃ СѓСЂРѕРІРЅСЏ
 	m_dwBodyRemoveTime	= READ_IF_EXISTS(pSettings,r_u32,section,"body_remove_time",BODY_REMOVE_TIME);
 	//////////////////////////////////////
 }

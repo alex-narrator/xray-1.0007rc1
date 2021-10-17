@@ -77,7 +77,7 @@ public:
 #endif
 
 public:
-	// alpet: для сохраняемости конфигурации источников света
+	// alpet: РґР»СЏ СЃРѕС…СЂР°РЅСЏРµРјРѕСЃС‚Рё РєРѕРЅС„РёРіСѓСЂР°С†РёРё РёСЃС‚РѕС‡РЅРёРєРѕРІ СЃРІРµС‚Р°
 	virtual float							get_cone() { return cone; }
 	virtual Fcolor							get_color() { return color; }
 	virtual float							get_range() { return range; }

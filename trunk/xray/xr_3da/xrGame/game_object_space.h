@@ -50,17 +50,17 @@ namespace GameObject {
 
 		eInvBoxItemTake,
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-		// клавиатура/мышь
+		// РєР»Р°РІРёР°С‚СѓСЂР°/РјС‹С€СЊ
 		eOnKeyPress,
 		eOnKeyRelease,
 		eOnKeyHold,
 		eOnMouseMove,
 		eOnMouseWheel,
-		// инвентарь
+		// РёРЅРІРµРЅС‚Р°СЂСЊ
 		eOnItemBelt,
 		eOnItemSlot,
 		eOnItemRuck,
-		// фонарь
+		// С„РѕРЅР°СЂСЊ
 		eSwitchTorch,
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 

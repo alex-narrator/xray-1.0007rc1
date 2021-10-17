@@ -70,7 +70,7 @@ void BuildStackTrace(struct _EXCEPTION_POINTERS *g_BlackBoxUIExPtrs)
 #	pragma auto_inline(on)
 #endif // _EDITOR
 
-// alpet: экспорт не влияет на работу движка, но позволит копировать трейс подключаемым dll
+// alpet: СЌРєСЃРїРѕСЂС‚ РЅРµ РІР»РёСЏРµС‚ РЅР° СЂР°Р±РѕС‚Сѓ РґРІРёР¶РєР°, РЅРѕ РїРѕР·РІРѕР»РёС‚ РєРѕРїРёСЂРѕРІР°С‚СЊ С‚СЂРµР№СЃ РїРѕРґРєР»СЋС‡Р°РµРјС‹Рј dll
 LPCSTR __declspec(dllexport) BuildStackTrace()
 {	
     CONTEXT					context;

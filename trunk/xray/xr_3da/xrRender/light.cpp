@@ -18,7 +18,7 @@ light::light		(void)	: ISpatial(g_SpatialSpace)
 	frame_render	= 0;
 
 #if RENDER==R_R2
-	virtual_size	= .1f; // Ray Twitty (aka Shadows): ïî óìîë÷àíèþ íàäî 0.1, ÷òîáû íå ïðèøëîñü âûçûâàòü äëÿ êàæäîãî ëàéòà óñòàíîâêó âèðòóàëüíîãî ðàçìåðà
+	virtual_size	= .1f; // Ray Twitty (aka Shadows): Ð¿Ð¾ ÑƒÐ¼Ð¾Ð»Ñ‡Ð°Ð½Ð¸ÑŽ Ð½Ð°Ð´Ð¾ 0.1, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð½Ðµ Ð¿Ñ€Ð¸ÑˆÐ»Ð¾ÑÑŒ Ð²Ñ‹Ð·Ñ‹Ð²Ð°Ñ‚ÑŒ Ð´Ð»Ñ ÐºÐ°Ð¶Ð´Ð¾Ð³Ð¾ Ð»Ð°Ð¹Ñ‚Ð° ÑƒÑÑ‚Ð°Ð½Ð¾Ð²ÐºÑƒ Ð²Ð¸Ñ€Ñ‚ÑƒÐ°Ð»ÑŒÐ½Ð¾Ð³Ð¾ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð°
 	ZeroMemory		(omnipart,sizeof(omnipart));
 	s_spot			= NULL;
 	s_point			= NULL;
@@ -271,7 +271,7 @@ void	light::export		(light_Package& package)
 						L->set_cone			(PI_DIV_2);
 						L->set_range		(range);
 						/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-						// íàäî åùå ýêñïîðòèðîâàòü
+						// Ð½Ð°Ð´Ð¾ ÐµÑ‰Ðµ ÑÐºÑÐ¿Ð¾Ñ€Ñ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ
 						L->set_virtual_size	(virtual_size);
 						/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 						L->set_color		(color);

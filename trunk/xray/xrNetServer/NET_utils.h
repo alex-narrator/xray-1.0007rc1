@@ -186,7 +186,7 @@ public:
 		r_pos		+= count;
 		if (r_pos > B.count)
 			LogPacketError("!#ERROR: NET_PACKET::r() buffer overrun, r_pos = %d , size = %d", r_pos, B.count);			
-		// VERIFY		(r_pos<=B.count); // alpet: ìíîãî ôëóäà èç-çà òàêîãî ïóñòÿêà
+		// VERIFY		(r_pos<=B.count); // alpet: Ð¼Ð½Ð¾Ð³Ð¾ Ñ„Ð»ÑƒÐ´Ð° Ð¸Ð·-Ð·Ð° Ñ‚Ð°ÐºÐ¾Ð³Ð¾ Ð¿ÑƒÑÑ‚ÑÐºÐ°
 	}
 	IC BOOL		r_eof			()
 	{

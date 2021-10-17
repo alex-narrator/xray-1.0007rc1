@@ -335,7 +335,7 @@ void CSpawnPoint::SetScale(const Fvector& scale)
 bool CSpawnPoint::AttachObject(CCustomObject* obj)
 {
 	bool bAllowed = false;
-    // большая проверялка
+    // Р±РѕР»СЊС€Р°СЏ РїСЂРѕРІРµСЂСЏР»РєР°
     if (m_SpawnData.Valid()){
     	switch(obj->ClassID){    
         case OBJCLASS_SHAPE:
@@ -346,7 +346,7 @@ bool CSpawnPoint::AttachObject(CCustomObject* obj)
 //        break;
         }
     }
-    // реальный атач
+    // СЂРµР°Р»СЊРЅС‹Р№ Р°С‚Р°С‡
 	if (bAllowed){
         DetachObject();
         m_AttachedObject = obj;           

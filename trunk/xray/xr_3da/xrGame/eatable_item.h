@@ -30,27 +30,27 @@ public:
 	virtual	void			UseBy						(CEntityAlive* npc);
 			bool			Empty						()	const				{return m_iPortionsNum==0;};
 protected:	
-	//влияние при поедании вещи на параметры игрока
+	//РІР»РёСЏРЅРёРµ РїСЂРё РїРѕРµРґР°РЅРёРё РІРµС‰Рё РЅР° РїР°СЂР°РјРµС‚СЂС‹ РёРіСЂРѕРєР°
 	float					m_fHealthInfluence;
 	float					m_fPowerInfluence;
 	float					m_fSatietyInfluence;
 	float					m_fRadiationInfluence;
 	float					m_fMaxPowerUpInfluence;
-	//заживление ран на кол-во процентов
+	//Р·Р°Р¶РёРІР»РµРЅРёРµ СЂР°РЅ РЅР° РєРѕР»-РІРѕ РїСЂРѕС†РµРЅС‚РѕРІ
 	float					m_fWoundsHealPerc;
 
-	//количество порций еды, 
-	//-1 - порция одна и больше не бывает (чтоб не выводить надпись в меню)
+	//РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕСЂС†РёР№ РµРґС‹, 
+	//-1 - РїРѕСЂС†РёСЏ РѕРґРЅР° Рё Р±РѕР»СЊС€Рµ РЅРµ Р±С‹РІР°РµС‚ (С‡С‚РѕР± РЅРµ РІС‹РІРѕРґРёС‚СЊ РЅР°РґРїРёСЃСЊ РІ РјРµРЅСЋ)
 	int						m_iPortionsNum;
 	int						m_iStartPortionsNum;
 
-	// Для поддержки серверного класса. Real Wolf. 09.09.2014.
+	// Р”Р»СЏ РїРѕРґРґРµСЂР¶РєРё СЃРµСЂРІРµСЂРЅРѕРіРѕ РєР»Р°СЃСЃР°. Real Wolf. 09.09.2014.
 	virtual void			net_Export(NET_Packet&);
 	virtual void			net_Import(NET_Packet&);
 public:
 	int						GetPortionsNum() const	{ return m_iPortionsNum; }
 #ifdef EAT_PORTIONS_INFLUENCE
-	int    GetStartPortionsNum() const { return m_iStartPortionsNum; };  // <--- // Не используется, но может пригодится. //
+	int    GetStartPortionsNum() const { return m_iStartPortionsNum; };  // <--- // РќРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ, РЅРѕ РјРѕР¶РµС‚ РїСЂРёРіРѕРґРёС‚СЃСЏ. //
 	float  GetOnePortionWeight();                    // <--- //
 	u32    GetOnePortionCost();                      // <--- //
 #endif

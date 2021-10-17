@@ -25,12 +25,12 @@ void CWeaponMounted::BoneCallbackX(CBoneInstance *B)
 	if (P->Owner()){
 		Fmatrix rX;		rX.rotateX		(P->camera->pitch+P->m_dAngle.y);
 		B->mTransform.mulB_43(rX);
-		// alpet: сохранение ориентации после детача
+		// alpet: СЃРѕС…СЂР°РЅРµРЅРёРµ РѕСЂРёРµРЅС‚Р°С†РёРё РїРѕСЃР»Рµ РґРµС‚Р°С‡Р°
 		static int method = 0;
 		Fmatrix &m = P->PPhysicsShell()->get_Element(1)->mXFORM;
 		Fvector pos = m.c;
 		float h, p, b;
-		m.getHPB (h, p, b);	// желательно не затереть горизонтальный угол 	
+		m.getHPB (h, p, b);	// Р¶РµР»Р°С‚РµР»СЊРЅРѕ РЅРµ Р·Р°С‚РµСЂРµС‚СЊ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅС‹Р№ СѓРіРѕР» 	
 		m.setHPB (h, -P->camera->pitch, b).c = pos;
 	}
 }
@@ -42,11 +42,11 @@ void CWeaponMounted::BoneCallbackY(CBoneInstance *B)
 	if (P->Owner()){
 		Fmatrix rY;		rY.rotateY		(P->camera->yaw+P->m_dAngle.x);
 		B->mTransform.mulB_43(rY);
-		// alpet: сохранение ориентации после детача		
+		// alpet: СЃРѕС…СЂР°РЅРµРЅРёРµ РѕСЂРёРµРЅС‚Р°С†РёРё РїРѕСЃР»Рµ РґРµС‚Р°С‡Р°		
 		Fmatrix &m = P->PPhysicsShell()->get_Element(1)->mXFORM;		
 		Fvector pos = m.c;		
 		float h, p, b;
-		m.getHPB(h, p, b);	// желательно не затереть вертикальный угол 	
+		m.getHPB(h, p, b);	// Р¶РµР»Р°С‚РµР»СЊРЅРѕ РЅРµ Р·Р°С‚РµСЂРµС‚СЊ РІРµСЂС‚РёРєР°Р»СЊРЅС‹Р№ СѓРіРѕР» 	
 		m.setHPB(-P->camera->yaw, p, b).c = pos;		
 	}
 }
@@ -70,11 +70,11 @@ void	CWeaponMounted::Load(LPCSTR section)
 
 	HUD_SOUND::LoadSound(section,"snd_shoot", sndShot, SOUND_TYPE_WEAPON_SHOOTING);
 
-	//тип используемых патронов
+	//С‚РёРї РёСЃРїРѕР»СЊР·СѓРµРјС‹С… РїР°С‚СЂРѕРЅРѕРІ
 	m_sAmmoType = pSettings->r_string(section, "ammo_class");
 	m_CurrentAmmo.Load(*m_sAmmoType, 0);
 
-	//подбрасывание камеры во время отдачи
+	//РїРѕРґР±СЂР°СЃС‹РІР°РЅРёРµ РєР°РјРµСЂС‹ РІРѕ РІСЂРµРјСЏ РѕС‚РґР°С‡Рё
 	camMaxAngle			= pSettings->r_float		(section,"cam_max_angle"	); 
 	camMaxAngle			= deg2rad					(camMaxAngle);
 	camRelaxSpeed		= pSettings->r_float		(section,"cam_relax_speed"	); 
@@ -176,7 +176,7 @@ void	CWeaponMounted::shedule_Update(u32 dt)
 
 void	CWeaponMounted::renderable_Render()
 {
-	//нарисовать подсветку
+	//РЅР°СЂРёСЃРѕРІР°С‚СЊ РїРѕРґСЃРІРµС‚РєСѓ
 	RenderLight();
 	inherited::renderable_Render	();
 }
@@ -266,15 +266,15 @@ void	CWeaponMounted::cam_Update			(float dt, float fov)
 		if (dump)
 			Msg("original device orientation =~C0F %.3f %.3f %.3f~C07, cam orientation =~C0E %.3f %.3f %.3f~C07 ", h, p, b, cam->yaw, cam->pitch, cam->roll);
 
-		// некоммутативность умножения матриц здесь
+		// РЅРµРєРѕРјРјСѓС‚Р°С‚РёРІРЅРѕСЃС‚СЊ СѓРјРЅРѕР¶РµРЅРёСЏ РјР°С‚СЂРёС† Р·РґРµСЃСЊ
 		
 		full.setHPB(cam->yaw * y_coef, cam->pitch * p_coef, cam->roll  * b_coef);	   // set camera rotation 
 
 		if (method & 2)
 			full.mulB_43(rot);
 		else
-		{   // метод с похожим результатом: 
-			rot.invert(); // равноценно rot.setHPB(-h, -p, -b);							   // разворот вокруг осей Y, X и Z			 						
+		{   // РјРµС‚РѕРґ СЃ РїРѕС…РѕР¶РёРј СЂРµР·СѓР»СЊС‚Р°С‚РѕРј: 
+			rot.invert(); // СЂР°РІРЅРѕС†РµРЅРЅРѕ rot.setHPB(-h, -p, -b);							   // СЂР°Р·РІРѕСЂРѕС‚ РІРѕРєСЂСѓРі РѕСЃРµР№ Y, X Рё Z			 						
 			full.mulA_43(rot);															   // apply weapon rotation to camera rotation matrix	
 		}
 		full.getHPB(h, p, b);
@@ -283,16 +283,16 @@ void	CWeaponMounted::cam_Update			(float dt, float fov)
 			Msg("target light orientation    =~C0B %.3f %.3f %.3f~C07", h, p, b);
 
 		A->Orientation().yaw			=  h;
-		A->Orientation().pitch		= -p; // alpet: попытка исправить вертикальную инверсию, заметную при игре от 3-го лица
+		A->Orientation().pitch		= -p; // alpet: РїРѕРїС‹С‚РєР° РёСЃРїСЂР°РІРёС‚СЊ РІРµСЂС‚РёРєР°Р»СЊРЅСѓСЋ РёРЅРІРµСЂСЃРёСЋ, Р·Р°РјРµС‚РЅСѓСЋ РїСЂРё РёРіСЂРµ РѕС‚ 3-РіРѕ Р»РёС†Р°
 		A->Orientation().roll		=  b;
 		CCameraBase *fe = A->cam_FirstEye();
 		if (fe)
-		{   // alpet: поворот камеры актора, направляющий заодно и свет от фонаря
+		{   // alpet: РїРѕРІРѕСЂРѕС‚ РєР°РјРµСЂС‹ Р°РєС‚РѕСЂР°, РЅР°РїСЂР°РІР»СЏСЋС‰РёР№ Р·Р°РѕРґРЅРѕ Рё СЃРІРµС‚ РѕС‚ С„РѕРЅР°СЂСЏ
 			fe->yaw   = h * ay_coef;
 			fe->pitch = p * ap_coef;
 			fe->roll  = b * ab_coef;
 			Fvector pv = P;
-			// pv.y -= A->Radius() *2.f / 3.f; // TODO: здесь нужно ортогональный базис "вниз" от точки камеры, а просто вычитание Y
+			// pv.y -= A->Radius() *2.f / 3.f; // TODO: Р·РґРµСЃСЊ РЅСѓР¶РЅРѕ РѕСЂС‚РѕРіРѕРЅР°Р»СЊРЅС‹Р№ Р±Р°Р·РёСЃ "РІРЅРёР·" РѕС‚ С‚РѕС‡РєРё РєР°РјРµСЂС‹, Р° РїСЂРѕСЃС‚Рѕ РІС‹С‡РёС‚Р°РЅРёРµ Y
 			A->XFORM().c = pv;
 		}
 		
@@ -303,7 +303,7 @@ void	CWeaponMounted::cam_Update			(float dt, float fov)
 
 void CWeaponMounted::UpdateXFORM(const Fmatrix &upd)
 {
-	m_pPhysicsShell->EnabledCallbacks(TRUE); // для пересчета позиций всех костей
+	m_pPhysicsShell->EnabledCallbacks(TRUE); // РґР»СЏ РїРµСЂРµСЃС‡РµС‚Р° РїРѕР·РёС†РёР№ РІСЃРµС… РєРѕСЃС‚РµР№
 	inherited::UpdateXFORM(upd);
 }
 
@@ -319,7 +319,7 @@ bool	CWeaponMounted::attach_Actor		(CGameObject* actor)
 	m_dAngle.set(0.0f,0.0f);
 	CHolderCustom::attach_Actor(actor);
 	CKinematics* K		= smart_cast<CKinematics*>(Visual());
-	// убрать оружие из рук	
+	// СѓР±СЂР°С‚СЊ РѕСЂСѓР¶РёРµ РёР· СЂСѓРє	
 	// disable shell callback
 	m_pPhysicsShell->EnabledCallbacks(FALSE);
 	// enable actor rotate callback
@@ -340,7 +340,7 @@ void	CWeaponMounted::detach_Actor		()
 {
 	CActor *A = OwnerActor();
 	if (A)
-	{   // alpet: устранения крена, после пользования наклоненным пулеметом
+	{   // alpet: СѓСЃС‚СЂР°РЅРµРЅРёСЏ РєСЂРµРЅР°, РїРѕСЃР»Рµ РїРѕР»СЊР·РѕРІР°РЅРёСЏ РЅР°РєР»РѕРЅРµРЅРЅС‹Рј РїСѓР»РµРјРµС‚РѕРј
 		A->Orientation().roll = 0;  
 		CCameraBase *fe = A->cam_FirstEye();
 		if (fe)
@@ -356,7 +356,7 @@ void	CWeaponMounted::detach_Actor		()
 	biY.reset_callback		();
 	// enable shell callback
 	m_pPhysicsShell->EnabledCallbacks(TRUE);
-	//закончить стрельбу
+	//Р·Р°РєРѕРЅС‡РёС‚СЊ СЃС‚СЂРµР»СЊР±Сѓ
 	FireEnd();
 
 	processing_deactivate		();
@@ -410,7 +410,7 @@ void CWeaponMounted::OnShot		()
 	bool b_hud_mode = (Level().CurrentEntity() == smart_cast<CObject*>(Owner()));
 	HUD_SOUND::PlaySound(sndShot, fire_pos, Owner(), b_hud_mode);
 
-	//добавить эффектор стрельбы
+	//РґРѕР±Р°РІРёС‚СЊ СЌС„С„РµРєС‚РѕСЂ СЃС‚СЂРµР»СЊР±С‹
 	AddShotEffector		();
 	m_dAngle.set(	::Random.randF(-fireDispersionBase,fireDispersionBase),
 					::Random.randF(-fireDispersionBase,fireDispersionBase));

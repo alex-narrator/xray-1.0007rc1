@@ -49,7 +49,7 @@ CUIStatic:: CUIStatic()
 	m_pLines				= NULL;
 	m_bEnableTextHighlighting = false;
 
-	// Real Wolf: Îáíóëÿåì ñâîè ïåðåìåííûå. 27.07.2014.
+	// Real Wolf: ÐžÐ±Ð½ÑƒÐ»ÑÐµÐ¼ ÑÐ²Ð¾Ð¸ Ð¿ÐµÑ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ðµ. 27.07.2014.
 	m_texture				= NULL;
 	m_shader				= NULL;
 }
@@ -126,7 +126,7 @@ u32 CUIStatic::GetTextureColor() const{
 
 void CUIStatic::InitTextureEx(LPCSTR tex_name, LPCSTR sh_name)
 {
-	// Real Wolf: Çàïîìèíàåì äëÿ ìåòîäîâ âîçâðàòà. 25.07.2014.
+	// Real Wolf: Ð—Ð°Ð¿Ð¾Ð¼Ð¸Ð½Ð°ÐµÐ¼ Ð´Ð»Ñ Ð¼ÐµÑ‚Ð¾Ð´Ð¾Ð² Ð²Ð¾Ð·Ð²Ñ€Ð°Ñ‚Ð°. 25.07.2014.
 	m_texture	= tex_name;
 	m_shader	= sh_name;
 
@@ -359,7 +359,7 @@ void CUIStatic::TextureClipper(float offset_x, float offset_y, Frect* pClipRect,
 	Frect			out_rect;
 
 
-	//ïðîâåðèòü ïîïàäàåò ëè èçîáðàæåíèå â îêíî
+	//Ð¿Ñ€Ð¾Ð²ÐµÑ€Ð¸Ñ‚ÑŒ Ð¿Ð¾Ð¿Ð°Ð´Ð°ÐµÑ‚ Ð»Ð¸ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ Ð² Ð¾ÐºÐ½Ð¾
 	if(rect.left>parent_rect.right || rect.right<parent_rect.left ||
 		rect.top>parent_rect.bottom ||  rect.bottom<parent_rect.top)
 	{
@@ -374,9 +374,9 @@ void CUIStatic::TextureClipper(float offset_x, float offset_y, Frect* pClipRect,
 	out_x = rect.left;
 	out_y = rect.top;
 
-	// out_rect - ïðÿìîóãîëüíàÿ îáëàñòü â êîòîðóþ áóäåò âûâîäèòüñÿ
-	// èçîáðàæåíèå, âû÷èñëÿåòñÿ ñ ó÷åòîì ïîëîæåíèÿ îòíîñèòåëüíî ðîäèòåëüñêîãî
-	// îêíà, à òàêæå ðàçìåðîâ ïðÿìîóãîëüíèêà íà òåêñòóðå ñ èçîáðàæåíèåì.
+	// out_rect - Ð¿Ñ€ÑÐ¼Ð¾ÑƒÐ³Ð¾Ð»ÑŒÐ½Ð°Ñ Ð¾Ð±Ð»Ð°ÑÑ‚ÑŒ Ð² ÐºÐ¾Ñ‚Ð¾Ñ€ÑƒÑŽ Ð±ÑƒÐ´ÐµÑ‚ Ð²Ñ‹Ð²Ð¾Ð´Ð¸Ñ‚ÑŒÑÑ
+	// Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ, Ð²Ñ‹Ñ‡Ð¸ÑÐ»ÑÐµÑ‚ÑÑ Ñ ÑƒÑ‡ÐµÑ‚Ð¾Ð¼ Ð¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ Ð¾Ñ‚Ð½Ð¾ÑÐ¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ Ñ€Ð¾Ð´Ð¸Ñ‚ÐµÐ»ÑŒÑÐºÐ¾Ð³Ð¾
+	// Ð¾ÐºÐ½Ð°, Ð° Ñ‚Ð°ÐºÐ¶Ðµ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð¾Ð² Ð¿Ñ€ÑÐ¼Ð¾ÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ° Ð½Ð° Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ðµ Ñ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸ÐµÐ¼.
 
 	out_rect.intersection(parent_rect,rect);
 	out_rect.left	-= out_x;
@@ -649,7 +649,7 @@ bool CUIStatic::IsHighlightText()
 	return m_bCursorOverWindow;
 }
 
-// Real Wolf: óñòàíîâêà öâåòà äëÿ ñòàòèêà è åãî äåòåé.
+// Real Wolf: ÑƒÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ñ†Ð²ÐµÑ‚Ð° Ð´Ð»Ñ ÑÑ‚Ð°Ñ‚Ð¸ÐºÐ° Ð¸ ÐµÐ³Ð¾ Ð´ÐµÑ‚ÐµÐ¹.
 void CUIStatic::SetColorAll(u32 color)
 {
 	SetColor(color);

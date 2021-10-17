@@ -14,8 +14,8 @@ extern  XRCORE_API  u32				verbosity_level;
 void	XRCORE_API  __cdecl			InitVerbosity(const char *filters);
 
 void 	XRCORE_API	__cdecl			Msg			(LPCSTR format, ...);
-void	XRCORE_API	__cdecl			MsgV		(const char *verbosity, const char *format, ...);    // alpet: вывод фильтруемых сообщений
-void 	XRCORE_API	__cdecl			MsgCB		(LPCSTR format, ...);	// alpet: вывод сообщений только в колбек (для отладки) или в контекстный буфер
+void	XRCORE_API	__cdecl			MsgV		(const char *verbosity, const char *format, ...);    // alpet: РІС‹РІРѕРґ С„РёР»СЊС‚СЂСѓРµРјС‹С… СЃРѕРѕР±С‰РµРЅРёР№
+void 	XRCORE_API	__cdecl			MsgCB		(LPCSTR format, ...);	// alpet: РІС‹РІРѕРґ СЃРѕРѕР±С‰РµРЅРёР№ С‚РѕР»СЊРєРѕ РІ РєРѕР»Р±РµРє (РґР»СЏ РѕС‚Р»Р°РґРєРё) РёР»Рё РІ РєРѕРЅС‚РµРєСЃС‚РЅС‹Р№ Р±СѓС„РµСЂ
 
 void 	XRCORE_API		Log			(LPCSTR msg);
 void 	XRCORE_API		Log			(LPCSTR msg);

@@ -81,7 +81,7 @@ public:
 	 const	Ivector2&		CellSize			();
 			void			SetCellSize			(const Ivector2 new_sz);
 			int				ScrollPos			();
-			void			SetScrollPos		(int iPos); // alpet: используется для нейтрализации бага с сбросом позиции скролла
+			void			SetScrollPos		(int iPos); // alpet: РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ РЅРµР№С‚СЂР°Р»РёР·Р°С†РёРё Р±Р°РіР° СЃ СЃР±СЂРѕСЃРѕРј РїРѕР·РёС†РёРё СЃРєСЂРѕР»Р»Р°
 			void			ReinitScroll		();
 			void			GetClientArea		(Frect& r);
 			Fvector2		GetDragItemPosition	();

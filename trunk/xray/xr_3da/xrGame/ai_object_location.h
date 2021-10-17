@@ -34,4 +34,4 @@ public:
 };
 
 #include "ai_object_location_inline.h"
-#include "ai_object_location_impl.h" // alpet: исправление error LNK20**
+#include "ai_object_location_impl.h" // alpet: РёСЃРїСЂР°РІР»РµРЅРёРµ error LNK20**

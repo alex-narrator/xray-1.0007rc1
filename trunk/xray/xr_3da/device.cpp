@@ -24,7 +24,7 @@ BOOL		g_bLoaded = FALSE;
 ref_light	precache_light = 0;
 
 #ifdef MT_OPT
-#pragma message("alpet: дефайн MT_OPT не рекомендуется для trunk")
+#pragma message("alpet: РґРµС„Р°Р№РЅ MT_OPT РЅРµ СЂРµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ РґР»СЏ trunk")
 #endif 
 
 BOOL CRenderDevice::Begin	()
@@ -123,7 +123,7 @@ void 			mt_Thread	(void *ptr)	{
 	DWORD af_mask = 0, af_sys_mask = 0;
 	GetProcessAffinityMask(hp, &af_mask, &af_sys_mask);
 	int cc = iFloor(log2((float)af_mask + 1) / 2);  // count of cores / 2
-	af_mask <<= std::min (4, cc);   // на последние ядра
+	af_mask <<= std::min (4, cc);   // РЅР° РїРѕСЃР»РµРґРЅРёРµ СЏРґСЂР°
 	SetThreadAffinityMask(ht, af_mask);
 #endif
 
@@ -296,16 +296,16 @@ void CRenderDevice::Run			()
 #ifndef DEDICATED_SERVER
 				Statistic->RenderTOTAL_Real.FrameStart	();
 				Statistic->RenderTOTAL_Real.Begin		();
-// дефайн ECO_RENDER лучше определять в свойствах проектов, а не в build_config_defines
+// РґРµС„Р°Р№РЅ ECO_RENDER Р»СѓС‡С€Рµ РѕРїСЂРµРґРµР»СЏС‚СЊ РІ СЃРІРѕР№СЃС‚РІР°С… РїСЂРѕРµРєС‚РѕРІ, Р° РЅРµ РІ build_config_defines
 #ifdef ECO_RENDER				
 				u32 optimal = 0;
 				if (TargetRenderLoad() < 50)	optimal = 30;
 				while (optimal -- > 0)
 				{					
 					u32 time_diff = frame_timer.GetElapsed_ms();
-					if (time_diff < optimal)   // если более 100 кадров в секунду, как в меню например
+					if (time_diff < optimal)   // РµСЃР»Рё Р±РѕР»РµРµ 100 РєР°РґСЂРѕРІ РІ СЃРµРєСѓРЅРґСѓ, РєР°Рє РІ РјРµРЅСЋ РЅР°РїСЂРёРјРµСЂ
 					{
-						SleepEx(1, (optimal - time_diff) > 10);	   // попытка обойти разно-платформные особенности	 
+						SleepEx(1, (optimal - time_diff) > 10);	   // РїРѕРїС‹С‚РєР° РѕР±РѕР№С‚Рё СЂР°Р·РЅРѕ-РїР»Р°С‚С„РѕСЂРјРЅС‹Рµ РѕСЃРѕР±РµРЅРЅРѕСЃС‚Рё	 
 						Statistic->RenderTOTAL.cycles++;      // idle cycles count
 					}
 				}				

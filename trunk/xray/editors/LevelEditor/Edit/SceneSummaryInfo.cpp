@@ -126,7 +126,7 @@ void SSceneSummary::STextureInfo::FillProp	(PropItemVec& items, LPCSTR main_pref
         PHelper().CreateCaption(items,PrepareKey(pref.c_str(),"Effective Area"),shared_str().sprintf("%3.2f m^2",effective_area));
         PHelper().CreateCaption(items,PrepareKey(pref.c_str(),"Pixel Density"),	shared_str().sprintf("%3.2f p/m",_sqrt((pixel_area*info.width*info.height)/effective_area)));
 /*
-//. óáðàë èç-çà êîë-âà > 4096 
+//. ÑƒÐ±Ñ€Ð°Ð» Ð¸Ð·-Ð·Ð° ÐºÐ¾Ð»-Ð²Ð° > 4096 
         AnsiString tmp 		= "on demand";
         for (objinf_map_it o_it=objects.begin(); o_it!=objects.end(); o_it++){
         	tmp += AnsiString().sprintf("%s%s[%d*%3.2f]",tmp.Length()?"; ":"",o_it->first.c_str(),o_it->second.ref_count,o_it->second.area);

@@ -24,7 +24,7 @@ void CPhysicsShellHolder::net_Destroy()
 	//remove calls
 	CPHSriptReqGObjComparer cmpr(this);
 	Level().ph_commander_scripts().remove_calls(&cmpr);
-	//удалить партиклы из ParticlePlayer
+	//СѓРґР°Р»РёС‚СЊ РїР°СЂС‚РёРєР»С‹ РёР· ParticlePlayer
 	CParticlesPlayer::net_DestroyParticles		();
 	inherited::net_Destroy						();
 	b_sheduled									=	false;
@@ -271,7 +271,7 @@ void CPhysicsShellHolder::OnChangeVisual()
 void CPhysicsShellHolder::UpdateCL	()
 {
 	inherited::UpdateCL	();
-	//обновить присоединенные партиклы
+	//РѕР±РЅРѕРІРёС‚СЊ РїСЂРёСЃРѕРµРґРёРЅРµРЅРЅС‹Рµ РїР°СЂС‚РёРєР»С‹
 	UpdateParticles		();
 }
 float CPhysicsShellHolder::EffectiveGravity()
@@ -408,7 +408,7 @@ void CPhysicsShellHolder::UpdateXFORM(const Fmatrix &upd)
 {
 	inherited::UpdateXFORM(upd);
 
-	static int method = 1 + 4 + 8; // alpet: набор флагов для отладки, можно менять значение во время выполнения из Watches
+	static int method = 1 + 4 + 8; // alpet: РЅР°Р±РѕСЂ С„Р»Р°РіРѕРІ РґР»СЏ РѕС‚Р»Р°РґРєРё, РјРѕР¶РЅРѕ РјРµРЅСЏС‚СЊ Р·РЅР°С‡РµРЅРёРµ РІРѕ РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РёР· Watches
 
 	if (PPhysicsShell())
 	{
@@ -420,7 +420,7 @@ void CPhysicsShellHolder::UpdateXFORM(const Fmatrix &upd)
 		}
 			
 		if (method & 2)
-		{   // стянуто из Car.cpp и как-то не так работает
+		{   // СЃС‚СЏРЅСѓС‚Рѕ РёР· Car.cpp Рё РєР°Рє-С‚Рѕ РЅРµ С‚Р°Рє СЂР°Р±РѕС‚Р°РµС‚
 			bool enable = PPhysicsShell()->isEnabled();
 
 			Fmatrix inv, replace;
@@ -434,7 +434,7 @@ void CPhysicsShellHolder::UpdateXFORM(const Fmatrix &upd)
 			else PPhysicsShell()->Disable();
 			// PPhysicsShell()->GetGlobalTransformDynamic(&XFORM());
 		}
-		// пересчет костей 		
+		// РїРµСЂРµСЃС‡РµС‚ РєРѕСЃС‚РµР№ 		
 		CKinematics *K = PKinematics(Visual());
 		if (K)
 		{

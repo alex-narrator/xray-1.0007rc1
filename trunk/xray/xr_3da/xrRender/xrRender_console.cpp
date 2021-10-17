@@ -113,7 +113,7 @@ float		ps_r2_slight_fade			= 1.f;				// 1.f
 Flags32		ps_common_flags				= { 0 };		// r1-only
 u32			ps_steep_parallax			= 0;
 int			ps_r__detail_radius			= 49;
-#ifdef KD_DETAIL_RADIUS // управление радиусом отрисовки травы
+#ifdef KD_DETAIL_RADIUS // СѓРїСЂР°РІР»РµРЅРёРµ СЂР°РґРёСѓСЃРѕРј РѕС‚СЂРёСЃРѕРІРєРё С‚СЂР°РІС‹
 	u32			dm_size						= 24;
 	u32 		dm_cache1_line				= 12;	//dm_size*2/dm_cache1_count
 	u32			dm_cache_line				= 49;	//dm_size+1+dm_size

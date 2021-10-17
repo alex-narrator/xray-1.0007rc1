@@ -58,7 +58,7 @@ void CActor::attach_Vehicle(CHolderCustom* vehicle)
 
 	CStepManager::on_animation_start(MotionID(), 0);
 
-	// Real Wolf: Колбек на посадку в машину. 01.08.2014.
+	// Real Wolf: РљРѕР»Р±РµРє РЅР° РїРѕСЃР°РґРєСѓ РІ РјР°С€РёРЅСѓ. 01.08.2014.
 	this->callback(GameObject::eAttachVehicle)(car->lua_game_object() );
 }
 
@@ -93,7 +93,7 @@ void CActor::detach_Vehicle()
 //.	SetWeaponHideState(whs_CAR, FALSE);
 	SetWeaponHideState(INV_STATE_CAR, false);
 
-	// Real Wolf: колбек на высадку из машины. 01.08.2014.
+	// Real Wolf: РєРѕР»Р±РµРє РЅР° РІС‹СЃР°РґРєСѓ РёР· РјР°С€РёРЅС‹. 01.08.2014.
 	this->callback(GameObject::eDetachVehicle)(car->lua_game_object() );
 }
 
@@ -124,7 +124,7 @@ bool CActor::use_Vehicle(CHolderCustom* object)
 
 				attach_Vehicle(vehicle);
 			}
-			// Real Wolf: колбек на использование машины (но не посадку) без учета расстояния. 01.08.2014.
+			// Real Wolf: РєРѕР»Р±РµРє РЅР° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РјР°С€РёРЅС‹ (РЅРѕ РЅРµ РїРѕСЃР°РґРєСѓ) Р±РµР· СѓС‡РµС‚Р° СЂР°СЃСЃС‚РѕСЏРЅРёСЏ. 01.08.2014.
 			else if (auto car = smart_cast<CCar*>(vehicle) )
 				this->callback(GameObject::eUseVehicle)(car->lua_game_object() );
 

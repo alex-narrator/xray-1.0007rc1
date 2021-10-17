@@ -5,7 +5,7 @@
 
 void ReplaceOwnershipHeader	(NET_Packet& P)
 {
-	//способ очень грубый, но на данный момент иного выбора нет. Заранее приношу извинения
+	//СЃРїРѕСЃРѕР± РѕС‡РµРЅСЊ РіСЂСѓР±С‹Р№, РЅРѕ РЅР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РёРЅРѕРіРѕ РІС‹Р±РѕСЂР° РЅРµС‚. Р—Р°СЂР°РЅРµРµ РїСЂРёРЅРѕС€Сѓ РёР·РІРёРЅРµРЅРёСЏ
 	u16 NewType = GE_OWNERSHIP_TAKE;
 	CopyMemory(&P.B.data[6],&NewType,2);
 };
@@ -24,7 +24,7 @@ void xrServer::Process_event_ownership(NET_Packet& P, ClientID sender, u32 time,
 	#endif
 
 	#ifdef LUAICP_COMPAT
-	// для обновлений реестра объектов в перехватчике
+	// РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёР№ СЂРµРµСЃС‚СЂР° РѕР±СЉРµРєС‚РѕРІ РІ РїРµСЂРµС…РІР°С‚С‡РёРєРµ
 	MsgCB("sv ownership id_parent %s id_entity %s [%d]", ent_name_safe(id_parent).c_str(), ent_name_safe(id_entity).c_str(), Device.dwFrame);
 	#endif
 

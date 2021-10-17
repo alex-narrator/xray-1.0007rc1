@@ -20,22 +20,22 @@
 
 #ifdef ERROR_MESSAGES_RU
 
-#define  MSG_SEE_LOG			"Ñìîòðèòå ëîã ôàéë è ìèíèäàìï ñ ïîäðîáíîé èíôîðìàöèåé\r\n"
-#define  MSG_PRESS_CANCEL		"%sÍàæìèòå \"Îòìåíà\" äëÿ ïðåðûâàíèÿ âûïîëíåíèÿ%s"
-#define  MSG_PRESS_RETRY		"Íàæìèòå \"Ïîâòîðèòü\" äëÿ äàëüíåéøåãî âûïîëíåíèÿ%s"
-#define  MSG_PRESS_CONTINUE		"Íàæìèòå \"Ïðîäîëæèòü\" äëÿ äàëüíåéøåãî âûïîëíåíèÿ è\r\n èãíîðèðîâàíèÿ ïîõîæèõ îøèáîê %s%s"
-#define  MSG_FATAL_ERROR_OK		"Íåèñïðàâèìàÿ îøèáêà\n\nÍàæìèòå OK äëÿ çàâåðøåíèÿ ïðîãðàììû"
-#define  MSG_OK_TO_ABORT		"Íàæìèòå OK äëÿ çàâåðøåíèÿ ïðîãðàììû\r\n"
-#define  ERR_HANDLER_BASE		"âûçâàí áàçîâûé îáðàáîò÷èê îøèáêè"
-#define  ERR_HANDLER_INVP		"âûçâàí îáðàáîò÷èê îøèáêè 'íåâåðíûé ïàðàìåòð' "
-#define  ERR_OUT_OF_MEMORY		"çàêîí÷èëàñü ñâîáîäíàÿ îïåðàòèâíàÿ ïàìÿòü"
-#define  ERR_PURE_VFUNC			"âûçîâ âèðòóàëüíîé ôóíêöèè íå îïðåäåëåííîé äëÿ êëàññà îáúåêòà"
-#define	 ERR_UNEXP_TERM			"íåîæèäàííîå çàâåðøåíèå ïðîãðàììû"
-// #define  ERR_APP_ABORTING	"ïðîãðàììà ñêîðîïîñòèæíî ïðåðâàëàñü"
-#define  ERR_APP_ABORTING		"ïðèëîæåíèå ïðåðâàíî"
-#define  ERR_FLOAT_POINT		"îøèáêà âû÷èñëåíèÿ ñ ïëàâàþùåé òî÷êîé"
-#define  ERR_ILLEGAL_INSTR		"íåâåðíàÿ èíñòðóêöèÿ ÖÏ"
-#define  ERR_TERMINATION_3		"çàâåðøåíèå ñ êîäîì 3"
+#define  MSG_SEE_LOG			"Ð¡Ð¼Ð¾Ñ‚Ñ€Ð¸Ñ‚Ðµ Ð»Ð¾Ð³ Ñ„Ð°Ð¹Ð» Ð¸ Ð¼Ð¸Ð½Ð¸Ð´Ð°Ð¼Ð¿ Ñ Ð¿Ð¾Ð´Ñ€Ð¾Ð±Ð½Ð¾Ð¹ Ð¸Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸ÐµÐ¹\r\n"
+#define  MSG_PRESS_CANCEL		"%sÐÐ°Ð¶Ð¼Ð¸Ñ‚Ðµ \"ÐžÑ‚Ð¼ÐµÐ½Ð°\" Ð´Ð»Ñ Ð¿Ñ€ÐµÑ€Ñ‹Ð²Ð°Ð½Ð¸Ñ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ñ%s"
+#define  MSG_PRESS_RETRY		"ÐÐ°Ð¶Ð¼Ð¸Ñ‚Ðµ \"ÐŸÐ¾Ð²Ñ‚Ð¾Ñ€Ð¸Ñ‚ÑŒ\" Ð´Ð»Ñ Ð´Ð°Ð»ÑŒÐ½ÐµÐ¹ÑˆÐµÐ³Ð¾ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ñ%s"
+#define  MSG_PRESS_CONTINUE		"ÐÐ°Ð¶Ð¼Ð¸Ñ‚Ðµ \"ÐŸÑ€Ð¾Ð´Ð¾Ð»Ð¶Ð¸Ñ‚ÑŒ\" Ð´Ð»Ñ Ð´Ð°Ð»ÑŒÐ½ÐµÐ¹ÑˆÐµÐ³Ð¾ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ñ Ð¸\r\n Ð¸Ð³Ð½Ð¾Ñ€Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¿Ð¾Ñ…Ð¾Ð¶Ð¸Ñ… Ð¾ÑˆÐ¸Ð±Ð¾Ðº %s%s"
+#define  MSG_FATAL_ERROR_OK		"ÐÐµÐ¸ÑÐ¿Ñ€Ð°Ð²Ð¸Ð¼Ð°Ñ Ð¾ÑˆÐ¸Ð±ÐºÐ°\n\nÐÐ°Ð¶Ð¼Ð¸Ñ‚Ðµ OK Ð´Ð»Ñ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¸Ñ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹"
+#define  MSG_OK_TO_ABORT		"ÐÐ°Ð¶Ð¼Ð¸Ñ‚Ðµ OK Ð´Ð»Ñ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¸Ñ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹\r\n"
+#define  ERR_HANDLER_BASE		"Ð²Ñ‹Ð·Ð²Ð°Ð½ Ð±Ð°Ð·Ð¾Ð²Ñ‹Ð¹ Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚Ñ‡Ð¸Ðº Ð¾ÑˆÐ¸Ð±ÐºÐ¸"
+#define  ERR_HANDLER_INVP		"Ð²Ñ‹Ð·Ð²Ð°Ð½ Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚Ñ‡Ð¸Ðº Ð¾ÑˆÐ¸Ð±ÐºÐ¸ 'Ð½ÐµÐ²ÐµÑ€Ð½Ñ‹Ð¹ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€' "
+#define  ERR_OUT_OF_MEMORY		"Ð·Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð»Ð°ÑÑŒ ÑÐ²Ð¾Ð±Ð¾Ð´Ð½Ð°Ñ Ð¾Ð¿ÐµÑ€Ð°Ñ‚Ð¸Ð²Ð½Ð°Ñ Ð¿Ð°Ð¼ÑÑ‚ÑŒ"
+#define  ERR_PURE_VFUNC			"Ð²Ñ‹Ð·Ð¾Ð² Ð²Ð¸Ñ€Ñ‚ÑƒÐ°Ð»ÑŒÐ½Ð¾Ð¹ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ Ð½Ðµ Ð¾Ð¿Ñ€ÐµÐ´ÐµÐ»ÐµÐ½Ð½Ð¾Ð¹ Ð´Ð»Ñ ÐºÐ»Ð°ÑÑÐ° Ð¾Ð±ÑŠÐµÐºÑ‚Ð°"
+#define	 ERR_UNEXP_TERM			"Ð½ÐµÐ¾Ð¶Ð¸Ð´Ð°Ð½Ð½Ð¾Ðµ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¸Ðµ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹"
+// #define  ERR_APP_ABORTING	"Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð° ÑÐºÐ¾Ñ€Ð¾Ð¿Ð¾ÑÑ‚Ð¸Ð¶Ð½Ð¾ Ð¿Ñ€ÐµÑ€Ð²Ð°Ð»Ð°ÑÑŒ"
+#define  ERR_APP_ABORTING		"Ð¿Ñ€Ð¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ Ð¿Ñ€ÐµÑ€Ð²Ð°Ð½Ð¾"
+#define  ERR_FLOAT_POINT		"Ð¾ÑˆÐ¸Ð±ÐºÐ° Ð²Ñ‹Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ñ Ñ Ð¿Ð»Ð°Ð²Ð°ÑŽÑ‰ÐµÐ¹ Ñ‚Ð¾Ñ‡ÐºÐ¾Ð¹"
+#define  ERR_ILLEGAL_INSTR		"Ð½ÐµÐ²ÐµÑ€Ð½Ð°Ñ Ð¸Ð½ÑÑ‚Ñ€ÑƒÐºÑ†Ð¸Ñ Ð¦ÐŸ"
+#define  ERR_TERMINATION_3		"Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¸Ðµ Ñ ÐºÐ¾Ð´Ð¾Ð¼ 3"
 
 #else
 
@@ -177,7 +177,7 @@ extern int	g_stackTraceCount;
 
 void LogStackTrace(LPCSTR header)
 {
-	bool ss_init = shared_str_initialized; // alpet: ïðè íåêîòîðûõ ñáîÿõ ýòî âñå-ðàâíî äàåò èñêëþ÷åíèå â shared_str::doc
+	bool ss_init = shared_str_initialized; // alpet: Ð¿Ñ€Ð¸ Ð½ÐµÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ñ… ÑÐ±Ð¾ÑÑ… ÑÑ‚Ð¾ Ð²ÑÐµ-Ñ€Ð°Ð²Ð½Ð¾ Ð´Ð°ÐµÑ‚ Ð¸ÑÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð² shared_str::doc
 	shared_str_initialized = false;
 	__try
 	{
@@ -200,8 +200,8 @@ extern void BuildStackTrace(struct _EXCEPTION_POINTERS *g_BlackBoxUIExPtrs);
 
 XRCORE_API void LogStackTraceEx(struct _EXCEPTION_POINTERS *pExPtrs)
 {	
-	// ôóíêöèÿ äëÿ âíåøíåãî âûçîâà (!)
-	bool ss_init = shared_str_initialized; // alpet: ïðè íåêîòîðûõ ñáîÿõ ýòî âñå-ðàâíî äàåò èñêëþ÷åíèå â shared_str::doc
+	// Ñ„ÑƒÐ½ÐºÑ†Ð¸Ñ Ð´Ð»Ñ Ð²Ð½ÐµÑˆÐ½ÐµÐ³Ð¾ Ð²Ñ‹Ð·Ð¾Ð²Ð° (!)
+	bool ss_init = shared_str_initialized; // alpet: Ð¿Ñ€Ð¸ Ð½ÐµÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ñ… ÑÐ±Ð¾ÑÑ… ÑÑ‚Ð¾ Ð²ÑÐµ-Ñ€Ð°Ð²Ð½Ð¾ Ð´Ð°ÐµÑ‚ Ð¸ÑÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð² shared_str::doc
 	
 
 	if (pExPtrs->ContextRecord)
@@ -209,10 +209,10 @@ XRCORE_API void LogStackTraceEx(struct _EXCEPTION_POINTERS *pExPtrs)
 	{		
 		force_flush_log = true;
 		shared_str_initialized = false;
-		CONTEXT rec = *pExPtrs->ContextRecord; // ñîõðàíèòü ïåðåä èçìåíåíèåì
+		CONTEXT rec = *pExPtrs->ContextRecord; // ÑÐ¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ Ð¿ÐµÑ€ÐµÐ´ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸ÐµÐ¼
  		//  Msg("##DEBUG: sizeof(CONTEXT) = %d bytes ", sizeof(rec));
 		// pExPtrs->ExceptionRecord = NULL;
-		BuildStackTrace(pExPtrs); // äàííàÿ ôóíêöèÿ ìîäèôèöèðóåò  ContextRecord.EIP
+		BuildStackTrace(pExPtrs); // Ð´Ð°Ð½Ð½Ð°Ñ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ñ Ð¼Ð¾Ð´Ð¸Ñ„Ð¸Ñ†Ð¸Ñ€ÑƒÐµÑ‚  ContextRecord.EIP
 		if (g_stackTraceCount > 0)
 			Msg("!Exception stack trace %d lines, EIP = 0x%08x, ESP = 0x%08x: \n* 0 %s",
 					g_stackTraceCount, rec.Eip, rec.Esp, g_stackTrace[0]);
@@ -293,7 +293,7 @@ void gather_info		(const char *expression, const char *description, const char *
 	memory_monitor::flush_each_time	(false);
 #endif // USE_MEMORY_MONITOR	
 
-	MsgCB("$#DUMP_CONTEXT"); // alpet: âûâîä êîíòåêñòà, ïåðåä ïîñòðîåíèåì ñòåêà âûçîâîâ
+	MsgCB("$#DUMP_CONTEXT"); // alpet: Ð²Ñ‹Ð²Ð¾Ð´ ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚Ð°, Ð¿ÐµÑ€ÐµÐ´ Ð¿Ð¾ÑÑ‚Ñ€Ð¾ÐµÐ½Ð¸ÐµÐ¼ ÑÑ‚ÐµÐºÐ° Ð²Ñ‹Ð·Ð¾Ð²Ð¾Ð²
 	if (!strstr(GetCommandLine(),"-no_call_stack_assert")) {
 
 #ifdef USE_OWN_ERROR_MESSAGE_WINDOW
@@ -376,7 +376,7 @@ void xrDebug::backend	(const char *expression, const char *description, const ch
 			MessageBox(
 				GetTopWindow(NULL),
 				assertion_info,
-				"Ôàòàëüíàÿ Îøèáêà",
+				"Ð¤Ð°Ñ‚Ð°Ð»ÑŒÐ½Ð°Ñ ÐžÑˆÐ¸Ð±ÐºÐ°",
 				MB_CANCELTRYCONTINUE|MB_ICONERROR|MB_SYSTEMMODAL
 			);
 
@@ -619,7 +619,7 @@ HMODULE LoadDebugHlp()
 		if (pSlash)
 		{
 			strcpy(pSlash + 1, "DBGHELP.DLL");
-			// alpet: ïðîâåðêà âåðñèè íåîáõîäèìà, ò.ê. ñòàðûé ôàéë î÷åíü ÷àñòî ëàæàåò ñ âûâîäîì ñòåêà âûçîâîâ
+			// alpet: Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð²ÐµÑ€ÑÐ¸Ð¸ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð°, Ñ‚.Ðº. ÑÑ‚Ð°Ñ€Ñ‹Ð¹ Ñ„Ð°Ð¹Ð» Ð¾Ñ‡ÐµÐ½ÑŒ Ñ‡Ð°ÑÑ‚Ð¾ Ð»Ð°Ð¶Ð°ÐµÑ‚ Ñ Ð²Ñ‹Ð²Ð¾Ð´Ð¾Ð¼ ÑÑ‚ÐµÐºÐ° Ð²Ñ‹Ð·Ð¾Ð²Ð¾Ð²
 			DWORD nope;
 			DWORD size = GetFileVersionInfoSize(szDbgHelpPath, &nope);
 			if (size > 0)

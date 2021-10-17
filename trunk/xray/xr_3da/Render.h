@@ -32,7 +32,7 @@ public:
 		REFLECTED	= 4,
 	};
 public:
-	// alpet: для сохраняемости конфигурации источников света
+	// alpet: РґР»СЏ СЃРѕС…СЂР°РЅСЏРµРјРѕСЃС‚Рё РєРѕРЅС„РёРіСѓСЂР°С†РёРё РёСЃС‚РѕС‡РЅРёРєРѕРІ СЃРІРµС‚Р°
 	virtual float					get_cone			()									= 0;
 	virtual Fcolor					get_color			()									= 0;
 	virtual float					get_range			()									= 0;	

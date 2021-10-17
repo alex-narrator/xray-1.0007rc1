@@ -42,7 +42,7 @@
 #include "clsid_game.h"
 #include "MainMenu.h"
 #include "..\XR_IOConsole.h"
-#include <functional>  // добавлено alpet для успешной сборки в VS 2013
+#include <functional>  // РґРѕР±Р°РІР»РµРЅРѕ alpet РґР»СЏ СѓСЃРїРµС€РЅРѕР№ СЃР±РѕСЂРєРё РІ VS 2013
 
 #ifdef DEBUG
 #	include "level_debug.h"
@@ -449,18 +449,18 @@ void CLevel::ProcessGameEvents		()
 			u16 ID,dest,type;
 			game_events->get	(ID,dest,type,P);		
 #ifdef   SPAWN_ANTIFREEZE
-			// не отправлять события не заспавненным объектам
+			// РЅРµ РѕС‚РїСЂР°РІР»СЏС‚СЊ СЃРѕР±С‹С‚РёСЏ РЅРµ Р·Р°СЃРїР°РІРЅРµРЅРЅС‹Рј РѕР±СЉРµРєС‚Р°Рј
 			if (g_bootComplete && M_EVENT == ID && PostponedSpawn(dest))
 			{
 				spawn_events->insert(P);
 				continue;
 			}
-			if (g_bootComplete && M_SPAWN == ID && Device.frame_elapsed() > work_limit) // alpet: позволит плавнее выводить объекты в онлайн, без заметных фризов
+			if (g_bootComplete && M_SPAWN == ID && Device.frame_elapsed() > work_limit) // alpet: РїРѕР·РІРѕР»РёС‚ РїР»Р°РІРЅРµРµ РІС‹РІРѕРґРёС‚СЊ РѕР±СЉРµРєС‚С‹ РІ РѕРЅР»Р°Р№РЅ, Р±РµР· Р·Р°РјРµС‚РЅС‹С… С„СЂРёР·РѕРІ
 			{
 				u16 parent_id;
 				GetSpawnInfo(P, parent_id);				
 				//-------------------------------------------------				
-				if (parent_id < 0xffff) // откладывать спавн только объектов в контейнеры
+				if (parent_id < 0xffff) // РѕС‚РєР»Р°РґС‹РІР°С‚СЊ СЃРїР°РІРЅ С‚РѕР»СЊРєРѕ РѕР±СЉРµРєС‚РѕРІ РІ РєРѕРЅС‚РµР№РЅРµСЂС‹
 				{
 					if (!spawn_events->available(svT))
 						Msg("* ProcessGameEvents, spawn event postponed. Events rest = %d", game_events->queue.size());					
@@ -633,7 +633,7 @@ void CLevel::OnFrame	()
 	m_ph_commander_scripts->update		();
 //	autosave_manager().update			();
 
-	//просчитать полет пуль
+	//РїСЂРѕСЃС‡РёС‚Р°С‚СЊ РїРѕР»РµС‚ РїСѓР»СЊ
 	Device.Statistic->TEST0.Begin		();
 	BulletManager().CommitRenderSet		();
 	Device.Statistic->TEST0.End			();
@@ -684,11 +684,11 @@ void CLevel::OnRender()
 	inherited::OnRender	();
 	
 	Game().OnRender();
-	//отрисовать трассы пуль
+	//РѕС‚СЂРёСЃРѕРІР°С‚СЊ С‚СЂР°СЃСЃС‹ РїСѓР»СЊ
 	//Device.Statistic->TEST1.Begin();
 	BulletManager().Render();
 	//Device.Statistic->TEST1.End();
-	//отрисовать интерфейc пользователя
+	//РѕС‚СЂРёСЃРѕРІР°С‚СЊ РёРЅС‚РµСЂС„РµР№c РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
 	HUD().RenderUI();
 
 	draw_wnds_rects();

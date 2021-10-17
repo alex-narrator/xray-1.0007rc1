@@ -13,7 +13,7 @@ public:
 	shared_str				pname;
 	shared_str				fname;
 	cache_cat				CAT;
-	u32						dwTimeTotal;			// βρεγξ
+	u32						dwTimeTotal;			// Π²ΡΠµΠ³ΠΎ
 	u32						dwBytesTotal;
 //	u32						dwBytesPerSec;
 	u32						dwBytesPerMS;

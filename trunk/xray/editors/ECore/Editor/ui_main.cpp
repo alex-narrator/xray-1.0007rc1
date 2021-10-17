@@ -354,7 +354,7 @@ void TUI::Redraw()
 
             Tools->RenderEnvironment	();
 
-            //. temporary reset filter (уберется после того как Олесь сделает шейдеры)
+            //. temporary reset filter (СѓР±РµСЂРµС‚СЃСЏ РїРѕСЃР»Рµ С‚РѕРіРѕ РєР°Рє РћР»РµСЃСЊ СЃРґРµР»Р°РµС‚ С€РµР№РґРµСЂС‹)
             for (u32 k=0; k<HW.Caps.raster.dwStages; k++){
                 if( psDeviceFlags.is(rsFilterLinear)){
                     Device.SetSS(k,D3DSAMP_MAGFILTER,D3DTEXF_LINEAR);

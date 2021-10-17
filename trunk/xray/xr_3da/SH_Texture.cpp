@@ -199,7 +199,7 @@ void CTexture::LoadImpl		()
 	string_path			fn;
 	string_path			name;
 	strcpy_s(name, sizeof(name), *cName);
-	// alpet: для унификации имен клонов ресурсов
+	// alpet: РґР»СЏ СѓРЅРёС„РёРєР°С†РёРё РёРјРµРЅ РєР»РѕРЅРѕРІ СЂРµСЃСѓСЂСЃРѕРІ
 	char *sub = strstr(name, "|");
 	if (sub)
 		sub[0] = 0;

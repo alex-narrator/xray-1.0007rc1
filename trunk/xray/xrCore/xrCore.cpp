@@ -134,7 +134,7 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
 		CSymbolEngine SE;
 		SE.GetInMemoryFileVersion("dbghelp.dll", dwVer[0], dwVer[1]);
 
-		sprintf_s(msg, 256, "Устаревший файл dbghelp.dll (%d.%d.%d.%d), его рекомендуется удалить.", 
+		sprintf_s(msg, 256, "РЈСЃС‚Р°СЂРµРІС€РёР№ С„Р°Р№Р» dbghelp.dll (%d.%d.%d.%d), РµРіРѕ СЂРµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ СѓРґР°Р»РёС‚СЊ.", 
 								v4[1], v4[0], v4[3], v4[2]);
 		MessageBox(NULL, msg, "DebugHlp Warning", MB_OK);
 	}

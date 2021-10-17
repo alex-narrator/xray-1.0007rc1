@@ -77,7 +77,7 @@ void CSE_ALifeObject::script_register(lua_State *L)
 		.def			("visible_for_map",		(void (CSE_ALifeObject::*)(bool))(&CSE_ALifeObject::visible_for_map))
 		.def			("can_switch_online",	(void (CSE_ALifeObject::*)(bool))(&CSE_ALifeObject::can_switch_online))
 		.def			("can_switch_offline",	(void (CSE_ALifeObject::*)(bool))(&CSE_ALifeObject::can_switch_offline))
-		.def			("set_position",		&cse_obj_set_position)                     // alpet: для коррекции позиции в оффлайне
+		.def			("set_position",		&cse_obj_set_position)                     // alpet: РґР»СЏ РєРѕСЂСЂРµРєС†РёРё РїРѕР·РёС†РёРё РІ РѕС„С„Р»Р°Р№РЅРµ
 		.def_readwrite	("m_level_vertex_id",	&CSE_ALifeObject::m_tNodeID)
 		.def_readwrite	("m_game_vertex_id",	&CSE_ALifeObject::m_tGraphID)
 		.def_readonly	("m_story_id",			&CSE_ALifeObject::m_story_id)

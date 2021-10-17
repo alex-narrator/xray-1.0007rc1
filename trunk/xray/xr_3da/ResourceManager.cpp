@@ -191,7 +191,7 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 	{
 		C.iElement			= 0;		
 #if defined(DEBUG) && _SECURE_SCL		
-#pragma message("alpet: вылету здесь удивляться не стоит")
+#pragma message("alpet: РІС‹Р»РµС‚Сѓ Р·РґРµСЃСЊ СѓРґРёРІР»СЏС‚СЊСЃСЏ РЅРµ СЃС‚РѕРёС‚")
 		R_ASSERT(C.L_textures._Myfirst);
 		R_ASSERT(C.L_textures._Myproxy);
 #endif		

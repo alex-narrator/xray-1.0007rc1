@@ -977,7 +977,7 @@ void CPEDef::Compile()
     int action_list_handle	= pGenActionLists();
 	pCurrentEffect			(effect_handle);
 
-    // reset state (одинаковые начальные условия)
+    // reset state (РѕРґРёРЅР°РєРѕРІС‹Рµ РЅР°С‡Р°Р»СЊРЅС‹Рµ СѓСЃР»РѕРІРёСЏ)
     pResetState				();
     
     try{
@@ -1076,7 +1076,7 @@ void CPEDef::Compile()
     int action_list_handle	= pGenActionLists();
 	pCurrentEffect			(effect_handle);
 
-    // reset state (одинаковые начальные условия)
+    // reset state (РѕРґРёРЅР°РєРѕРІС‹Рµ РЅР°С‡Р°Р»СЊРЅС‹Рµ СѓСЃР»РѕРІРёСЏ)
     pResetState				();
     
     // execute commands

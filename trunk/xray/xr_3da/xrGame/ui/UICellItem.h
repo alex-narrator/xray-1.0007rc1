@@ -26,7 +26,7 @@ protected:
 	CUIProgressBar* 		m_pConditionState;
 	Ivector2				m_grid_size;
 	ICustomDrawCell*		m_custom_draw;
-	Fvector2				m_cell_size;				// alpet: реальные размеры ячейки инветаря вместо 50.f
+	Fvector2				m_cell_size;				// alpet: СЂРµР°Р»СЊРЅС‹Рµ СЂР°Р·РјРµСЂС‹ СЏС‡РµР№РєРё РёРЅРІРµС‚Р°СЂСЏ РІРјРµСЃС‚Рѕ 50.f
 	int						m_accelerator;
 	CUIStatic*				m_text; 
 	virtual void			UpdateItemText			();

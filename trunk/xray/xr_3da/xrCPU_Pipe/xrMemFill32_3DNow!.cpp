@@ -47,7 +47,7 @@ $qloop2_fc:
 		JNZ $qloop2_fc;								// until no more QWORDs left to copy
 $filldword2_fc:
 		TEST ECX,1;									// DWORD left to fill ?
-		JZ $filldone2_fc;							// nope,we ’re done
+		JZ $filldone2_fc;							// nope,we â€™re done
 		MOVD [EDI ],MM0;							// store last DWORD to dst
 $filldone2_fc:
 		EMMS;										// clear MMX state

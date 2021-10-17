@@ -1,4 +1,4 @@
-// Actor_Weapon.cpp:	 для работы с оружием
+// Actor_Weapon.cpp:	 РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РѕСЂСѓР¶РёРµРј
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -22,7 +22,7 @@ static const float VEL_A_MAX	= 10.f;
 
 #define GetWeaponParam(pWeapon, func_name, def_value)	((pWeapon) ? (pWeapon->func_name) : def_value)
 
-//возвращает текуший разброс стрельбы (в радианах)с учетом движения
+//РІРѕР·РІСЂР°С‰Р°РµС‚ С‚РµРєСѓС€РёР№ СЂР°Р·Р±СЂРѕСЃ СЃС‚СЂРµР»СЊР±С‹ (РІ СЂР°РґРёР°РЅР°С…)СЃ СѓС‡РµС‚РѕРј РґРІРёР¶РµРЅРёСЏ
 float CActor::GetWeaponAccuracy() const
 {
 	CWeapon* W	= smart_cast<CWeapon*>(inventory().ActiveItem());
@@ -76,10 +76,10 @@ void CActor::g_fireParams(const CHudItem* pHudItem, Fvector &fire_pos, Fvector &
 			fire_dir.set(wpn->get_LastFD());
 		else{
 			Fvector        pos;
-			pos.mad(Device.vCameraPosition, Device.vCameraDirection, HUD().GetCurrentRayQuery().range);    //точка куда стреляем
+			pos.mad(Device.vCameraPosition, Device.vCameraDirection, HUD().GetCurrentRayQuery().range);    //С‚РѕС‡РєР° РєСѓРґР° СЃС‚СЂРµР»СЏРµРј
 			fire_dir.sub(pos, fire_pos).normalize();
 		}
-		fire_pos.mad(fire_dir, -1.0f);    //для того чтобы пули не летели через стену.
+		fire_pos.mad(fire_dir, -1.0f);    //РґР»СЏ С‚РѕРіРѕ С‡С‚РѕР±С‹ РїСѓР»Рё РЅРµ Р»РµС‚РµР»Рё С‡РµСЂРµР· СЃС‚РµРЅСѓ.
 	}
 }
 

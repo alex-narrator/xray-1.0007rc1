@@ -24,7 +24,7 @@ private:
 	CEntityConditionSimple*			m_entity_condition;
 
 protected:
-	//âðåìÿ ÷åðåç êîòîðîå ìåðòâîå òåëî óáèðåòñÿ ñ óðîâíÿ
+	//Ð²Ñ€ÐµÐ¼Ñ Ñ‡ÐµÑ€ÐµÐ· ÐºÐ¾Ñ‚Ð¾Ñ€Ð¾Ðµ Ð¼ÐµÑ€Ñ‚Ð²Ð¾Ðµ Ñ‚ÐµÐ»Ð¾ ÑƒÐ±Ð¸Ñ€ÐµÑ‚ÑÑ Ñ ÑƒÑ€Ð¾Ð²Ð½Ñ
 	ALife::_TIME_ID					m_dwBodyRemoveTime;	
 protected:
 	virtual	CEntityConditionSimple	*create_entity_condition	(CEntityConditionSimple* ec);
@@ -75,7 +75,7 @@ public:
 //	virtual float			g_Health			()const	{ return GetfHealth();}
 /*	virtual*/ IC float			GetMaxHealth		() const	{ return m_entity_condition->max_health();	}
 /*	virtual*/ IC void			SetMaxHealth		(float v)	{ m_entity_condition->max_health()=v;}
-    // alpet: âèðòóàëüíûå ôóíêöèè ìîãóò âûçûâàòüñÿ èç ñêðèïòîâ(!)
+    // alpet: Ð²Ð¸Ñ€Ñ‚ÑƒÐ°Ð»ÑŒÐ½Ñ‹Ðµ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ Ð¼Ð¾Ð³ÑƒÑ‚ Ð²Ñ‹Ð·Ñ‹Ð²Ð°Ñ‚ÑŒÑÑ Ð¸Ð· ÑÐºÑ€Ð¸Ð¿Ñ‚Ð¾Ð²(!)
 	virtual float				GetHealth		()	const		{ return m_entity_condition->GetHealth(); }
 	virtual void				SetHealth		(float h)		{ m_entity_condition->health () = h; }
 

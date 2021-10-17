@@ -219,7 +219,7 @@ void __fastcall TfrmEditLibrary::OnItemFocused(TElTreeItem* item)
         FS.update_path			(thm_fn,_objects_,ChangeFileExt(nm,".thm").c_str());
         if (FS.exist(thm_fn))
         {
-        	// если версии совпадают
+        	// РµСЃР»Рё РІРµСЂСЃРёРё СЃРѕРІРїР°РґР°СЋС‚
             int obj_age 		= FS.get_file_age(obj_fn);
             int thm_age 		= FS.get_file_age(thm_fn);
             m_Thm 				= xr_new<EObjectThumbnail>(nm.c_str());
@@ -282,7 +282,7 @@ void __fastcall TfrmEditLibrary::FormKeyDown(TObject *Sender, WORD &Key,
         if (Key==VK_ESCAPE){
             if (bFormLocked)	ExecCommand(COMMAND_BREAK_LAST_OPERATION);
             else				ebCancel->Click();
-            Key = 0; // :-) нужно для того чтобы AccessVoilation не вылазил по ESCAPE
+            Key = 0; // :-) РЅСѓР¶РЅРѕ РґР»СЏ С‚РѕРіРѕ С‡С‚РѕР±С‹ AccessVoilation РЅРµ РІС‹Р»Р°Р·РёР» РїРѕ ESCAPE
         }
     }
 }
@@ -541,7 +541,7 @@ void __fastcall TfrmEditLibrary::ebImportClick(TObject *Sender)
         TElTreeItem* item = m_Items->GetSelected(); 
         if (item) FHelper.MakeName(item,0,folder,true);
         //
-//		AnsiString path; // нужен при multi-open для сохранения последнего пути
+//		AnsiString path; // РЅСѓР¶РµРЅ РїСЂРё multi-open РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ РїРѕСЃР»РµРґРЅРµРіРѕ РїСѓС‚Рё
 		xr_string m_LastSelection;
         for (AStringIt it=lst.begin(); it!=lst.end(); it++){
         	nm = ChangeFileExt(ExtractFileName(*it),"").c_str();

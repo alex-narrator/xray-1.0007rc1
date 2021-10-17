@@ -1,4 +1,4 @@
-// HUDCrosshair.h:  крестик прицела, отображающий текущую дисперсию
+// HUDCrosshair.h:  РєСЂРµСЃС‚РёРє РїСЂРёС†РµР»Р°, РѕС‚РѕР±СЂР°Р¶Р°СЋС‰РёР№ С‚РµРєСѓС‰СѓСЋ РґРёСЃРїРµСЂСЃРёСЋ
 // 
 //////////////////////////////////////////////////////////////////////
 
@@ -13,9 +13,9 @@ private:
 	float			cross_length_perc;
 	float			min_radius_perc;
 	float			max_radius_perc;
-	// bool			m_is_enabled; //вынесено в опции
+	// bool			m_is_enabled; //РІС‹РЅРµСЃРµРЅРѕ РІ РѕРїС†РёРё
 
-	//текущий радиус прицела
+	//С‚РµРєСѓС‰РёР№ СЂР°РґРёСѓСЃ РїСЂРёС†РµР»Р°
 	float			radius;
 	float			target_radius;
 	float			radius_speed_perc; 
@@ -32,5 +32,5 @@ public:
 			void	SetDispersion	(float disp);
 
 			void	Load			();
-			//bool	IsEnabled		() {return m_is_enabled;}; //вынесено в опции
+			//bool	IsEnabled		() {return m_is_enabled;}; //РІС‹РЅРµСЃРµРЅРѕ РІ РѕРїС†РёРё
 };

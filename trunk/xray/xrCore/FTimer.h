@@ -165,7 +165,7 @@ public:
 	CTimer		T;
 	u64			accum;
 	float		result;
-	float		xrs[8];  // alpet: расширенные результаты, в т.ч. сглаженые
+	float		xrs[8];  // alpet: СЂР°СЃС€РёСЂРµРЅРЅС‹Рµ СЂРµР·СѓР»СЊС‚Р°С‚С‹, РІ С‚.С‡. СЃРіР»Р°Р¶РµРЅС‹Рµ
 	u32			count;
 	u32			cycles;
 public:

@@ -481,7 +481,7 @@ bool CUILevelMap::OnMouse	(float x, float y, EUIMessages mouse_action)
 		return true;
 	};
 */
-	// Real Wolf: Êîëáåê ñ ïîçèöèåé è íàçâàíèåì êàðòû ïðè êëèêå ïî ñàìîé êàðòå. 03.08.2014.
+	// Real Wolf: ÐšÐ¾Ð»Ð±ÐµÐº Ñ Ð¿Ð¾Ð·Ð¸Ñ†Ð¸ÐµÐ¹ Ð¸ Ð½Ð°Ð·Ð²Ð°Ð½Ð¸ÐµÐ¼ ÐºÐ°Ñ€Ñ‚Ñ‹ Ð¿Ñ€Ð¸ ÐºÐ»Ð¸ÐºÐµ Ð¿Ð¾ ÑÐ°Ð¼Ð¾Ð¹ ÐºÐ°Ñ€Ñ‚Ðµ. 03.08.2014.
 	if (mouse_action == WINDOW_LBUTTON_DOWN)
 	{
 		Fvector2 cursor_pos =			GetUICursor()->GetCursorPosition();

@@ -32,9 +32,9 @@ void CPhysicsShell::script_register(lua_State *L)
 			.def("is_breakable",				&CPhysicsShell::isBreakable)
 			.def("get_linear_vel",				&CPhysicsShell::get_LinearVel)
 			.def("get_angular_vel",				&CPhysicsShell::get_AngularVel)
-			// alpet: расширенный контроль над физическими объектами
+			// alpet: СЂР°СЃС€РёСЂРµРЅРЅС‹Р№ РєРѕРЅС‚СЂРѕР»СЊ РЅР°Рґ С„РёР·РёС‡РµСЃРєРёРјРё РѕР±СЉРµРєС‚Р°РјРё
 			.def("get_mass",					&CPhysicsShell::getMass)
-			// методы CPhysicsShell::set_mass* не передают в физический движок значения, но рассчитывает массы элементов. Требуется использовать physic_element:set_mass для реальных изменений
+			// РјРµС‚РѕРґС‹ CPhysicsShell::set_mass* РЅРµ РїРµСЂРµРґР°СЋС‚ РІ С„РёР·РёС‡РµСЃРєРёР№ РґРІРёР¶РѕРє Р·РЅР°С‡РµРЅРёСЏ, РЅРѕ СЂР°СЃСЃС‡РёС‚С‹РІР°РµС‚ РјР°СЃСЃС‹ СЌР»РµРјРµРЅС‚РѕРІ. РўСЂРµР±СѓРµС‚СЃСЏ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ physic_element:set_mass РґР»СЏ СЂРµР°Р»СЊРЅС‹С… РёР·РјРµРЅРµРЅРёР№
 			.def("set_mass",					&CPhysicsShell::setMass)       
 			.def("set_mass1",					&CPhysicsShell::setMass1)
 			.def("freeze",						&CPhysicsShell::Freeze)

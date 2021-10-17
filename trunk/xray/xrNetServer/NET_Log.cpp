@@ -142,14 +142,14 @@ void		INetLog::LogData(u32 Time, void* data, u32 size, bool IsIn)
 
 DLL_API void LogPacketError(LPCSTR format, ...)
 {
-#ifdef LOG_PACKET_ERRORS // дефайн прописывается в свойства проекта xrNetServer, Preprocessor defines
+#ifdef LOG_PACKET_ERRORS // РґРµС„Р°Р№РЅ РїСЂРѕРїРёСЃС‹РІР°РµС‚СЃСЏ РІ СЃРІРѕР№СЃС‚РІР° РїСЂРѕРµРєС‚Р° xrNetServer, Preprocessor defines
 	va_list mark;
 	string1024	buf;
 	va_start	(mark, format );
 	int sz		= _vsnprintf(buf, sizeof(buf)-1, format, mark ); buf[sizeof(buf)-1]=0;
     va_end		(mark);
 	if (sz)		Log(buf);
-#ifdef PRINT_SCRIPT_TRACEBACK // этот дефайн надо заблокировать перед сборкой проекта xr_3da, для избежания кольцевой ссылки при линковке
+#ifdef PRINT_SCRIPT_TRACEBACK // СЌС‚РѕС‚ РґРµС„Р°Р№РЅ РЅР°РґРѕ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РїРµСЂРµРґ СЃР±РѕСЂРєРѕР№ РїСЂРѕРµРєС‚Р° xr_3da, РґР»СЏ РёР·Р±РµР¶Р°РЅРёСЏ РєРѕР»СЊС†РµРІРѕР№ СЃСЃС‹Р»РєРё РїСЂРё Р»РёРЅРєРѕРІРєРµ
 #pragma comment( lib, "xr_3da.lib" )
 	if (!g_game_lua) return;	
 	LPCSTR trace = get_lua_traceback(g_game_lua, 2);

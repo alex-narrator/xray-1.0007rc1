@@ -697,8 +697,8 @@ LPCSTR CScriptGameObject::GetVisualName()
 }
 
 
-// TODO: Функцию необходимо определить для разных классов,
-// потому что стандартное изменение работает не совсем корректно.
+// TODO: Р¤СѓРЅРєС†РёСЋ РЅРµРѕР±С…РѕРґРёРјРѕ РѕРїСЂРµРґРµР»РёС‚СЊ РґР»СЏ СЂР°Р·РЅС‹С… РєР»Р°СЃСЃРѕРІ,
+// РїРѕС‚РѕРјСѓ С‡С‚Рѕ СЃС‚Р°РЅРґР°СЂС‚РЅРѕРµ РёР·РјРµРЅРµРЅРёРµ СЂР°Р±РѕС‚Р°РµС‚ РЅРµ СЃРѕРІСЃРµРј РєРѕСЂСЂРµРєС‚РЅРѕ.
 #include "../skeletonanimated.h"
 void CScriptGameObject::SetVisualName(LPCSTR str)
 {
@@ -722,7 +722,7 @@ void CScriptGameObject::SetVisualName(LPCSTR str)
 	if (wpn)
 		return wpn->UpdateAddonsVisibility();
 
-	// Обновление костей.
+	// РћР±РЅРѕРІР»РµРЅРёРµ РєРѕСЃС‚РµР№.
 	IRender_Visual *visual = object().Visual();
 	if (visual)
 	{
@@ -808,7 +808,7 @@ void CScriptGameObject::SetDirection (const Fvector &dir, float bank)
 		// object().UpdateXFORM(m);
 	}
 	
-	// alpet: сохранение направления в серверный экземпляр
+	// alpet: СЃРѕС…СЂР°РЅРµРЅРёРµ РЅР°РїСЂР°РІР»РµРЅРёСЏ РІ СЃРµСЂРІРµСЂРЅС‹Р№ СЌРєР·РµРјРїР»СЏСЂ
 	CSE_ALifeDynamicObject* se_obj = object().alife_object();
 	if (se_obj)
 		se_obj->angle() = dir;	
@@ -831,16 +831,16 @@ void CScriptGameObject::SetPosition(const Fvector &pos)
 		PP.w_vec3						(pos);
 		CGameObject::u_EventSend		(PP);
 		
-		// Real Wolf: Для инвентарных объектов из-за этого позиция не меняется.
+		// Real Wolf: Р”Р»СЏ РёРЅРІРµРЅС‚Р°СЂРЅС‹С… РѕР±СЉРµРєС‚РѕРІ РёР·-Р·Р° СЌС‚РѕРіРѕ РїРѕР·РёС†РёСЏ РЅРµ РјРµРЅСЏРµС‚СЃСЏ.
 		if (smart_cast<CInventoryItem*>(&object()) == NULL)
 		{
-			// alpet: явное перемещение визуалов объектов
+			// alpet: СЏРІРЅРѕРµ РїРµСЂРµРјРµС‰РµРЅРёРµ РІРёР·СѓР°Р»РѕРІ РѕР±СЉРµРєС‚РѕРІ
 			Fmatrix m = object().XFORM();
 			m.translate_over(pos);
 			object().UpdateXFORM(m);
 		}
 
-		// alpet: сохранение позиции в серверный экземпляр
+		// alpet: СЃРѕС…СЂР°РЅРµРЅРёРµ РїРѕР·РёС†РёРё РІ СЃРµСЂРІРµСЂРЅС‹Р№ СЌРєР·РµРјРїР»СЏСЂ
 		CSE_ALifeDynamicObject* se_obj = object().alife_object();
 		if (se_obj)
 			se_obj->position() = pos;

@@ -118,7 +118,7 @@ void CSpecificCharacter::load_shared	(LPCSTR)
 	data()->m_iIconX		= pXML->ReadAttribInt("icon", 0, "x");
 	data()->m_iIconY		= pXML->ReadAttribInt("icon", 0, "y");
 
-	//игровое имя персонажа
+	//РёРіСЂРѕРІРѕРµ РёРјСЏ РїРµСЂСЃРѕРЅР°Р¶Р°
 	data()->m_sGameName		= pXML->Read("name", 0, "");
 	data()->m_sBioText		= CStringTable().translate(pXML->Read("bio", 0, ""));
 

@@ -200,7 +200,7 @@ void CStats::Show()
 		F.OutSet	(0,0);
 		F.OutNext	("FPS/RFPS:    %3.0f/%3.0f AVG: %4.1f/%4.1f, MFT: %4.1fms", fFPS, fRFPS, fAvgFPS, fAvgRFPS, fMaxFrameTime * 1000);
 		F.OutNext	("TPS:         %2.2f M",	fTPS);
-		// òàêèå âåëè÷èíû îòðàæàòü ëó÷øå â ìèëëèîíàõ øòóê
+		// Ñ‚Ð°ÐºÐ¸Ðµ Ð²ÐµÐ»Ð¸Ñ‡Ð¸Ð½Ñ‹ Ð¾Ñ‚Ñ€Ð°Ð¶Ð°Ñ‚ÑŒ Ð»ÑƒÑ‡ÑˆÐµ Ð² Ð¼Ð¸Ð»Ð»Ð¸Ð¾Ð½Ð°Ñ… ÑˆÑ‚ÑƒÐº
 		F.OutNext	("VERT:        %.3fM/%d",	(float)RCache.stat.verts / 1e6,	RCache.stat.calls?RCache.stat.verts/RCache.stat.calls:0);
 		F.OutNext	("POLY:        %.3fM/%d",	(float)RCache.stat.polys / 1e6,	RCache.stat.calls?RCache.stat.polys/RCache.stat.calls:0);
 		F.OutNext	("DIP/DP:      %d",			RCache.stat.calls);
@@ -428,7 +428,7 @@ void CStats::Show()
 
 		ScriptBinder.FrameStart		();
 		ScriptBinder_netSpawn.FrameStart ();
-		ScriptBinder_netSpawn.result = 0;  // ïðîòèâ ñãëàæèâàíèÿ
+		ScriptBinder_netSpawn.result = 0;  // Ð¿Ñ€Ð¾Ñ‚Ð¸Ð² ÑÐ³Ð»Ð°Ð¶Ð¸Ð²Ð°Ð½Ð¸Ñ
 
 		g_SpatialSpace->stat_insert.FrameStart		();
 		g_SpatialSpace->stat_remove.FrameStart		();

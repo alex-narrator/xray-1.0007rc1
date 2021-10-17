@@ -34,11 +34,11 @@ int str_insert(LPSTR dest, LPSTR src, int n_char)
 		
 		for (int i = len - 1; i >= n_char; i--)
 		if (i + lna < CConsole::MAX_LEN)
-			dest[i + lna] = dest[i]; // ñìåùåíèå ñòğîêè âïğàâî, äëÿ îñâîáîæäåíèÿ ìåñòî ïîä ñèìâîë
+			dest[i + lna] = dest[i]; // ÑĞ¼ĞµÑ‰ĞµĞ½Ğ¸Ğµ ÑÑ‚Ñ€Ğ¾ĞºĞ¸ Ğ²Ğ¿Ñ€Ğ°Ğ²Ğ¾, Ğ´Ğ»Ñ Ğ¾ÑĞ²Ğ¾Ğ±Ğ¾Ğ¶Ğ´ĞµĞ½Ğ¸Ñ Ğ¼ĞµÑÑ‚Ğ¾ Ğ¿Ğ¾Ğ´ ÑĞ¸Ğ¼Ğ²Ğ¾Ğ»
 
 		for (int i = 0; i < lna; i++)
 		if (i + n_char < CConsole::MAX_LEN)
-			dest[i + n_char] = src[i]; // âñòàâêà íîâûõ ñèìâîëîâ
+			dest[i + n_char] = src[i]; // Ğ²ÑÑ‚Ğ°Ğ²ĞºĞ° Ğ½Ğ¾Ğ²Ñ‹Ñ… ÑĞ¸Ğ¼Ğ²Ğ¾Ğ»Ğ¾Ğ²
 
 		dest[len + lna] = 0;
 	}

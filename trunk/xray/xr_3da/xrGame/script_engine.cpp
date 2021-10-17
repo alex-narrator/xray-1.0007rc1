@@ -166,7 +166,7 @@ void CScriptEngine::setup_auto_load		()
 {	
 	lua_pushstring 						(lua(),"_G"); 
 	lua_gettable 						(lua(),LUA_GLOBALSINDEX); 
-	int value_index	= lua_gettop		(lua());  // alpet: во избежания оставления в стеке лишней метатаблицы
+	int value_index	= lua_gettop		(lua());  // alpet: РІРѕ РёР·Р±РµР¶Р°РЅРёСЏ РѕСЃС‚Р°РІР»РµРЅРёСЏ РІ СЃС‚РµРєРµ Р»РёС€РЅРµР№ РјРµС‚Р°С‚Р°Р±Р»РёС†С‹
 	luaL_newmetatable					(lua(),"XRAY_AutoLoadMetaTable");
 	lua_pushstring						(lua(),"__index");
 	lua_pushcfunction					(lua(), auto_load);
@@ -392,7 +392,7 @@ LPCSTR CScriptEngine::try_call(LPCSTR func_name, LPCSTR param)
 {   
 	if (NULL == this || NULL == lua()) 
 		return "#ERROR: Script engine not ready";
-	// максимально быстрый вызов функции
+	// РјР°РєСЃРёРјР°Р»СЊРЅРѕ Р±С‹СЃС‚СЂС‹Р№ РІС‹Р·РѕРІ С„СѓРЅРєС†РёРё
 	int save_top = lua_gettop(lua());
 	lua_getglobal(lua(), func_name);
 	if (lua_isfunction(lua(), -1))

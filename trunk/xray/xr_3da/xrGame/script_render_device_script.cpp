@@ -23,12 +23,12 @@ void set_device_paused(CRenderDevice* d, bool b)
 }
 
 /************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-// получить текущий fov
+// РїРѕР»СѓС‡РёС‚СЊ С‚РµРєСѓС‰РёР№ fov
 float get_fov()
 {
 	return g_fov;
 }
-// установить текущий fov
+// СѓСЃС‚Р°РЅРѕРІРёС‚СЊ С‚РµРєСѓС‰РёР№ fov
 void set_fov(CRenderDevice* d, float fov)
 {
 	g_fov = fov;

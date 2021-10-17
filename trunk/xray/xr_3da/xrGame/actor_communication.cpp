@@ -128,7 +128,7 @@ bool CActor::OnReceiveInfo(shared_str info_id) const
 
 	if(!HUD().GetUI())
 		return false;
-	//только если находимся в режиме single
+	//С‚РѕР»СЊРєРѕ РµСЃР»Рё РЅР°С…РѕРґРёРјСЃСЏ РІ СЂРµР¶РёРјРµ single
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 	if(!pGameSP) return false;
 
@@ -149,7 +149,7 @@ void CActor::OnDisableInfo(shared_str info_id) const
 	if(!HUD().GetUI())
 		return;
 
-	//только если находимся в режиме single
+	//С‚РѕР»СЊРєРѕ РµСЃР»Рё РЅР°С…РѕРґРёРјСЃСЏ РІ СЂРµР¶РёРјРµ single
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 	if(!pGameSP) return;
 
@@ -159,7 +159,7 @@ void CActor::OnDisableInfo(shared_str info_id) const
 
 void  CActor::ReceivePhrase		(DIALOG_SHARED_PTR& phrase_dialog)
 {
-	//только если находимся в режиме single
+	//С‚РѕР»СЊРєРѕ РµСЃР»Рё РЅР°С…РѕРґРёРјСЃСЏ РІ СЂРµР¶РёРјРµ single
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 	if(!pGameSP) return;
 
@@ -179,7 +179,7 @@ void   CActor::UpdateAvailableDialogs	(CPhraseDialogManager* partner)
 		for(KNOWN_INFO_VECTOR::const_iterator it = CInventoryOwner::m_known_info_registry->registry().objects_ptr()->begin();
 			CInventoryOwner::m_known_info_registry->registry().objects_ptr()->end() != it; ++it)
 		{
-			//подгрузить кусочек информации с которым мы работаем
+			//РїРѕРґРіСЂСѓР·РёС‚СЊ РєСѓСЃРѕС‡РµРє РёРЅС„РѕСЂРјР°С†РёРё СЃ РєРѕС‚РѕСЂС‹Рј РјС‹ СЂР°Р±РѕС‚Р°РµРј
 			CInfoPortion info_portion;
 			info_portion.Load((*it).info_id);
 
@@ -188,7 +188,7 @@ void   CActor::UpdateAvailableDialogs	(CPhraseDialogManager* partner)
 		}
 	}
 
-	//добавить актерский диалог собеседника
+	//РґРѕР±Р°РІРёС‚СЊ Р°РєС‚РµСЂСЃРєРёР№ РґРёР°Р»РѕРі СЃРѕР±РµСЃРµРґРЅРёРєР°
 	CInventoryOwner* pInvOwnerPartner = smart_cast<CInventoryOwner*>(partner); VERIFY(pInvOwnerPartner);
 	
 	for(u32 i = 0; i<pInvOwnerPartner->CharacterInfo().ActorDialogs().size(); i++)
@@ -209,11 +209,11 @@ void CActor::TryToTalk()
 
 void CActor::RunTalkDialog(CInventoryOwner* talk_partner)
 {
-	//предложить поговорить с нами
+	//РїСЂРµРґР»РѕР¶РёС‚СЊ РїРѕРіРѕРІРѕСЂРёС‚СЊ СЃ РЅР°РјРё
 	if(talk_partner->OfferTalk(this))
 	{	
 		StartTalk(talk_partner);
-		//только если находимся в режиме single
+		//С‚РѕР»СЊРєРѕ РµСЃР»Рё РЅР°С…РѕРґРёРјСЃСЏ РІ СЂРµР¶РёРјРµ single
 		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 		if(pGameSP)
 		{
@@ -227,7 +227,7 @@ void CActor::RunTalkDialog(CInventoryOwner* talk_partner)
 void CActor::StartTalk (CInventoryOwner* talk_partner)
 {
 	CGameObject* GO = smart_cast<CGameObject*>(talk_partner); VERIFY(GO);
-	//обновить информацию о контакте
+	//РѕР±РЅРѕРІРёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕРЅС‚Р°РєС‚Рµ
 //.	UpdateContact(GO->ID());
 
 	CInventoryOwner::StartTalk(talk_partner);

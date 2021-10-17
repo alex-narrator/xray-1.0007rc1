@@ -88,10 +88,10 @@ void ISheduledScript::script_register	(lua_State *L)
 	module(L)
 	[
 		class_<ISheduled,CISheduledWrapper>("ISheduled")
-		.def_readwrite("updated_times",			&ISheduled::updated_times)		 	 // может потребоваться сброс счетчиков после сверки	
+		.def_readwrite("updated_times",			&ISheduled::updated_times)		 	 // РјРѕР¶РµС‚ РїРѕС‚СЂРµР±РѕРІР°С‚СЊСЃСЏ СЃР±СЂРѕСЃ СЃС‡РµС‚С‡РёРєРѕРІ РїРѕСЃР»Рµ СЃРІРµСЂРєРё	
 		.property("schedule_max",				&get_schedule_max)
 		.property("schedule_min",				&get_schedule_min)
-		.def("set_schedule",					&set_object_schedule)                // для подбора оптимального интервала апдейта объекта, например в зависимости дистанции до актора
+		.def("set_schedule",					&set_object_schedule)                // РґР»СЏ РїРѕРґР±РѕСЂР° РѕРїС‚РёРјР°Р»СЊРЅРѕРіРѕ РёРЅС‚РµСЂРІР°Р»Р° Р°РїРґРµР№С‚Р° РѕР±СЉРµРєС‚Р°, РЅР°РїСЂРёРјРµСЂ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РґРёСЃС‚Р°РЅС†РёРё РґРѕ Р°РєС‚РѕСЂР°
 		
 //			.def(constructor<>())
 //			.def("shedule_Scale",		&ISheduled::shedule_Scale,		&CISheduledWrapper::shedule_Scale_static)
@@ -147,7 +147,7 @@ IC LPCSTR get_class_id(CGameObject *obj)
 DLL_API LPCSTR raw_lua_class_name(lua_State *L)
 {
 	using namespace luabind::detail;
-	for (int i = lua_gettop(L) - 1; i > 0; i--) // обычно аргумент (-2) ,    int(CSE_ALifeObject:: объект
+	for (int i = lua_gettop(L) - 1; i > 0; i--) // РѕР±С‹С‡РЅРѕ Р°СЂРіСѓРјРµРЅС‚ (-2) ,    int(CSE_ALifeObject:: РѕР±СЉРµРєС‚
 	if (lua_isuserdata(L, i))
 	{
 		object_rep *rep = is_class_object(L, i); 
@@ -265,11 +265,11 @@ void CObjectScript::script_register		(lua_State *L)
 			.def("getVisible",			&CGameObject::getVisible)
 			.def("getEnabled",			&CGameObject::getEnabled)
 			
-			// alpet: дополнительные свойства 
+			// alpet: РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ СЃРІРѕР№СЃС‚РІР° 
 			
 			.def("test_server_flag"			,					&CGameObject::TestServerFlag)			
 			.property	 ("se_object"		,					&CGameObject::alife_object)
-			.property	 ("item_flags"		,					&get_inventory_item_flags,  &set_inventory_item_flags)     // ???! проблемы с кастингом, не позволяют оставить это свойство в CInventoryItem
+			.property	 ("item_flags"		,					&get_inventory_item_flags,  &set_inventory_item_flags)     // ???! РїСЂРѕР±Р»РµРјС‹ СЃ РєР°СЃС‚РёРЅРіРѕРј, РЅРµ РїРѕР·РІРѕР»СЏСЋС‚ РѕСЃС‚Р°РІРёС‚СЊ СЌС‚Рѕ СЃРІРѕР№СЃС‚РІРѕ РІ CInventoryItem
 			.property	 ("class_name"		,					&get_lua_class_name)
 			.property	 ("class_id"		,					&get_class_id)
 			
@@ -282,7 +282,7 @@ void CObjectScript::script_register		(lua_State *L)
 //			.def("setEnabled",			&CGameObject::setEnabled)
 			,
 			
-			class_<CGlobalFlags>("global_flags")  // для оптимальности доступа, предполагается в скриптах скопировать элементы этого "класса" в пространство имен _G 
+			class_<CGlobalFlags>("global_flags")  // РґР»СЏ РѕРїС‚РёРјР°Р»СЊРЅРѕСЃС‚Рё РґРѕСЃС‚СѓРїР°, РїСЂРµРґРїРѕР»Р°РіР°РµС‚СЃСЏ РІ СЃРєСЂРёРїС‚Р°С… СЃРєРѕРїРёСЂРѕРІР°С‚СЊ СЌР»РµРјРµРЅС‚С‹ СЌС‚РѕРіРѕ "РєР»Р°СЃСЃР°" РІ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ РёРјРµРЅ _G 
 			.enum_("explosion")
 			[
 				value("flExploding"				,				int(1)),
@@ -359,7 +359,7 @@ IRender_Visual	*visual_get_child(IRender_Visual	*v, u32 n_child)
 }
 
 
-// alpet: выборка текстуры из визуала по индексу
+// alpet: РІС‹Р±РѕСЂРєР° С‚РµРєСЃС‚СѓСЂС‹ РёР· РІРёР·СѓР°Р»Р° РїРѕ РёРЅРґРµРєСЃСѓ
 CTexture* visual_get_texture(IRender_Visual	*child_v, int n_texture)
 {
 	if (!child_v) return NULL; // not have visual
@@ -372,13 +372,13 @@ CTexture* visual_get_texture(IRender_Visual	*child_v, int n_texture)
 
 	u32 verbose = 1;
 
-	// визуал выстраивается иерархически - есть потомки и предки
+	// РІРёР·СѓР°Р» РІС‹СЃС‚СЂР°РёРІР°РµС‚СЃСЏ РёРµСЂР°СЂС…РёС‡РµСЃРєРё - РµСЃС‚СЊ РїРѕС‚РѕРјРєРё Рё РїСЂРµРґРєРё
 	
 	Shader* s = child_v->shader_ref._get();
 
-	if (verbose > 5) Msg("# Shader *S = 0x%p name = <%s> ", s, child_v->shader_name); // shader расшарен для всех визуалов с одинаковыми текстурами и моделью
+	if (verbose > 5) Msg("# Shader *S = 0x%p name = <%s> ", s, child_v->shader_name); // shader СЂР°СЃС€Р°СЂРµРЅ РґР»СЏ РІСЃРµС… РІРёР·СѓР°Р»РѕРІ СЃ РѕРґРёРЅР°РєРѕРІС‹РјРё С‚РµРєСЃС‚СѓСЂР°РјРё Рё РјРѕРґРµР»СЊСЋ
 
-	if (s && s->E[0]._get()) // обычно в первом элементе находится исчерпывающий список текстур 
+	if (s && s->E[0]._get()) // РѕР±С‹С‡РЅРѕ РІ РїРµСЂРІРѕРј СЌР»РµРјРµРЅС‚Рµ РЅР°С…РѕРґРёС‚СЃСЏ РёСЃС‡РµСЂРїС‹РІР°СЋС‰РёР№ СЃРїРёСЃРѕРє С‚РµРєСЃС‚СѓСЂ 
 	{
 		ShaderElement* E = s->E[0]._get();
 		if (verbose > 5) Msg("#  ShaderElement *E = 0x%p", E);
@@ -406,10 +406,10 @@ void visual_configure (IRender_Visual	*child_v, LPCSTR new_shader, LPCSTR new_te
 	if ((new_shader  && child_v->textures.size()) ||
 		(new_texture && child_v->shader_name.size()))
 	{
-		// здесь производится замена текстуры и/или шейдера визуала
+		// Р·РґРµСЃСЊ РїСЂРѕРёР·РІРѕРґРёС‚СЃСЏ Р·Р°РјРµРЅР° С‚РµРєСЃС‚СѓСЂС‹ Рё/РёР»Рё С€РµР№РґРµСЂР° РІРёР·СѓР°Р»Р°
 		s32 last_skinning = Render->m_skinning;
 
-		Render->shader_option_skinning(1); // черт значит зачем нужно заменять флаг, но при дефолтном -1 вместо наложения текстуры будет покраска визуала  серым 
+		Render->shader_option_skinning(1); // С‡РµСЂС‚ Р·РЅР°С‡РёС‚ Р·Р°С‡РµРј РЅСѓР¶РЅРѕ Р·Р°РјРµРЅСЏС‚СЊ С„Р»Р°Рі, РЅРѕ РїСЂРё РґРµС„РѕР»С‚РЅРѕРј -1 РІРјРµСЃС‚Рѕ РЅР°Р»РѕР¶РµРЅРёСЏ С‚РµРєСЃС‚СѓСЂС‹ Р±СѓРґРµС‚ РїРѕРєСЂР°СЃРєР° РІРёР·СѓР°Р»Р°  СЃРµСЂС‹Рј 
 		child_v->shader_ref.destroy();
 
 		LPCSTR sh_name = new_shader ? new_shader : *child_v->shader_name;
@@ -512,7 +512,7 @@ void set_bones_visible(CKinematics *K, const SLargeInteger &vset)
 void CKinematicsAnimatedScript::script_register		(lua_State *L)
 {
 	module(L)
-	[   // базовые методы и свойства для скриптовой анимации
+	[   // Р±Р°Р·РѕРІС‹Рµ РјРµС‚РѕРґС‹ Рё СЃРІРѕР№СЃС‚РІР° РґР»СЏ СЃРєСЂРёРїС‚РѕРІРѕР№ Р°РЅРёРјР°С†РёРё
 		class_<CBoneInstance>("CBoneInstance")
 		.def_readonly("mTransform"				,				&CBoneInstance::mTransform)
 		.def_readonly("mRenderTransform"		,				&CBoneInstance::mRenderTransform)
@@ -700,7 +700,7 @@ void get_loaded_textures(CResourceManager *mgr, lua_State *L)
 	{		
 		LPCSTR name = I->first;
 		if ( pattern && !strstr(name, pattern) ) continue;				
-		lua_pushlightuserdata (L, (void*)I->second); // alpet: дешевле вставлять указатель, и в скриптах кастовать его через cast_ptr_CTexture только для нужных объектов			
+		lua_pushlightuserdata (L, (void*)I->second); // alpet: РґРµС€РµРІР»Рµ РІСЃС‚Р°РІР»СЏС‚СЊ СѓРєР°Р·Р°С‚РµР»СЊ, Рё РІ СЃРєСЂРёРїС‚Р°С… РєР°СЃС‚РѕРІР°С‚СЊ РµРіРѕ С‡РµСЂРµР· cast_ptr_CTexture С‚РѕР»СЊРєРѕ РґР»СЏ РЅСѓР¶РЅС‹С… РѕР±СЉРµРєС‚РѕРІ			
 		lua_setfield(L, t, name);
 	}
 }

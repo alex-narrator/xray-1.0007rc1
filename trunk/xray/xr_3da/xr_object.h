@@ -63,7 +63,7 @@ protected:
 
 	// Geometric (transformation)
 	svector<SavedPosition,4>			PositionStack;
-	BOOL								m_bAlwaysProcessing;         // для принудительного обновления UpdateCL
+	BOOL								m_bAlwaysProcessing;         // РґР»СЏ РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕРіРѕ РѕР±РЅРѕРІР»РµРЅРёСЏ UpdateCL
 public:
 #ifdef DEBUG
 	u32									dbg_update_cl;

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////
-//	Module 		: data_storage_bucket_list_רעהרעף.h
+//	Module 		: data_storage_bucket_list_inline.h
 //	Created 	: 21.03.2002
 //  Modified 	: 26.02.2004
 //	Author		: Dmitriy Iassenev

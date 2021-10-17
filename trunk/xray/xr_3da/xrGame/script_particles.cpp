@@ -135,7 +135,7 @@ void CScriptParticles::SetDirection (const Fvector &dir)
 void CScriptParticles::SetOrientation(float yaw, float pitch, float roll)
 {
 	Fmatrix matrix;	
-	matrix.setHPB(yaw, pitch, roll); // çàòèðàåòñÿ matrix.c
+	matrix.setHPB(yaw, pitch, roll); // Ð·Ð°Ñ‚Ð¸Ñ€Ð°ÐµÑ‚ÑÑ matrix.c
 	matrix.translate_over	(m_transform.c);
 	m_transform.set (matrix);
 	m_particles->UpdateParent	(matrix, zero_vel);

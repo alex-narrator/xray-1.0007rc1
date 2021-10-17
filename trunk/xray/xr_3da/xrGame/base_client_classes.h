@@ -24,9 +24,9 @@ class CKinematics;
 class CKinematicsAnimated;
 
 template <class C, typename T> 
-IC void fake_setter(C *, T) {}; // alpet: чтобы определялись типы свойств при дампе в lua_help.script
+IC void fake_setter(C *, T) {}; // alpet: С‡С‚РѕР±С‹ РѕРїСЂРµРґРµР»СЏР»РёСЃСЊ С‚РёРїС‹ СЃРІРѕР№СЃС‚РІ РїСЂРё РґР°РјРїРµ РІ lua_help.script
 
-struct SLargeInteger // по мотивам LARGE_INTEGER
+struct SLargeInteger // РїРѕ РјРѕС‚РёРІР°Рј LARGE_INTEGER
 { 
 public:	
 	union 

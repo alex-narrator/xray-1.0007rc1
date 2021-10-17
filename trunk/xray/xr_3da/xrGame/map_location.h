@@ -88,7 +88,7 @@ public:
 	virtual bool			CanBeSelected					()						{return true;}
 	virtual bool			CanBeUserRemoved				()						{return false;}
 
-	// Real Wolf: Для использования типа в дальнейшем. 03.08.2014.
+	// Real Wolf: Р”Р»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ С‚РёРїР° РІ РґР°Р»СЊРЅРµР№С€РµРј. 03.08.2014.
 	shared_str				m_type;
 
 	CMapSpot*				m_level_spot;

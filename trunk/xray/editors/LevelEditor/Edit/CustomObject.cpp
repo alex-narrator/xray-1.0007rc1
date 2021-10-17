@@ -29,7 +29,7 @@ CCustomObject::CCustomObject(LPVOID data, LPCSTR name)
     m_RT_Flags.assign(flRT_Valid);
     m_pOwnerObject	= 0;
     ResetTransform	();
-    m_RT_Flags.set	(flRT_UpdateTransform,TRUE); //.???? было FALSE, нужно когда создается 
+    m_RT_Flags.set	(flRT_UpdateTransform,TRUE); //.???? Р±С‹Р»Рѕ FALSE, РЅСѓР¶РЅРѕ РєРѕРіРґР° СЃРѕР·РґР°РµС‚СЃСЏ 
     m_Motion		= NULL;
     m_MotionParams 	= NULL;
     FPosition.set	(0,0,0);
@@ -137,7 +137,7 @@ bool CCustomObject::Load(IReader& F)
         AnimationUpdate(m_MotionParams->Frame());
     }
 
-//	UpdateTransform	(true); // нужно для секторов, иначе неправильный бокс
+//	UpdateTransform	(true); // РЅСѓР¶РЅРѕ РґР»СЏ СЃРµРєС‚РѕСЂРѕРІ, РёРЅР°С‡Рµ РЅРµРїСЂР°РІРёР»СЊРЅС‹Р№ Р±РѕРєСЃ
 	UpdateTransform	();
 //	m_bUpdateTransform = TRUE;
 

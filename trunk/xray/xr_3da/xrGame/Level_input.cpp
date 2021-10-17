@@ -46,7 +46,7 @@ void CLevel::IR_OnMouseWheel( int direction )
 	if(	g_bDisableAllInput	) return;
 
 	/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-	// Êîëáåê íà âðàùåíèå êîëåñà ìûøè
+	// ÐšÐ¾Ð»Ð±ÐµÐº Ð½Ð° Ð²Ñ€Ð°Ñ‰ÐµÐ½Ð¸Ðµ ÐºÐ¾Ð»ÐµÑÐ° Ð¼Ñ‹ÑˆÐ¸
 	if(g_actor) Actor()->callback(GameObject::eOnMouseWheel)(direction);
 	/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 
@@ -91,7 +91,7 @@ void CLevel::IR_OnMouseMove( int dx, int dy )
 	if(g_bDisableAllInput)						return;
 
 	/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-	// Êîëáåê íà äâèæåíèå ìûøè
+	// ÐšÐ¾Ð»Ð±ÐµÐº Ð½Ð° Ð´Ð²Ð¸Ð¶ÐµÐ½Ð¸Ðµ Ð¼Ñ‹ÑˆÐ¸
 	if(g_actor) Actor()->callback(GameObject::eOnMouseMove)(dx, dy);
 	/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 
@@ -119,7 +119,7 @@ public:
 	}}
 }	vtune	;
 
-// Îáðàáîòêà íàæàòèÿ êëàâèø
+// ÐžÐ±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ° Ð½Ð°Ð¶Ð°Ñ‚Ð¸Ñ ÐºÐ»Ð°Ð²Ð¸Ñˆ
 extern bool g_block_pause;
 
 #include "ui/UIMainIngameWnd.h"
@@ -138,7 +138,7 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		}
 
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-		// Êîëáåê íà íàæàòèå êëàâèøè
+		// ÐšÐ¾Ð»Ð±ÐµÐº Ð½Ð° Ð½Ð°Ð¶Ð°Ñ‚Ð¸Ðµ ÐºÐ»Ð°Ð²Ð¸ÑˆÐ¸
 		if (g_actor) Actor()->callback(GameObject::eOnKeyPress)(key);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 	}
@@ -412,7 +412,7 @@ void CLevel::IR_OnKeyboardRelease(int key)
 	if (g_bDisableAllInput	) return;
 
 	/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-	// Êîëáåê íà îòïóñêàíèå êëàâèøè
+	// ÐšÐ¾Ð»Ð±ÐµÐº Ð½Ð° Ð¾Ñ‚Ð¿ÑƒÑÐºÐ°Ð½Ð¸Ðµ ÐºÐ»Ð°Ð²Ð¸ÑˆÐ¸
 	if(g_actor) Actor()->callback(GameObject::eOnKeyRelease)(key);
 	/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 
@@ -432,7 +432,7 @@ void CLevel::IR_OnKeyboardHold(int key)
 	if(g_bDisableAllInput) return;
 
 	/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-	// Êîëáåê íà óäåðæèâàíèå êëàâèøè
+	// ÐšÐ¾Ð»Ð±ÐµÐº Ð½Ð° ÑƒÐ´ÐµÑ€Ð¶Ð¸Ð²Ð°Ð½Ð¸Ðµ ÐºÐ»Ð°Ð²Ð¸ÑˆÐ¸
 	if(g_actor) Actor()->callback(GameObject::eOnKeyHold)(key);
 	/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 

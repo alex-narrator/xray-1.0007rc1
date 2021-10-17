@@ -145,7 +145,7 @@ enum EUIMessages
 	MAP_HIDE_HINT,
 	MAP_SELECT_SPOT,
 #if defined(INV_NEW_SLOTS_SYSTEM) || defined(INV_DOUBLE_WPN_SLOTS)
-	// Для контекстного меню равнозначных слотов оружия. Real Wolf.
+	// Р”Р»СЏ РєРѕРЅС‚РµРєСЃС‚РЅРѕРіРѕ РјРµРЅСЋ СЂР°РІРЅРѕР·РЅР°С‡РЅС‹С… СЃР»РѕС‚РѕРІ РѕСЂСѓР¶РёСЏ. Real Wolf.
 	INVENTORY_TO_SLOT0_ACTION,
 	INVENTORY_TO_SLOT1_ACTION,
 	INVENTORY_TO_SLOT2_ACTION,

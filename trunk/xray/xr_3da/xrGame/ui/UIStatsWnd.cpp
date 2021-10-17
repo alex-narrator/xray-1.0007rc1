@@ -40,7 +40,7 @@ void CUIStatsWnd::Init(LPCSTR XML)
 					CUIXmlInit::ApplyAlignY(0, alCenter),
 					UI_BASE_WIDTH, UI_BASE_HEIGHT);
 
-	// Читаем из xml файла параметры окна и контролов
+	// Р§РёС‚Р°РµРј РёР· xml С„Р°Р№Р»Р° РїР°СЂР°РјРµС‚СЂС‹ РѕРєРЅР° Рё РєРѕРЅС‚СЂРѕР»РѕРІ
 	AttachChild(&UIFrameWnd);
 	xml_init.InitFrameWindow(uiXml, "frame_window", 0, &UIFrameWnd);
 
@@ -130,7 +130,7 @@ void CUIStatsWnd::SetHeaderColumnText(const u32 headerItem, const shared_str &te
 }
 
 //////////////////////////////////////////////////////////////////////////
-//  CUIStatsListItem - класс элемента списка в листе
+//  CUIStatsListItem - РєР»Р°СЃСЃ СЌР»РµРјРµРЅС‚Р° СЃРїРёСЃРєР° РІ Р»РёСЃС‚Рµ
 //////////////////////////////////////////////////////////////////////////
 
 void CUIStatsListItem::XmlInit(const char *path, CUIXml &uiXml)

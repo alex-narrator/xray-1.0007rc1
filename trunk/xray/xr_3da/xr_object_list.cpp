@@ -26,7 +26,7 @@ bool chk_already_deleted(CObject *O, str_c context)
 {
 	xr_vector<CObject*>::iterator i = std::find(deleted_objects.begin(), deleted_objects.end(), O);
 	if (i != deleted_objects.end())
-	{   // обычно ничего страшного, повторное использование блока памяти. 
+	{   // РѕР±С‹С‡РЅРѕ РЅРёС‡РµРіРѕ СЃС‚СЂР°С€РЅРѕРіРѕ, РїРѕРІС‚РѕСЂРЅРѕРµ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ Р±Р»РѕРєР° РїР°РјСЏС‚Рё. 
 		// Msg("!WARN: %-15s touch already deleted object 0x%p, ID = %d, Name = %s ", context, O, O->ID(), O->Name_script());
 		return true;
 	}
@@ -337,7 +337,7 @@ void CObjectList::Load		()
 {
 	R_ASSERT				(map_NETID.empty() && objects_active.empty() && destroy_queue.empty() && objects_sleeping.empty());	
 #ifdef LUAICP_COMPAT
-	// здесь переменная g_pGameLevel уже не должна быть NULL
+	// Р·РґРµСЃСЊ РїРµСЂРµРјРµРЅРЅР°СЏ g_pGameLevel СѓР¶Рµ РЅРµ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ NULL
 	LogXrayOffset("GameLevel.ObjectList",		g_pGameLevel, this);
 	LogXrayOffset("GameLevel.map_NETID",		g_pGameLevel, &this->map_NETID);
 	LogXrayOffset("GameLevel.destroy_queue",	g_pGameLevel, &this->destroy_queue);

@@ -64,7 +64,7 @@ public:
 	void			SetRange	    (float range, int target = 0);
 	void			SetTexture		(LPCSTR texture, int target = 0);
 	void			SetVirtualSize	(float size, int target = 0);
-	void			Synchronize		(); // alpet: сохранение данных в серверный объект
+	void			Synchronize		(); // alpet: СЃРѕС…СЂР°РЅРµРЅРёРµ РґР°РЅРЅС‹С… РІ СЃРµСЂРІРµСЂРЅС‹Р№ РѕР±СЉРµРєС‚
 
 	virtual void	Load			( LPCSTR section);
 	virtual BOOL	net_Spawn		( CSE_Abstract* DC);

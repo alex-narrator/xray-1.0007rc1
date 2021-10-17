@@ -221,11 +221,11 @@ void CTorch::Switch	(bool light_on)
 	}
 
 	/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-	// Колбек на переключение фонаря
+	// РљРѕР»Р±РµРє РЅР° РїРµСЂРµРєР»СЋС‡РµРЅРёРµ С„РѕРЅР°СЂСЏ
 	if(b_lastState == light_on) return;
 	b_lastState = light_on;
 	callback(GameObject::eSwitchTorch)(light_on);
-	// вызываем событие также и для актора (при использовании его фонарика)
+	// РІС‹Р·С‹РІР°РµРј СЃРѕР±С‹С‚РёРµ С‚Р°РєР¶Рµ Рё РґР»СЏ Р°РєС‚РѕСЂР° (РїСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё РµРіРѕ С„РѕРЅР°СЂРёРєР°)
 	CActor *pA = smart_cast<CActor *>(H_Parent());
 	if ((pA) ? true : false)
 	{
@@ -274,7 +274,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	glow_render->set_color	(clr);
 	glow_render->set_radius	(pUserData->r_float					("torch_definition","glow_radius"));
 
-	//включить/выключить фонарик
+	//РІРєР»СЋС‡РёС‚СЊ/РІС‹РєР»СЋС‡РёС‚СЊ С„РѕРЅР°СЂРёРє
 	Switch					(torch->m_active);
 	VERIFY					(!torch->m_active || (torch->ID_Parent != 0xffff));
 	
@@ -432,7 +432,7 @@ void CTorch::UpdateCL()
 	if (!lanim)							return;
 
 	int						frame;
-	// возвращает в формате BGR
+	// РІРѕР·РІСЂР°С‰Р°РµС‚ РІ С„РѕСЂРјР°С‚Рµ BGR
 	u32 clr					= lanim->CalculateBGR(Device.fTimeGlobal,frame); 
 
 	Fcolor					fclr;

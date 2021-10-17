@@ -118,13 +118,13 @@ CUIDragItem* CUICellItem::CreateDragItem()
 		w				= r.width();
 		h				= r.height();
 		if (Heading())
-		{   // исправление пропорций
+		{   // РёСЃРїСЂР°РІР»РµРЅРёРµ РїСЂРѕРїРѕСЂС†РёР№
 			w = w / m_cell_size.x * m_cell_size.y;
 			h = h / m_cell_size.y * m_cell_size.x;
 		}
 
 		Fvector2 cp = GetUICursor()->GetCursorPosition();
-		// поворот на 90 градусов, и центрирование по курсору мыша						
+		// РїРѕРІРѕСЂРѕС‚ РЅР° 90 РіСЂР°РґСѓСЃРѕРІ, Рё С†РµРЅС‚СЂРёСЂРѕРІР°РЅРёРµ РїРѕ РєСѓСЂСЃРѕСЂСѓ РјС‹С€Р°						
 		r.x1			= (cp.x - h / 2.0f);
 		r.y1			= (cp.y - w / 2.0f);
 		r.x2			= r.x1 + h;

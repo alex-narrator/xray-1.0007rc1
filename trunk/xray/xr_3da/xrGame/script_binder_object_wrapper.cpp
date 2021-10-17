@@ -15,7 +15,7 @@
 #include "GameObject.h"
 
 #ifdef PERF_CHECK
-#pragma message("alpet: дефайн PERF_CHECK не рекомендуется для trunk/release")
+#pragma message("alpet: РґРµС„Р°Р№РЅ PERF_CHECK РЅРµ СЂРµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ РґР»СЏ trunk/release")
 #pragma optimize("t", on)
 #endif 
 

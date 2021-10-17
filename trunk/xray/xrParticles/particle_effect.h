@@ -66,7 +66,7 @@ namespace PAPI{
         	if (0==p_count)			return;
 			Particle& m				= particles[i];
             if (d_cb)				d_cb(owner,param,m,i);
-            m 						= particles[--p_count]; // не менять правило удаления !!! (dependence ParticleGroup)
+            m 						= particles[--p_count]; // РЅРµ РјРµРЅСЏС‚СЊ РїСЂР°РІРёР»Рѕ СѓРґР°Р»РµРЅРёСЏ !!! (dependence ParticleGroup)
 		}
 
 		IC BOOL		Add				(const pVector &pos, const pVector &posB,

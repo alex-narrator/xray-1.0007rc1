@@ -91,7 +91,7 @@ CScriptGameObject *get_object_by_id(u32 id)
 
 void raw_get_object_by_id(lua_State *L)
 {
-	// alpet: при использовании lua_newthread может быть создана отдельная VM. Которая потом потребуется для свойства CScriptGameObject.interface
+	// alpet: РїСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё lua_newthread РјРѕР¶РµС‚ Р±С‹С‚СЊ СЃРѕР·РґР°РЅР° РѕС‚РґРµР»СЊРЅР°СЏ VM. РљРѕС‚РѕСЂР°СЏ РїРѕС‚РѕРј РїРѕС‚СЂРµР±СѓРµС‚СЃСЏ РґР»СЏ СЃРІРѕР№СЃС‚РІР° CScriptGameObject.interface
 	CScriptGameObject *result = NULL;
 
 	u32 id = (u32) lua_tointeger(L, 1);
@@ -370,14 +370,14 @@ void level_on_frame()
 bool receive_game_events()
 {
 	Level().ClientReceive();
-	// вернуть true если события добавлены
+	// РІРµСЂРЅСѓС‚СЊ true РµСЃР»Рё СЃРѕР±С‹С‚РёСЏ РґРѕР±Р°РІР»РµРЅС‹
 	return !!Level().game_events->available(0); 
 }
 
 bool process_game_events()
 {
 	Level().ProcessGameEvents();
-    // вернуть true если не все события обработаны
+    // РІРµСЂРЅСѓС‚СЊ true РµСЃР»Рё РЅРµ РІСЃРµ СЃРѕР±С‹С‚РёСЏ РѕР±СЂР°Р±РѕС‚Р°РЅС‹
 	return !!Level().spawn_events->available(0);
 }
 
@@ -796,7 +796,7 @@ void CLevel::script_register(lua_State *L)
 		def("vertex_id",						&vertex_id),
 
 		// alpet 18.10.2014
-		// экспериментальное, для ускорения отработки спавна клиентских объектов.
+		// СЌРєСЃРїРµСЂРёРјРµРЅС‚Р°Р»СЊРЅРѕРµ, РґР»СЏ СѓСЃРєРѕСЂРµРЅРёСЏ РѕС‚СЂР°Р±РѕС‚РєРё СЃРїР°РІРЅР° РєР»РёРµРЅС‚СЃРєРёС… РѕР±СЉРµРєС‚РѕРІ.
 		def("on_frame",							&level_on_frame),
 		def("receive_game_events",				&receive_game_events),
 		def("process_game_events",				&process_game_events),   
@@ -865,7 +865,7 @@ void CLevel::script_register(lua_State *L)
 		def("get_talk_wnd",			&get_talk_wnd),
 		def("get_car_body_wnd",		&get_car_body_wnd),
 		def("get_trade_wnd",		&get_trade_wnd),
-		// alpet: сокращенные функции запуска-остановки диалогов
+		// alpet: СЃРѕРєСЂР°С‰РµРЅРЅС‹Рµ С„СѓРЅРєС†РёРё Р·Р°РїСѓСЃРєР°-РѕСЃС‚Р°РЅРѕРІРєРё РґРёР°Р»РѕРіРѕРІ
 		def("start_dialog",			&start_dialog),
 		def("stop_dialog",			&stop_dialog),
 		def("reinit_shown_ui",		&reinit_shown_ui)

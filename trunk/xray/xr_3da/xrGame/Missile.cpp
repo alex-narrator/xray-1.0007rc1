@@ -81,7 +81,7 @@ void CMissile::Load(LPCSTR section)
 	m_vHudThrowPoint	= pSettings->r_fvector3(*hud_sect,"throw_point");
 	m_vHudThrowDir		= pSettings->r_fvector3(*hud_sect,"throw_dir");
 
-	//загрузить анимации HUD-а
+	//Р·Р°РіСЂСѓР·РёС‚СЊ Р°РЅРёРјР°С†РёРё HUD-Р°
 	m_sAnimShow			= pSettings->r_string(*hud_sect, "anim_show");
 	m_sAnimHide			= pSettings->r_string(*hud_sect, "anim_hide");
 	m_sAnimIdle			= pSettings->r_string(*hud_sect, "anim_idle");
@@ -197,7 +197,7 @@ void CMissile::UpdateCL()
 	if(GetState() == MS_IDLE && m_dwStateTime > PLAYING_ANIM_TIME) 
 		OnStateSwitch(MS_PLAYING);
 
-	// alpet: поддержка анимации спринта для болтов
+	// alpet: РїРѕРґРґРµСЂР¶РєР° Р°РЅРёРјР°С†РёРё СЃРїСЂРёРЅС‚Р° РґР»СЏ Р±РѕР»С‚РѕРІ
 	CActor	*actor = smart_cast<CActor*>(H_Parent());
 	u32		state = GetState();
 	bool	idle = ( MS_IDLE == state ) || ( MS_IDLE_SPRINT == state );	
@@ -251,7 +251,7 @@ void CMissile::State(u32 state)
 			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimShow), FALSE, this, GetState());
 		} break;
 	
-	// Real Wolf: Сделаем отдельную анимацию для появления после броска. 29.12.14
+	// Real Wolf: РЎРґРµР»Р°РµРј РѕС‚РґРµР»СЊРЅСѓСЋ Р°РЅРёРјР°С†РёСЋ РґР»СЏ РїРѕСЏРІР»РµРЅРёСЏ РїРѕСЃР»Рµ Р±СЂРѕСЃРєР°. 29.12.14
 	case MS_SHOWING2:
 	{
 		m_bPending = true;
@@ -293,7 +293,7 @@ void CMissile::State(u32 state)
 	case MS_THREATEN:
 		{
 //#if defined(MISSILE_THREAT_FIX)
-			// Real Wolf: Останавливаем спринт при броске. 22.07.2014.
+			// Real Wolf: РћСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃРїСЂРёРЅС‚ РїСЂРё Р±СЂРѕСЃРєРµ. 22.07.2014.
 			if(psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT)) g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint) );
 //#endif
 			m_bPending = true;

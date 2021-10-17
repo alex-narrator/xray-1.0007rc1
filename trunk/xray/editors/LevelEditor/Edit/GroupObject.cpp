@@ -21,7 +21,7 @@ static const float EMPTY_GROUP_SIZE = 0.5f;
 #define GROUPOBJ_CHUNK_OPEN_OBJECT_LIST	0x0005
 //----------------------------------------------------
 //------------------------------------------------------------------------------
-// !!! при разворачивании груп использовать prefix если нужно имя !!!
+// !!! РїСЂРё СЂР°Р·РІРѕСЂР°С‡РёРІР°РЅРёРё РіСЂСѓРї РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ prefix РµСЃР»Рё РЅСѓР¶РЅРѕ РёРјСЏ !!!
 //------------------------------------------------------------------------------
 
 CGroupObject::CGroupObject(LPVOID data, LPCSTR name):CCustomObject(data,name)
@@ -566,7 +566,7 @@ void CGroupObject::OpenGroup()
 void CGroupObject::CloseGroup()
 {
 	if (IsOpened()){
-        m_Flags.set(flStateOpened,FALSE);										// последовательность очень важна!!! иначе удалим себя из списка
+        m_Flags.set(flStateOpened,FALSE);										// РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ РѕС‡РµРЅСЊ РІР°Р¶РЅР°!!! РёРЅР°С‡Рµ СѓРґР°Р»РёРј СЃРµР±СЏ РёР· СЃРїРёСЃРєР°
         for (ObjectIt it=m_Objects.begin(); it!=m_Objects.end(); it++)
         	LL_AppendObject(*it,false);
     }

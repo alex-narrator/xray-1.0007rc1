@@ -10,7 +10,7 @@ XRCORE_API LPCSTR  BuildStackTrace();
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-int		rsDVB_Size			= 4096; // предотвращение вылета (bytes_need<=mSize) && vl_Count 
+int		rsDVB_Size			= 4096; // РїСЂРµРґРѕС‚РІСЂР°С‰РµРЅРёРµ РІС‹Р»РµС‚Р° (bytes_need<=mSize) && vl_Count 
 int		rsDIB_Size			= 512;
 
 void _VertexStream::Create	()

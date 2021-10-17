@@ -97,17 +97,17 @@ void CScriptGameObject::script_register(lua_State *L)
 					value("take_item_from_box", int(GameObject::eInvBoxItemTake)),
 					value("map_location_added", int(GameObject::eMapLocationAdded)),
 					/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
-					// клавиатура/мышь
+					// РєР»Р°РІРёР°С‚СѓСЂР°/РјС‹С€СЊ
 					value("on_key_press", int(GameObject::eOnKeyPress)),
 					value("on_key_release", int(GameObject::eOnKeyRelease)),
 					value("on_key_hold", int(GameObject::eOnKeyHold)),
 					value("on_mouse_move", int(GameObject::eOnMouseMove)),
 					value("on_mouse_wheel", int(GameObject::eOnMouseWheel)),
-					// инвентарь
+					// РёРЅРІРµРЅС‚Р°СЂСЊ
 					value("on_item_belt", int(GameObject::eOnItemBelt)),
 					value("on_item_slot", int(GameObject::eOnItemSlot)),
 					value("on_item_ruck", int(GameObject::eOnItemRuck)),
-					// фонарь
+					// С„РѕРЅР°СЂСЊ
 					value("switch_torch", int(GameObject::eSwitchTorch)),
 					/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/				
 					// Added by Cribbledirge Start

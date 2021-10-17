@@ -10,11 +10,11 @@ BOOL						LogExecCB		= TRUE;
 static string_path			logFName		= "engine.log";
 static BOOL 				no_log			= TRUE;
 
-str_container				verbosity_filters; // набор фильтров для вывода регулярных сообщений
+str_container				verbosity_filters; // РЅР°Р±РѕСЂ С„РёР»СЊС‚СЂРѕРІ РґР»СЏ РІС‹РІРѕРґР° СЂРµРіСѓР»СЏСЂРЅС‹С… СЃРѕРѕР±С‰РµРЅРёР№
  u32						verbosity_level = 3;
 
 #define	LOG_TIME_PRECISE
-bool __declspec(dllexport) force_flush_log = false;	// alpet: выставить в true если лог все-же записывается плохо при вылете. Слишком частая запись лога вредит SSD и снижает произволительность.
+bool __declspec(dllexport) force_flush_log = false;	// alpet: РІС‹СЃС‚Р°РІРёС‚СЊ РІ true РµСЃР»Рё Р»РѕРі РІСЃРµ-Р¶Рµ Р·Р°РїРёСЃС‹РІР°РµС‚СЃСЏ РїР»РѕС…Рѕ РїСЂРё РІС‹Р»РµС‚Рµ. РЎР»РёС€РєРѕРј С‡Р°СЃС‚Р°СЏ Р·Р°РїРёСЃСЊ Р»РѕРіР° РІСЂРµРґРёС‚ SSD Рё СЃРЅРёР¶Р°РµС‚ РїСЂРѕРёР·РІРѕР»РёС‚РµР»СЊРЅРѕСЃС‚СЊ.
 
 #ifdef PROFILE_CRITICAL_SECTIONS
 	static xrCriticalSection	logCS(MUTEX_PROFILE_ID(log));
@@ -91,7 +91,7 @@ void AddOne				(const char *split)
 			case 0x21:
 			case 0x23:
 			case 0x25:
-				split ++; // пропустить первый символ, т.к. это вероятно цветовой тег
+				split ++; // РїСЂРѕРїСѓСЃС‚РёС‚СЊ РїРµСЂРІС‹Р№ СЃРёРјРІРѕР», С‚.Рє. СЌС‚Рѕ РІРµСЂРѕСЏС‚РЅРѕ С†РІРµС‚РѕРІРѕР№ С‚РµРі
 				break;
 			}
 
@@ -144,7 +144,7 @@ void Log				(const char *s)
 
 void __cdecl LogVAList(const char *format, va_list &mark)
 {
-	string4096	buf; // alpet: размер буфера лучше сделать побольше, чтобы избежать вылетов invalid parameter handler при выводе стеков вызова
+	string4096	buf; // alpet: СЂР°Р·РјРµСЂ Р±СѓС„РµСЂР° Р»СѓС‡С€Рµ СЃРґРµР»Р°С‚СЊ РїРѕР±РѕР»СЊС€Рµ, С‡С‚РѕР±С‹ РёР·Р±РµР¶Р°С‚СЊ РІС‹Р»РµС‚РѕРІ invalid parameter handler РїСЂРё РІС‹РІРѕРґРµ СЃС‚РµРєРѕРІ РІС‹Р·РѕРІР°
 	int sz		= _vsnprintf(buf, sizeof(buf)-1, format, mark); buf[sizeof(buf)-1]=0;
     va_end		(mark);
 	if (sz)		Log(buf);
@@ -157,9 +157,9 @@ void __cdecl Msg		( const char *format, ...)
 	LogVAList   (format, mark);
 }
 
-void __cdecl	MsgCB (LPCSTR format, ...) // alpet: вывод сообщений только в колбек (для отладки и передачи данных в перехватчик)
+void __cdecl	MsgCB (LPCSTR format, ...) // alpet: РІС‹РІРѕРґ СЃРѕРѕР±С‰РµРЅРёР№ С‚РѕР»СЊРєРѕ РІ РєРѕР»Р±РµРє (РґР»СЏ РѕС‚Р»Р°РґРєРё Рё РїРµСЂРµРґР°С‡Рё РґР°РЅРЅС‹С… РІ РїРµСЂРµС…РІР°С‚С‡РёРє)
 {
-	static string4096 ctx_ring[16];   // кольцевой буфер для сохранения данных контекста выполнения (выводится при сбое, или по необходимости)
+	static string4096 ctx_ring[16];   // РєРѕР»СЊС†РµРІРѕР№ Р±СѓС„РµСЂ РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ РґР°РЅРЅС‹С… РєРѕРЅС‚РµРєСЃС‚Р° РІС‹РїРѕР»РЅРµРЅРёСЏ (РІС‹РІРѕРґРёС‚СЃСЏ РїСЂРё СЃР±РѕРµ, РёР»Рё РїРѕ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё)
 	static u32 ctx_index = 0;
 
 	va_list mark;
@@ -167,7 +167,7 @@ void __cdecl	MsgCB (LPCSTR format, ...) // alpet: вывод сообщений только в колбе
 	va_start(mark, format);
 	int sz = _vsnprintf(buf, sizeof(buf)-1, format, mark); buf[sizeof(buf)-1] = 0;
 	va_end(mark);
-	// функция двойного назначения: может использоваться для вотчинга произвольных переменных в местах потенциальных сбоев
+	// С„СѓРЅРєС†РёСЏ РґРІРѕР№РЅРѕРіРѕ РЅР°Р·РЅР°С‡РµРЅРёСЏ: РјРѕР¶РµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РґР»СЏ РІРѕС‚С‡РёРЅРіР° РїСЂРѕРёР·РІРѕР»СЊРЅС‹С… РїРµСЂРµРјРµРЅРЅС‹С… РІ РјРµСЃС‚Р°С… РїРѕС‚РµРЅС†РёР°Р»СЊРЅС‹С… СЃР±РѕРµРІ
 	if (strstr(buf, "#CONTEXT:"))
 	{
 		SYSTEMTIME lt;

@@ -13,7 +13,7 @@
 static IWriter *dumper = NULL;
 string1024 line_buf;
 
-// дефайн LUABIND_NO_ERROR_CHECKING3 надо включать в config.hpp рядом с LUABIND_NO_ERROR_CHECKING2 
+// РґРµС„Р°Р№РЅ LUABIND_NO_ERROR_CHECKING3 РЅР°РґРѕ РІРєР»СЋС‡Р°С‚СЊ РІ config.hpp СЂСЏРґРѕРј СЃ LUABIND_NO_ERROR_CHECKING2 
 
 #ifndef LUABIND_NO_ERROR_CHECKING3
 
@@ -352,7 +352,7 @@ void print_free_functions				(lua_State *L, const luabind::object &object, LPCST
 		lua_pushnil		(L);		
 		int save_top = lua_gettop(L);
 
-// #pragma todo("alpet : при загруженной сохраненке здесь иногда происходит сбой invalid key to 'next', а потом креш в недрах Direct3D ")
+// #pragma todo("alpet : РїСЂРё Р·Р°РіСЂСѓР¶РµРЅРЅРѕР№ СЃРѕС…СЂР°РЅРµРЅРєРµ Р·РґРµСЃСЊ РёРЅРѕРіРґР° РїСЂРѕРёСЃС…РѕРґРёС‚ СЃР±РѕР№ invalid key to 'next', Р° РїРѕС‚РѕРј РєСЂРµС€ РІ РЅРµРґСЂР°С… Direct3D ")
 		while (lua_next(L, n_table) != 0) {  
 			last_key = "~"; 
 			int key_type = lua_type(L, -2);			
@@ -362,9 +362,9 @@ void print_free_functions				(lua_State *L, const luabind::object &object, LPCST
 				MsgCB("~#CONTEXT: last_key = %s", S);
 				string_path script_name;
 				sprintf_s(script_name, sizeof(script_name) - 1, "%s.script", S);
-				if (nesting_path.size() == 0 && // скан глобального пространства имен
+				if (nesting_path.size() == 0 && // СЃРєР°РЅ РіР»РѕР±Р°Р»СЊРЅРѕРіРѕ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° РёРјРµРЅ
 					(last_key == "" || last_key == "config" || last_key == "package" || last_key == "jit" || last_key == "loaded" || last_key == "md_list" ||
-   					 FS.exist("$game_scripts$", script_name) )) // с дампом экспортируемых luabind вещей, возникают сбои!
+   					 FS.exist("$game_scripts$", script_name) )) // СЃ РґР°РјРїРѕРј СЌРєСЃРїРѕСЂС‚РёСЂСѓРµРјС‹С… luabind РІРµС‰РµР№, РІРѕР·РЅРёРєР°СЋС‚ СЃР±РѕРё!
 				{
 					Msg("! skipping namespace %s ", last_key.c_str());
 					lua_pop(L, 1);
@@ -384,7 +384,7 @@ void print_free_functions				(lua_State *L, const luabind::object &object, LPCST
 					nesting_path.push_back(S);
 
 					u32 nest_level = nesting_path.size();
-					// если слишком много вложений или начали повторяться строки
+					// РµСЃР»Рё СЃР»РёС€РєРѕРј РјРЅРѕРіРѕ РІР»РѕР¶РµРЅРёР№ РёР»Рё РЅР°С‡Р°Р»Рё РїРѕРІС‚РѕСЂСЏС‚СЊСЃСЏ СЃС‚СЂРѕРєРё
 					if (nest_level < 2 &&
 						!(nest_level > 1 && nesting_path.at(0) == S)
 						)
@@ -424,7 +424,7 @@ void print_help							(lua_State *L)
 
 	if (g_pGameLevel)
 	{
-		Msg("!WARN: Рекомендуется lua_help выполнять до загрузки уровня (из главного меню).");
+		Msg("!WARN: Р РµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ lua_help РІС‹РїРѕР»РЅСЏС‚СЊ РґРѕ Р·Р°РіСЂСѓР·РєРё СѓСЂРѕРІРЅСЏ (РёР· РіР»Р°РІРЅРѕРіРѕ РјРµРЅСЋ).");
 		// return;
 	}
 

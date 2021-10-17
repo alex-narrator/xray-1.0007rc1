@@ -97,7 +97,7 @@ IRender_Visual*	CModelPool::Instance_Load		(const char* N, BOOL allow_register)
 	string_path		name;
 
 	strcpy_s(name, sizeof(name), N);
-	// alpet: для унификации имен клонов ресурсов
+	// alpet: РґР»СЏ СѓРЅРёС„РёРєР°С†РёРё РёРјРµРЅ РєР»РѕРЅРѕРІ СЂРµСЃСѓСЂСЃРѕРІ
 	char *sub = strstr(name, "|");
 	if (sub)
 		sub[0] = 0;

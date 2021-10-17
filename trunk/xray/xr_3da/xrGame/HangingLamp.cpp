@@ -98,7 +98,7 @@ BOOL CHangingLamp::net_Spawn(CSE_Abstract* DC)
 		light_bone			= K->LL_BoneID	(*lamp->light_main_bone);	VERIFY(light_bone!=BI_NONE);
 		ambient_bone		= K->LL_BoneID	(*lamp->light_ambient_bone);VERIFY(ambient_bone!=BI_NONE);
 		collidable.model	= xr_new<CCF_Skeleton>				(this);
-		// alpet: загрузка иммунитетов из спавн-конфига
+		// alpet: Р·Р°РіСЂСѓР·РєР° РёРјРјСѓРЅРёС‚РµС‚РѕРІ РёР· СЃРїР°РІРЅ-РєРѕРЅС„РёРіР°
 		CInifile* ini=K->LL_UserData();
 		if(ini && ini->section_exist("immunities"))		CHitImmunity::LoadImmunities("immunities",ini);
 	}
@@ -238,7 +238,7 @@ void CHangingLamp::UpdateCL	()
 		
 		if (lanim){
 			int frame;
-			u32 clr					= lanim->CalculateBGR(Device.fTimeGlobal,frame); // возвращает в формате BGR
+			u32 clr					= lanim->CalculateBGR(Device.fTimeGlobal,frame); // РІРѕР·РІСЂР°С‰Р°РµС‚ РІ С„РѕСЂРјР°С‚Рµ BGR
 			Fcolor					fclr;
 			fclr.set				((float)color_get_B(clr),(float)color_get_G(clr),(float)color_get_R(clr),1.f);
 			fclr.mul_rgb			(fBrightness/255.f);
@@ -296,7 +296,7 @@ void		CHangingLamp::SetPosition(const Fvector &v)
 	lua_game_object()->SetPosition(v);	
 }
 
-void		CHangingLamp::Synchronize() // alpet: сохранение данных в серверный объект
+void		CHangingLamp::Synchronize() // alpet: СЃРѕС…СЂР°РЅРµРЅРёРµ РґР°РЅРЅС‹С… РІ СЃРµСЂРІРµСЂРЅС‹Р№ РѕР±СЉРµРєС‚
 {
 	CSE_ALifeObjectHangingLamp *lamp = get_se_lamp(this);
 	if (!lamp) return;
@@ -437,7 +437,7 @@ void CHangingLamp::script_register(lua_State *L)
 			.def(luabind::constructor<>())
 			.def("turn_on",		&CHangingLamp::TurnOn)
 			.def("turn_off",	&CHangingLamp::TurnOff)
-			// alpet: управление параметрами света			
+			// alpet: СѓРїСЂР°РІР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР°РјРё СЃРІРµС‚Р°			
 			.def("get_light",		&CHangingLamp::GetLight) 
 			.def("set_animation",	&CHangingLamp::SetAnimation)
 			.def("set_brightness",	&CHangingLamp::SetBrightness)

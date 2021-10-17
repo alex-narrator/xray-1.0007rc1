@@ -343,7 +343,7 @@ void CDetailManager::Render	()
 	if (0==dtFS)						return;
 	if (!psDeviceFlags.is(rsDetails))	return;
 #ifdef ECO_RENDER
-	if (TargetRenderLoad() == 30) return; // не рисовать траву в меню
+	if (TargetRenderLoad() == 30) return; // РЅРµ СЂРёСЃРѕРІР°С‚СЊ С‚СЂР°РІСѓ РІ РјРµРЅСЋ
 #endif
 	
 #endif
@@ -371,7 +371,7 @@ void __stdcall	CDetailManager::MT_CALC		()
 	if (0==dtFS)						return;
 	if (!psDeviceFlags.is(rsDetails))	return;
 #ifdef ECO_RENDER
-	if (TargetRenderLoad() == 30) return; // не рисовать траву в меню
+	if (TargetRenderLoad() == 30) return; // РЅРµ СЂРёСЃРѕРІР°С‚СЊ С‚СЂР°РІСѓ РІ РјРµРЅСЋ
 #endif
 #endif    
 
