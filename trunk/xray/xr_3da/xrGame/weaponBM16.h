@@ -29,6 +29,7 @@ protected:
 	virtual void	PlayAnimShoot					();
 	virtual void	PlayAnimReload					();
 	virtual void	PlayReloadSound					();
+	virtual void	UpdateSounds					() override;
 	virtual void	PlayAnimIdle					();
 
 #if defined(BM16_ANIMS_FIX)

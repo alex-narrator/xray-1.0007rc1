@@ -11,12 +11,12 @@ void CWeaponBM16::Load	(LPCSTR section)
 {
 	inherited::Load		(section);
 
-	animGet	(mhud_reload1,	pSettings->r_string(*hud_sect,"anim_reload_1"));
-	animGet	(mhud_shot1,	pSettings->r_string(*hud_sect,"anim_shoot_1"));
-	animGet	(mhud_idle1,		pSettings->r_string(*hud_sect,"anim_idle_1"));
-	animGet	(mhud_idle2,		pSettings->r_string(*hud_sect,"anim_idle_2"));
-	animGet	(mhud_zoomed_idle1,		pSettings->r_string(*hud_sect,"anim_zoomed_idle_1"));
-	animGet	(mhud_zoomed_idle2,		pSettings->r_string(*hud_sect,"anim_zoomedidle_2"));
+	animGet	(mhud_reload1,		pSettings->r_string(*hud_sect,"anim_reload_1"		));
+	animGet	(mhud_shot1,		pSettings->r_string(*hud_sect,"anim_shoot_1"		));
+	animGet	(mhud_idle1,		pSettings->r_string(*hud_sect,"anim_idle_1"			));
+	animGet	(mhud_idle2,		pSettings->r_string(*hud_sect,"anim_idle_2"			));
+	animGet	(mhud_zoomed_idle1, pSettings->r_string(*hud_sect,"anim_zoomed_idle_1"	));
+	animGet	(mhud_zoomed_idle2,	pSettings->r_string(*hud_sect,"anim_zoomedidle_2"	));
 
 // Real Wolf. 03.08.2014.
 #if defined(BM16_ANIMS_FIX)
@@ -26,13 +26,20 @@ void CWeaponBM16::Load	(LPCSTR section)
 	anim = READ_IF_EXISTS(pSettings, r_string, *hud_sect, "anim_draw_empty_right", "draw");
 	animGet	(mhud_draw_empty_right, anim ? anim : "draw" );
 #endif
-	HUD_SOUND::LoadSound(section, "snd_reload_1", m_sndReload1, m_eSoundShot);
+	HUD_SOUND::LoadSound(section, "snd_reload_1", m_sndReload1, m_eSoundReload);
 }
 
 void CWeaponBM16::PlayReloadSound()
 {
-	if(m_magazine.size()==1)	PlaySound	(m_sndReload1,get_LastFP());
-	else						PlaySound	(sndReload,get_LastFP());
+	if(m_magazine.size()==1)	PlaySound	(m_sndReload1,	get_LastFP());
+	else						PlaySound	(sndReload,		get_LastFP());
+}
+
+void CWeaponBM16::UpdateSounds()
+{
+	inherited::UpdateSounds();
+
+	if (m_sndReload1.playing())	m_sndReload1.set_position(get_LastFP());
 }
 
 void CWeaponBM16::PlayAnimShoot()

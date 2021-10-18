@@ -51,6 +51,7 @@ CWeaponMagazined::~CWeaponMagazined()
 	HUD_SOUND::DestroySound(sndShow);
 	HUD_SOUND::DestroySound(sndHide);
 	HUD_SOUND::DestroySound(sndShot);
+	HUD_SOUND::DestroySound(sndSilencerShot);
 	HUD_SOUND::DestroySound(sndEmptyClick);
 	HUD_SOUND::DestroySound(sndReload);
 	HUD_SOUND::DestroySound(sndSightsUp);		//added by Daemonion for ironsight audio in weapon parameters - sights being raised
@@ -66,6 +67,7 @@ void CWeaponMagazined::StopHUDSounds()
 	HUD_SOUND::StopSound(sndReload);
 
 	HUD_SOUND::StopSound(sndShot);
+	HUD_SOUND::StopSound(sndSilencerShot);
 	HUD_SOUND::StopSound(sndSightsUp);			//added by Daemonion for ironsight audio in weapon parameters - sights being raised
 	HUD_SOUND::StopSound(sndSightsDown);		//added by Daemonion for ironsight audio in weapon parameters - sights being lowered
 	//.	if(sndShot.enable && sndShot.snd.feedback)
@@ -522,13 +524,14 @@ void CWeaponMagazined::UpdateSounds()
 	dwUpdateSounds_Frame = Device.dwFrame;
 
 	// ref_sound positions
-	if (sndShow.playing())	sndShow.set_position(get_LastFP());
-	if (sndHide.playing())	sndHide.set_position(get_LastFP());
-	if (sndShot.playing()) sndShot.set_position(get_LastFP());
-	if (sndReload.playing()) sndReload.set_position(get_LastFP());
-	if (sndEmptyClick.playing())	sndEmptyClick.set_position(get_LastFP());
-	if (sndSightsUp.playing())	sndSightsUp.set_position(get_LastFP());			//Daemonion - iron sight audio - sights being raised
-	if (sndSightsDown.playing())	sndSightsDown.set_position(get_LastFP());	//Daemonion - iron sight audio - sights being lowered
+	if (sndShow.playing			())	sndShow.set_position			(get_LastFP());
+	if (sndHide.playing			())	sndHide.set_position			(get_LastFP());
+	if (sndShot.playing			()) sndShot.set_position			(get_LastFP());
+	if (sndSilencerShot.playing	()) sndSilencerShot.set_position	(get_LastFP());
+	if (sndReload.playing		()) sndReload.set_position			(get_LastFP());
+	if (sndEmptyClick.playing	())	sndEmptyClick.set_position		(get_LastFP());
+	if (sndSightsUp.playing		())	sndSightsUp.set_position		(get_LastFP());			//Daemonion - iron sight audio - sights being raised
+	if (sndSightsDown.playing	())	sndSightsDown.set_position		(get_LastFP());	//Daemonion - iron sight audio - sights being lowered
 }
 
 void CWeaponMagazined::state_Fire(float dt)

@@ -11,9 +11,10 @@
 CWeaponShotgun::CWeaponShotgun(void) : CWeaponCustomPistol("TOZ34")
 {
     m_eSoundShotBoth		= ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING);
-	m_eSoundClose			= ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING);
-	m_eSoundAddCartridge	= ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING);
+	m_eSoundClose			= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING);
+	m_eSoundAddCartridge	= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING);
 	SetSlot(RIFLE_SLOT); 
+	m_bLockType				= true; //запрет заряжания смешанными патронами
 }
 
 CWeaponShotgun::~CWeaponShotgun(void)
@@ -185,7 +186,10 @@ void CWeaponShotgun::switch2_Fire2	()
 void CWeaponShotgun::UpdateSounds	()
 {
 	inherited::UpdateSounds();
-	if (sndShotBoth.playing())		sndShotBoth.set_position		(get_LastFP());
+	if (sndShotBoth.playing			()) sndShotBoth.set_position		(get_LastFP());
+	if (m_sndOpen.playing			()) m_sndOpen.set_position			(get_LastFP());
+	if (m_sndAddCartridge.playing	()) m_sndAddCartridge.set_position	(get_LastFP());
+	if (m_sndClose.playing			()) m_sndClose.set_position			(get_LastFP());
 }
 
 bool CWeaponShotgun::Action			(s32 cmd, u32 flags) 
@@ -212,7 +216,7 @@ bool CWeaponShotgun::Action			(s32 cmd, u32 flags)
 	if(inherited::Action(cmd, flags)) return true;
 
 	if(	m_bTriStateReload && GetState()==eReload &&
-		cmd==kWPN_FIRE && flags&CMD_START &&
+		(cmd == kWPN_FIRE || cmd == kWPN_NEXT) && flags&CMD_START &&
 		m_sub_state==eSubstateReloadInProcess		)//остановить перезагрузку
 	{
 		AddCartridge(1);
@@ -348,10 +352,16 @@ bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)
 	m_pAmmo = NULL;
 	if(m_pCurrentInventory) 
 	{
+		if (m_set_next_ammoType_on_reload != u32(-1)) 
+		{
+			m_ammoType = m_set_next_ammoType_on_reload;
+			m_set_next_ammoType_on_reload = u32(-1);
+			if (!m_magazine.empty()) UnloadMagazine(); //разрядить если меняем тип патрона
+		}
 		//попытаться найти в инвентаре патроны текущего типа 
 		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[m_ammoType], ParentIsActor()));
 
-		if(!m_pAmmo )
+		if (!m_pAmmo && (m_magazine.empty() || !m_bLockType))
 		{
 			for(u32 i = 0; i < m_ammoTypes.size(); ++i) 
 			{
