@@ -153,6 +153,9 @@
 	<string id="kb_use">
 		<text>Использовать</text>
 	</string>
+	<string id="kb_turn_engine">
+		<text>Завести двигатель транспорта</text>
+	</string>
 	<string id="kb_use_bandage">
 		<text>Быстрое использ. бинта</text>
 	</string>
@@ -224,14 +227,23 @@
 	<string id="kb_grp_camera">
 		<text>Режимы камеры</text>
 	</string>
-        <string id="kb_cam1">
+    <string id="kb_cam1">
 		<text>Камера от 1-го лица</text>
 	</string>
-        <string id="kb_cam2">
+    <string id="kb_cam2">
 		<text>Камера от 3-го лица</text>
 	</string>
-        <string id="kb_cam3">
+    <string id="kb_cam3">
 		<text>Свободный обзор камерой</text>
+	</string>
+	<string id="kb_cam_zoom_in">
+		<text>Приблизить камеру</text>
+	</string>
+	<string id="kb_cam_zoom_out">
+		<text>Отдалить камеру</text>
+	</string>
+	<string id="kb_ext_1">
+		<text>Автоприцеливание (удерживать)</text>
 	</string>
 <!--                            camera modes keys end                            -->
     <string id="kb_check_active_item">

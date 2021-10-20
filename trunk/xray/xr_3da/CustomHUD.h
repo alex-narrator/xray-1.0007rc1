@@ -15,6 +15,7 @@ ENGINE_API extern Flags32		psHUD_Flags;
 #define HUD_DRAW_RT				(1<<10)
 #define HUD_USE_LUMINOSITY		(1<<11) //использование освещённости вместо заметности на худовой шкале
 #define HUD_ROUND_CROSSHAIR  	(1<<12) //билдовый круглый курсор
+#define HUD_FIRST_PERSON_AIM  	(1<<13) //прицеливание от первого лица в режиме от третьего лица
 
 class ENGINE_API IRender_Visual;
 class CUI;

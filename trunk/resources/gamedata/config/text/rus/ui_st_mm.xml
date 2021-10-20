@@ -169,6 +169,9 @@
 	<string id="ui_mm_use_luminosity">
 		<text>Освещённость вместо заметности</text>
 	</string>
+	<string id="ui_mm_first_person_aim">
+		<text>Прицеливание от первого лица в режиме от третьего лица</text>
+	</string>
 	<string id="ui_mm_ammo_from_belt">
 		<text>Патроны и гранаты с пояса</text>
 	</string>

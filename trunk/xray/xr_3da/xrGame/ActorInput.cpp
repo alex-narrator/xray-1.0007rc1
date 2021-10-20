@@ -108,9 +108,9 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			else
 				mstate_wishful |= mcSprint;					
 		}break;
-	case kCAM_1:	cam_Set			(eacFirstEye);				break;
-	case kCAM_2:	cam_Set			(eacLookAt);				break;
-	case kCAM_3:	cam_Set			(eacFreeLook);				break;
+	case kCAM_1:{	cam_Set(eacFirstEye	); psActorFlags.set(AF_PSP, FALSE);				}break;
+	case kCAM_2:{	cam_Set(eacLookAt	); psActorFlags.set(AF_PSP, TRUE);				}break;
+	case kCAM_3:{	cam_Set(eacFreeLook	); psActorFlags.set(AF_PSP, FALSE);				}break;
 	case kNIGHT_VISION:
 		{
 			const xr_vector<CAttachableItem*>& all = CAttachmentOwner::attached_objects();

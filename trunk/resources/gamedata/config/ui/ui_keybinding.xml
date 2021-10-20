@@ -21,9 +21,12 @@
 	</group>
 	<!--                            camera modes keys start keys start               -->
 	<group name="kb_grp_camera">
-		<command id="kb_cam1"					exe="cam_1"/>		
+		<command id="kb_cam1"						exe="cam_1"/>		
 		<command id="kb_cam2"				        exe="cam_2"/>
 		<command id="kb_cam3"				        exe="cam_3"/>	
+		<command id="kb_ext_1"				    	exe="ext_1"/>
+		<!-- <command id="kb_cam_zoom_in"				exe="cam_zoom_in"/>	
+		<command id="kb_cam_zoom_out"				exe="cam_zoom_out"/> -->		
 	</group>
         <!--                            camera modes keys end                            -->
 	<group name="kb_grp_weapons">
@@ -33,6 +36,7 @@
 		<command id="kb_weapon4"					exe="wpn_4"/>
 		<command id="kb_weapon5"					exe="wpn_5"/>
 		<command id="kb_weapon6"					exe="wpn_6"/>
+		<command id="kb_artefact"					exe="artefact"/>
 		<command id="kb_wpn_next"					exe="wpn_next"/>
 		<command id="kb_next_slot"					exe="next_slot"/>
 		<command id="kb_prev_slot"					exe="prev_slot"/>
@@ -70,6 +74,7 @@
 	<group name="kb_grp_common">
 		<command id="kb_pause"						exe="pause"/>
 		<command id="kb_use"						exe="use"/>			
+		<command id="kb_turn_engine"				exe="turn_engine"/>		
 		<command id="kb_screenshot"					exe="screenshot"/>
 		<command id="kb_quit"						exe="quit"/>
 		<command id="kb_console"					exe="console"/>
@@ -77,7 +82,6 @@
 		<command id="ui_mm_load_game"				exe="quick_load"/>
 	</group>
 	<group name="kb_grp_multiplayer">
-		<command id="kb_artefact"					exe="artefact"/>
 		<command id="kb_scores"						exe="scores"/>
 		<command id="kb_chat"						exe="chat"/>
 		<command id="kb_chat_team"					exe="chat_team"/>

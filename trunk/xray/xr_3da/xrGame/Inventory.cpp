@@ -669,6 +669,14 @@ bool CInventory::Action(s32 cmd, u32 flags)
 			case kWPN_ZOOM : 
 			{
 				pActor->SetZoomRndSeed();
+				//прицеливание от первого лица в режиме третьего лица
+				if (psActorFlags.test(AF_PSP) && psHUD_Flags.test(HUD_FIRST_PERSON_AIM))
+				{
+					if (flags&CMD_START)
+						pActor->set_cam(eacFirstEye);
+					else if (flags&CMD_STOP)
+						pActor->set_cam(eacLookAt);
+				}
 			}break;
 		};
 	};

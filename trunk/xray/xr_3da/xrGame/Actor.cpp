@@ -97,20 +97,22 @@ CActor::CActor() : CEntityAlive()
 	cameras[eacFirstEye]	= xr_new<CCameraFirstEye>				(this);
 	cameras[eacFirstEye]->Load("actor_firsteye_cam");
 
-	if(strstr(Core.Params,"-psp"))
+	/*if(strstr(Core.Params,"-psp"))
 		psActorFlags.set(AF_PSP, TRUE);
 	else
-		psActorFlags.set(AF_PSP, FALSE);
+		psActorFlags.set(AF_PSP, FALSE);*/
 
-	if( psActorFlags.test(AF_PSP) )
-	{
+	/*if( psActorFlags.test(AF_PSP) )
+	{*/
+		//CCameraLook2 - камера с автоприцеливанием
 		cameras[eacLookAt]		= xr_new<CCameraLook2>				(this);
 		cameras[eacLookAt]->Load("actor_look_cam_psp");
-	}else
+	/*}else
 	{
+		//CCameraLook - обычная камера от третьего лица
 		cameras[eacLookAt]		= xr_new<CCameraLook>				(this);
 		cameras[eacLookAt]->Load("actor_look_cam");
-	}
+	}*/
 	cameras[eacFreeLook]	= xr_new<CCameraLook>					(this);
 	cameras[eacFreeLook]->Load("actor_free_cam");
 
@@ -379,10 +381,10 @@ if(!g_dedicated_server)
 		m_BloodSnd.create		(pSettings->r_string(section,"heavy_blood_snd"), st_Effect,SOUND_TYPE_MONSTER_INJURING);
 	}
 }
-	if( psActorFlags.test(AF_PSP) )
+	/*if( psActorFlags.test(AF_PSP) )
 		cam_Set					(eacLookAt);
 	else
-		cam_Set					(eacFirstEye);
+		cam_Set					(eacFirstEye);*/
 
 	// sheduler
 #ifdef LUAICP_COMPAT // для подстройки производительности на разных платформах
@@ -934,8 +936,8 @@ void CActor::UpdateCL	()
 	m_pPhysics_support->in_UpdateCL	();
 	VERIFY2								(_valid(renderable.xform),*cName());
 
-	if (g_Alive()) 
-		PickupModeUpdate	();	
+	if (g_Alive())
+		PickupModeUpdate();
 
 	PickupModeUpdate_COD();
 
@@ -1183,7 +1185,7 @@ void CActor::shedule_Update	(u32 DT)
 	
 	//если в режиме HUD, то сама модель актера не рисуется
 	if(!character_physics_support()->IsRemoved())
-										setVisible				(!HUDview	());
+		setVisible(!HUDview());
 	//что актер видит перед собой
 	collide::rq_result& RQ = HUD().GetCurrentRayQuery();
 	

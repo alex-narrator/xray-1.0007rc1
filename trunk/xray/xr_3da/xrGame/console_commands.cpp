@@ -1419,22 +1419,22 @@ void CCC_RegisterCommands()
 
 	CMD3(CCC_Mask,				"g_backrun",					&psActorFlags,	AF_RUN_BACKWARD);
 	//
-	CMD3(CCC_Mask,				"g_pause_after_loading",		&psActorFlags,	AF_PAUSE_AFTER_LOADING);		//пауза после загрузки сохранения
+	CMD3(CCC_Mask,				"g_pause_after_loading",		&psActorFlags,	AF_PAUSE_AFTER_LOADING			);	//пауза после загрузки сохранения
 	//взаимодействие с предметами
-	CMD3(CCC_Token,             "g_free_hands",					&g_FreeHands,    free_hands_token);				//режимы "свободных рук"
-	CMD3(CCC_Mask,				"g_pickup_target_only",			&psActorFlags,	AF_PICKUP_TARGET_ONLY);			//можно подобрать только те предметы на которые непосредственно смотрит прицел
+	CMD3(CCC_Token,             "g_free_hands",					&g_FreeHands,   free_hands_token				);	//режимы "свободных рук"
+	CMD3(CCC_Mask,				"g_pickup_target_only",			&psActorFlags,	AF_PICKUP_TARGET_ONLY			);	//можно подобрать только те предметы на которые непосредственно смотрит прицел
 	//инвентарь
-	CMD3(CCC_Mask,				"g_ammo_from_belt",				&psActorFlags,	AF_AMMO_FROM_BELT);				//патроны с пояса
-	CMD3(CCC_Mask,				"g_quick_slot_from_belt",		&psActorFlags,	AF_QUICK_FROM_BELT);			//наполнение быстрых слотов с пояса
-	CMD3(CCC_Mask,				"g_artefacts_from_all",			&psActorFlags,	AF_ARTEFACTS_FROM_ALL);			//артефакты работают из всего инвентаря
-	CMD3(CCC_Mask,				"g_artefact_detector_check",	&psActorFlags,	AF_ARTEFACT_DETECTOR_CHECK);	//свойства артефактов отображаются после проверки детектором
+	CMD3(CCC_Mask,				"g_ammo_from_belt",				&psActorFlags,	AF_AMMO_FROM_BELT				);	//патроны с пояса
+	CMD3(CCC_Mask,				"g_quick_slot_from_belt",		&psActorFlags,	AF_QUICK_FROM_BELT				);	//наполнение быстрых слотов с пояса
+	CMD3(CCC_Mask,				"g_artefacts_from_all",			&psActorFlags,	AF_ARTEFACTS_FROM_ALL			);	//артефакты работают из всего инвентаря
+	CMD3(CCC_Mask,				"g_artefact_detector_check",	&psActorFlags,	AF_ARTEFACT_DETECTOR_CHECK		);	//свойства артефактов отображаются после проверки детектором
 	//оружие
-	CMD3(CCC_Mask,				"g_no_auto_reload",				&psActorFlags,	AF_NO_AUTO_RELOAD);				//запрет автоперезарядки оружия
-	CMD3(CCC_Mask,				"g_ammo_box_as_magazine",		&psActorFlags,	AF_AMMO_BOX_AS_MAGAZINE);		//перезарядка оружия кол-вом патронов в пачке
-	CMD3(CCC_Mask,				"g_wpn_actions_reset_sprint",	&psActorFlags,	AF_WPN_ACTIONS_RESET_SPRINT);	//перезарядка/смена типа патрона/бросок гранаты/болта/удар ножом сбрасывают спринт
+	CMD3(CCC_Mask,				"g_no_auto_reload",				&psActorFlags,	AF_NO_AUTO_RELOAD				);	//запрет автоперезарядки оружия
+	CMD3(CCC_Mask,				"g_ammo_box_as_magazine",		&psActorFlags,	AF_AMMO_BOX_AS_MAGAZINE			);	//перезарядка оружия кол-вом патронов в пачке
+	CMD3(CCC_Mask,				"g_wpn_actions_reset_sprint",	&psActorFlags,	AF_WPN_ACTIONS_RESET_SPRINT		);	//перезарядка/смена типа патрона/бросок гранаты/болта/удар ножом сбрасывают спринт
 	//параметры персонажа
-	CMD3(CCC_Mask,				"g_smooth_overweight",			&psActorFlags,	AF_SMOOTH_OVERWEIGHT);			//плавный перегруз без обездвиживания
-	CMD3(CCC_Mask,				"g_condition_interdependence",	&psActorFlags,	AF_CONDITION_INTERDEPENDENCE);	//взаимозависимость параметров здоровья ГГ
+	CMD3(CCC_Mask,				"g_smooth_overweight",			&psActorFlags,	AF_SMOOTH_OVERWEIGHT			);	//плавный перегруз без обездвиживания
+	CMD3(CCC_Mask,				"g_condition_interdependence",	&psActorFlags,	AF_CONDITION_INTERDEPENDENCE	);	//взаимозависимость параметров здоровья ГГ
 
 	// alife
 #ifdef DEBUG
@@ -1469,12 +1469,13 @@ void CCC_RegisterCommands()
 	psHUD_Flags.set(HUD_DRAW,			true);
 	psHUD_Flags.set(HUD_INFO,			true);
 
-	CMD3(CCC_Token,				"hud_show_on_key",		&g_HudOnKey,	hud_on_key_token);		//элементы HUD выводятся по нажатию клавиш
+	CMD3(CCC_Token,				"hud_show_on_key",		&g_HudOnKey,	hud_on_key_token	);	//элементы HUD выводятся по нажатию клавиш
 
-	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
-	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
-	CMD3(CCC_Mask,              "hud_round_crosshair",  &psHUD_Flags,   HUD_ROUND_CROSSHAIR);	//билдовый круглый курсор
-	CMD3(CCC_Mask,              "hud_use_luminosity",   &psHUD_Flags,   HUD_USE_LUMINOSITY);	//использование освещённости вместо заметности на худовой шкале
+	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR		);
+	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST	);
+	CMD3(CCC_Mask,              "hud_round_crosshair",  &psHUD_Flags,   HUD_ROUND_CROSSHAIR	);	//билдовый круглый курсор
+	CMD3(CCC_Mask,              "hud_use_luminosity",   &psHUD_Flags,   HUD_USE_LUMINOSITY	);	//использование освещённости вместо заметности на худовой шкале
+	CMD3(CCC_Mask,              "hud_first_person_aim", &psHUD_Flags,   HUD_FIRST_PERSON_AIM);	//прицеливание от первого лица в режиме от третьего лица
 
 #ifdef DEBUG
 	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV,		0.1f,	1.0f);

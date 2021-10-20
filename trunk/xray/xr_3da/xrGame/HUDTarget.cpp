@@ -19,6 +19,7 @@
 #include "InventoryOwner.h"
 #include "relation_registry.h"
 #include "character_info.h"
+#include "monster_community.h"
 
 #include "string_table.h"
 #include "entity_alive.h"
@@ -159,15 +160,25 @@ void CHUDTarget::Render()
 
 			if (IsGameTypeSingle())
 			{
-				CInventoryOwner* our_inv_owner		= smart_cast<CInventoryOwner*>(pCurEnt);
-				if (E && E->g_Alive() && !E->cast_base_monster())
+				CInventoryOwner* our_inv_owner = smart_cast<CInventoryOwner*>(pCurEnt);
+				if (E && E->g_Alive() && E->cast_base_monster())
 				{
-//.					CInventoryOwner* our_inv_owner		= smart_cast<CInventoryOwner*>(pCurEnt);
-					CInventoryOwner* others_inv_owner	= smart_cast<CInventoryOwner*>(E);
+					int relation = MONSTER_COMMUNITY::relation(pCurEnt->monster_community->index(), E->monster_community->index());
 
-					if(our_inv_owner && others_inv_owner){
+					if (relation > 0)
+						C = C_ON_FRIEND;
+					else if (relation == 0)
+						C = C_ON_NEUTRAL;
+					else
+						C = C_ON_ENEMY;
+				}
+				else if (E && E->g_Alive() && !E->cast_base_monster())
+				{
+					CInventoryOwner* others_inv_owner = smart_cast<CInventoryOwner*>(E);
 
-						switch(RELATION_REGISTRY().GetRelationType(others_inv_owner, our_inv_owner))
+					if (our_inv_owner && others_inv_owner){
+
+						switch (RELATION_REGISTRY().GetRelationType(others_inv_owner, our_inv_owner))
 						{
 						case ALife::eRelationTypeEnemy:
 							C = C_ON_ENEMY; break;
@@ -177,22 +188,22 @@ void CHUDTarget::Render()
 							C = C_ON_FRIEND; break;
 						}
 
-					if (fuzzyShowInfo>0.5f){
-						CStringTable	strtbl		;
-						F->SetColor	(subst_alpha(C,u8(iFloor(255.f*(fuzzyShowInfo-0.5f)*2.f))));
-						F->OutNext	("%s", *strtbl.translate(others_inv_owner->Name()) );
-						F->OutNext	("%s", *strtbl.translate(others_inv_owner->CharacterInfo().Community().id()) );
-					}
+						if (fuzzyShowInfo>0.5f){
+							CStringTable	strtbl;
+							F->SetColor(subst_alpha(C, u8(iFloor(255.f*(fuzzyShowInfo - 0.5f)*2.f))));
+							F->OutNext("%s", *strtbl.translate(others_inv_owner->Name()));
+							F->OutNext("%s", *strtbl.translate(others_inv_owner->CharacterInfo().Community().id()));
+						}
 					}
 
 					fuzzyShowInfo += SHOW_INFO_SPEED*Device.fTimeDelta;
 				}
-				else 
+				else
 					if (l_pI && our_inv_owner && RQ.range < 2.0f*our_inv_owner->inventory().GetTakeDist())
 					{
 						if (fuzzyShowInfo>0.5f){
-							F->SetColor	(subst_alpha(C,u8(iFloor(255.f*(fuzzyShowInfo-0.5f)*2.f))));
-							F->OutNext	("%s",l_pI->Name/*Complex*/());
+							F->SetColor(subst_alpha(C, u8(iFloor(255.f*(fuzzyShowInfo - 0.5f)*2.f))));
+							F->OutNext("%s", l_pI->Name/*Complex*/());
 						}
 						fuzzyShowInfo += SHOW_INFO_SPEED*Device.fTimeDelta;
 					}
