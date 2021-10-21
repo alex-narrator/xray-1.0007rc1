@@ -1243,7 +1243,7 @@ void CWeapon::OnZoomIn()
 {
 	m_bZoomMode = true;
 	m_fZoomFactor = CurrentZoomFactor();
-	StopHudInertion();
+	//StopHudInertion();
 }
 
 void CWeapon::OnZoomOut()
@@ -1251,7 +1251,7 @@ void CWeapon::OnZoomOut()
 	m_bZoomMode = false;
 	m_fZoomFactor = g_fov;
 
-	StartHudInertion();
+	//StartHudInertion();
 }
 
 CUIStaticItem* CWeapon::ZoomTexture()
