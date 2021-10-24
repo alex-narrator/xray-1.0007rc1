@@ -424,7 +424,10 @@ public:
 	int						GetAmmoCurrent(bool use_item_to_spawn = false)  const;
 
 	void					SetAmmoElapsed(int ammo_count);
-
+	//
+	u32						GetNextAmmoType(); //какие патроны будут заряжены при смене типа боеприпаса
+	bool					HasNextAmmoType(); //есть ли патроны для смены типа боеприпаса
+	//
 	virtual void			OnMagazineEmpty();
 	void			SpawnAmmo(u32 boxCurr = 0xffffffff,
 		LPCSTR ammoSect = NULL,

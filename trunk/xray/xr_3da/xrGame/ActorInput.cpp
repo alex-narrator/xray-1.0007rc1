@@ -723,9 +723,11 @@ float	CActor::GetLookFactor()
 	PIItem pItem	= inventory().ActiveItem();
 
 	if (pItem)
-		factor *= (pItem->GetControlInertionFactor() + sqrtf(pItem->Weight()));
+		factor *= pItem->GetControlInertionFactor();
 
 	VERIFY(!fis_zero(factor));
+
+	//Msg("inertion factor [%f]", factor);
 
 	return factor;
 }

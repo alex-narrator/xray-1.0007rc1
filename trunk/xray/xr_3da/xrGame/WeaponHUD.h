@@ -4,7 +4,7 @@
 #include "../../../build_config_defines.h"
 class CHudItem;
 
-#ifdef WPN_BOBBING
+//#ifdef WPN_BOBBING
 
 #define BOBBING_SECT "wpn_bobbing_effector"
 
@@ -39,7 +39,7 @@ class CWeaponBobbing
 		float	m_fSpeedWalk;
 		float	m_fSpeedLimp;
 };
-#endif
+//#endif
 
 struct weapon_hud_value: public shared_value
 {
@@ -51,6 +51,8 @@ public:
 	Fvector				m_sp_offset;
 
 	Fmatrix				m_offset;
+	//
+	bool				m_bBobbingAllow;
 public:
 	virtual				~weapon_hud_value		();
 	BOOL				load					(const shared_str& section, CHudItem* owner);
@@ -159,10 +161,10 @@ public:
 	void				dbg_SetFirePoint2	(const Fvector &fp)			{((weapon_hud_value*)m_shared_data.get_value())->m_fp2_offset.set(fp);}
 	void				dbg_SetShellPoint	(const Fvector &sp)			{((weapon_hud_value*)m_shared_data.get_value())->m_sp_offset.set(sp);}
 
-#ifdef WPN_BOBBING
+//#ifdef WPN_BOBBING
 private:
 	CWeaponBobbing *m_bobbing;
-#endif	
+//#endif	
 };
 
 #define		MAX_ANIM_COUNT							8

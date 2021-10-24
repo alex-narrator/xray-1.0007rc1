@@ -35,7 +35,7 @@
 #define EAT_PORTIONS_INFLUENCE          // Real Wolf: Уменьшаем вес и цену после использования.
 
 // ==================================== Правки от Red Virus ======================================= 
-#define WPN_BOBBING						// Red Virus: bobbing effect from lost alpha
+//#define WPN_BOBBING						// Red Virus: bobbing effect from lost alpha //вынесено в конфиги
 //#define INV_COLORIZE_WEAPON				// Red Virus: colorize ammo from lost alpha + подсветка аддонов к оружию
 //
 #ifdef INV_NEW_SLOTS_SYSTEM

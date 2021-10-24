@@ -521,7 +521,8 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 	{
 		u32 cnt = ci->ChildsCount();
 
-		for (u32 i = 0; i<cnt; ++i) {
+		for (u32 i = 0; i<cnt; ++i) 
+		{
 			CUICellItem*	itm = ci->PopChild();
 			PIItem			iitm = (PIItem)itm->m_pData;
 			SendEvent_Item_Drop(iitm, owner_id);
@@ -758,16 +759,7 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 
 		if (pActor->inventory().InSlot(pWeapon) && pWeapon->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
 		{
-			u32 l_newType = pWeapon->m_ammoType;
-			bool b1, b2;
-			do
-			{
-				l_newType = (l_newType + 1) % pWeapon->m_ammoTypes.size();
-				b1 = l_newType != pWeapon->m_ammoType;
-				b2 = pWeapon->unlimited_ammo() ? false : (!pWeapon->m_pCurrentInventory->GetAmmo(*pWeapon->m_ammoTypes[l_newType], true));
-			} while (b1 && b2);
-
-			if (l_newType != pWeapon->m_ammoType)
+			if (pWeapon->HasNextAmmoType())
 			{
 				m_pUIPropertiesBox->AddItem("st_next_ammo_type", NULL, INVENTORY_NEXT_AMMO_TYPE);
 				b_show = true;

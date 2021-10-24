@@ -814,7 +814,7 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 
 		if (flags&CMD_START)
 		{
-			u32 l_newType = m_ammoType;
+			/*u32 l_newType = m_ammoType;
 			bool b1, b2;
 			do
 			{
@@ -823,9 +823,10 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 				b2 = unlimited_ammo() ? false : (!m_pCurrentInventory->GetAmmo(*m_ammoTypes[l_newType], ParentIsActor()));
 			} while (b1 && b2);
 
-			if (l_newType != m_ammoType)
+			if (l_newType != m_ammoType)*/
+			if (HasNextAmmoType())
 			{
-				m_set_next_ammoType_on_reload = l_newType;
+				m_set_next_ammoType_on_reload = GetNextAmmoType();//l_newType;
 				/*						m_ammoType = l_newType;
 										m_pAmmo = NULL;
 										if (unlimited_ammo())
@@ -998,7 +999,32 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 	}
 	return l_count + iAmmoCurrent;
 }
+//
+u32 CWeapon::GetNextAmmoType()
+{
+	u32 l_newType = m_ammoType;
+	bool b1, b2;
+	do
+	{
+		l_newType = (l_newType + 1) % m_ammoTypes.size();
+		b1 = l_newType != m_ammoType;
+		b2 = unlimited_ammo() ? false : (!m_pCurrentInventory->GetAmmo(*m_ammoTypes[l_newType], ParentIsActor()));
+	} while (b1 && b2);
 
+	if (l_newType != m_ammoType)
+		return l_newType;
+	else
+		return u32(-1);
+}
+
+bool CWeapon::HasNextAmmoType()
+{
+	if (GetNextAmmoType() != m_ammoType && GetNextAmmoType() != u32(-1))
+		return true;
+
+		return false;
+}
+//
 float CWeapon::GetConditionMisfireProbability() const
 {
 	if (GetCondition() > 0.95f) return 0.0f;

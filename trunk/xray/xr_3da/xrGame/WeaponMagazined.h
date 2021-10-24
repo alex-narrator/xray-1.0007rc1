@@ -160,10 +160,12 @@ protected:
 	int				m_iPrefferedFireMode;
 	//скорострельность привилегированного режима стрельбы
 	float			fTimeToFirePreffered;
+	//оружие использует отъёмный магазин
+	bool			m_bHasDetachableMagazine;
 
 	//переменная блокирует использование
 	//только разных типов патронов
-	bool m_bLockType;
+	bool			m_bLockType;
 
 	//////////////////////////////////////////////
 	// режим приближения

@@ -26,6 +26,9 @@ BOOL weapon_hud_value::load(const shared_str& section, CHudItem* owner)
 	suffix = strtok(NULL, "|");
 	string256  visual_name;
 
+	//Bobbing
+	m_bBobbingAllow = !!READ_IF_EXISTS(pSettings, r_bool, section, "allow_bobbing", TRUE);
+
 	// Geometry and transform	
 	Fvector						pos,ypr;
 	pos =						pSettings->r_fvector3(sec_name, "position");
@@ -101,17 +104,17 @@ CWeaponHUD::CWeaponHUD			(CHudItem* pHudItem)
 	m_bHidden					= true;
 	m_bStopAtEndAnimIsRunning	= false;
 	m_pCallbackItem				= NULL;
-#ifdef WPN_BOBBING
+//#ifdef WPN_BOBBING
 	m_bobbing			= xr_new<CWeaponBobbing>();
-#endif
+//#endif
 	m_Transform.identity		();
 }
 
 CWeaponHUD::~CWeaponHUD()
 {
-#ifdef WPN_BOBBING
+//#ifdef WPN_BOBBING
 	xr_delete(m_bobbing);
-#endif
+//#endif
 }
 
 void CWeaponHUD::Load(LPCSTR section)
@@ -136,9 +139,10 @@ void  CWeaponHUD::net_DestroyHud()
 void CWeaponHUD::UpdatePosition(const Fmatrix& trans)
 {
 	Fmatrix xform = trans;
-#ifdef WPN_BOBBING
+//#ifdef WPN_BOBBING
+	if (m_shared_data.get_value()->m_bBobbingAllow)
 	m_bobbing->Update(xform);
-#endif
+//#endif
 	m_Transform.mul				(xform,m_shared_data.get_value()->m_offset);
 	VERIFY						(!fis_zero(DET(m_Transform)));
 }
@@ -221,7 +225,7 @@ MotionID random_anim(MotionSVec& v)
 }
 
 
-#ifdef WPN_BOBBING
+//#ifdef WPN_BOBBING
 CWeaponBobbing::CWeaponBobbing()
 {
 	Load();
@@ -312,4 +316,4 @@ void CWeaponBobbing::Update(Fmatrix &m)
 		m.j.set(mR.j);
 	}
 }
-#endif
+//#endif

@@ -43,6 +43,8 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	m_iQueueSize = WEAPON_ININITE_QUEUE;
 	m_bLockType = false;
 	m_class_name = get_class_name<CWeaponMagazined>(this);
+	//
+	m_bHasDetachableMagazine = true;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -153,6 +155,7 @@ void CWeaponMagazined::Load(LPCSTR section)
 	else
 		m_bHasDifferentFireModes = false;
 	//  [7/21/2005]
+	//m_bHasDetachableMagazine = READ_IF_EXISTS(pSettings, r_bool, section, "has_detachable_magazine", true);
 }
 
 void CWeaponMagazined::FireStart()
@@ -294,8 +297,9 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 	xr_map<LPCSTR, u16>::iterator l_it;
 	for (l_it = l_ammo.begin(); l_ammo.end() != l_it; ++l_it)
 	{
-		if (m_pCurrentInventory && !psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE)) //доложить разряжаемые патроны в пачку к имеющимся
+		if (m_pCurrentInventory && (!psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) || !m_bHasDetachableMagazine)) //доложить разряжаемые патроны в пачку из которой взяли
 		{	
+			if (!m_bHasDetachableMagazine) Msg("m_bHasDetachableMagazine [false]");
 			CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(l_it->first, ParentIsActor()));
 
 			if (l_pA)
@@ -360,8 +364,8 @@ void CWeaponMagazined::ReloadMagazine()
 
 	//разрядить магазин, если загружаем патронами другого типа
 	if (!m_bLockType && !m_magazine.empty() &&
-		(!m_pAmmo || xr_strcmp(m_pAmmo->cNameSect(),
-		*m_magazine.back().m_ammoSect) || psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && !unlimited_ammo())) //разряжать магазин и при перезарядке, если включена опция
+		(!m_pAmmo || xr_strcmp(m_pAmmo->cNameSect(), *m_magazine.back().m_ammoSect) || 
+		psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && !unlimited_ammo())) //разряжать магазин и при перезарядке, если включена опция
 		UnloadMagazine();
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
@@ -798,7 +802,7 @@ bool CWeaponMagazined::Action(s32 cmd, u32 flags)
 	if (!ParentIsActor() || !(g_actor->get_state() & mcSprint) )
 #endif*/
 		if (flags&CMD_START)
-			if (iAmmoElapsed < iMagazineSize || IsMisfire())
+			if (iAmmoElapsed < iMagazineSize || IsMisfire() || psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && m_bHasDetachableMagazine)
 			{
 				if (ParentIsActor() && psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT)) 
 					g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint));

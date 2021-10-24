@@ -206,7 +206,7 @@ void CInventoryItem::Load(LPCSTR section)
 	m_dwItemRemoveTime			= READ_IF_EXISTS(pSettings, r_u32, section,"item_remove_time",			ITEM_REMOVE_TIME);
 
 	m_flags.set					(FAllowSprint,READ_IF_EXISTS	(pSettings, r_bool, section,"sprint_allowed",			TRUE));
-	m_fControlInertionFactor	= READ_IF_EXISTS(pSettings, r_float,section,"control_inertion_factor",	.1f);
+	m_fControlInertionFactor	= READ_IF_EXISTS(pSettings, r_float,section,"control_inertion_factor",	1.0f);
 	m_icon_name					= READ_IF_EXISTS(pSettings, r_string,section,"icon_name",				NULL);
 
 	// hands
@@ -1196,6 +1196,18 @@ ALife::_TIME_ID	 CInventoryItem::TimePassedAfterIndependant()	const
 		return Level().timeServer() - m_dwItemIndependencyTime;
 	else
 		return 0;
+}
+
+float	CInventoryItem::GetControlInertionFactor()
+{
+	//значение задано принудительно
+	bool b_manually_set = !!pSettings->line_exist(object().cNameSect(), "control_inertion_factor");
+	
+	float weight_k = sqrtf(Weight());
+	//чтобы очень лёгкие предметы не давали огромной чувствительности
+	clamp(weight_k, 1.f, weight_k);
+	
+	return b_manually_set ? m_fControlInertionFactor : weight_k;
 }
 
 bool	CInventoryItem::CanTrade() const 

@@ -133,14 +133,22 @@ void CUIWpnParams::SetInfo(CGameObject *wpn)
 bool CUIWpnParams::Check(const shared_str& wpn_section){
 	if (pSettings->line_exist(wpn_section, "fire_dispersion_base"))
 	{
-        if (0==xr_strcmp(wpn_section, "wpn_addon_silencer"))
+        /*if (0==xr_strcmp(wpn_section, "wpn_addon_silencer"))
             return false;
         if (0==xr_strcmp(wpn_section, "wpn_binoc"))
             return false;
         if (0==xr_strcmp(wpn_section, "mp_wpn_binoc"))
             return false;
 		if (0==xr_strcmp(wpn_section, "wpn_knife"))
+			return false;*/
+		const char* wpn_clsid_str = pSettings->r_string(wpn_section, "class");
+		if (strstr(wpn_clsid_str, "KNIFE")
+			|| strstr(wpn_clsid_str, "SILENC")
+			|| strstr(wpn_clsid_str, "BINOC")
+			)
+		{
 			return false;
+		}
 
         return true;		
 	}

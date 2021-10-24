@@ -192,16 +192,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 
 			if (m_pInv->InSlot(pWeapon) && pWeaponMag->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
 			{
-				u32 l_newType = pWeapon->m_ammoType;
-				bool b1, b2;
-				do
-				{
-					l_newType = (l_newType + 1) % pWeapon->m_ammoTypes.size();
-					b1 = l_newType != pWeapon->m_ammoType;
-					b2 = pWeapon->unlimited_ammo() ? false : (!pWeapon->m_pCurrentInventory->GetAmmo(*pWeapon->m_ammoTypes[l_newType], true));
-				} while (b1 && b2);
-
-				if (l_newType != pWeapon->m_ammoType)
+				if (pWeapon->HasNextAmmoType())
 				{
 					UIPropertiesBox.AddItem("st_next_ammo_type", NULL, INVENTORY_NEXT_AMMO_TYPE);
 					b_show = true;

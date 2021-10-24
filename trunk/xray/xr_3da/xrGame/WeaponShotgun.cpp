@@ -15,6 +15,8 @@ CWeaponShotgun::CWeaponShotgun(void) : CWeaponCustomPistol("TOZ34")
 	m_eSoundAddCartridge	= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING);
 	SetSlot(RIFLE_SLOT); 
 	m_bLockType				= true; //запрет заряжания смешанными патронами
+	//
+	m_bHasDetachableMagazine = false;
 }
 
 CWeaponShotgun::~CWeaponShotgun(void)
