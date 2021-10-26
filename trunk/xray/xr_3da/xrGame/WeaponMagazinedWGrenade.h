@@ -99,6 +99,7 @@ public:
 	u32						m_ammoType2;
 	shared_str				m_ammoName2;
 	int						iMagazineSize2;
+	int						iAmmoElapsed2;
 	xr_vector<CCartridge>	m_magazine2;
 	bool					m_bGrenadeMode;
 

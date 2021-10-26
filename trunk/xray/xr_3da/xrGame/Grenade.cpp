@@ -451,10 +451,13 @@ void CGrenade::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_s
 	u32 ThisGrenadeCount	= m_pCurrentInventory->dwfGetSameItemCount(*cNameSect(), true);
 #endif*/
 	string16				stmp;
-	if (HUD().GetUI()->UIMainIngameWnd->AllowHUDElement(CUIMainIngameWnd::eGear))
+	auto CurrentHUD = HUD().GetUI()->UIMainIngameWnd;
+	//if (HUD().GetUI()->UIMainIngameWnd->AllowHUDElement(eGear))
+	if (CurrentHUD->IsHUDElementAllowed(eGear))
        sprintf_s			(stmp, "%d", ThisGrenadeCount);
 	else
-	if(HUD().GetUI()->UIMainIngameWnd->AllowHUDElement(CUIMainIngameWnd::eActiveItem))
+	//if(HUD().GetUI()->UIMainIngameWnd->AllowHUDElement(eActiveItem))
+	if (CurrentHUD->IsHUDElementAllowed(eActiveItem))
 	   sprintf_s			(stmp, "");
 	str_count				= stmp;
 	icon_sect_name			= *cNameSect();

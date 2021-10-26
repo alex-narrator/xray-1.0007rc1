@@ -761,7 +761,8 @@ void CUITradeWnd::ActivatePropertiesBox()
 			}
 		}
 
-		if (b) {
+		if (b) 
+		{
 			const char *unload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_unload_magazine_gl" : "st_unload_magazine") : "st_unload_magazine";
 			m_pUIPropertiesBox->AddItem(unload_text, NULL, INVENTORY_UNLOAD_MAGAZINE);
 			b_show = true;

@@ -820,7 +820,8 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 			m_pUIPropertiesBox->AddItem("st_drop_all", (void*)33, INVENTORY_DROP_ACTION);
 	}
 
-	if(b_show){
+	if(b_show)
+	{
 		m_pUIPropertiesBox->AutoUpdateSize	();
 		m_pUIPropertiesBox->BringAllToTop	();
 

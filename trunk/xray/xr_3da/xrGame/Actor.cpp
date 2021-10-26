@@ -1475,6 +1475,11 @@ void CActor::ForceTransform(const Fmatrix& m)
 {
 	if(!g_Alive())				return;
 	XFORM().set					(m);
+	//сохранение направления взгляда при выходе из DemoRecord 
+	Fvector xyz;
+	m.getHPB(xyz);
+	cam_Active()->Set(-xyz.x, -xyz.y, -xyz.z);
+	//
 	if(character_physics_support()->movement()->CharacterExist()) character_physics_support()->movement()->EnableCharacter	();
 	character_physics_support()->set_movement_position( m.c );
 	character_physics_support()->movement()->SetVelocity		(0,0,0);
@@ -1586,7 +1591,12 @@ void CActor::UpdateArtefactsOnBelt()
 	for (TIItemContainer::iterator it = list.begin(); list.end() != it; ++it)
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
-		if (artefact)
+		//
+		bool artefact_in_container = psActorFlags.test(AF_ARTEFACTS_FROM_ALL) && 
+			inventory().ItemFromSlot(ARTEFACT_SLOT) == artefact &&	//артефакт в слоте артефакта
+			inventory().ActiveItem() != artefact;					//артефакт в слоте артефакта не взят в руки
+		//
+		if (artefact && !artefact_in_container)
 		{
 			float random_k = artefact->GetRandomKoef();
 			//
@@ -1619,7 +1629,12 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 	for (TIItemContainer::iterator it = list.begin(); list.end() != it; ++it)
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
-		if (artefact && artefact->m_ArtefactHitImmunities[hit_type])
+		//
+		bool artefact_in_container = psActorFlags.test(AF_ARTEFACTS_FROM_ALL) &&
+			inventory().ItemFromSlot(ARTEFACT_SLOT) == artefact &&	//артефакт в слоте артефакта
+			inventory().ActiveItem() != artefact;					//артефакт в слоте артефакта не взят в руки
+		//
+		if (artefact && artefact->m_ArtefactHitImmunities[hit_type] && !artefact_in_container)
 		{
 			float random_k = artefact->GetRandomKoef();
 			//

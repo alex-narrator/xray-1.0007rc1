@@ -201,8 +201,9 @@ void CUIMotionIcon::SetStateWarningColor(EState state)
 
 void CUIMotionIcon::Update()
 {
+	auto CurrentHUD = HUD().GetUI()->UIMainIngameWnd;
 	bool show_motion_icon  = g_HudOnKey != 1;
-	bool show_progress_bar = HUD().GetUI()->UIMainIngameWnd->AllowHUDElement(CUIMainIngameWnd::ePDA);
+	bool show_progress_bar = CurrentHUD->IsHUDElementAllowed(ePDA);
 
 	//статик положения персонажа и выносливости
 	UIStaticMotionBack.Show (show_motion_icon);

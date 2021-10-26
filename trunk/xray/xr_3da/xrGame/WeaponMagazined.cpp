@@ -1298,8 +1298,9 @@ void CWeaponMagazined::net_Import(NET_Packet& P)
 #include "ui/UIMainIngameWnd.h"
 void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)
 {
-	bool wpn_info = HUD().GetUI()->UIMainIngameWnd->AllowHUDElement(CUIMainIngameWnd::eActiveItem);
-	bool gear_info = HUD().GetUI()->UIMainIngameWnd->AllowHUDElement(CUIMainIngameWnd::eGear);
+	auto CurrentHUD		= HUD().GetUI()->UIMainIngameWnd;
+	bool b_wpn_info		= CurrentHUD->IsHUDElementAllowed(eActiveItem);
+	bool b_gear_info	= CurrentHUD->IsHUDElementAllowed(eGear);
 
 	int	AE = GetAmmoElapsed();
 	int	AC = GetAmmoCurrent();
@@ -1312,7 +1313,7 @@ void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_na
 	string256		sItemName;
 	strcpy_s(sItemName, *CStringTable().translate(pSettings->r_string(icon_sect_name.c_str(), "inv_name_short")));
 
-	if (HasFireModes() && wpn_info)
+	if (HasFireModes() && b_wpn_info)
 		strcat_s(sItemName, GetCurrentFireModeStr());
 
 	str_name = sItemName;
@@ -1323,11 +1324,11 @@ void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_na
 		else
 			sprintf_s(sItemName, "%d/--", AE);*/
 
-		if (wpn_info && gear_info)
+		if (b_wpn_info && b_gear_info)
 			sprintf_s(sItemName, "%d|%d", AE, AC - AE);
-		else if (wpn_info)
+		else if (b_wpn_info)
 			sprintf_s(sItemName, "[%d]", AE);
-		else if (gear_info)
+		else if (b_gear_info)
 			sprintf_s(sItemName, "%d", AC - AE);
 		else if (unlimited_ammo())
 			sprintf_s(sItemName, "%d|--", AE);

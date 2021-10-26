@@ -15,14 +15,17 @@
 #include "game_base_space.h"
 #include "MathUtils.h"
 #include "clsid_game.h"
+#include "alife_registry_wrappers.h"
+#include "alife_simulator_header.h"
 #ifdef DEBUG
 #include "phdebug.h"
 #endif
 
 CWeaponMagazinedWGrenade::CWeaponMagazinedWGrenade(LPCSTR name,ESoundTypes eSoundType) : CWeaponMagazined(name, eSoundType)
 {
-	m_ammoType2 = 0;
-    m_bGrenadeMode = false;
+	m_ammoType2		= 0;
+	iAmmoElapsed2	= 0;
+    m_bGrenadeMode	= false;
 	SetSlot(RIFLE_SLOT); // alpet: предполагается что пистолетов с такими аддонами не будет )
 }
 
@@ -122,7 +125,7 @@ BOOL CWeaponMagazinedWGrenade::net_Spawn(CSE_Abstract* DC)
 	UpdateGrenadeVisibility(!!iAmmoElapsed);
 	m_bPending = false;
 
-	m_DefaultCartridge2.Load(*m_ammoTypes2[m_ammoType2], u8(m_ammoType2));
+	/*m_DefaultCartridge2.Load(*m_ammoTypes2[m_ammoType2], u8(m_ammoType2));
 
 	if (GameID() != GAME_SINGLE)
 	{
@@ -151,6 +154,46 @@ BOOL CWeaponMagazinedWGrenade::net_Spawn(CSE_Abstract* DC)
 		shared_str fake_grenade_name = pSettings->r_string(pM->back().m_ammoSect, "fake_grenade_name");
 		
 		CRocketLauncher::SpawnRocket(*fake_grenade_name, this);
+	}*/
+
+	const auto wgl = smart_cast<CSE_ALifeItemWeaponMagazinedWGL*>(DC);
+	m_ammoType2		= m_ammoType2   > 0 ? m_ammoType2 : wgl->ammo_type2;
+	iAmmoElapsed2	= iAmmoElapsed2 > 0 ? iAmmoElapsed2 : wgl->a_elapsed2;
+
+	if (wgl->m_bGrenadeMode) // m_bGrenadeMode enabled
+	{
+		m_ammoTypes.swap(m_ammoTypes2);
+		m_bGrenadeMode = true;
+		iMagazineSize = 1;
+		// reloading
+		m_DefaultCartridge.Load(*m_ammoTypes[m_ammoType], u8(m_ammoType));
+		u32 mag_sz = m_magazine.size();
+		m_magazine.clear();
+		while (mag_sz--) m_magazine.push_back(m_DefaultCartridge);
+		m_DefaultCartridge2.Load(*m_ammoTypes2[m_ammoType2], u8(m_ammoType2));
+		//mag_sz = m_magazine2.size();
+		m_magazine2.clear();
+		while ((u32)iAmmoElapsed2 > m_magazine2.size()) //(mag_sz--)
+			m_magazine2.push_back(m_DefaultCartridge2);
+	}
+	else
+	{
+		m_DefaultCartridge2.Load(*m_ammoTypes2[m_ammoType2], u8(m_ammoType2));
+		while ((u32)iAmmoElapsed2 > m_magazine2.size())
+			m_magazine2.push_back(m_DefaultCartridge2);
+	}
+	if (!getRocketCount())
+	{
+		if (m_magazine.size() && pSettings->line_exist(m_magazine.back().m_ammoSect, "fake_grenade_name"))
+		{
+			shared_str fake_grenade_name = pSettings->r_string(m_magazine.back().m_ammoSect, "fake_grenade_name");
+			CRocketLauncher::SpawnRocket(*fake_grenade_name, this);
+		}
+		else if (m_magazine2.size() && pSettings->line_exist(m_magazine2.back().m_ammoSect, "fake_grenade_name"))
+		{
+			shared_str fake_grenade_name = pSettings->r_string(m_magazine2.back().m_ammoSect, "fake_grenade_name");
+			CRocketLauncher::SpawnRocket(*fake_grenade_name, this);
+		}
 	}
 
 	return l_res;
@@ -217,6 +260,8 @@ bool CWeaponMagazinedWGrenade::SwitchMode()
 void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 {
 	m_bGrenadeMode		= !m_bGrenadeMode;
+
+	m_bHasDetachableMagazine = !m_bGrenadeMode;
 
 	iMagazineSize		= m_bGrenadeMode?1:iMagazineSize2;
 
@@ -742,13 +787,14 @@ void CWeaponMagazinedWGrenade::save(NET_Packet &output_packet)
 	inherited::save								(output_packet);
 	save_data									(m_bGrenadeMode, output_packet);
 	save_data									(m_magazine2.size(), output_packet);
-
+	save_data									(m_ammoType2, output_packet);
+	//Msg( "~~[%s][%s] saved: m_bGrenadeMode: [%d], m_magazine2.size(): [%u], m_ammoType2: [%u]", __FUNCTION__, this->Name(), m_bGrenadeMode, m_magazine2.size(), m_ammoType2 );
 }
 
 void CWeaponMagazinedWGrenade::load(IReader &input_packet)
 {
 	inherited::load				(input_packet);
-	bool b;
+	/*bool b;
 	load_data					(b, input_packet);
 	if(b!=m_bGrenadeMode)		
 		SwitchMode				();
@@ -760,7 +806,11 @@ void CWeaponMagazinedWGrenade::load(IReader &input_packet)
 	l_cartridge.Load			(*m_ammoTypes2[m_ammoType2], u8(m_ammoType2));
 
 	while (sz > m_magazine2.size())
-		m_magazine2.push_back(l_cartridge);
+		m_magazine2.push_back(l_cartridge);*/
+	load_data(m_bGrenadeMode, input_packet);
+	load_data(iAmmoElapsed2, input_packet);
+	if (ai().get_alife()->header().version() >= 4)
+		load_data(m_ammoType2, input_packet);
 }
 
 void CWeaponMagazinedWGrenade::net_Export	(NET_Packet& P)
@@ -768,16 +818,29 @@ void CWeaponMagazinedWGrenade::net_Export	(NET_Packet& P)
 	P.w_u8						(m_bGrenadeMode ? 1 : 0);
 
 	inherited::net_Export		(P);
+
+	P.w_u8						((u8)m_ammoType2);
+	P.w_u16						((u16)m_magazine2.size());
 }
 
 void CWeaponMagazinedWGrenade::net_Import	(NET_Packet& P)
 {
-	bool NewMode				= FALSE;
+	/*bool NewMode				= FALSE;
 	NewMode						= !!P.r_u8();	
 	if (NewMode != m_bGrenadeMode)
 		SwitchMode				();
 
-	inherited::net_Import		(P);
+	inherited::net_Import		(P);*/
+	u8 _data = P.r_u8();
+	bool NewMode = !!(_data & 0x1);
+
+	inherited::net_Import(P);
+
+	m_ammoType2 = P.r_u8();
+	iAmmoElapsed2 = P.r_u16();
+
+	if (NewMode != m_bGrenadeMode)
+		SwitchMode();
 }
 
 bool CWeaponMagazinedWGrenade::IsNecessaryItem	    (const shared_str& item_sect)

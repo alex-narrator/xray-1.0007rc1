@@ -605,7 +605,9 @@ void CSE_ALifeItemWeaponMagazined::FillProps			(LPCSTR pref, PropItemVec& items)
 ////////////////////////////////////////////////////////////////////////////
 CSE_ALifeItemWeaponMagazinedWGL::CSE_ALifeItemWeaponMagazinedWGL	(LPCSTR caSection) : CSE_ALifeItemWeaponMagazined(caSection)
 {
-	m_bGrenadeMode = 0;
+	m_bGrenadeMode	= false;
+	ammo_type2		= 0;
+	a_elapsed2		= 0;
 }
 
 CSE_ALifeItemWeaponMagazinedWGL::~CSE_ALifeItemWeaponMagazinedWGL	()
@@ -614,15 +616,25 @@ CSE_ALifeItemWeaponMagazinedWGL::~CSE_ALifeItemWeaponMagazinedWGL	()
 
 void CSE_ALifeItemWeaponMagazinedWGL::UPDATE_Read		(NET_Packet& P)
 {
-	m_bGrenadeMode = !!P.r_u8();
+	u8 _data = P.r_u8();
+	m_bGrenadeMode = !!(_data & 0x1);
 	inherited::UPDATE_Read(P);
 
+	if (!P.r_eof()) 
+	{
+		ammo_type2 = P.r_u8();
+		a_elapsed2 = P.r_u16();
+		//Msg( "~~[%s][%s] update_read: m_bGrenadeMode: [%u], iAmmoElapsed2: [%u], m_ammoType2: [%u]", __FUNCTION__, this->name(), m_bGrenadeMode, a_elapsed2, ammo_type2 );
+	}
 }
 void CSE_ALifeItemWeaponMagazinedWGL::UPDATE_Write	(NET_Packet& P)
 {
 	P.w_u8(m_bGrenadeMode ? 1 : 0);	
 	inherited::UPDATE_Write(P);
 
+	P.w_u8(ammo_type2);
+	P.w_u16(a_elapsed2);
+	//Msg( "~~[%s][%s] update_write: m_bGrenadeMode: [%u], iAmmoElapsed2: [%u], m_ammoType2: [%u]", __FUNCTION__, this->name(), m_bGrenadeMode, a_elapsed2, ammo_type2 );
 }
 void CSE_ALifeItemWeaponMagazinedWGL::STATE_Read		(NET_Packet& P, u16 size)
 {

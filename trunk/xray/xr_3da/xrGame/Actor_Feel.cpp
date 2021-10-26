@@ -215,8 +215,9 @@ void	CActor::PickupModeUpdate_COD	()
 	{
 		//подбирание объекта
 		Game().SendPickUpEvent(ID(), pNearestItem->object().ID());
-		
-		PickupModeOff();
+		//если не хардкорный режим подбора, то пусть подбирается всё в радиусе
+		if (psActorFlags.test(AF_PICKUP_TARGET_ONLY)) 
+			PickupModeOff();
 	}
 };
 

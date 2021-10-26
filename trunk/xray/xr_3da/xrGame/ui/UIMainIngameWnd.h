@@ -20,6 +20,16 @@
 extern int				g_bHudAdjustMode;
 extern float			g_fHudAdjustValue;
 
+// Енумы элементов худа
+enum EHUDElement
+{
+	ePDA,
+	eDetector,
+	eActiveItem,
+	eGear,
+	eArmor,
+};
+
 class					CUIPdaMsgListItem;
 class					CLAItem;
 class					CUIZoneMap;
@@ -161,16 +171,16 @@ public:
 		ewiArtefact,
 	};
 
-	// Енумы элементов худа
-	enum EHUDElement
-	{
-		ePDA,
-		eDetector,
-		eActiveItem,
-		eGear,
-		eArmor,
-	};
-	bool                AllowHUDElement                 (EHUDElement element);
+	//// Енумы элементов худа
+	//enum EHUDElement
+	//{
+	//	ePDA,
+	//	eDetector,
+	//	eActiveItem,
+	//	eGear,
+	//	eArmor,
+	//};
+	bool                IsHUDElementAllowed				(EHUDElement element);
 	//
 	void				SetMPChatLog					(CUIWindow* pChat, CUIWindow* pLog);
 

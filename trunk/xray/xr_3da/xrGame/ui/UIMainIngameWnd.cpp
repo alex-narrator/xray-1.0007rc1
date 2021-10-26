@@ -390,11 +390,11 @@ void CUIMainIngameWnd::Draw()
 
 	//UIMotionIcon.SetNoise((s16)(0xffff & iFloor(m_pActor->m_snd_noise*100.0f)));
 #ifdef INV_QUICK_SLOT_PANEL
-	AllowHUDElement(eGear) ? m_quickSlotPanel->Draw() : m_quickSlotPanel->Hide(); //рисуем панель квикслотов
+	IsHUDElementAllowed(eGear) ? m_quickSlotPanel->Draw() : m_quickSlotPanel->Hide(); //рисуем панель квикслотов
 #endif
 	CUIWindow::Draw();
 
-	if (AllowHUDElement(ePDA)) UIZoneMap->Render(); //не рисум миникарту если ПДА нет в слоте и не нажата кнопка -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
+	if (IsHUDElementAllowed(ePDA)) UIZoneMap->Render(); //не рисум миникарту если ПДА нет в слоте и не нажата кнопка -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 
 	RenderQuickInfos();
 #ifdef DEBUG
@@ -402,7 +402,7 @@ void CUIMainIngameWnd::Draw()
 #endif
 }
 
-bool CUIMainIngameWnd::AllowHUDElement(EHUDElement element)
+bool CUIMainIngameWnd::IsHUDElementAllowed(EHUDElement element)
 {
 	bool result = false;
 	bool allow_devices_hud = g_HudOnKey == 0 || Level().IR_GetKeyState(get_action_dik(kSCORES)) || m_pActor->inventory().GetActiveSlot() == BOLT_SLOT;
@@ -566,14 +566,14 @@ void CUIMainIngameWnd::Update()
 			case ewiRadiation:
 				//удаляем иконку радиации на худе если детектора нет в слоте и/или не нажата кнопка (при выборе соотв. опции меню) -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
 				//AllowHUDElement(eDetector) ? value = m_pActor->conditions().GetRadiation() : TurnOffWarningIcon(ewiRadiation);
-				if (AllowHUDElement(eDetector))
+				if (IsHUDElementAllowed(eDetector))
 					value = m_pActor->conditions().GetRadiation();
 				break;
 			case ewiWound:
 				value = m_pActor->conditions().BleedingSpeed();
 				break;
 			case ewiWeaponJammed:
-				if (/*m_pWeapon*/AllowHUDElement(eActiveItem))
+				if (/*m_pWeapon*/IsHUDElementAllowed(eActiveItem))
 					value = 1 - /*m_pWeapon->GetConditionToShow()*/g_actor->inventory().ActiveItem()->GetConditionToShow();
 				break;
 			case ewiStarvation:
@@ -584,7 +584,7 @@ void CUIMainIngameWnd::Update()
 				break;
 				//
 			case ewiArmor:
-				if (AllowHUDElement(eArmor))
+				if (IsHUDElementAllowed(eArmor))
 					value = 1 - Outfit->GetCondition();
 				break;
 			case ewiHealth:
@@ -650,7 +650,7 @@ void CUIMainIngameWnd::Update()
 	m_quickSlotPanel->Update();
 	#endif
  
-	m_artefactPanel->Show(AllowHUDElement(eGear)); //отрисовка панели артефактов
+	m_artefactPanel->Show(IsHUDElementAllowed(eGear)); //отрисовка панели артефактов
 
 	UpdateFlashingIcons(); //обновляем состояние мигающих иконок - UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 
@@ -1407,7 +1407,7 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 void CUIMainIngameWnd::UpdateActiveItemInfo()
 {
 	PIItem item		=  m_pActor->inventory().ActiveItem();
-	if (AllowHUDElement(eActiveItem) || item && AllowHUDElement(eGear)) //-- не показываем иконку активного предмета (оружия) если не нажата клавиша перезарядки/клавиша проверки снаряжения (при включении соотв. опции)
+	if (IsHUDElementAllowed(eActiveItem) || item && IsHUDElementAllowed(eGear)) //-- не показываем иконку активного предмета (оружия) если не нажата клавиша перезарядки/клавиша проверки снаряжения (при включении соотв. опции)
 	{
 		xr_string					str_name;
 		xr_string					icon_sect_name;
