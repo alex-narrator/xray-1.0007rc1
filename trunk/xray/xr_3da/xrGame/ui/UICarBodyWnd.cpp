@@ -229,7 +229,7 @@ void CUICarBodyWnd::Hide()
 	if (pActor)
 	{
 		//ОБЯЗАТЕЛЬНО!!! одинаковая проверка для Hide() и Show(), иначе всё ломается
-		if (/*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands == 2 && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //восстановим показ оружия в руках, если обыскиваем не монстра
+		if (g_eFreeHands == eFreeHandsManual && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, false);  //восстановим показ оружия в руках, если обыскиваем не монстра
 		pActor->inventory().TryToHideWeapon(false);
 		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = false; //сбросим флаг перезарядки из рюкзака
 	}
@@ -410,7 +410,7 @@ void CUICarBodyWnd::Show()
 	if (pActor)
 	{
 		//ОБЯЗАТЕЛЬНО!!! одинаковая проверка для Hide() и Show(), иначе всё ломается
-		if (/*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands == 2 && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //спрячем оружие в руках, если обыскиваем не монстра 
+		if (g_eFreeHands == eFreeHandsManual && !Monster) pActor->SetWeaponHideState(INV_STATE_INV_WND, true);  //спрячем оружие в руках, если обыскиваем не монстра 
 		pActor->inventory().TryToHideWeapon(true);
 		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = true; //установим флаг перезарядки из рюкзака
 	}
@@ -932,7 +932,7 @@ bool CUICarBodyWnd::TransferItem(PIItem itm, CInventoryOwner* owner_from, CInven
 	CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(pActor->inventory().ActiveItem());
 	//CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(pActor->inventory().ItemFromSlot(pActor->inventory().GetPrevActiveSlot())); 
 	CBaseMonster* Monster = smart_cast<CBaseMonster*>(go_from);
-	if (/*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands != 0 && pActor && Monster)      //если мы забираем что-то из инвентаря монстра в режиме "свободных рук"
+	if (g_eFreeHands != eFreeHandsOff && pActor && Monster)      //если мы забираем что-то из инвентаря монстра в режиме "свободных рук"
 	{
 		if (Knife)                                                       //убедимся что оружие в активном слоте - нож
 		{

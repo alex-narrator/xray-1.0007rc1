@@ -117,7 +117,7 @@ void CActor::PickupModeUpdate()
 
 	//подбирание объекта
 	//
-	bool    b_pickup_allowed = inventory().FreeHands() && (!psActorFlags.test(AF_PICKUP_TARGET_ONLY) || inventory().m_pTarget);
+	bool    b_pickup_allowed = inventory().IsFreeHands() && (!psActorFlags.test(AF_PICKUP_TARGET_ONLY) || inventory().m_pTarget);
 	//
 	if(inventory().m_pTarget && inventory().m_pTarget->Useful() &&
 		m_pUsableObject && m_pUsableObject->nonscript_usable() &&
@@ -207,7 +207,7 @@ void	CActor::PickupModeUpdate_COD	()
 				pNearestItem = NULL;
 	}
 	//
-	bool    b_pickup_allowed = inventory().FreeHands() && (!psActorFlags.test(AF_PICKUP_TARGET_ONLY) || inventory().m_pTarget);
+	bool    b_pickup_allowed = inventory().IsFreeHands() && (!psActorFlags.test(AF_PICKUP_TARGET_ONLY) || inventory().m_pTarget);
 	//
 	HUD().GetUI()->UIMainIngameWnd->SetPickUpItem(b_pickup_allowed ? pNearestItem : NULL);
 

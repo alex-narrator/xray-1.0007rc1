@@ -185,10 +185,8 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kUSE_SLOT_QUICK_ACCESS_2:
 	case kUSE_SLOT_QUICK_ACCESS_3:
 		{
-			if (IsGameTypeSingle() && inventory().FreeHands())
+			if (IsGameTypeSingle() && inventory().IsFreeHands())
 			{
-				//if (/*!inventory().FreeHands()*/g_FreeHands == 1 && inventory().ActiveItem() && !inventory().ActiveItem()->IsSingleHanded())
-				//	inventory().Activate(NO_ACTIVE_SLOT);
 				inventory().TryToHideWeapon(true, false);
 				//
 				PIItem itm = 0;
@@ -445,10 +443,8 @@ void CActor::ActorUse()
 
 	if (m_pUsableObject)
 	{
-		if (m_pPersonWeLookingAt || inventory().FreeHands()) //чтобы можно было слышать просьбы убрать оружие при попытке поговорить со сталкерами с оружием в руках
+		if (m_pPersonWeLookingAt || inventory().IsFreeHands()) //чтобы можно было слышать просьбы убрать оружие при попытке поговорить со сталкерами с оружием в руках
 		{
-			//if (/*!inventory().FreeHands()*/g_FreeHands == 1 && inventory().ActiveItem() && !inventory().ActiveItem()->IsSingleHanded())
-			//	inventory().Activate(NO_ACTIVE_SLOT);
 			inventory().TryToHideWeapon(true, false);
 			//
 			m_pUsableObject->use(this);
@@ -458,7 +454,7 @@ void CActor::ActorUse()
 	if(m_pInvBoxWeLookingAt && m_pInvBoxWeLookingAt->nonscript_usable())
 	{
 		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
-		if (pGameSP && inventory().FreeHands()) pGameSP->StartCarBody(this, m_pInvBoxWeLookingAt);
+		if (pGameSP && inventory().IsFreeHands()) pGameSP->StartCarBody(this, m_pInvBoxWeLookingAt);
 		return;
 	}
 
@@ -485,7 +481,7 @@ void CActor::ActorUse()
 					CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 					if (pGameSP)
 					{
-						if (m_pMonsterWeLookingAt && /*psActorFlags.test(AF_FREE_HANDS)*//*g_FreeHands != 0*/inventory().FreeHands())
+						if (m_pMonsterWeLookingAt && inventory().IsFreeHands())
 						{
 							CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(inventory().ActiveItem());
 							if (Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness) //нож и condition ножа больше либо равен нужному для срезания
@@ -494,7 +490,7 @@ void CActor::ActorUse()
 								return;
 							}
 						}
-						else if (inventory().FreeHands())
+						else if (inventory().IsFreeHands())
 						{
 							pGameSP->StartCarBody(this, m_pPersonWeLookingAt);
 							return;
@@ -514,7 +510,7 @@ void CActor::ActorUse()
 		{
 			if (object->ActorCanCapture() && !character_physics_support()->movement()->PHCapture())
 			{
-				if (inventory().FreeHands())
+				if (inventory().IsFreeHands())
 				{
 					if (!conditions().IsCantWalk()) character_physics_support()->movement()->PHCaptureObject(object, element); //таскать предметы можно только если есть силы
 					else HUD().GetUI()->AddInfoMessage("cant_walk");
@@ -536,7 +532,6 @@ void CActor::ActorUse()
 		}
 	}
 
-	//if (inventory().FreeHands())
 		PickupModeOn();
 }
 //

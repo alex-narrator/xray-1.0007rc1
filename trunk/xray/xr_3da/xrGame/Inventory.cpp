@@ -1007,11 +1007,11 @@ void CInventory::RepackAmmo()
 	}
 }
 
-bool CInventory::FreeHands()
+bool CInventory::IsFreeHands()
 {
 	CHudItem* pHudItem = smart_cast<CHudItem*>(ActiveItem());
 
-	bool hands_are_free = g_FreeHands != 2  || 
+	bool hands_are_free = g_eFreeHands != eFreeHandsManual ||
 		(ActiveItem() && ActiveItem()->IsSingleHanded() && !pHudItem->IsPending()) || 
 		ActiveItem() == NULL || 
 		GetActiveSlot() == NO_ACTIVE_SLOT;
@@ -1020,11 +1020,11 @@ bool CInventory::FreeHands()
 
 void CInventory::TryToHideWeapon(bool b_hide_state, bool b_save_prev_slot)
 {
-	if (g_FreeHands != 1) return; //только для авторежима свободных рук
+	if (g_eFreeHands != eFreeHandsAuto) return; //только для авторежима свободных рук
 
 	if (b_hide_state)
 	{
-		if (/*psActorFlags.test(AF_FREE_HANDS) &&*/ActiveItem() && !ActiveItem()->IsSingleHanded())
+		if (ActiveItem() && !ActiveItem()->IsSingleHanded())
 		{
 			m_iPrevActiveSlot = b_save_prev_slot ? GetActiveSlot() : NO_ACTIVE_SLOT;
 			Activate(NO_ACTIVE_SLOT);
@@ -1032,7 +1032,7 @@ void CInventory::TryToHideWeapon(bool b_hide_state, bool b_save_prev_slot)
 	}
 	else
 	{
-		if (/*psActorFlags.test(AF_FREE_HANDS) &&*/m_iPrevActiveSlot != NO_ACTIVE_SLOT)
+		if (m_iPrevActiveSlot != NO_ACTIVE_SLOT)
 		{
 			Activate(m_iPrevActiveSlot);
 			m_iPrevActiveSlot = NO_ACTIVE_SLOT;

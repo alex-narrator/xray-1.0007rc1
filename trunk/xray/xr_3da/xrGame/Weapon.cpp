@@ -488,6 +488,8 @@ BOOL CWeapon::net_Spawn(CSE_Abstract* DC)
 	m_ammoType = E->ammo_type;
 	SetState(E->wpn_state);
 	SetNextState(E->wpn_state);
+	//
+	bMisfire = E->bMisfire;
 
 	m_DefaultCartridge.Load(*m_ammoTypes[m_ammoType], u8(m_ammoType));
 	if (iAmmoElapsed)
@@ -542,6 +544,8 @@ void CWeapon::net_Export(NET_Packet& P)
 	P.w_u8((u8)m_ammoType);
 	P.w_u8((u8)GetState());
 	P.w_u8((u8)m_bZoomMode);
+	//
+	P.w_u8((u8)bMisfire);
 }
 
 void CWeapon::net_Import(NET_Packet& P)
@@ -604,6 +608,7 @@ void CWeapon::save(NET_Packet &output_packet)
 	save_data(m_flagsAddOnState, output_packet);
 	save_data(m_ammoType, output_packet);
 	save_data(m_bZoomMode, output_packet);
+	save_data(bMisfire, output_packet);
 }
 
 void CWeapon::load(IReader &input_packet)
@@ -614,6 +619,7 @@ void CWeapon::load(IReader &input_packet)
 	UpdateAddonsVisibility();
 	load_data(m_ammoType, input_packet);
 	load_data(m_bZoomMode, input_packet);
+	load_data(bMisfire, input_packet);
 
 	if (m_bZoomMode)	OnZoomIn();
 	else			OnZoomOut();

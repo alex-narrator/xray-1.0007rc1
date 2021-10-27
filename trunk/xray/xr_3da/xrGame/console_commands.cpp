@@ -1389,21 +1389,21 @@ public:
 };
 
 //режимы "свободных рук"
-u32	        g_FreeHands = 0; //освобождение рук для взаимодействия с предметами: 0 - отключено, 1 - автоматически, 2 - вручную
+EFreeHandsMode g_eFreeHands = eFreeHandsOff; //освобождение рук для взаимодействия с предметами: 0 - отключено, 1 - автоматически, 2 - вручную
 xr_token	free_hands_token[] = {
-	{ "fh_off",		0 }, //отключено
-	{ "fh_auto",	1 }, //автоосвобождение
-	{ "fh_manual",	2 }, //освобождать вручную
-	{ 0,			0 }
+	{ "fh_off",		eFreeHandsOff		}, //отключено
+	{ "fh_auto",	eFreeHandsAuto		}, //автоосвобождение
+	{ "fh_manual",	eFreeHandsManual	}, //освобождать вручную
+	{ 0,			0					}
 };
 
 //элементы HUD выводятся по нажатию клавиш
-u32	        g_HudOnKey = 0; //элементы HUD выводятся по нажатию клавиш: 0 - отключено, 1 - только warning-иконки, 2 - иконка положения персонажа в качестве warning-иконки здоровья
+EHudOnKeyMode g_eHudOnKey = eHudOnKeyOff; //элементы HUD выводятся по нажатию клавиш: 0 - отключено, 1 - только warning-иконки, 2 - иконка положения персонажа в качестве warning-иконки здоровья
 xr_token	hud_on_key_token[] = {
-	{ "hk_off",		0 }, //отключено
-	{ "hk_warning",	1 }, //только warning-иконки
-	{ "hk_motion",	2 }, //иконка положения персонажа в качестве warning-иконки здоровья
-	{ 0,			0 }
+	{ "hk_off",		eHudOnKeyOff			}, //отключено
+	{ "hk_warning", eHudOnKeyWarningIcon	}, //только warning-иконки
+	{ "hk_motion",	eHudOnKeyMotionIcon		}, //иконка положения персонажа в качестве warning-иконки здоровья
+	{ 0,			0						}
 };
 
 void CCC_RegisterCommands()
@@ -1421,7 +1421,7 @@ void CCC_RegisterCommands()
 	//
 	CMD3(CCC_Mask,				"g_pause_after_loading",		&psActorFlags,	AF_PAUSE_AFTER_LOADING			);	//пауза после загрузки сохранения
 	//взаимодействие с предметами
-	CMD3(CCC_Token,             "g_free_hands",					&g_FreeHands,   free_hands_token				);	//режимы "свободных рук"
+	CMD3(CCC_Token,             "g_free_hands",					(u32*)&g_eFreeHands,  free_hands_token			);	//режимы "свободных рук"
 	CMD3(CCC_Mask,				"g_pickup_target_only",			&psActorFlags,	AF_PICKUP_TARGET_ONLY			);	//можно подобрать только те предметы на которые непосредственно смотрит прицел
 	//инвентарь
 	CMD3(CCC_Mask,				"g_ammo_from_belt",				&psActorFlags,	AF_AMMO_FROM_BELT				);	//патроны с пояса
@@ -1469,7 +1469,7 @@ void CCC_RegisterCommands()
 	psHUD_Flags.set(HUD_DRAW,			true);
 	psHUD_Flags.set(HUD_INFO,			true);
 
-	CMD3(CCC_Token,				"hud_show_on_key",		&g_HudOnKey,	hud_on_key_token	);	//элементы HUD выводятся по нажатию клавиш
+	CMD3(CCC_Token,				"hud_show_on_key",		(u32*)&g_eHudOnKey,	hud_on_key_token);	//элементы HUD выводятся по нажатию клавиш
 
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR		);
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST	);

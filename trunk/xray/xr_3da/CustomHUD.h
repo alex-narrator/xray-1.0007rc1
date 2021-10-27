@@ -46,4 +46,12 @@ public:
 
 extern ENGINE_API CCustomHUD* g_hud;
 
-extern u32	g_HudOnKey; //элементы HUD выводятся по нажатию клавиш: 0 - отключено, 1 - только warning-иконки, 2 - иконка положения персонажа в качестве warning-иконки здоровья
+//элементы HUD выводятся по нажатию клавиш
+enum EHudOnKeyMode
+{
+	eHudOnKeyOff,			//отключено
+	eHudOnKeyWarningIcon,	//только warning-иконки
+	eHudOnKeyMotionIcon		//иконка положения персонажа в качестве warning-иконки здоровья
+};
+
+extern EHudOnKeyMode g_eHudOnKey; //элементы HUD выводятся по нажатию клавиш: 0 - отключено, 1 - только warning-иконки, 2 - иконка положения персонажа в качестве warning-иконки здоровья

@@ -36,6 +36,13 @@ enum EState
 	esRemoved
 };
 
+//коллизия мертвых тел между собой и с живыми телами
+enum EBodiesCollisionMode{
+	eCollisionDisabled	= 0,	//отключение коллизии живых тел с мертвымии и мертвых тел с мертвыми
+	eCollisionAlive		= 1,	//отключение коллизии живых тел с мертвыми
+	eCollisionDeadAlive = 2		//коллизия с мертвыми и живыми телами
+};
+
 private:
 	EType								m_eType;
 	EState								m_eState;
@@ -80,7 +87,8 @@ private:
 	float								m_shot_up_factor																																	;
 	float								m_after_death_velocity_factor																														;
 	float								m_BonceDamageFactor																																	;
-	int                                 BodiesCollisionMode; //режимы коллизии трупов между собой и с живыми телами
+	//
+	EBodiesCollisionMode				m_eBodiesCollisionMode; //коллизия мертвых тел между собой и с живыми телами
 	//gray_wolf>Переменные для поддержки изменяющегося трения у персонажей во время смерти
 	float								skeleton_skin_ddelay;
 	float								skeleton_skin_remain_time;

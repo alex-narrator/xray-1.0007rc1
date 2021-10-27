@@ -171,7 +171,7 @@ void CUIPdaWnd::Show()
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if (pActor)
 	{
-		if (/*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands == 2) pActor->SetWeaponHideState(INV_STATE_PDA_WND, true);  //спрячем оружие в руках
+		if (g_eFreeHands == eFreeHandsManual) pActor->SetWeaponHideState(INV_STATE_PDA_WND, true);  //спрячем оружие в руках
 		pActor->inventory().TryToHideWeapon(true);
 	}
 }
@@ -186,7 +186,7 @@ void CUIPdaWnd::Hide()
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if (pActor)
 	{
-		if (/*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands == 2) pActor->SetWeaponHideState(INV_STATE_PDA_WND, false);  //спрячем оружие в руках
+		if (g_eFreeHands == eFreeHandsManual) pActor->SetWeaponHideState(INV_STATE_PDA_WND, false);  //спрячем оружие в руках
 		pActor->inventory().TryToHideWeapon(false);
 	}
 

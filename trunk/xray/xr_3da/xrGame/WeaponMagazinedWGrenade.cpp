@@ -15,8 +15,8 @@
 #include "game_base_space.h"
 #include "MathUtils.h"
 #include "clsid_game.h"
-#include "alife_registry_wrappers.h"
-#include "alife_simulator_header.h"
+//#include "alife_registry_wrappers.h"
+//#include "alife_simulator_header.h"
 #ifdef DEBUG
 #include "phdebug.h"
 #endif
@@ -277,7 +277,8 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 	while(m_magazine2.size()) { m_magazine.push_back(m_magazine2.back()); m_magazine2.pop_back(); }
 	while(l_magazine.size()) { m_magazine2.push_back(l_magazine.back()); l_magazine.pop_back(); }*/
 	m_magazine.swap(m_magazine2);
-	iAmmoElapsed = (int)m_magazine.size();
+	iAmmoElapsed	= (int)m_magazine.size();
+	iAmmoElapsed2	= (int)m_magazine2.size();
 
 	if(m_bZoomEnabled && m_pHUD)
 	{
@@ -301,6 +302,9 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 
 bool CWeaponMagazinedWGrenade::Action(s32 cmd, u32 flags) 
 {
+	if (m_bGrenadeMode && (cmd == kWPN_FIREMODE_PREV || cmd == kWPN_FIREMODE_NEXT))
+		return false;
+
 	if(inherited::Action(cmd, flags)) return true;
 	
 	switch(cmd) 
@@ -809,8 +813,8 @@ void CWeaponMagazinedWGrenade::load(IReader &input_packet)
 		m_magazine2.push_back(l_cartridge);*/
 	load_data(m_bGrenadeMode, input_packet);
 	load_data(iAmmoElapsed2, input_packet);
-	if (ai().get_alife()->header().version() >= 4)
-		load_data(m_ammoType2, input_packet);
+	//if (ai().get_alife()->header().version() >= 4)
+	load_data(m_ammoType2, input_packet);
 }
 
 void CWeaponMagazinedWGrenade::net_Export	(NET_Packet& P)

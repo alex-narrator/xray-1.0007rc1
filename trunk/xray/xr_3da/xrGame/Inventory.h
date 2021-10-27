@@ -84,8 +84,8 @@ public:
 	void					RepackAmmo			();
 	void					TryAmmoToBelt		(CInventoryItem *pIItem);
 	bool                    m_bRuckAmmoPlacement	= false; //класть/брать патроны из рюкзака (для AF_AMMO_FROM_BELT)
-	// AF_FREE_HANDS
-	bool                    FreeHands();                             //свободна ли хотябы одна рука актора
+	// AF_FREE_HANDS - свободна ли хотябы одна рука актора
+	bool                    IsFreeHands			();      
 	void                    TryToHideWeapon     (bool b_hide_state, bool b_save_prev_slot = true); //сокрытие/восстановлени показа оружия в режиме AF_FREE_HANDS
 	//
 	PIItem					item				(CLASS_ID cls_id) const;

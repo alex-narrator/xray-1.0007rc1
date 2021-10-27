@@ -89,7 +89,7 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	case kINVENTORY:
 		if( !MainInputReceiver() || MainInputReceiver()==InventoryMenu)
 		{
-			if (pActor->inventory().FreeHands()) //инвентарь можно открыть если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
+			if (pActor->inventory().IsFreeHands()) //инвентарь можно открыть если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
 			{
 				m_game->StartStopMenu(InventoryMenu, true);
 				return true;
@@ -106,7 +106,7 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	case kACTIVE_JOBS:
 		if ((!MainInputReceiver() || MainInputReceiver() == PdaMenu) && pActor->GetPDA())
 		{
-			if (pActor->inventory().FreeHands()) //открыть раздел ПДА можно если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
+			if (pActor->inventory().IsFreeHands()) //открыть раздел ПДА можно если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
 			{
 				PdaMenu->SetActiveSubdialog(eptQuests);
 				m_game->StartStopMenu(PdaMenu, true);
@@ -124,7 +124,7 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	case kMAP:
 		if ((!MainInputReceiver() || MainInputReceiver() == PdaMenu) && pActor->GetPDA())
 		{
-			if (pActor->inventory().FreeHands()) //открыть раздел ПДА можно если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
+			if (pActor->inventory().IsFreeHands()) //открыть раздел ПДА можно если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
 			{
 				PdaMenu->SetActiveSubdialog(eptMap);
 				m_game->StartStopMenu(PdaMenu, true);
@@ -142,7 +142,7 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	case kCONTACTS:
 		if ((!MainInputReceiver() || MainInputReceiver() == PdaMenu) && pActor->GetPDA())
 		{
-			if (pActor->inventory().FreeHands()) //открыть раздел ПДА можно если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
+			if (pActor->inventory().IsFreeHands()) //открыть раздел ПДА можно если в руках нет предметов или предмет "одноручный" (IsSingleHanded())
 			{
 				PdaMenu->SetActiveSubdialog(eptContacts);
 				m_game->StartStopMenu(PdaMenu, true);
@@ -177,7 +177,7 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	case kL_STRAFE:
 	case kJUMP:
 	{
-		if (/*psActorFlags.test(AF_FREE_HANDS)*/g_FreeHands != 0)
+		if (g_eFreeHands != eFreeHandsOff)
 		{
 			if (MainInputReceiver() == InventoryMenu) //если открыто окно инвентаря и установлена опция - закроем его
 				m_game->StartStopMenu(InventoryMenu, true);

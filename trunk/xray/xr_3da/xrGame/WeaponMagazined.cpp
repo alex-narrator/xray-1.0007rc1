@@ -1277,6 +1277,15 @@ void CWeaponMagazined::load(IReader &input_packet)
 	load_data(m_iCurFireMode, input_packet);
 }
 
+BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
+{
+	BOOL bRes = inherited::net_Spawn(DC);
+	CSE_ALifeItemWeaponMagazined* const wpn = smart_cast<CSE_ALifeItemWeaponMagazined*>(DC);
+	m_iCurFireMode = wpn->m_u8CurFireMode;
+	SetQueueSize(GetCurrentFireMode());
+	return bRes;
+}
+
 void CWeaponMagazined::net_Export(NET_Packet& P)
 {
 	inherited::net_Export(P);

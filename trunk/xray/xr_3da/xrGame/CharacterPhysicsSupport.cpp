@@ -172,8 +172,7 @@ void CCharacterPhysicsSupport::in_Load(LPCSTR section)
 		m_BonceDamageFactor=pSettings->r_float("collision_damage","bonce_damage_factor_for_objects");
 	}
 	//
-	BodiesCollisionMode = READ_IF_EXISTS(pSettings, r_u8, "bodies_collision", "collision_mode", 0); //режимы коллизии трупов между собой и с живыми телами
-	clamp(BodiesCollisionMode, 0, 2); //режимов всего три
+	m_eBodiesCollisionMode = (EBodiesCollisionMode)pSettings->r_s32("bodies_collision", "collision_mode");
 	//
 	CPHDestroyable::Load(section);
 }
@@ -713,15 +712,15 @@ void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 	{
 		m_pPhysicsShell->SetPrefereExactIntegration();//use exact integration for ragdolls in single
 
-		switch (BodiesCollisionMode)
+		switch (m_eBodiesCollisionMode)
 		{
-		case 0:
+		case eCollisionDisabled:
+			m_pPhysicsShell->SetIgnoreDynamic();				//отключение коллизии живых тел с мертвымии и мертвых тел с мертвыми
 			break;
-		case 1:
+		case eCollisionAlive:
 			m_pPhysicsShell->SetRemoveCharacterCollLADisable(); //отключение коллизии живых тел с мертвыми
 			break;
-		case 2:
-			m_pPhysicsShell->SetIgnoreDynamic(); //отключение коллизии живых тел с мертвымии и мертвых тел с мертвыми
+		case eCollisionDeadAlive:
 			break;
 		}
 	}

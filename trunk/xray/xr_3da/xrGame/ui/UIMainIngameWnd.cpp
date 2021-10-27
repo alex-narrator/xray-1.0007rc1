@@ -405,7 +405,7 @@ void CUIMainIngameWnd::Draw()
 bool CUIMainIngameWnd::IsHUDElementAllowed(EHUDElement element)
 {
 	bool result = false;
-	bool allow_devices_hud = g_HudOnKey == 0 || Level().IR_GetKeyState(get_action_dik(kSCORES)) || m_pActor->inventory().GetActiveSlot() == BOLT_SLOT;
+	bool allow_devices_hud = g_eHudOnKey == eHudOnKeyOff || Level().IR_GetKeyState(get_action_dik(kSCORES)) || m_pActor->inventory().GetActiveSlot() == BOLT_SLOT;
 
 	switch (element)
 	{
@@ -419,15 +419,15 @@ bool CUIMainIngameWnd::IsHUDElementAllowed(EHUDElement element)
 		}break;
 		case eActiveItem: //Информация об предмете в руках (для оружия - кол-во/тип заряженных патронов, режим огня)
 		{
-			result = m_pActor->inventory().ActiveItem() && (g_HudOnKey == 0 || Level().IR_GetKeyState(get_action_dik(kCHECKACTIVEITEM)));
+			result = m_pActor->inventory().ActiveItem() && (g_eHudOnKey == eHudOnKeyOff || Level().IR_GetKeyState(get_action_dik(kCHECKACTIVEITEM)));
 		}break;
 		case eGear: //Информация о снаряжении - панель артефактов, наполнение квикслотов, общее кол-во патронов к оружию в руках
 		{
-			result = g_HudOnKey == 0 || Level().IR_GetKeyState(get_action_dik(kCHECKGEAR));
+			result = g_eHudOnKey == eHudOnKeyOff || Level().IR_GetKeyState(get_action_dik(kCHECKGEAR));
 		}break;
 		case eArmor: //Иконка состояния брони
 		{
-			result = g_HudOnKey != 0 && m_pActor->inventory().ItemFromSlot(OUTFIT_SLOT) && Level().IR_GetKeyState(get_action_dik(kCHECKGEAR));
+			result = g_eHudOnKey != eHudOnKeyOff && m_pActor->inventory().ItemFromSlot(OUTFIT_SLOT) && Level().IR_GetKeyState(get_action_dik(kCHECKGEAR));
 		}break;
 	}
 
@@ -538,7 +538,7 @@ void CUIMainIngameWnd::Update()
 
 		// Armor indicator stuff
 		PIItem	Outfit = m_pActor->inventory().ItemFromSlot(OUTFIT_SLOT);
-		if (Outfit && g_HudOnKey == 0)
+		if (Outfit && g_eHudOnKey == eHudOnKeyOff)
 		{
 			UIArmorBar.Show					(true);
 			UIStaticArmor.Show				(true);
@@ -554,7 +554,7 @@ void CUIMainIngameWnd::Update()
 
 		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 		//
-		bool b_replace_progress_bar = g_HudOnKey == 1;//!!psHUD_Flags.test(HUD_SHOW_ON_KEY);
+		bool b_replace_progress_bar = g_eHudOnKey == eHudOnKeyWarningIcon;//!!psHUD_Flags.test(HUD_SHOW_ON_KEY);
 
 		EWarningIcons i					= ewiWeaponJammed;		
 		while (!external_icon_ctrl && i < ewiInvincible)
@@ -626,7 +626,7 @@ void CUIMainIngameWnd::Update()
 	}
 
 	// health&armor
-	if (g_HudOnKey == 0)
+	if (g_eHudOnKey == eHudOnKeyOff)
 	{
 		UIHealthBar.Show           (true);
 		UIStaticHealth.Show        (true);

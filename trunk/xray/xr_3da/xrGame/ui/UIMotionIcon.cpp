@@ -141,7 +141,7 @@ void CUIMotionIcon::SetLuminosity(float Pos)
 
 void CUIMotionIcon::SetStateWarningColor(EState state)
 {
-	if (g_HudOnKey != 2)
+	if (g_eHudOnKey != eHudOnKeyMotionIcon)
 	{
 		if (m_states[state].GetColor() != u_ColorDefault)
 			m_states[state].SetColor(u_ColorDefault);
@@ -201,9 +201,9 @@ void CUIMotionIcon::SetStateWarningColor(EState state)
 
 void CUIMotionIcon::Update()
 {
-	auto CurrentHUD = HUD().GetUI()->UIMainIngameWnd;
-	bool show_motion_icon  = g_HudOnKey != 1;
-	bool show_progress_bar = CurrentHUD->IsHUDElementAllowed(ePDA);
+	auto CurrentHUD			= HUD().GetUI()->UIMainIngameWnd;
+	bool show_motion_icon	= g_eHudOnKey != eHudOnKeyWarningIcon;
+	bool show_progress_bar	= CurrentHUD->IsHUDElementAllowed(ePDA);
 
 	//статик положения персонажа и выносливости
 	UIStaticMotionBack.Show (show_motion_icon);

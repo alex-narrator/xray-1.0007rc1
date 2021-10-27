@@ -153,8 +153,10 @@
 // 119 - CSE_ALifeItemEatable			added class and m_portions_num field
 // 120 - CSE_ALifeItemGrenade			added m_dwDestroyTimeMax field to save/load delay to explosion
 //     - CSE_ALifeItemArtefact			added m_fRandomK field to save/load random koef for artefact properties
+// 121 - CSE_ALifeItemWeaponMagazinedWGL added ammo_type2 and a_elapsed2 to save/load type and count of GL-ammo
+//     - CSE_ALifeItemWeapon			added bMisfire to save/load missfiring state
 //------------------------------------------------------------------------------
-#define SPAWN_VERSION	u16(120)
+#define SPAWN_VERSION	u16(121)
 
 SERVER_ENTITY_DECLARE_BEGIN2(CSE_Shape,ISE_Shape,CShapeData)
 public:

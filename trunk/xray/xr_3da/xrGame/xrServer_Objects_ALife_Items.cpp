@@ -381,6 +381,8 @@ CSE_ALifeItemWeapon::CSE_ALifeItemWeapon	(LPCSTR caSection) : CSE_ALifeItem(caSe
 	m_grenade_launcher_status	=	(EWeaponAddonStatus)pSettings->r_s32(s_name,"grenade_launcher_status");
 	m_ef_main_weapon_type		= READ_IF_EXISTS(pSettings,r_u32,caSection,"ef_main_weapon_type",u32(-1));
 	m_ef_weapon_type			= READ_IF_EXISTS(pSettings,r_u32,caSection,"ef_weapon_type",u32(-1));
+	//
+	bMisfire					= false;
 }
 
 CSE_ALifeItemWeapon::~CSE_ALifeItemWeapon	()
@@ -410,6 +412,12 @@ void CSE_ALifeItemWeapon::UPDATE_Read(NET_Packet	&tNetPacket)
 	tNetPacket.r_u8				(ammo_type);
 	tNetPacket.r_u8				(wpn_state);
 	tNetPacket.r_u8				(m_bZoom);
+	//
+	if (m_wVersion > 120)
+	{
+		u8 _data = tNetPacket.r_u8();
+		bMisfire = !!(_data & 0x1);
+	}
 }
 
 void CSE_ALifeItemWeapon::UPDATE_Write(NET_Packet	&tNetPacket)
@@ -423,6 +431,8 @@ void CSE_ALifeItemWeapon::UPDATE_Write(NET_Packet	&tNetPacket)
 	tNetPacket.w_u8				(ammo_type);
 	tNetPacket.w_u8				(wpn_state);
 	tNetPacket.w_u8				(m_bZoom);
+	//
+	tNetPacket.w_u8				(bMisfire ? 1 : 0);
 }
 
 void CSE_ALifeItemWeapon::STATE_Read(NET_Packet	&tNetPacket, u16 size)
@@ -567,7 +577,16 @@ void CSE_ALifeItemWeaponShotGun::FillProps			(LPCSTR pref, PropItemVec& items)
 ////////////////////////////////////////////////////////////////////////////
 CSE_ALifeItemWeaponMagazined::CSE_ALifeItemWeaponMagazined	(LPCSTR caSection) : CSE_ALifeItemWeapon(caSection)
 {
-	m_u8CurFireMode = 0;
+	auto FireModesList = READ_IF_EXISTS(pSettings, r_string, caSection, "fire_modes", nullptr);
+	if (FireModesList) 
+	{
+		int ModesCount = _GetItemCount(FireModesList);
+		m_u8CurFireMode = ModesCount - 1;
+	}
+	else 
+	{
+		m_u8CurFireMode = 0;
+	}
 }
 
 CSE_ALifeItemWeaponMagazined::~CSE_ALifeItemWeaponMagazined	()
@@ -620,7 +639,8 @@ void CSE_ALifeItemWeaponMagazinedWGL::UPDATE_Read		(NET_Packet& P)
 	m_bGrenadeMode = !!(_data & 0x1);
 	inherited::UPDATE_Read(P);
 
-	if (!P.r_eof()) 
+	//if (!P.r_eof()) 
+	if (m_wVersion > 120)
 	{
 		ammo_type2 = P.r_u8();
 		a_elapsed2 = P.r_u16();
@@ -920,16 +940,7 @@ CSE_ALifeItemGrenade::CSE_ALifeItemGrenade	(LPCSTR caSection): CSE_ALifeItem(caS
 {
 	m_ef_weapon_type	= READ_IF_EXISTS(pSettings,r_u32,caSection,"ef_weapon_type",u32(-1));
 	//
-	/*LPCSTR str = pSettings->r_string(caSection, "destroy_time");
-	int cnt = _GetItemCount(str);
-	if (cnt > 1) //заданы границы рандомной задержки до взрыва
-	{
-		Ivector2 m = pSettings->r_ivector2(caSection, "destroy_time");
-		m_dwDestroyTimeMax = ::Random.randI(m.x, m.y);
-	}
-	else		//жестко заданная задержка до взрыва
-		m_dwDestroyTimeMax = pSettings->r_u32(caSection, "destroy_time");*/
-	m_dwDestroyTimeMax = NULL;
+	m_dwDestroyTimeMax	= NULL;
 	//debug
 	Msg("CSE_ALifeItemGrenade created grenade with m_dwDestroyTimeMax = [%d]", m_dwDestroyTimeMax);
 }

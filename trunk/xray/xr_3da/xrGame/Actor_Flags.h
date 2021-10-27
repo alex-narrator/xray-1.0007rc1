@@ -25,5 +25,12 @@ extern Flags32 psActorFlags;
 
 extern BOOL		GodMode	();	
 
-extern u32	g_FreeHands; //освобождение рук для взаимодействия с предметами: 0 - отключено, 1 - автоматически, 2 - вручную
+//освобождение рук для взаимодействия с предметами
+enum EFreeHandsMode
+{
+	eFreeHandsOff,		//отключено
+	eFreeHandsAuto,		//автоосвобождение
+	eFreeHandsManual	//освобождать вручную
+};
+extern EFreeHandsMode	g_eFreeHands; //освобождение рук для взаимодействия с предметами: 0 - отключено, 1 - автоматически, 2 - вручную
 
