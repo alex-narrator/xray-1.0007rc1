@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "weaponshotgun.h"
 #include "WeaponHUD.h"
+#include "hudmanager.h"
+#include "uigamecustom.h"
 #include "entity.h"
 #include "ParticlesObject.h"
 #include "xr_level_controller.h"
@@ -54,6 +56,12 @@ void CWeaponShotgun::Load	(LPCSTR section)
 
 		HUD_SOUND::LoadSound(section, "snd_close_weapon", m_sndClose, m_eSoundClose);
 		animGet	(mhud_close,	pSettings->r_string(*hud_sect,"anim_close_weapon"));
+		//
+		if (!pSettings->line_exist(section, "snd_shutter"))
+			HUD_SOUND::LoadSound(section, "snd_open_weapon", sndShutter, m_eSoundShutter);
+
+		shared_str m_sAnimDefault = pSettings->r_string(*hud_sect, "anim_reload");
+		animGet(mhud.mhud_shutter, READ_IF_EXISTS(pSettings, r_string, *hud_sect, "anim_shutter", *m_sAnimDefault));
 	};
 
 }
@@ -67,14 +75,18 @@ void CWeaponShotgun::OnShot ()
 //.	std::swap(vLoadedFirePoint, vLoadedFirePoint2);
 	inherited::OnShot();
 }
-
+// Headers included by Cribbledirge (for callbacks).
+#include "pch_script.h"
+#include "script_callback_ex.h"
+#include "script_game_object.h"
+#include "game_object_space.h"
 void CWeaponShotgun::Fire2Start () 
 {
 	if(m_bPending) return;
 
 	inherited::Fire2Start();
 
-	if (IsValid())
+	if (IsValid() && !IsMisfire())
 	{
 		if (!IsWorking())
 		{
@@ -93,7 +105,19 @@ void CWeaponShotgun::Fire2Start ()
 				SwitchState					((iAmmoElapsed < iMagazineSize)?eFire:eFire2);
 			}
 		}
-	}else{
+	}
+	else if (IsMisfire())
+	{
+		if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
+		{
+			HUD().GetUI()->UIGame()->RemoveCustomStatic("gun_not_jammed");
+			HUD().GetUI()->AddInfoMessage("gun_jammed");
+		}
+		// Callbacks added by Cribbledirge.
+		StateSwitchCallback(GameObject::eOnActorWeaponJammed, GameObject::eOnNPCWeaponJammed);
+	}
+	else
+	{
 		if (!iAmmoElapsed)	
 			SwitchState						(eMagEmpty);
 	}
@@ -383,7 +407,15 @@ bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)
 
 u8 CWeaponShotgun::AddCartridge		(u8 cnt)
 {
-	if(IsMisfire())	bMisfire = false;
+	if (IsMisfire())
+	{
+		bMisfire = false;
+		if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
+		{
+			HUD().GetUI()->UIGame()->RemoveCustomStatic("gun_jammed");
+			HUD().GetUI()->AddInfoMessage("gun_not_jammed");
+		}
+	}
 
 	if(m_set_next_ammoType_on_reload != u32(-1)){
 		m_ammoType						= m_set_next_ammoType_on_reload;

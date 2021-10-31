@@ -23,17 +23,21 @@
 #include "script_game_object.h"
 #include "game_object_space.h"
 
+#include "uigamecustom.h"
+
 #include "../../build_config_defines.h"
 
 CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapon(name)
 {
-	m_eSoundShow = ESoundTypes(SOUND_TYPE_ITEM_TAKING | eSoundType);
-	m_eSoundHide = ESoundTypes(SOUND_TYPE_ITEM_HIDING | eSoundType);
-	m_eSoundShot = ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING | eSoundType);
-	m_eSoundEmptyClick = ESoundTypes(SOUND_TYPE_WEAPON_EMPTY_CLICKING | eSoundType);
-	m_eSoundReload = ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
-	m_eSoundSightsUp	=	ESoundTypes(SOUND_TYPE_WORLD_AMBIENT | eSoundType);	//added by Daemonion for iron sight audio in weapon parameters - sights being raised
-	m_eSoundSightsDown	=	ESoundTypes(SOUND_TYPE_WORLD_AMBIENT | eSoundType);	//added by Daemonion for iron sight audio in weapon parameters - sights being lowered
+	m_eSoundShow		= ESoundTypes(SOUND_TYPE_ITEM_TAKING | eSoundType);
+	m_eSoundHide		= ESoundTypes(SOUND_TYPE_ITEM_HIDING | eSoundType);
+	m_eSoundShot		= ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING | eSoundType);
+	m_eSoundEmptyClick	= ESoundTypes(SOUND_TYPE_WEAPON_EMPTY_CLICKING | eSoundType);
+	m_eSoundReload		= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
+	m_eSoundSightsUp	= ESoundTypes(SOUND_TYPE_WORLD_AMBIENT | eSoundType);	//added by Daemonion for iron sight audio in weapon parameters - sights being raised
+	m_eSoundSightsDown	= ESoundTypes(SOUND_TYPE_WORLD_AMBIENT | eSoundType);	//added by Daemonion for iron sight audio in weapon parameters - sights being lowered
+	//
+	m_eSoundShutter		= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
 
 	m_pSndShotCurrent = NULL;
 	m_sSilencerFlameParticles = m_sSilencerSmokeParticles = NULL;
@@ -44,7 +48,8 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	m_bLockType = false;
 	m_class_name = get_class_name<CWeaponMagazined>(this);
 	//
-	m_bHasDetachableMagazine = true;
+	m_bHasDetachableMagazine	= true;
+	m_bHasChamber				= true;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -58,6 +63,8 @@ CWeaponMagazined::~CWeaponMagazined()
 	HUD_SOUND::DestroySound(sndReload);
 	HUD_SOUND::DestroySound(sndSightsUp);		//added by Daemonion for ironsight audio in weapon parameters - sights being raised
 	HUD_SOUND::DestroySound(sndSightsDown);		//added by Daemonion for ironsight audio in weapon parameters - sights being lowered
+	//
+	HUD_SOUND::DestroySound(sndShutter);
 }
 
 void CWeaponMagazined::StopHUDSounds()
@@ -72,6 +79,8 @@ void CWeaponMagazined::StopHUDSounds()
 	HUD_SOUND::StopSound(sndSilencerShot);
 	HUD_SOUND::StopSound(sndSightsUp);			//added by Daemonion for ironsight audio in weapon parameters - sights being raised
 	HUD_SOUND::StopSound(sndSightsDown);		//added by Daemonion for ironsight audio in weapon parameters - sights being lowered
+	//
+	HUD_SOUND::StopSound(sndShutter);
 	//.	if(sndShot.enable && sndShot.snd.feedback)
 	//.		sndShot.snd.feedback->switch_to_3D();
 
@@ -95,6 +104,9 @@ void CWeaponMagazined::Load(LPCSTR section)
 	HUD_SOUND::LoadSound(section, "snd_reload", sndReload, m_eSoundReload);
 	HUD_SOUND::LoadSound(section, "snd_SightsUp", sndSightsUp, m_eSoundSightsUp);		//added by Daemonion for ironsight audio in weapon parameters - sights being raised
 	HUD_SOUND::LoadSound(section, "snd_SightsDown", sndSightsDown, m_eSoundSightsDown);	//added by Daemonion for ironsight audio in weapon parameters - sights being lowered
+	//
+	bool b_shutter_sound = !!pSettings->line_exist(section, "snd_shutter");
+	HUD_SOUND::LoadSound(section, b_shutter_sound ? "snd_shutter" : "snd_draw", sndShutter, m_eSoundShutter);
 
 
 	m_pSndShotCurrent = &sndShot;
@@ -112,6 +124,9 @@ void CWeaponMagazined::Load(LPCSTR section)
 
 	if (IsZoomEnabled())
 		animGet(mhud.mhud_idle_aim, pSettings->r_string(*hud_sect, "anim_idle_aim"));
+	//
+	shared_str m_sAnimDefault = pSettings->r_string(*hud_sect, "anim_draw");
+	animGet(mhud.mhud_shutter, READ_IF_EXISTS(pSettings, r_string, *hud_sect, "anim_shutter", *m_sAnimDefault));
 
 	//звуки и партиклы глушителя, еслит такой есть
 	if (m_eSilencerStatus == ALife::eAddonAttachable)
@@ -155,7 +170,10 @@ void CWeaponMagazined::Load(LPCSTR section)
 	else
 		m_bHasDifferentFireModes = false;
 	//  [7/21/2005]
-	//m_bHasDetachableMagazine = READ_IF_EXISTS(pSettings, r_bool, section, "has_detachable_magazine", true);
+	if (pSettings->line_exist(section, "has_detachable_magazine"))
+		m_bHasDetachableMagazine = !!pSettings->r_bool(section, "has_detachable_magazine");
+	if (pSettings->line_exist(section, "has_chamber"))
+		m_bHasChamber = !!pSettings->r_bool(section, "has_chamber");
 }
 
 void CWeaponMagazined::FireStart()
@@ -176,6 +194,16 @@ void CWeaponMagazined::FireStart()
 			else
 				SwitchState(eFire);
 		}
+	}
+	else if (IsMisfire())
+	{
+		if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
+		{
+			HUD().GetUI()->UIGame()->RemoveCustomStatic("gun_not_jammed");
+			HUD().GetUI()->AddInfoMessage("gun_jammed");
+		}
+		// Callbacks added by Cribbledirge.
+		StateSwitchCallback(GameObject::eOnActorWeaponJammed, GameObject::eOnNPCWeaponJammed);
 	}
 	else
 	{
@@ -267,11 +295,10 @@ void CWeaponMagazined::OnMagazineEmpty()
 	inherited::OnMagazineEmpty();
 }
 
-void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
+void CWeaponMagazined::UnloadAmmo(int unload_count, bool spawn_ammo)
 {
 	xr_map<LPCSTR, u16> l_ammo;
-
-	while (!m_magazine.empty())
+	for (int i = 0; i < unload_count; ++i)
 	{
 		CCartridge &l_cartridge = m_magazine.back();
 		xr_map<LPCSTR, u16>::iterator l_it;
@@ -298,8 +325,7 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 	for (l_it = l_ammo.begin(); l_ammo.end() != l_it; ++l_it)
 	{
 		if (m_pCurrentInventory && (!psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) || !m_bHasDetachableMagazine)) //доложить разряжаемые патроны в пачку из которой взяли
-		{	
-			if (!m_bHasDetachableMagazine) Msg("m_bHasDetachableMagazine [false]");
+		{
 			CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(l_it->first, ParentIsActor()));
 
 			if (l_pA)
@@ -313,12 +339,25 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 	}
 }
 
+void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
+{
+	UnloadAmmo(iAmmoElapsed, spawn_ammo);
+}
+
 void CWeaponMagazined::ReloadMagazine()
 {
 	m_dwAmmoCurrentCalcFrame = 0;
 
 	//устранить осечку при перезарядке
-	if (IsMisfire())	bMisfire = false;
+	if (IsMisfire() && (!m_bHasChamber || m_magazine.empty()))
+	{
+		bMisfire = false;
+		if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
+		{
+			HUD().GetUI()->UIGame()->RemoveCustomStatic("gun_jammed");
+			HUD().GetUI()->AddInfoMessage("gun_not_jammed");
+		}
+	}
 
 	//переменная блокирует использование
 	//только разных типов патронов
@@ -450,7 +489,10 @@ void CWeaponMagazined::OnStateSwitch(u32 S)
 		break;
 	case eMisfire:
 		if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
+		{
+			HUD().GetUI()->UIGame()->RemoveCustomStatic("gun_not_jammed");
 			HUD().GetUI()->AddInfoMessage("gun_jammed");
+		}
 		// Callbacks added by Cribbledirge.
 		StateSwitchCallback(GameObject::eOnActorWeaponJammed, GameObject::eOnNPCWeaponJammed);
 		break;
@@ -472,6 +514,9 @@ void CWeaponMagazined::OnStateSwitch(u32 S)
 		break;
 	case eHidden:
 		switch2_Hidden();
+		break;
+	case eShutter:
+		switch2_Shutter();
 		break;
 	}
 }
@@ -535,7 +580,9 @@ void CWeaponMagazined::UpdateSounds()
 	if (sndReload.playing		()) sndReload.set_position			(get_LastFP());
 	if (sndEmptyClick.playing	())	sndEmptyClick.set_position		(get_LastFP());
 	if (sndSightsUp.playing		())	sndSightsUp.set_position		(get_LastFP());			//Daemonion - iron sight audio - sights being raised
-	if (sndSightsDown.playing	())	sndSightsDown.set_position		(get_LastFP());	//Daemonion - iron sight audio - sights being lowered
+	if (sndSightsDown.playing	())	sndSightsDown.set_position		(get_LastFP());			//Daemonion - iron sight audio - sights being lowered
+	//
+	if (sndShutter.playing		()) sndShutter.set_position			(get_LastFP());
 }
 
 void CWeaponMagazined::state_Fire(float dt)
@@ -570,7 +617,10 @@ void CWeaponMagazined::state_Fire(float dt)
 	while (!m_magazine.empty() && fTime <= 0 && (IsWorking() || m_bFireSingleShot) && (m_iQueueSize < 0 || m_iShotNum < m_iQueueSize))
 	{
 		m_bFireSingleShot = false;
-		//если у оружия есть разные размеры очереди, привилегированный режим очереди не полный автомат и текущий режим очереди является привилегированным или кол-во выстрелов попадает в предел привилегированного режима
+		//если у оружия есть разные размеры очереди
+		//привилегированный режим очереди не полный автомат
+		//текущий режим очереди является привилегированным
+		//или кол-во выстрелов попадает в предел привилегированного режима
 		if (m_bHasDifferentFireModes && m_iPrefferedFireMode != -1 && (GetCurrentFireMode() == m_iPrefferedFireMode || m_iShotNum < m_iPrefferedFireMode))
 		{
 			VERIFY(fTimeToFirePreffered > 0.f);
@@ -660,9 +710,11 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 	switch (state)
 	{
 	case eReload:	ReloadMagazine();	SwitchState(eIdle);	break;	// End of reload animation
-	case eHiding:	SwitchState(eHidden);   break;	// End of Hide
-	case eShowing:	SwitchState(eIdle);		break;	// End of Show
-	case eIdle:		switch2_Idle();			break;  // Keep showing idle
+	case eHiding:	SwitchState(eHidden);					break;	// End of Hide
+	case eShowing:	SwitchState(eIdle);						break;	// End of Show
+	case eIdle:		switch2_Idle();							break;  // Keep showing idle
+	//
+	case eShutter:	Shutter();	SwitchState(eIdle);			break; //завершение анимации устранения задержки
 	}
 }
 void CWeaponMagazined::switch2_Idle()
@@ -759,6 +811,7 @@ void CWeaponMagazined::switch2_Hiding()
 	CWeapon::FireEnd();
 
 	HUD_SOUND::StopSound(sndReload);
+	HUD_SOUND::StopSound(sndShutter);
 
 	PlaySound(sndHide, get_LastFP());
 
@@ -771,6 +824,7 @@ void CWeaponMagazined::switch2_Hidden()
 	CWeapon::FireEnd();
 
 	HUD_SOUND::StopSound(sndReload);
+	HUD_SOUND::StopSound(sndShutter);
 
 	if (m_pHUD) m_pHUD->StopCurrentAnimWithoutCallback();
 
@@ -780,6 +834,7 @@ void CWeaponMagazined::switch2_Hidden()
 void CWeaponMagazined::switch2_Showing()
 {
 	HUD_SOUND::StopSound(sndReload);
+	HUD_SOUND::StopSound(sndShutter);
 
 	PlaySound(sndShow, get_LastFP());
 
@@ -801,15 +856,23 @@ bool CWeaponMagazined::Action(s32 cmd, u32 flags)
 /*#if defined(LOCK_RELOAD_IN_SPRINT)
 	if (!ParentIsActor() || !(g_actor->get_state() & mcSprint) )
 #endif*/
+		if (ParentIsActor() && psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT)) 
+			g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint));
+
 		if (flags&CMD_START)
-			if (iAmmoElapsed < iMagazineSize || IsMisfire() || psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && m_bHasDetachableMagazine)
+		{
+			if (Level().IR_GetKeyState(get_action_dik(kSPRINT_TOGGLE)))
 			{
-				if (ParentIsActor() && psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT)) 
-					g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint));
-				Reload();
+				OnShutter();
+				return true;
 			}
-	}
-		return true;
+			else if (iAmmoElapsed < iMagazineSize || IsMisfire() || psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && m_bHasDetachableMagazine)
+			{
+				Reload();
+				return true;
+			}
+		}
+	}break;		
 	case kWPN_FIREMODE_PREV:
 	{
 		if (flags&CMD_START)
@@ -1343,5 +1406,40 @@ void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_na
 			sprintf_s(sItemName, "%d|--", AE);
 
 		str_count = sItemName;
+	}
+}
+//устранение осечки
+void CWeaponMagazined::OnShutter()
+{
+	SwitchState(eShutter);
+}
+//
+void CWeaponMagazined::switch2_Shutter()
+{
+	PlaySound(sndShutter, get_LastFP());
+	PlayAnimShutter();
+	m_bPending = true;
+}
+//
+void CWeaponMagazined::PlayAnimShutter()
+{
+	VERIFY(GetState() == eShutter);
+	m_pHUD->animPlay(random_anim(mhud.mhud_shutter), TRUE, this, GetState());
+}
+//
+void CWeaponMagazined::Shutter() //передёргивание затвора
+{
+	if (IsMisfire())
+	{
+		bMisfire = false;
+		if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
+		{
+			HUD().GetUI()->UIGame()->RemoveCustomStatic("gun_jammed");
+			HUD().GetUI()->AddInfoMessage("gun_not_jammed");
+		}
+	}
+	else if (iAmmoElapsed > 0 && m_bHasChamber)
+	{
+		UnloadAmmo(1);
 	}
 }

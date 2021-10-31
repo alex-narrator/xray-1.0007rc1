@@ -1228,11 +1228,14 @@ void CActor::shedule_Update	(u32 DT)
 
 				else if (!pEntityAlive->g_Alive())
 				{
+					//режим выключен или нож и condition ножа больше либо равен нужному для срезания
+					bool b_allow_to_cut_off = g_eFreeHands == eFreeHandsOff || Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness;
+
 					if (b_allow_drag)
 					{
 						if (m_pMonsterWeLookingAt && inventory().IsFreeHands())
 							{       //на текущих конфигах нож - одноручный и с ним всегда IsFreeHands() == true, но вдруг будут двуручные ножи
-								if (Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness) //нож и condition ножа больше либо равен нужному для срезания
+								if (b_allow_to_cut_off) 
 									m_sDefaultObjAction = inventory().IsFreeHands() ? m_sDeadMonsterUseOrDragAction : m_sDeadMonsterUseNotDragAction; //отрезать и тащить | отрезать/руки заняты
 								else
 									m_sDefaultObjAction = inventory().IsFreeHands() ? m_sDeadMonsterDragNotUseAction : m_sDeadMonsterNotDragNotUse;   //нужен острый нож/тащить | нужен острый нож/руки заняты
@@ -1243,9 +1246,9 @@ void CActor::shedule_Update	(u32 DT)
 					else
 					{
 						if (m_pMonsterWeLookingAt && inventory().IsFreeHands())
-								m_sDefaultObjAction = (Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness) ? m_sDeadMonsterUseAction : m_sDeadMonsterNotUse; //отрезать | нужен острый нож
-							else
-								m_sDefaultObjAction = inventory().IsFreeHands() ? m_sDeadCharacterUseAction : m_sNoAnyAction;
+							m_sDefaultObjAction = (b_allow_to_cut_off) ? m_sDeadMonsterUseAction : m_sDeadMonsterNotUse; //отрезать | нужен острый нож
+						else
+							m_sDefaultObjAction = inventory().IsFreeHands() ? m_sDeadCharacterUseAction : m_sNoAnyAction;
 					}
 
 				}

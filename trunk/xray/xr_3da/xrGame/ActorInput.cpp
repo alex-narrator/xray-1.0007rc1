@@ -484,7 +484,11 @@ void CActor::ActorUse()
 						if (m_pMonsterWeLookingAt && inventory().IsFreeHands())
 						{
 							CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(inventory().ActiveItem());
-							if (Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness) //нож и condition ножа больше либо равен нужному для срезания
+							//режим выключен или нож и condition ножа больше либо равен нужному для срезания
+							bool b_allow_to_cut_off = g_eFreeHands == eFreeHandsOff || 
+								Knife && Knife->GetCondition() >= m_pMonsterWeLookingAt->m_fRequiredBladeSharpness;
+
+							if (b_allow_to_cut_off)
 							{
 								pGameSP->StartCarBody(this, m_pPersonWeLookingAt);
 								return;

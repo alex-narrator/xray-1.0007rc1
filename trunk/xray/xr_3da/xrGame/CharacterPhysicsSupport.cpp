@@ -714,13 +714,13 @@ void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 
 		switch (m_eBodiesCollisionMode)
 		{
-		case eCollisionDisabled:
+		case eCollideNone:
 			m_pPhysicsShell->SetIgnoreDynamic();				//отключение коллизии живых тел с мертвымии и мертвых тел с мертвыми
 			break;
-		case eCollisionAlive:
+		case eCollideDead:
 			m_pPhysicsShell->SetRemoveCharacterCollLADisable(); //отключение коллизии живых тел с мертвыми
 			break;
-		case eCollisionDeadAlive:
+		case eCollideAny:
 			break;
 		}
 	}

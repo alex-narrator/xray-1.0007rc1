@@ -28,6 +28,8 @@ protected:
 	HUD_SOUND		sndReload;
 	HUD_SOUND		sndSightsUp;		//added by Daemonion for iron sight audio parameter - sights being raised
 	HUD_SOUND		sndSightsDown;		//added by Daemonion for iron sight audio parameter - sights being lowered
+	//
+	HUD_SOUND		sndShutter;
 	//звук текущего выстрела
 	HUD_SOUND*		m_pSndShotCurrent;
 
@@ -45,6 +47,8 @@ protected:
 	ESoundTypes		m_eSoundReload;
 	ESoundTypes		m_eSoundSightsUp;		//added by Daemonion for iron sight audio parameter - sights being raised
 	ESoundTypes		m_eSoundSightsDown;		//added by Daemonion for iron sight audio parameter - sights being lowered
+	//
+	ESoundTypes		m_eSoundShutter;
 	struct SWMmotions{
 		MotionSVec		mhud_idle;
 		MotionSVec		mhud_idle_aim;
@@ -53,6 +57,8 @@ protected:
 		MotionSVec		mhud_show;		//
 		MotionSVec		mhud_shots;		//
 		MotionSVec		mhud_idle_sprint;
+		//
+		MotionSVec		mhud_shutter;
 	};
 	SWMmotions			mhud;	
 	
@@ -70,10 +76,14 @@ protected:
 	virtual void	switch2_Hiding	();
 	virtual void	switch2_Hidden	();
 	virtual void	switch2_Showing	();
+	//передёргивание затвора
+	virtual void	switch2_Shutter	();
 	
 	virtual void	OnShot			();	
 	
 	virtual void	OnEmptyClick	();
+	//передёргивание затвора
+	virtual void	OnShutter		();
 
 	virtual void	OnAnimationEnd	(u32 state);
 	virtual void	OnStateSwitch	(u32 S);
@@ -86,10 +96,13 @@ protected:
 protected:
 	virtual void	ReloadMagazine	();
 			void	ApplySilencerKoeffs	();
+	//передёргивание затвора
+	virtual void	Shutter			();
 
 	virtual void	state_Fire		(float dt);
 	virtual void	state_MagEmpty	(float dt);
 	virtual void	state_Misfire	(float dt);
+
 public:
 					CWeaponMagazined	(LPCSTR name="AK74",ESoundTypes eSoundType=SOUND_TYPE_WEAPON_SUBMACHINEGUN);
 	virtual			~CWeaponMagazined	();
@@ -122,6 +135,8 @@ public:
 	virtual void	onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
 	bool			IsAmmoAvailable	();
 	virtual void	UnloadMagazine	(bool spawn_ammo = true);
+	//разрядить кол-во патронов
+	virtual void	UnloadAmmo		(int unload_count, bool spawn_ammo = true);
 
 	virtual void	GetBriefInfo				(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 
@@ -163,6 +178,8 @@ protected:
 	float			fTimeToFirePreffered;
 	//оружие использует отъёмный магазин
 	bool			m_bHasDetachableMagazine;
+	//у оружия есть патронник
+	bool			m_bHasChamber;
 
 	//переменная блокирует использование
 	//только разных типов патронов
@@ -190,12 +207,14 @@ protected:
 	virtual bool	AllowFireWhileWorking() {return false;}
 
 	//виртуальные функции для проигрывания анимации HUD
-	virtual void	PlayAnimShow();
-	virtual void	PlayAnimHide();
-	virtual void	PlayAnimReload();
-	virtual void	PlayAnimIdle();
-	virtual void	PlayAnimShoot();
+	virtual void	PlayAnimShow		();
+	virtual void	PlayAnimHide		();
+	virtual void	PlayAnimReload		();
+	virtual void	PlayAnimIdle		();
+	virtual void	PlayAnimShoot		();
 	virtual void	PlayReloadSound		();
+	//передёргивание затвора
+	virtual void	PlayAnimShutter		();
 
 	virtual void	StartIdleAnim		();
 	virtual	int		ShotsFired			() { return m_iShotNum; }

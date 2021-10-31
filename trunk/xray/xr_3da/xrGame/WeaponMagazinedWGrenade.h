@@ -46,7 +46,9 @@ public:
 	virtual void	OnEvent			(NET_Packet& P, u16 type);
 	virtual void	ReloadMagazine	();
 	//считаем что в режиме подствольника стрельба только одиночными
-	virtual bool	HasFireModes()	{ return m_bHasDifferentFireModes && !m_bGrenadeMode; }; 
+	virtual bool	HasFireModes	()	{ return m_bHasDifferentFireModes && !m_bGrenadeMode; }; 
+	//передёргивание затвора
+	virtual void	switch2_Shutter	();
 
 	virtual bool	Action			(s32 cmd, u32 flags);
 
@@ -67,10 +69,14 @@ public:
 	virtual void	PlayAnimIdle();
 	virtual void	PlayAnimShoot();
 	virtual void	PlayAnimModeSwitch();
+	//передёргивание затвора
+	virtual void	PlayAnimShutter();
 	
 	HUD_SOUND			sndShotG;
 	HUD_SOUND			sndReloadG;
 	HUD_SOUND			sndSwitch;
+	//
+	HUD_SOUND			sndShutterG;
 
 
 	//анимации с подключенным подствольником
@@ -82,6 +88,8 @@ public:
 	MotionSVec			mhud_switch_g, mhud_switch;
 	MotionSVec			mhud_show_g;
 	MotionSVec			mhud_hide_g;
+	//
+	MotionSVec			mhud_shutter_g;
 	//(режим стрельбы из подствольника)
 	MotionSVec			mhud_idle_w_gl;
 	MotionSVec			mhud_idle_w_gl_aim;
@@ -89,6 +97,8 @@ public:
 	MotionSVec			mhud_shots_w_gl;
 	MotionSVec			mhud_show_w_gl;
 	MotionSVec			mhud_hide_w_gl;
+	//
+	MotionSVec			mhud_shutter_gl;
 
 
 	//дополнительные параметры патронов 

@@ -938,7 +938,7 @@ void CInventory::TryAmmoToBelt(CInventoryItem *pIItem)
 	auto pWeapon = smart_cast<CWeapon*>(ActiveItem());
 	if (!pWeapon) return;
 
-	if (psActorFlags.test(AF_AMMO_FROM_BELT) && pWeapon->GetAmmoWasSpawned()) //если включены патроны с пояса, то для боеприпасов актора, которые спавнятся при разрядке
+	if (psActorFlags.test(AF_AMMO_FROM_BELT) && pWeapon->IsAmmoWasSpawned()) //если включены патроны с пояса, то для боеприпасов актора, которые спавнятся при разрядке
 	{
 		if (!m_bRuckAmmoPlacement)
 		{

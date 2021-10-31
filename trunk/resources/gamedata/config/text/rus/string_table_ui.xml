@@ -13,7 +13,10 @@
 		<text>Глобальная карта</text>
 	</string>
 	<string id="gun_jammed">
-		<text>Оружие заклинило. Нужно перезарядить.</text>
+		<text>Оружие заклинило. Необходимо устранить задержку</text>
+	</string>
+	<string id="gun_not_jammed">
+		<text>Задержка устранена</text>
 	</string>
 	<string id="inventory_box_use">
 		<text>Обыскать ящик [$$ACTION_USE$$]</text>

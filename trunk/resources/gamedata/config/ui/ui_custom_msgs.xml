@@ -62,6 +62,10 @@
 		<text font="graffiti32"  r="240" g="217" b="182" a="255" align="c">gun_jammed</text>
 	</gun_jammed>
 	
+	<gun_not_jammed x="200" y="70" width="600" height="50" ttl="3">
+		<text font="graffiti32"  r="240" g="217" b="182" a="255" align="c">gun_not_jammed</text>
+	</gun_not_jammed>
+	
 	<cant_walk x="200" y="650" width="600" height="30" ttl="3">
 		<text font="graffiti22"  r="240" g="217" b="182" a="255" align="c">cant_walk</text>
 	</cant_walk>

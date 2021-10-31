@@ -27,6 +27,8 @@ void CWeaponBM16::Load	(LPCSTR section)
 	animGet	(mhud_draw_empty_right, anim ? anim : "draw" );
 #endif
 	HUD_SOUND::LoadSound(section, "snd_reload_1", m_sndReload1, m_eSoundReload);
+	//
+	m_bHasChamber = !!READ_IF_EXISTS(pSettings, r_bool, section, "has_chamber", false);
 }
 
 void CWeaponBM16::PlayReloadSound()
