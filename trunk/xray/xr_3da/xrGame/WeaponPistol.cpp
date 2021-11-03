@@ -31,50 +31,31 @@ void CWeaponPistol::Load	(LPCSTR section)
 
 	HUD_SOUND::LoadSound(section, "snd_close", sndClose, m_eSoundClose);
 
-	animGet				(mhud_pistol.mhud_empty,		pSettings->r_string(*hud_sect, "anim_empty"));
-	animGet				(mhud_pistol.mhud_shot_l,		pSettings->r_string(*hud_sect, "anim_shot_last"));
-	animGet				(mhud_pistol.mhud_close,		pSettings->r_string(*hud_sect, "anim_close"));
-	animGet				(mhud_pistol.mhud_show_empty,	pSettings->r_string(*hud_sect, "anim_draw_empty"));
-	animGet				(mhud_pistol.mhud_reload_empty,	pSettings->r_string(*hud_sect, "anim_reload_empty"));
+	animGetEx(mhud_pistol.mhud_empty, "anim_empty");
+	animGetEx(mhud_pistol.mhud_shot_l, "anim_shot_last");
+	animGetEx(mhud_pistol.mhud_close, "anim_close");
+	animGetEx(mhud_pistol.mhud_show_empty, "anim_draw_empty");
+	animGetEx(mhud_pistol.mhud_reload_empty, "anim_reload_empty");
 
-	string128			str;
-	strconcat(sizeof(str),str,pSettings->r_string(*hud_sect, "anim_empty"),"_r");
-	animGet				(mhud_pistol_r.mhud_empty,		str);
+	animGetEx(mhud_pistol.mhud_idle_sprint_empty, pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint_empty") ? "anim_idle_sprint_empty" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint") ? "anim_idle_sprint" : "anim_idle");
+	animGetEx(mhud_pistol.mhud_idle_moving_empty, pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving_empty") ? "anim_idle_moving_empty" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving") ? "anim_idle_sprint" : "anim_idle");
 
-	strconcat(sizeof(str),str,pSettings->r_string(*hud_sect, "anim_shot_last"),"_r");
-	animGet				(mhud_pistol_r.mhud_shot_l,		str);
-
-	strconcat(sizeof(str),str,pSettings->r_string(*hud_sect, "anim_close"),"_r");
-	animGet				(mhud_pistol_r.mhud_close,		str);
-
-	strconcat(sizeof(str),str,pSettings->r_string(*hud_sect, "anim_draw_empty"),"_r");
-	animGet				(mhud_pistol_r.mhud_show_empty,	str);
-
-	strconcat(sizeof(str),str,pSettings->r_string(*hud_sect, "anim_reload_empty"),"_r");
-	animGet				(mhud_pistol_r.mhud_reload_empty,	str);
-
-
-
-	strconcat(sizeof(str),str,pSettings->r_string(*hud_sect, "anim_idle"),"_r");
-	animGet				(wm_mhud_r.mhud_idle,	str);
-
-	strconcat(sizeof(str),str,pSettings->r_string(*hud_sect, "anim_reload"),"_r");
-	animGet				(wm_mhud_r.mhud_reload,	str);
-
-	strconcat(sizeof(str),str,pSettings->r_string(*hud_sect, "anim_draw"),"_r");
-	animGet				(wm_mhud_r.mhud_show,	str);
-
-	strconcat(sizeof(str),str,pSettings->r_string(*hud_sect, "anim_holster"),"_r");
-	animGet				(wm_mhud_r.mhud_hide,	str);
-
-	strconcat(sizeof(str),str,pSettings->r_string(*hud_sect, "anim_shoot"),"_r");
-	animGet				(wm_mhud_r.mhud_shots,	str);
+	animGetEx(mhud_pistol_r.mhud_empty, "anim_empty", "_r");
+	animGetEx(mhud_pistol_r.mhud_shot_l, "anim_shot_last", "_r");
+	animGetEx(mhud_pistol_r.mhud_close, "anim_close", "_r");
+	animGetEx(mhud_pistol_r.mhud_show_empty, "anim_draw_empty", "_r");
+	animGetEx(mhud_pistol_r.mhud_reload_empty, "anim_reload_empty", "_r");
+	animGetEx(wm_mhud_r.mhud_idle, "anim_idle", "_r");
+	animGetEx(wm_mhud_r.mhud_reload, "anim_reload", "_r");
+	animGetEx(wm_mhud_r.mhud_show, "anim_draw", "_r");
+	animGetEx(wm_mhud_r.mhud_hide, "anim_holster", "_r");
+	animGetEx(wm_mhud_r.mhud_shots, "anim_shoot", "_r");
 
 	if(IsZoomEnabled()){
-		strconcat(sizeof(str),str,pSettings->r_string(*hud_sect, "anim_idle_aim"),"_r");
-		animGet				(wm_mhud_r.mhud_idle_aim,		str);
+		animGetEx(wm_mhud_r.mhud_idle_aim, "anim_idle_aim", "_r");
 	}
 
+	animGetEx(wm_mhud_r.mhud_reload_partly, "anim_reload_partly", "_r", "anim_reload");
 }
 
 void CWeaponPistol::OnH_B_Chield		()
@@ -100,34 +81,52 @@ void CWeaponPistol::PlayAnimShow	()
 	}
 }
 
-void CWeaponPistol::PlayAnimIdle	()
+void CWeaponPistol::PlayAnimIdle(u8 state = eIdle)
 {
 	VERIFY(GetState()==eIdle);
-	if(m_opened){ 
+	//чтобы при разрядке последнего патрона из патронника анимки сразу переходили в empty
+	//удалить если будет раздражать съежжание затвора
+	if (iAmmoElapsed >= 1)
+		m_opened = false;
+	else
+		m_opened = true;
+	//
+	if(m_opened)
+	{ 
 		CWeaponPistol::WWPMotions& m = wwpm_current();
 		m_pHUD->animPlay(random_anim(m.mhud_empty), TRUE, NULL, GetState());
-	}else{
+	}
+	else
+	{
 		CActor* A = smart_cast<CActor*>(H_Parent());
-		if(A && A->Holder()){
+		if(A && A->Holder())
+		{
 			MotionSVec* m = (IsZoomed())?&wm_mhud_r.mhud_idle_aim:&wm_mhud_r.mhud_idle;
 			m_pHUD->animPlay(random_anim(*m), TRUE, NULL, GetState());
-		}else
-			inherited::PlayAnimIdle		();
+		}
+		else
+			inherited::PlayAnimIdle(state);
 	}
 }
 
-void CWeaponPistol::PlayAnimReload	()
-{	
-	VERIFY(GetState()==eReload);
-	if(m_opened){ 
+void CWeaponPistol::PlayAnimReload() 
+{
+	VERIFY(GetState() == eReload);
+	if (m_opened) 
+	{
 		CWeaponPistol::WWPMotions& m = wwpm_current();
 		m_pHUD->animPlay(random_anim(m.mhud_reload_empty), TRUE, this, GetState());
-	}else{
-		CWeaponMagazined::SWMmotions& m = swm_current();
-		m_pHUD->animPlay(random_anim(m.mhud_reload), TRUE, this, GetState());
 	}
-	
-	m_opened = false;		
+	else 
+	{
+		CWeaponMagazined::SWMmotions& m = swm_current();
+		if (IsPartlyReloading())
+			m_pHUD->animPlay(random_anim(m.mhud_reload_partly), TRUE, this, GetState());
+		else
+			m_pHUD->animPlay(random_anim(m.mhud_reload), TRUE, this, GetState());
+	}
+
+	m_opened = false;
 }
 
 

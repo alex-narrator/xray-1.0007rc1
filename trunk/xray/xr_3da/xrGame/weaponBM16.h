@@ -15,6 +15,10 @@ protected:
 	MotionSVec		mhud_idle_zoomed_empty;
 	MotionSVec		mhud_zoomed_idle1;
 	MotionSVec		mhud_zoomed_idle2;
+	MotionSVec		mhud_idle_sprint_1;
+	MotionSVec		mhud_idle_sprint_2;
+	MotionSVec		mhud_idle_moving_1;
+	MotionSVec		mhud_idle_moving_2;
 #if defined(BM16_ANIMS_FIX)
 	MotionSVec		mhud_draw_empty_both;
 	MotionSVec		mhud_draw_empty_right;
@@ -30,7 +34,7 @@ protected:
 	virtual void	PlayAnimReload					();
 	virtual void	PlayReloadSound					();
 	virtual void	UpdateSounds					() override;
-	virtual void	PlayAnimIdle					();
+	virtual void	PlayAnimIdle					(u8);
 
 #if defined(BM16_ANIMS_FIX)
 	virtual void	switch2_Showing					();

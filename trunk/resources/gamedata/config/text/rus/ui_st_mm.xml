@@ -172,6 +172,9 @@
 	<string id="ui_mm_first_person_aim">
 		<text>Прицеливание от первого лица в режиме от третьего лица</text>
 	</string>
+	<string id="ui_mm_stop_missile_playing">
+		<text>Отключить анимации подбрасывания болта и гранат</text>
+	</string>
 	<string id="ui_mm_ammo_from_belt">
 		<text>Патроны и гранаты с пояса</text>
 	</string>

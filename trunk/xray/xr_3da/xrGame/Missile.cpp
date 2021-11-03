@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "missile.h"
 #include "WeaponHUD.h"
+#include "../CustomHUD.h"
 #include "PhysicsShell.h"
 #include "actor.h"
 #include "../CameraBase.h"
@@ -82,16 +83,17 @@ void CMissile::Load(LPCSTR section)
 	m_vHudThrowDir		= pSettings->r_fvector3(*hud_sect,"throw_dir");
 
 	//загрузить анимации HUD-а
-	m_sAnimShow			= pSettings->r_string(*hud_sect, "anim_show");
-	m_sAnimHide			= pSettings->r_string(*hud_sect, "anim_hide");
-	m_sAnimIdle			= pSettings->r_string(*hud_sect, "anim_idle");
-	m_sAnimIdleSprint	= READ_IF_EXISTS (pSettings, r_string, *hud_sect, "anim_idle_sprint", *m_sAnimIdle);
-	m_sAnimPlaying		= pSettings->r_string(*hud_sect, "anim_playing");
-	m_sAnimThrowBegin	= pSettings->r_string(*hud_sect, "anim_throw_begin");
-	m_sAnimThrowIdle	= pSettings->r_string(*hud_sect, "anim_throw_idle");
-	m_sAnimThrowAct		= pSettings->r_string(*hud_sect, "anim_throw_act");
-	m_sAnimThrowEnd		= pSettings->r_string(*hud_sect, "anim_throw_end");
-	m_sAnimShow2		= READ_IF_EXISTS(pSettings, r_string, *hud_sect, "anim_show2", *m_sAnimShow);
+	animGetEx(mhud_AnimShow, "anim_show");
+	animGetEx(mhud_AnimHide, "anim_hide");
+	animGetEx(mhud_AnimIdle, "anim_idle");
+	animGetEx(mhud_AnimIdleMoving, pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving") ? "anim_idle_moving" : "anim_idle");
+	animGetEx(mhud_AnimIdleSprint, pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint") ? "anim_idle_sprint" : "anim_idle");
+	animGetEx(mhud_AnimPlaying, "anim_playing");
+	animGetEx(mhud_AnimThrowBegin, "anim_throw_begin");
+	animGetEx(mhud_AnimThrowIdle, "anim_throw_idle");
+	animGetEx(mhud_AnimThrowAct, "anim_throw_act");
+	animGetEx(mhud_AnimThrowEnd, "anim_throw_end");
+	animGetEx(mhud_AnimShow2, pSettings->line_exist(hud_sect.c_str(), "anim_show2") ? "anim_show2" : "anim_show");
 
 	if(pSettings->line_exist(section,"snd_playing"))
 		HUD_SOUND::LoadSound(section,"snd_playing",sndPlaying);
@@ -120,8 +122,11 @@ void CMissile::net_Destroy()
 void CMissile::OnActiveItem		()
 {
 	inherited::OnActiveItem	();
-	SetState				( idle_state() );
-	SetNextState			( idle_state() );	
+//	SetState				( idle_state() );
+//	SetNextState			( idle_state() );	
+	m_idle_state = MS_IDLE;
+	SetState(MS_IDLE);
+	SetNextState(MS_IDLE);
 	if (m_pHUD) m_pHUD->Show();
 }
 
@@ -181,46 +186,49 @@ void CMissile::OnH_B_Independent(bool just_before_destroy)
 	}
 }
 
-u32 CMissile::idle_state()
+u8 CMissile::idle_state() 
 {
-	CActor	*actor = smart_cast<CActor*>(H_Parent());
-	if (actor && actor->get_state() & mcSprint)
-		return MS_IDLE_SPRINT;
-	else
-		return MS_IDLE;
+	CActor *actor = smart_cast<CActor*>(H_Parent());
+	if (actor)
+		if (actor->get_state() & mcSprint)
+			return MS_IDLE_SPRINT;
+		else if (actor->is_actor_running())
+			return MS_IDLE_MOVING;
+	return MS_IDLE;
 }
 
 void CMissile::UpdateCL() 
 {
 	inherited::UpdateCL();
 
-	if(GetState() == MS_IDLE && m_dwStateTime > PLAYING_ANIM_TIME) 
+	if (!psHUD_Flags.test(HUD_STOP_MISSILE_PLAYING))
+	if (GetState() == MS_IDLE && m_idle_state == MS_IDLE && m_dwStateTime > PLAYING_ANIM_TIME)
 		OnStateSwitch(MS_PLAYING);
 
-	// alpet: поддержка анимации спринта для болтов
-	CActor	*actor = smart_cast<CActor*>(H_Parent());
-	u32		state = GetState();
-	bool	idle = ( MS_IDLE == state ) || ( MS_IDLE_SPRINT == state );	
-	if (idle && state != idle_state())
-	{
-		// Msg("# missile %5d state 0x%x, but must 0x%x ", ID(), state, idle_state());		
-		SwitchState (idle_state());
+	if (GetState() == MS_IDLE) {
+		auto state = idle_state();
+		if (m_idle_state != state) {
+			m_idle_state = state;
+			OnStateSwitch(MS_IDLE);
+		}
 	}
-			
-	if(GetState() == MS_READY) 
-	{
-		if(m_throw){ 
-			SwitchState(MS_THROW);
-		}else 
-		{
-			if (actor) {				
-				m_fThrowForce		+= (m_fForceGrowSpeed * Device.dwTimeDelta) * .001f;
-				clamp(m_fThrowForce, m_fMinForce, m_fMaxForce);
+	else {
+		m_idle_state = MS_IDLE;
+		if (GetState() == MS_READY) {
+			if (m_throw) {
+				SwitchState(MS_THROW);
+			}
+			else {
+				CActor *actor = smart_cast<CActor*>(H_Parent());
+				if (actor) {
+					m_fThrowForce += (m_fForceGrowSpeed * Device.dwTimeDelta) * .001f;
+					clamp(m_fThrowForce, m_fMinForce, m_fMaxForce);
+				}
 			}
 		}
 	}
-
 }
+
 void CMissile::shedule_Update(u32 dt)
 {
 	inherited::shedule_Update(dt);
@@ -238,7 +246,7 @@ void CMissile::shedule_Update(u32 dt)
 
 void CMissile::StartIdleAnim()
 {
-	m_pHUD->animDisplay(m_pHUD->animGet(*m_sAnimIdle), TRUE);
+	m_pHUD->animDisplay(mhud_AnimIdle[0], TRUE);
 }
 
 void CMissile::State(u32 state) 
@@ -248,31 +256,30 @@ void CMissile::State(u32 state)
 	case MS_SHOWING:
         {
 			m_bPending = true;
-			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimShow), FALSE, this, GetState());
+			m_pHUD->animPlay(mhud_AnimShow[0], FALSE, this, GetState());
 		} break;
 	
 	// Real Wolf: Сделаем отдельную анимацию для появления после броска. 29.12.14
 	case MS_SHOWING2:
 	{
 		m_bPending = true;
-		m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimShow2), FALSE, this, GetState());
+		m_pHUD->animPlay(mhud_AnimShow2[0], FALSE, this, GetState());
 		break;
 	} 
-
 	case MS_IDLE:
 		{
 			m_bPending = false;
-			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimIdle), TRUE, this, GetState());
+			PlayAnimIdle(m_idle_state);
 		} break;
-	case MS_IDLE_SPRINT:
+/*	case MS_IDLE_SPRINT:
 		{
 			m_bPending = false;
 			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimIdleSprint), TRUE, this, GetState());
-		} break;
+		} break;*/
 	case MS_HIDING:
 		{
 			m_bPending = true;
-			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimHide), TRUE, this, GetState());
+			m_pHUD->animPlay(mhud_AnimHide[0], TRUE, this, GetState());
 		} break;
 	case MS_HIDDEN:
 		{
@@ -298,27 +305,27 @@ void CMissile::State(u32 state)
 //#endif
 			m_bPending = true;
 			m_fThrowForce = m_fMinForce;
-			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimThrowBegin), TRUE, this, GetState());
+			m_pHUD->animPlay(mhud_AnimThrowBegin[0], TRUE, this, GetState());
 		} break;
 	case MS_READY:
 		{
-			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimThrowIdle), TRUE, this, GetState());
+			m_pHUD->animPlay(mhud_AnimThrowIdle[0], TRUE, this, GetState());
 		} break;
 	case MS_THROW:
 		{
 			m_bPending = true;
 			m_throw = false;
-			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimThrowAct), TRUE, this, GetState());
+			m_pHUD->animPlay(mhud_AnimThrowAct[0], TRUE, this, GetState());
 		} break;
 	case MS_END:
 		{
 			m_bPending = true;
-			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimThrowEnd), TRUE, this, GetState());
+			m_pHUD->animPlay(mhud_AnimThrowEnd[0], TRUE, this, GetState());
 		} break;
 	case MS_PLAYING:
 		{
 			PlaySound(sndPlaying,Position());
-			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimPlaying), TRUE, this, GetState());
+			m_pHUD->animPlay(mhud_AnimPlaying[0], TRUE, this, GetState());
 		} break;
 	}
 }
@@ -343,7 +350,8 @@ void CMissile::OnAnimationEnd(u32 state)
 	case MS_SHOWING2:
 		{
 			setVisible(TRUE);
-			OnStateSwitch(idle_state());
+			m_idle_state = MS_IDLE;
+			OnStateSwitch(MS_IDLE);
 		} break;
 	case MS_THREATEN:
 		{
@@ -376,7 +384,8 @@ void CMissile::OnAnimationEnd(u32 state)
 		} break;
 	case MS_PLAYING:
 		{
-			OnStateSwitch(idle_state());
+			m_idle_state = MS_IDLE;
+			OnStateSwitch(MS_IDLE);
 		} break;
 	}
 }
@@ -558,7 +567,7 @@ bool CMissile::Action(s32 cmd, u32 flags)
 			if(flags&CMD_START) 
 			{
 				m_throw = true;
-				if(GetState() == idle_state()) 
+				if (GetState() == MS_IDLE)
 					SwitchState(MS_THREATEN);
 			} 
 			return true;
@@ -570,7 +579,7 @@ bool CMissile::Action(s32 cmd, u32 flags)
         	if(flags&CMD_START) 
 			{
 				m_throw = false;
-				if(GetState() == idle_state()) 
+				if (GetState() == MS_IDLE)
 					SwitchState(MS_THREATEN);
 				else if(GetState() == MS_READY)
 				{
@@ -578,7 +587,7 @@ bool CMissile::Action(s32 cmd, u32 flags)
 				}
 
 			} 
-			else if(GetState() == MS_READY || GetState() == MS_THREATEN || GetState() == idle_state()) 
+			else if (GetState() == MS_READY || GetState() == MS_THREATEN || GetState() == MS_IDLE)
 			{
 				m_throw = true; 
 				if(GetState() == MS_READY) SwitchState(MS_THROW);
@@ -750,4 +759,20 @@ void CMissile::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_s
 u16 CMissile::bone_count_to_synchronize	() const
 {
 	return CInventoryItem::object().PHGetSyncItemsNumber();
+}
+
+void CMissile::PlayAnimIdle(u8 state = MS_IDLE) 
+{
+	VERIFY(GetState() == MS_IDLE);
+	switch (state) {
+	case MS_IDLE_MOVING:
+		m_pHUD->animPlay(mhud_AnimIdleMoving[0], TRUE, this, GetState());
+		break;
+	case MS_IDLE_SPRINT:
+		m_pHUD->animPlay(mhud_AnimIdleSprint[0], TRUE, this, GetState());
+		break;
+	default:
+		m_pHUD->animPlay(mhud_AnimIdle[0], TRUE, this, GetState());
+		break;
+	}
 }

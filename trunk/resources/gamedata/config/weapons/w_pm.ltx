@@ -136,12 +136,13 @@ zoom_enabled				= true
 scope_zoom_factor	    	= 55
 
 ;звуки
-snd_draw					= weapons\pm_draw
+snd_draw					= weapons\generic_holster ;weapons\pm_draw
 snd_holster					= weapons\generic_holster
 snd_shoot					= weapons\t_pm_shot      ;pm_shoot
 snd_empty					= weapons\pistol_empty
 snd_reload					= weapons\pm_reload, 0.8
 snd_close					= weapons\generic_close
+snd_shutter 				= weapons\pm_draw
 
 weapon_remove_time			= 5000
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -182,13 +183,18 @@ anim_idle					= idle
 anim_empty					= empty
 anim_reload					= reload_full
 anim_reload_empty			= reload
+anim_reload_partly			= reload_full
+anim_reload_partly_stop_k 	= 0.7
 anim_draw					= draw
+anim_draw_stop_k 			= 0.1
 anim_draw_empty				= draw_empty
+anim_draw_empty_stop_k 		= 0.1
 anim_shoot					= shoot1
 anim_shot_last				= shoot_last
 anim_close					= close
 anim_idle_aim				= idle_aim
 anim_idle_sprint			= idle_sprint
+anim_shutter 				= draw
 
 ;смещения HUD для режима приближения
 zoom_offset			= -0.163600,0.066800,-0.060000

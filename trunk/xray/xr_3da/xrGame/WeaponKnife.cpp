@@ -42,18 +42,15 @@ void CWeaponKnife::Load	(LPCSTR section)
 
 	// HUD :: Anims
 	R_ASSERT			(m_pHUD);
-	//animGet				(mhud_idle,		pSettings->r_string(*hud_sect,"anim_idle"));
-	shared_str           m_sAnimIdle = pSettings->r_string(*hud_sect, "anim_idle");
-	animGet             (mhud_idle, *m_sAnimIdle);
-	animGet				(mhud_hide,		pSettings->r_string(*hud_sect,"anim_hide"));
-	animGet				(mhud_show,		pSettings->r_string(*hud_sect,"anim_draw"));
-	animGet				(mhud_attack,	pSettings->r_string(*hud_sect,"anim_shoot1_start"));
-	animGet				(mhud_attack2,	pSettings->r_string(*hud_sect,"anim_shoot2_start"));
-	animGet				(mhud_attack_e,	pSettings->r_string(*hud_sect,"anim_shoot1_end"));
-	animGet				(mhud_attack2_e,pSettings->r_string(*hud_sect,"anim_shoot2_end"));
-//#if defined(KNIFE_SPRINT_MOTION)
-	animGet             (mhud_idle_sprint, READ_IF_EXISTS(pSettings, r_string, *hud_sect, "anim_idle_sprint", *m_sAnimIdle));
-//#endif
+	animGetEx(mhud_idle, "anim_idle");
+	animGetEx(mhud_idle_moving, pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving") ? "anim_idle_moving" : "anim_idle");
+	animGetEx(mhud_idle_sprint, pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint") ? "anim_idle_sprint" : "anim_idle");
+	animGetEx(mhud_hide, "anim_hide");
+	animGetEx(mhud_show, "anim_draw");
+	animGetEx(mhud_attack, "anim_shoot1_start");
+	animGetEx(mhud_attack2, "anim_shoot2_start");
+	animGetEx(mhud_attack_e, "anim_shoot1_end");
+	animGetEx(mhud_attack2_e, "anim_shoot2_end");
 
 	HUD_SOUND::LoadSound(section,"snd_shoot"		, m_sndShot		, ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING)		);
 	
@@ -239,7 +236,7 @@ void CWeaponKnife::switch2_Idle	()
 	/*VERIFY(GetState()==eIdle);
 
 	m_pHUD->animPlay(random_anim(mhud_idle), TRUE, this, GetState());*/
-	PlayAnimIdle();
+	PlayAnimIdle(m_idle_state);
 	m_bPending = false;
 }
 
@@ -381,28 +378,27 @@ void CWeaponKnife::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, 
 //#if defined(KNIFE_SPRINT_MOTION)
 void CWeaponKnife::onMovementChanged(ACTOR_DEFS::EMoveCommand cmd)
 {
-	/*if (g_actor->get_state() & mcSprint)
+	if (cmd == ACTOR_DEFS::mcSprint && GetState() == eIdle) 
 	{
-		SetState(eIdle);
-		m_pHUD->animPlay(random_anim(mhud_idle_sprint), TRUE, this,  eIdle);
+		m_idle_state = eSubstateIdleSprint;
+		PlayAnimIdle(m_idle_state);
 	}
-	else
-		SwitchState(GetState() );*/
-	if ((cmd == ACTOR_DEFS::mcSprint) && (GetState() == eIdle))
-		PlayAnimIdle();
 }
 
-void CWeaponKnife::PlayAnimIdle() {
+void CWeaponKnife::PlayAnimIdle(u8 state) 
+{
 	VERIFY(GetState() == eIdle);
 
-	CActor *actor = smart_cast<CActor*>(H_Parent());
-
-	if (actor)
-		if (actor->get_state() & mcSprint) {
-			m_pHUD->animPlay(random_anim(mhud_idle_sprint), TRUE, this, GetState());
-			return;
-		}
-
+	switch (state) 
+	{
+	case eSubstateIdleMoving:
+		m_pHUD->animPlay(random_anim(mhud_idle_moving), TRUE, this, GetState());
+		break;
+	case eSubstateIdleSprint:
+		m_pHUD->animPlay(random_anim(mhud_idle_sprint), TRUE, this, GetState());
+		break;
+	default:
 		m_pHUD->animPlay(random_anim(mhud_idle), TRUE, this, GetState());
+	}
 }
 //#endif

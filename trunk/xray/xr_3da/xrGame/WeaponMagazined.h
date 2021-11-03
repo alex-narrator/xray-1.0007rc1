@@ -53,10 +53,12 @@ protected:
 		MotionSVec		mhud_idle;
 		MotionSVec		mhud_idle_aim;
 		MotionSVec		mhud_reload;	//
+		MotionSVec		mhud_reload_partly;
 		MotionSVec		mhud_hide;		//
 		MotionSVec		mhud_show;		//
 		MotionSVec		mhud_shots;		//
 		MotionSVec		mhud_idle_sprint;
+		MotionSVec		mhud_idle_moving;
 		//
 		MotionSVec		mhud_shutter;
 	};
@@ -91,7 +93,7 @@ protected:
 	virtual void	UpdateSounds	();
 
 	bool			TryReload		();
-	bool			TryPlayAnimIdle	();
+	bool			TryPlayAnimIdle	(u8);
 
 protected:
 	virtual void	ReloadMagazine	();
@@ -210,7 +212,7 @@ protected:
 	virtual void	PlayAnimShow		();
 	virtual void	PlayAnimHide		();
 	virtual void	PlayAnimReload		();
-	virtual void	PlayAnimIdle		();
+	virtual void	PlayAnimIdle		(u8);
 	virtual void	PlayAnimShoot		();
 	virtual void	PlayReloadSound		();
 	//передёргивание затвора

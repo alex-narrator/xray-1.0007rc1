@@ -10,6 +10,8 @@ class CWeaponMagazinedWGrenade : public CWeaponMagazined,
 								 public CRocketLauncher
 {
 	typedef CWeaponMagazined inherited;
+protected:
+	bool			TryPlayAnimIdle(u8);
 public:
 					CWeaponMagazinedWGrenade	(LPCSTR name="AK74",ESoundTypes eSoundType=SOUND_TYPE_WEAPON_SUBMACHINEGUN);
 	virtual			~CWeaponMagazinedWGrenade	();
@@ -66,7 +68,7 @@ public:
 	virtual void	PlayAnimShow();
 	virtual void	PlayAnimHide();
 	virtual void	PlayAnimReload();
-	virtual void	PlayAnimIdle();
+	virtual void	PlayAnimIdle(u8);
 	virtual void	PlayAnimShoot();
 	virtual void	PlayAnimModeSwitch();
 	//передёргивание затвора
@@ -88,15 +90,20 @@ public:
 	MotionSVec			mhud_switch_g, mhud_switch;
 	MotionSVec			mhud_show_g;
 	MotionSVec			mhud_hide_g;
+	MotionSVec			mhud_idle_moving_g;
+	MotionSVec			mhud_idle_sprint_g;
 	//
 	MotionSVec			mhud_shutter_g;
 	//(режим стрельбы из подствольника)
 	MotionSVec			mhud_idle_w_gl;
 	MotionSVec			mhud_idle_w_gl_aim;
 	MotionSVec			mhud_reload_w_gl;
+	MotionSVec			mhud_reload_w_gl_partly;
 	MotionSVec			mhud_shots_w_gl;
 	MotionSVec			mhud_show_w_gl;
 	MotionSVec			mhud_hide_w_gl;
+	MotionSVec			mhud_idle_moving_gl;
+	MotionSVec			mhud_idle_sprint_gl;
 	//
 	MotionSVec			mhud_shutter_gl;
 

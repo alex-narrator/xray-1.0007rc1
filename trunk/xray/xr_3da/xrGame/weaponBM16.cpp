@@ -11,20 +11,22 @@ void CWeaponBM16::Load	(LPCSTR section)
 {
 	inherited::Load		(section);
 
-	animGet	(mhud_reload1,		pSettings->r_string(*hud_sect,"anim_reload_1"		));
-	animGet	(mhud_shot1,		pSettings->r_string(*hud_sect,"anim_shoot_1"		));
-	animGet	(mhud_idle1,		pSettings->r_string(*hud_sect,"anim_idle_1"			));
-	animGet	(mhud_idle2,		pSettings->r_string(*hud_sect,"anim_idle_2"			));
-	animGet	(mhud_zoomed_idle1, pSettings->r_string(*hud_sect,"anim_zoomed_idle_1"	));
-	animGet	(mhud_zoomed_idle2,	pSettings->r_string(*hud_sect,"anim_zoomedidle_2"	));
+	animGetEx(mhud_reload1, "anim_reload_1");
+	animGetEx(mhud_shot1, "anim_shoot_1");
+	animGetEx(mhud_idle1, "anim_idle_1");
+	animGetEx(mhud_idle2, "anim_idle_2");
+	animGetEx(mhud_zoomed_idle1, "anim_zoomed_idle_1");
+	animGetEx(mhud_zoomed_idle2, "anim_zoomedidle_2");
+
+	animGetEx(mhud_idle_sprint_1, pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint_1") ? "anim_idle_sprint_1" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint") ? "anim_idle_sprint" : "anim_idle");
+	animGetEx(mhud_idle_sprint_2, pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint_2") ? "anim_idle_sprint_2" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint") ? "anim_idle_sprint" : "anim_idle");
+	animGetEx(mhud_idle_moving_1, pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving_1") ? "anim_idle_moving_1" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving") ? "anim_idle_moving" : "anim_idle");
+	animGetEx(mhud_idle_moving_2, pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving_2") ? "anim_idle_moving_2" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving") ? "anim_idle_moving" : "anim_idle");
 
 // Real Wolf. 03.08.2014.
 #if defined(BM16_ANIMS_FIX)
-	LPCSTR anim;
-	anim = READ_IF_EXISTS(pSettings, r_string, *hud_sect, "anim_draw_empty_both", "draw");
-	animGet	(mhud_draw_empty_both, anim ? anim : "draw"	);
-	anim = READ_IF_EXISTS(pSettings, r_string, *hud_sect, "anim_draw_empty_right", "draw");
-	animGet	(mhud_draw_empty_right, anim ? anim : "draw" );
+	animGetEx(mhud_draw_empty_both, pSettings->line_exist(hud_sect.c_str(), "anim_draw_empty_both") ? "anim_draw_empty_both" : "anim_draw");
+	animGetEx(mhud_draw_empty_right, pSettings->line_exist(hud_sect.c_str(), "anim_draw_empty_right") ? "anim_draw_empty_right" : "anim_draw");
 #endif
 	HUD_SOUND::LoadSound(section, "snd_reload_1", m_sndReload1, m_eSoundReload);
 	//
@@ -64,9 +66,9 @@ void CWeaponBM16::PlayAnimReload()
 
 }
 
-void CWeaponBM16::PlayAnimIdle()
+void CWeaponBM16::PlayAnimIdle(u8 state = eIdle) 
 {
-	if(TryPlayAnimIdle())	return;
+	if (TryPlayAnimIdle(state)) return;
 
 	if(IsZoomed())
 	{

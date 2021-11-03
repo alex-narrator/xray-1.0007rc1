@@ -441,6 +441,11 @@
 			<options_item entry="hud_first_person_aim" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_first_person_aim</text>
 		</check_first_person_aim>
+		
+		<check_stop_missile_playing x="20" y="0" width="400" height="21">
+			<options_item entry="hud_stop_missile_playing" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_stop_missile_playing</text>
+		</check_stop_missile_playing>
 
 		<check_ammo_from_belt x="20" y="0" width="400" height="21">
 			<options_item entry="g_ammo_from_belt" group="mm_opt_gameplay"/>

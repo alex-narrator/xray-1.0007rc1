@@ -47,6 +47,7 @@ CWeapon::CWeapon(LPCSTR name)
 	SetState(eHidden);
 	SetNextState(eHidden);
 	m_sub_state = eSubstateReloadBegin;
+	m_idle_state = eIdle;
 	m_bTriStateReload = false;
 	SetDefaults();
 
@@ -474,6 +475,11 @@ void CWeapon::OnBulletHit()
 	if (!fis_zero(conditionDecreasePerShotOnHit))
 		ChangeCondition(-conditionDecreasePerShotOnHit);
 }
+
+bool CWeapon::IsPartlyReloading() 
+{
+	return (m_set_next_ammoType_on_reload == u32(-1) && GetAmmoElapsed() > 0 && !IsMisfire());
+}
 //
 
 BOOL CWeapon::net_Spawn(CSE_Abstract* DC)
@@ -747,6 +753,16 @@ void CWeapon::UpdateCL()
 		make_Interpolation();
 
 	VERIFY(smart_cast<CKinematics*>(Visual()));
+
+	if (GetState() == eIdle) {
+		auto state = idle_state();
+		if (m_idle_state != state) {
+			m_idle_state = state;
+			SwitchState(eIdle);
+		}
+	}
+	else
+		m_idle_state = eIdle;
 }
 
 void CWeapon::renderable_Render()
@@ -914,13 +930,15 @@ void CWeapon::SpawnAmmo(u32 boxCurr, LPCSTR ammoSect, u32 ParentID)
 	if (OnClient())					return;
 	m_bAmmoWasSpawned = true;
 
-	int l_type = 0;
+	/*int l_type = 0;
 	l_type %= m_ammoTypes.size();
 
 	if (!ammoSect) ammoSect = *m_ammoTypes[l_type];
 
 	++l_type;
-	l_type %= m_ammoTypes.size();
+	l_type %= m_ammoTypes.size();*/
+
+	if (!ammoSect) ammoSect = m_ammoTypes.front().c_str();
 
 	CSE_Abstract *D = F_entity_Create(ammoSect);
 
@@ -1011,13 +1029,26 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 u32 CWeapon::GetNextAmmoType()
 {
 	u32 l_newType = m_ammoType;
-	bool b1, b2;
+	/*bool b1, b2;
 	do
 	{
 		l_newType = (l_newType + 1) % m_ammoTypes.size();
 		b1 = l_newType != m_ammoType;
 		b2 = unlimited_ammo() ? false : (!m_pCurrentInventory->GetAmmo(*m_ammoTypes[l_newType], ParentIsActor()));
-	} while (b1 && b2);
+	} while (b1 && b2);*/
+	for (;;)
+	{
+		if (++l_newType >= m_ammoTypes.size())
+		{
+			for (l_newType = 0; l_newType < m_ammoTypes.size(); ++l_newType)
+				if (unlimited_ammo() || m_pCurrentInventory->GetAmmo(m_ammoTypes[l_newType].c_str(), ParentIsActor()))
+					break;
+			break;
+		}
+
+		if (unlimited_ammo() || m_pCurrentInventory->GetAmmo(m_ammoTypes[l_newType].c_str(), ParentIsActor()))
+			break;
+	}
 
 	if (l_newType != m_ammoType)
 		return l_newType;
@@ -1668,4 +1699,17 @@ const float &CWeapon::hit_probability() const
 {
 	VERIFY((g_SingleGameDifficulty >= egdNovice) && (g_SingleGameDifficulty <= egdMaster));
 	return					(m_hit_probability[egdNovice]);
+}
+
+u8 CWeapon::idle_state() {
+	CActor *actor = smart_cast<CActor*>(H_Parent());
+
+	if (actor)
+		if (actor->get_state() & mcSprint) {
+			return eSubstateIdleSprint;
+		}
+		else if (actor->is_actor_running())
+			return eSubstateIdleMoving;
+
+	return eIdle;
 }

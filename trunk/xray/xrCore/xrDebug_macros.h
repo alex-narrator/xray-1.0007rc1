@@ -20,6 +20,7 @@
 	#define _TRE(arg)	arg
 #endif
 
+#define ASSERT_FMT(expr, ...) do { if (!(expr)) FATAL(__VA_ARGS__);} while(0)
 
 #	define CHECK_OR_EXIT(expr,message)	do {if (!(expr)) ::Debug.do_exit(message);} while (0)
 

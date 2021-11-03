@@ -17,6 +17,7 @@ protected:
 	MotionSVec			mhud_attack_e;
 	MotionSVec			mhud_attack2_e;
 //#if defined(KNIFE_SPRINT_MOTION)
+	MotionSVec			mhud_idle_moving;
 	MotionSVec			mhud_idle_sprint;
 //#endif
 
@@ -77,8 +78,8 @@ public:
 	virtual void		GetBriefInfo					(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 
 //#if defined(KNIFE_SPRINT_MOTION)
-	virtual void		onMovementChanged				(ACTOR_DEFS::EMoveCommand cmd);
-	virtual void	    PlayAnimIdle();
+	virtual void	PlayAnimIdle		(u8);
+	virtual void	onMovementChanged	(ACTOR_DEFS::EMoveCommand);
 //#endif
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION

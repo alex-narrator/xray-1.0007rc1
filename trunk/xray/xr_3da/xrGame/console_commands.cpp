@@ -1471,11 +1471,12 @@ void CCC_RegisterCommands()
 
 	CMD3(CCC_Token,				"hud_show_on_key",		(u32*)&g_eHudOnKey,	hud_on_key_token);	//элементы HUD выводятся по нажатию клавиш
 
-	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR		);
-	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST	);
-	CMD3(CCC_Mask,              "hud_round_crosshair",  &psHUD_Flags,   HUD_ROUND_CROSSHAIR	);	//билдовый круглый курсор
-	CMD3(CCC_Mask,              "hud_use_luminosity",   &psHUD_Flags,   HUD_USE_LUMINOSITY	);	//использование освещённости вместо заметности на худовой шкале
-	CMD3(CCC_Mask,              "hud_first_person_aim", &psHUD_Flags,   HUD_FIRST_PERSON_AIM);	//прицеливание от первого лица в режиме от третьего лица
+	CMD3(CCC_Mask,				"hud_crosshair",			&psHUD_Flags,	HUD_CROSSHAIR				);
+	CMD3(CCC_Mask,				"hud_crosshair_dist",		&psHUD_Flags,	HUD_CROSSHAIR_DIST			);
+	CMD3(CCC_Mask,              "hud_round_crosshair",		&psHUD_Flags,   HUD_ROUND_CROSSHAIR			);	//билдовый круглый курсор
+	CMD3(CCC_Mask,              "hud_use_luminosity",		&psHUD_Flags,   HUD_USE_LUMINOSITY			);	//использование освещённости вместо заметности на худовой шкале
+	CMD3(CCC_Mask,              "hud_first_person_aim",		&psHUD_Flags,   HUD_FIRST_PERSON_AIM		);	//прицеливание от первого лица в режиме от третьего лица
+	CMD3(CCC_Mask,              "hud_stop_missile_playing",	&psHUD_Flags,   HUD_STOP_MISSILE_PLAYING	);	//отключение анимаций подбрасывания для гранат и болта
 
 #ifdef DEBUG
 	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV,		0.1f,	1.0f);

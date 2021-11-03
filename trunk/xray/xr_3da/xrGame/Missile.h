@@ -14,6 +14,7 @@
 #define MS_PLAYING		9
 #define MS_IDLE_SPRINT	10
 #define MS_SHOWING2		11
+#define MS_IDLE_MOVING	12
 
 struct dContact;
 struct SGameMtl;
@@ -103,21 +104,25 @@ protected:
 	Fvector					m_vHudThrowDir;
 
 	//имена анимаций
-	shared_str				m_sAnimShow;
-	shared_str				m_sAnimHide;
-	shared_str				m_sAnimIdle;
-	shared_str				m_sAnimIdleSprint;
-	shared_str				m_sAnimPlaying;
-	shared_str				m_sAnimThrowBegin;
-	shared_str				m_sAnimThrowIdle;
-	shared_str				m_sAnimThrowAct;
-	shared_str				m_sAnimThrowEnd;
-	shared_str				m_sAnimShow2;
+	MotionSVec				mhud_AnimShow;
+	MotionSVec				mhud_AnimHide;
+	MotionSVec				mhud_AnimIdle;
+	MotionSVec				mhud_AnimIdleMoving;
+	MotionSVec				mhud_AnimIdleSprint;
+	MotionSVec				mhud_AnimPlaying;
+	MotionSVec				mhud_AnimThrowBegin;
+	MotionSVec				mhud_AnimThrowIdle;
+	MotionSVec				mhud_AnimThrowAct;
+	MotionSVec				mhud_AnimThrowEnd;
+	MotionSVec				mhud_AnimShow2;
 
 	//звук анимации "играния"
 	HUD_SOUND				sndPlaying;
 
-	u32						idle_state();
+	u8	m_idle_state;
+	u8	idle_state();
+	void PlayAnimIdle(u8);
+
 protected:
 			void			setup_throw_params		();
 public:

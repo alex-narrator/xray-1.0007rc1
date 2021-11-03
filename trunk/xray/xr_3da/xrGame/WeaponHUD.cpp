@@ -78,16 +78,16 @@ weapon_hud_value::~weapon_hud_value()
 	::Render->model_Delete		((IRender_Visual*&)m_animations);
 }
 
-u32 shared_weapon_hud::motion_length(MotionID M)
+u32 shared_weapon_hud::motion_length(MotionIDEx& M)
 {
 	CKinematicsAnimated	*skeleton_animated = p_->m_animations;
-	VERIFY				(skeleton_animated);
-	CMotionDef			*motion_def = skeleton_animated->LL_GetMotionDef(M);
-	VERIFY				(motion_def);
+	VERIFY(skeleton_animated);
+	CMotionDef *motion_def = skeleton_animated->LL_GetMotionDef(M.m_MotionID);
+	VERIFY(motion_def);
 
 	if (motion_def->flags & esmStopAtEnd) {
-		CMotion*			motion		= skeleton_animated->LL_GetRootMotion(M);
-		return				iFloor(0.5f + 1000.f*motion->GetLength()/ motion_def->Dequantize(motion_def->speed));
+		CMotion* motion = skeleton_animated->LL_GetRootMotion(M.m_MotionID);
+		return iFloor(0.5f + 1000.f * motion->GetLength() / motion_def->Speed() * M.stop_k);
 	}
 	return				0;
 }
@@ -154,29 +154,31 @@ MotionID CWeaponHUD::animGet(LPCSTR name)
 
 void CWeaponHUD::animDisplay(MotionID M, BOOL bMixIn)
 {
-	if(m_bVisible){
-		CKinematicsAnimated* PKinematicsAnimated		= smart_cast<CKinematicsAnimated*>(Visual());
-		VERIFY											(PKinematicsAnimated);
-		PKinematicsAnimated->PlayCycle					(M,bMixIn);
-		PKinematicsAnimated->CalculateBones_Invalidate	();
+	if (m_bVisible){
+		CKinematicsAnimated* PKinematicsAnimated = smart_cast<CKinematicsAnimated*>(Visual());
+		VERIFY(PKinematicsAnimated);
+		PKinematicsAnimated->PlayCycle(M, bMixIn);
+		PKinematicsAnimated->dcast_PKinematics()->CalculateBones_Invalidate();
 	}
 }
-void CWeaponHUD::animPlay			(MotionID M,	BOOL bMixIn, CHudItem* W, u32 state)
+
+void CWeaponHUD::animDisplay(MotionIDEx M, BOOL bMixIn) {
+	animDisplay(M.m_MotionID, bMixIn);
+}
+
+void CWeaponHUD::animPlay(MotionIDEx& M, BOOL bMixIn, CHudItem* W, u32 state)
 {
-//.	if(m_bStopAtEndAnimIsRunning)	
-//.		StopCurrentAnim				();
-
-
-	m_startedAnimState				= state;
-	Show							();
-	animDisplay						(M, bMixIn);
-	u32 anim_time					= m_shared_data.motion_length(M);
+	m_startedAnimState = state;
+	Show();
+	animDisplay(M.m_MotionID, bMixIn);
+	u32 anim_time = m_shared_data.motion_length(M);
 	if (anim_time>0){
-		m_bStopAtEndAnimIsRunning	= true;
-		m_pCallbackItem				= W;
-		m_dwAnimEndTime				= Device.dwTimeGlobal + anim_time;
-	}else{
-		m_pCallbackItem				= NULL;
+		m_bStopAtEndAnimIsRunning = true;
+		m_pCallbackItem = W;
+		m_dwAnimEndTime = Device.dwTimeGlobal + anim_time;
+	}
+	else{
+		m_pCallbackItem = NULL;
 	}
 }
 
@@ -219,11 +221,21 @@ void CWeaponHUD::CleanSharedContainer	()
 	g_pWeaponHUDContainer->clean(false);
 }
 
-MotionID random_anim(MotionSVec& v)
+MotionIDEx& random_anim(MotionSVec& v) 
 {
 	return v[Random.randI(v.size())];
 }
 
+MotionIDEx::MotionIDEx() 
+{
+	stop_k = 1.f;
+}
+
+MotionIDEx::MotionIDEx(MotionID id) 
+{
+	m_MotionID = id;
+	stop_k = 1.f;
+}
 
 //#ifdef WPN_BOBBING
 CWeaponBobbing::CWeaponBobbing()
