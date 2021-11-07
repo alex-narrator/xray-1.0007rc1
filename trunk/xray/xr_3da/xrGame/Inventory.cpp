@@ -180,7 +180,8 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		pIItem->m_eItemPlace = eItemPlaceUndefined;
 	
 	// AF_AMMO_FROM_BELT
-	if (smart_cast<CWeaponAmmo*>(pIItem)) TryAmmoToBelt(pIItem);
+	//if (smart_cast<CWeaponAmmo*>(pIItem)) TryAmmoToBelt(pIItem);
+	TryAmmoToBelt(pIItem);
 
 	bool result = false;
 	switch (pIItem->m_eItemPlace)
@@ -932,21 +933,27 @@ PIItem CInventory::GetAmmo(const char *name, BOOL forActor) const
 
 void CInventory::TryAmmoToBelt(CInventoryItem *pIItem)
 {
+	auto pAmmo = smart_cast<CWeaponAmmo*>(pIItem);
+	if (!pAmmo) return;
+
 	auto pActor = smart_cast<CActor*>(m_pOwner);
 	if (!pActor) return;
 
 	auto pWeapon = smart_cast<CWeapon*>(ActiveItem());
 	if (!pWeapon) return;
 
+	Msg("ammo [%s] with ID [%d] has taken", pIItem->object().cNameSect().c_str(), pIItem->object().ID());
+
 	if (psActorFlags.test(AF_AMMO_FROM_BELT) && pWeapon->IsAmmoWasSpawned()) //если включены патроны с пояса, то для боеприпасов актора, которые спавнятся при разрядке
 	{
 		if (!m_bRuckAmmoPlacement)
 		{
-			pIItem->m_eItemPlace = eItemPlaceBelt;	//укажем патронам попадать на пояс (если не проставлен флаг необходимости сброса в рюкзак)
-			if (!CanPutInBelt(pIItem))				//если патроны не помещаются на пояс
-				pIItem->SetDropManual(TRUE);		//уронить пароны на землю
+			pAmmo->m_eItemPlace = eItemPlaceBelt;	//укажем патронам попадать на пояс (если не проставлен флаг необходимости сброса в рюкзак)
+			Msg("ammo [%s] with ID [%d] placed to belt", pIItem->object().cNameSect().c_str(), pIItem->object().ID());
+			if (!CanPutInBelt(pIItem) && psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE))	//если патроны не помещаются на пояс
+			pAmmo->SetDropManual(TRUE);		//уронить пароны на землю
 		}
-		pWeapon->SetAmmoWasSpawned(false);			//сбрасываем флажок спавна патронов
+		//pWeapon->SetAmmoWasSpawned(false);	//сбрасываем флажок спавна патронов
 	}
 }
 

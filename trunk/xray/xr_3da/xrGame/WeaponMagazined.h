@@ -98,8 +98,11 @@ protected:
 protected:
 	virtual void	ReloadMagazine	();
 			void	ApplySilencerKoeffs	();
-	//передёргивание затвора
-	virtual void	Shutter			();
+	
+	//обработка передёргивания затвора
+	virtual void	ShutterAction	();
+	//обработка патронника
+	virtual void	UpdateChamber	();
 
 	virtual void	state_Fire		(float dt);
 	virtual void	state_MagEmpty	(float dt);
@@ -198,6 +201,9 @@ public:
 	virtual bool	HasFireModes		() { return m_bHasDifferentFireModes; };
 	virtual	int		GetCurrentFireMode	() { return m_bHasDifferentFireModes ? m_aFireModes[m_iCurFireMode] : 1; };
 	virtual LPCSTR	GetCurrentFireModeStr	() {return m_sCurFireMode;};
+
+	virtual bool	HasDetachableMagazine	() { return m_bHasDetachableMagazine; };
+	virtual bool	HasChamber				() { return m_bHasChamber; };
 
 	virtual const	xr_vector<int>&	GetFireModes() const				{return m_aFireModes;}
 	virtual	void					SetCurFireMode(int fire_mode)		{m_iCurFireMode = fire_mode;}

@@ -581,7 +581,7 @@ CSE_ALifeItemWeaponMagazined::CSE_ALifeItemWeaponMagazined	(LPCSTR caSection) : 
 	if (FireModesList) 
 	{
 		int ModesCount = _GetItemCount(FireModesList);
-		m_u8CurFireMode = ModesCount - 1;
+		m_u8CurFireMode = (u8)ModesCount - 1;
 	}
 	else 
 	{

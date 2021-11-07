@@ -324,7 +324,7 @@ void CWeaponMagazined::UnloadAmmo(int unload_count, bool spawn_ammo)
 	xr_map<LPCSTR, u16>::iterator l_it;
 	for (l_it = l_ammo.begin(); l_ammo.end() != l_it; ++l_it)
 	{
-		if (m_pCurrentInventory && (!psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) || !m_bHasDetachableMagazine)) //доложить разряжаемые патроны в пачку из которой взяли
+		if (m_pCurrentInventory && (!psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) || !HasDetachableMagazine())) //доложить разряжаемые патроны в пачку из которой взяли
 		{
 			CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(l_it->first, ParentIsActor()));
 
@@ -341,7 +341,38 @@ void CWeaponMagazined::UnloadAmmo(int unload_count, bool spawn_ammo)
 
 void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 {
-	UnloadAmmo(iAmmoElapsed, spawn_ammo);
+	if (HasChamber() && HasDetachableMagazine() && psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE))
+	{
+		UnloadAmmo(iAmmoElapsed - 1, spawn_ammo);
+		if (!m_bLockType &&	(!m_pAmmo || xr_strcmp(m_pAmmo->cNameSect(), *m_magazine.back().m_ammoSect)))
+		{
+			ShutterAction();
+			Msg("[Unload ammo on type change]");
+		}
+	}
+	else
+		UnloadAmmo(iAmmoElapsed, spawn_ammo);
+}
+
+void CWeaponMagazined::UpdateChamber()
+{
+	if (!HasChamber() || !HasDetachableMagazine() || !psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE))
+		return;
+
+	int base_iMagazineSize = pSettings->r_s32(cNameSect(), "ammo_mag_size");
+	bool b_base_magsize = iMagazineSize == base_iMagazineSize;
+
+	if (!b_base_magsize && m_magazine.empty() || m_set_next_ammoType_on_reload != u32(-1))
+	{
+		iMagazineSize = base_iMagazineSize;
+		Msg("[Set original iMagazineSize]");
+	}
+	else
+	if (!m_magazine.empty() && b_base_magsize)
+	{
+		++iMagazineSize;
+		Msg("[++iMagazineSize]");
+	}
 }
 
 void CWeaponMagazined::ReloadMagazine()
@@ -349,7 +380,7 @@ void CWeaponMagazined::ReloadMagazine()
 	m_dwAmmoCurrentCalcFrame = 0;
 
 	//устранить осечку при перезарядке
-	if (IsMisfire() && (!m_bHasChamber || m_magazine.empty()))
+	if (IsMisfire() && (!HasChamber() || m_magazine.empty()))
 	{
 		bMisfire = false;
 		if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
@@ -368,6 +399,8 @@ void CWeaponMagazined::ReloadMagazine()
 	}
 
 	if (!m_pCurrentInventory) return;
+
+	UpdateChamber();
 
 	if (m_set_next_ammoType_on_reload != u32(-1)){
 		m_ammoType = m_set_next_ammoType_on_reload;
@@ -403,7 +436,7 @@ void CWeaponMagazined::ReloadMagazine()
 
 	//разрядить магазин, если загружаем патронами другого типа
 	if (!m_bLockType && !m_magazine.empty() &&
-		(!m_pAmmo || xr_strcmp(m_pAmmo->cNameSect(), *m_magazine.back().m_ammoSect) || 
+		(!m_pAmmo || xr_strcmp(m_pAmmo->cNameSect(), *m_magazine.back().m_ammoSect) ||
 		psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && !unlimited_ammo())) //разряжать магазин и при перезарядке, если включена опция
 		UnloadMagazine();
 
@@ -488,11 +521,11 @@ void CWeaponMagazined::OnStateSwitch(u32 S)
 		switch2_Fire2();
 		break;
 	case eMisfire:
-		if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
+		/*if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
 		{
 			HUD().GetUI()->UIGame()->RemoveCustomStatic("gun_not_jammed");
 			HUD().GetUI()->AddInfoMessage("gun_jammed");
-		}
+		}*/
 		// Callbacks added by Cribbledirge.
 		StateSwitchCallback(GameObject::eOnActorWeaponJammed, GameObject::eOnNPCWeaponJammed);
 		break;
@@ -714,7 +747,7 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 	case eShowing:	SwitchState(eIdle);						break;	// End of Show
 	case eIdle:		switch2_Idle();							break;  // Keep showing idle
 	//
-	case eShutter:	Shutter();	SwitchState(eIdle);			break; //завершение анимации устранения задержки
+	case eShutter:	ShutterAction();	SwitchState(eIdle);	break;	// End of Shutter animation
 	}
 }
 void CWeaponMagazined::switch2_Idle()
@@ -722,6 +755,8 @@ void CWeaponMagazined::switch2_Idle()
 	HUD_SOUND::StopSound(sndShow);
 	HUD_SOUND::StopSound(sndReload);
 	HUD_SOUND::StopSound(sndShutter);
+
+	m_bAmmoWasSpawned = false;
 
 	m_bPending = false;
 	PlayAnimIdle(m_idle_state);
@@ -870,7 +905,7 @@ bool CWeaponMagazined::Action(s32 cmd, u32 flags)
 				OnShutter();
 				return true;
 			}
-			else if (iAmmoElapsed < iMagazineSize || IsMisfire() || psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && m_bHasDetachableMagazine)
+			else if (iAmmoElapsed < iMagazineSize || IsMisfire() || psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && HasDetachableMagazine())
 			{
 				Reload();
 				return true;
@@ -1419,7 +1454,7 @@ void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_na
 		str_count = sItemName;
 	}
 }
-//устранение осечки
+//работа затвора
 void CWeaponMagazined::OnShutter()
 {
 	SwitchState(eShutter);
@@ -1438,7 +1473,7 @@ void CWeaponMagazined::PlayAnimShutter()
 	m_pHUD->animPlay(random_anim(mhud.mhud_shutter), TRUE, this, GetState());
 }
 //
-void CWeaponMagazined::Shutter() //передёргивание затвора
+void CWeaponMagazined::ShutterAction() //передёргивание затвора
 {
 	if (IsMisfire())
 	{
@@ -1449,7 +1484,7 @@ void CWeaponMagazined::Shutter() //передёргивание затвора
 			HUD().GetUI()->AddInfoMessage("gun_not_jammed");
 		}
 	}
-	else if (iAmmoElapsed > 0 && m_bHasChamber)
+	else if (HasChamber() && !m_magazine.empty())
 	{
 		UnloadAmmo(1);
 	}

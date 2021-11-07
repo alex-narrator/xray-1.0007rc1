@@ -241,7 +241,7 @@ bool CWeaponShotgun::Action			(s32 cmd, u32 flags)
 	if(inherited::Action(cmd, flags)) return true;
 
 	if(	m_bTriStateReload && GetState()==eReload &&
-		(cmd == kWPN_FIRE || cmd == kWPN_NEXT) && flags&CMD_START &&
+		(cmd == kWPN_FIRE || cmd == kWPN_NEXT || cmd == kWPN_RELOAD) && flags&CMD_START &&
 		m_sub_state==eSubstateReloadInProcess		)//остановить перезагрузку
 	{
 		AddCartridge(1);
@@ -300,6 +300,7 @@ void CWeaponShotgun::Reload()
 void CWeaponShotgun::TriStateReload()
 {
 	if( !HaveCartridgeInInventory(1) )return;
+	inherited::OnZoomOut();
 	m_sub_state			= eSubstateReloadBegin;
 	SwitchState			(eReload);
 }
