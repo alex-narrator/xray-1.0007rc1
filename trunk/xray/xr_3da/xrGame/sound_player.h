@@ -53,7 +53,7 @@ public:
 
 	struct CSoundCollection : public CRandom32 {
 		xr_vector<ref_sound*>					m_sounds;
-		u32										m_last_sound_id;
+		mutable u32								m_last_sound_id;
 
 							CSoundCollection	(const CSoundCollectionParams &params);
 							~CSoundCollection	();
@@ -118,7 +118,7 @@ public:
 
 public:
 	typedef std::pair<CSoundCollectionParamsFull,CSoundCollection*>	SOUND_COLLECTION;
-	typedef associative_vector<u32,SOUND_COLLECTION>				SOUND_COLLECTIONS;
+	typedef xr_hashmap<u32, SOUND_COLLECTION>						SOUND_COLLECTIONS;
 
 private:
 	SOUND_COLLECTIONS							m_sounds;
