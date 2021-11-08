@@ -1244,7 +1244,7 @@ void CCustomZone::SpawnArtefact()
 	}
 	R_ASSERT(i<m_ArtefactSpawn.size());
 
-	Msg("SpawnArtefact[%s] %s",cName().c_str(), *m_ArtefactSpawn[i].section );
+	//Msg("SpawnArtefact[%s] %s",cName().c_str(), *m_ArtefactSpawn[i].section );
 	Fvector pos;
 	Center(pos);
 	Level().spawn_item(*m_ArtefactSpawn[i].section, pos, (g_dedicated_server)?u32(-1):ai_location().level_vertex_id(), ID());
@@ -1253,7 +1253,7 @@ void CCustomZone::SpawnArtefact()
 
 void CCustomZone::BornArtefact(bool forced)
 {
-	Msg("BornArtefact[%s] prob %f cnt2 %f forced %d",cName().c_str(),m_fArtefactSpawnProbability,(float)m_ArtefactSpawn.size(),forced );
+	//Msg("BornArtefact[%s] prob %f cnt2 %f forced %d",cName().c_str(),m_fArtefactSpawnProbability,(float)m_ArtefactSpawn.size(),forced );
 	if(!m_zone_flags.test(eSpawnBlowoutArtefacts) || m_ArtefactSpawn.empty()) return;
 	if(Device.dwPrecacheFrame)					return;
 	

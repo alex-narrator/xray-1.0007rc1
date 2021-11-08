@@ -155,7 +155,7 @@ void CUICellItem::UpdateConditionProgressBar()
                 std::swap(itm_grid_size.x, itm_grid_size.y);
             Ivector2 cell_size = m_pParentList->CellSize();
 
-			m_pConditionState->SetWidth(cell_size.x);
+			m_pConditionState->SetWidth((float)cell_size.x);
 
 			float x = 0.5f*(itm_grid_size.x * (cell_size.x)-m_pConditionState->GetWidth());
             float y = itm_grid_size.y * (cell_size.y) - m_pConditionState->GetHeight() - 1.f;

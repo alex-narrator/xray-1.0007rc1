@@ -133,7 +133,7 @@ void CArtefact::Load(LPCSTR section)
 	//random koef
 	m_fRandomKMin = READ_IF_EXISTS(pSettings, r_float, section, "random_k_min", 1.0f);
 	m_fRandomKMax = READ_IF_EXISTS(pSettings, r_float, section, "random_k_max", 1.0f);
-	Msg("Load [%s] (id [%d]) with random k [%.4f]", cNameSect().c_str(), ID(), GetRandomKoef());
+	//Msg("Load [%s] (id [%d]) with random k [%.4f]", cNameSect().c_str(), ID(), GetRandomKoef());
 	//
 
 	animGetEx(m_anim_idle, "anim_idle");
@@ -173,7 +173,7 @@ BOOL CArtefact::net_Spawn(CSE_Abstract* DC)
 		else
 			m_fRandomK = ::Random.randF(m_fRandomKMin, m_fRandomKMax);
 	//debug
-	Msg("net_Spawn [%s] (id [%d]) with random k [%.4f]", cNameSect().c_str(), ID(), GetRandomKoef());
+	//Msg("net_Spawn [%s] (id [%d]) with random k [%.4f]", cNameSect().c_str(), ID(), GetRandomKoef());
 
 	return result;	
 }
@@ -666,7 +666,7 @@ void SArtefactActivation::SpawnAnomaly()
 		Level().Send				(P,net_flags(TRUE));
 		F_entity_Destroy			(object);
 //. #ifdef DEBUG
-		Msg("artefact [%s] spawned a zone [%s] at [%f]", *m_af->cName(), zone_sect, Device.fTimeGlobal);
+		//Msg("artefact [%s] spawned a zone [%s] at [%f]", *m_af->cName(), zone_sect, Device.fTimeGlobal);
 //. #endif
 }
 

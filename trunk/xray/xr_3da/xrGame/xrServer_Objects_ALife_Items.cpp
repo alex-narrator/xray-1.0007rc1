@@ -942,7 +942,7 @@ CSE_ALifeItemGrenade::CSE_ALifeItemGrenade	(LPCSTR caSection): CSE_ALifeItem(caS
 	//
 	m_dwDestroyTimeMax	= NULL;
 	//debug
-	Msg("CSE_ALifeItemGrenade created grenade with m_dwDestroyTimeMax = [%d]", m_dwDestroyTimeMax);
+	//Msg("CSE_ALifeItemGrenade created grenade with m_dwDestroyTimeMax = [%d]", m_dwDestroyTimeMax);
 }
 
 CSE_ALifeItemGrenade::~CSE_ALifeItemGrenade	()
