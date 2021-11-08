@@ -9,6 +9,7 @@
 #include "inventory.h"
 #include "level.h"
 #include "actor.h"
+#include "xrServer_Objects_ALife_Items.h"
 
 CWeaponShotgun::CWeaponShotgun(void) : CWeaponCustomPistol("TOZ34")
 {
@@ -16,7 +17,7 @@ CWeaponShotgun::CWeaponShotgun(void) : CWeaponCustomPistol("TOZ34")
 	m_eSoundClose			= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING);
 	m_eSoundAddCartridge	= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING);
 	SetSlot(RIFLE_SLOT); 
-	m_bLockType				= true; //запрет заряжания смешанными патронами
+	//m_bLockType				= true; //запрет заряжания смешанными патронами
 	//
 	m_bHasDetachableMagazine = false;
 }
@@ -382,7 +383,8 @@ bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)
 		{
 			m_ammoType = m_set_next_ammoType_on_reload;
 			m_set_next_ammoType_on_reload = u32(-1);
-			if (!m_magazine.empty()) UnloadMagazine(); //разрядить если меняем тип патрона
+			//if (!m_magazine.empty()) UnloadMagazine(); //разрядить если меняем тип патрона
+			if (iAmmoElapsed == iMagazineSize) UnloadMagazine(); //разрядить если меняем тип патрона при полном магазине
 		}
 		//попытаться найти в инвентаре патроны текущего типа 
 		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[m_ammoType], ParentIsActor()));
@@ -454,7 +456,27 @@ u8 CWeaponShotgun::AddCartridge		(u8 cnt)
 
 	return cnt;
 }
-
+//
+BOOL	CWeaponShotgun::net_Spawn(CSE_Abstract* DC)
+{
+	BOOL bResult = inherited::net_Spawn(DC);
+	CSE_Abstract					*e = (CSE_Abstract*)(DC);
+	CSE_ALifeItemWeaponShotGun  *WS = smart_cast<CSE_ALifeItemWeaponShotGun*>(e);
+	if (WS->m_AmmoIDs.size()>0)
+	{
+		m_magazine.clear();
+		std::for_each(WS->m_AmmoIDs.begin(), WS->m_AmmoIDs.end(), [&](u8 at)
+		{
+			if (at > m_ammoTypes.size())
+				at = 0;
+			CCartridge l_cartridge;
+			l_cartridge.Load(*m_ammoTypes[at], at);
+			m_magazine.push_back(l_cartridge);
+		});
+	}
+	return bResult;
+}
+//
 void	CWeaponShotgun::net_Export	(NET_Packet& P)
 {
 	inherited::net_Export(P);	
