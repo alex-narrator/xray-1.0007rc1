@@ -379,17 +379,16 @@ bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)
 	m_pAmmo = NULL;
 	if(m_pCurrentInventory) 
 	{
-		if (m_set_next_ammoType_on_reload != u32(-1)) 
+		/*if (m_set_next_ammoType_on_reload != u32(-1)) 
 		{
 			m_ammoType = m_set_next_ammoType_on_reload;
 			m_set_next_ammoType_on_reload = u32(-1);
-			//if (!m_magazine.empty()) UnloadMagazine(); //разрядить если меняем тип патрона
-			if (iAmmoElapsed == iMagazineSize) UnloadMagazine(); //разрядить если меняем тип патрона при полном магазине
-		}
+			if (!m_magazine.empty()) UnloadMagazine(); //разрядить если меняем тип патрона
+		}*/
 		//попытаться найти в инвентаре патроны текущего типа 
 		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[m_ammoType], ParentIsActor()));
 
-		if (!m_pAmmo && (m_magazine.empty() || !m_bLockType))
+		if (!m_pAmmo /*&& (m_magazine.empty() || !m_bLockType)*/)
 		{
 			for(u32 i = 0; i < m_ammoTypes.size(); ++i) 
 			{
@@ -456,52 +455,13 @@ u8 CWeaponShotgun::AddCartridge		(u8 cnt)
 
 	return cnt;
 }
-//
-BOOL	CWeaponShotgun::net_Spawn(CSE_Abstract* DC)
-{
-	BOOL bResult = inherited::net_Spawn(DC);
-	CSE_Abstract					*e = (CSE_Abstract*)(DC);
-	CSE_ALifeItemWeaponShotGun  *WS = smart_cast<CSE_ALifeItemWeaponShotGun*>(e);
-	if (WS->m_AmmoIDs.size()>0)
-	{
-		m_magazine.clear();
-		std::for_each(WS->m_AmmoIDs.begin(), WS->m_AmmoIDs.end(), [&](u8 at)
-		{
-			if (at > m_ammoTypes.size())
-				at = 0;
-			CCartridge l_cartridge;
-			l_cartridge.Load(*m_ammoTypes[at], at);
-			m_magazine.push_back(l_cartridge);
-		});
-	}
-	return bResult;
-}
-//
+
 void	CWeaponShotgun::net_Export	(NET_Packet& P)
 {
 	inherited::net_Export(P);	
-	P.w_u8(u8(m_magazine.size()));	
-	for (u32 i=0; i<m_magazine.size(); i++)
-	{
-		CCartridge& l_cartridge = *(m_magazine.begin()+i);
-		P.w_u8(l_cartridge.m_LocalAmmoType);
-	}
 }
 
 void	CWeaponShotgun::net_Import	(NET_Packet& P)
 {
 	inherited::net_Import(P);	
-	u8 AmmoCount = P.r_u8();
-	for (u32 i=0; i<AmmoCount; i++)
-	{
-		u8 LocalAmmoType = P.r_u8();
-		if (i>=m_magazine.size()) continue;
-		CCartridge& l_cartridge = *(m_magazine.begin()+i);
-		if (LocalAmmoType == l_cartridge.m_LocalAmmoType) continue;
-#ifdef DEBUG
-		Msg("! %s reload to %s", *l_cartridge.m_ammoSect, *(m_ammoTypes[LocalAmmoType]));
-#endif
-		l_cartridge.Load(*(m_ammoTypes[LocalAmmoType]), LocalAmmoType); 
-//		m_fCurrentCartirdgeDisp = m_DefaultCartridge.m_kDisp;		
-	}
 }

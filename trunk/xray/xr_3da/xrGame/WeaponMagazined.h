@@ -99,10 +99,12 @@ protected:
 	virtual void	ReloadMagazine	();
 			void	ApplySilencerKoeffs	();
 	
-	//обработка передёргивания затвора
+	//действие передёргивания затвора
 	virtual void	ShutterAction	();
-	//обработка патронника
-	virtual void	UpdateChamber	();
+	//расширение вместимости магазина за счёт патронника
+	virtual void	UpdateExpansionToChamber	();
+	//сохранение патрона в патроннике при смешанной зарядке
+	virtual void	HandleCartridgeInChamber	();
 
 	virtual void	state_Fire		(float dt);
 	virtual void	state_MagEmpty	(float dt);
@@ -143,7 +145,7 @@ public:
 	//разрядить кол-во патронов
 	virtual void	UnloadAmmo		(int unload_count, bool spawn_ammo = true);
 
-	virtual void	GetBriefInfo				(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
+	virtual void	GetBriefInfo	(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 
 
 	//////////////////////////////////////////////
@@ -202,8 +204,8 @@ public:
 	virtual	int		GetCurrentFireMode	() { return m_bHasDifferentFireModes ? m_aFireModes[m_iCurFireMode] : 1; };
 	virtual LPCSTR	GetCurrentFireModeStr	() {return m_sCurFireMode;};
 
-	virtual bool	HasDetachableMagazine	() { return m_bHasDetachableMagazine; };
-	virtual bool	HasChamber				() { return m_bHasChamber; };
+	virtual bool	HasDetachableMagazine	() { return psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && ParentIsActor() && m_bHasDetachableMagazine; };
+	virtual bool	HasChamber				() { return psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && ParentIsActor() && m_bHasChamber; };
 
 	virtual const	xr_vector<int>&	GetFireModes() const				{return m_aFireModes;}
 	virtual	void					SetCurFireMode(int fire_mode)		{m_iCurFireMode = fire_mode;}

@@ -478,7 +478,7 @@ void CWeapon::OnBulletHit()
 
 bool CWeapon::IsPartlyReloading() 
 {
-	return (m_set_next_ammoType_on_reload == u32(-1) && GetAmmoElapsed() > 0 && !IsMisfire());
+	return (GetAmmoElapsed() > 0 /*&& m_set_next_ammoType_on_reload == u32(-1) && !IsMisfire()*/);
 }
 //
 
@@ -1692,7 +1692,7 @@ BOOL CWeapon::ParentIsActor()
 {
 	CObject* O = H_Parent();
 	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
-	return EA->cast_actor() != 0;
+	return EA && EA->cast_actor() != 0;
 }
 
 const float &CWeapon::hit_probability() const
