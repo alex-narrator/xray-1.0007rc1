@@ -789,7 +789,7 @@ void CSE_ALifeItemDetector::FillProps		(LPCSTR pref, PropItemVec& items)
 CSE_ALifeItemArtefact::CSE_ALifeItemArtefact(LPCSTR caSection) : CSE_ALifeItem(caSection)
 {
 	m_fAnomalyValue				= 100.f;
-	m_fRandomK					= NULL;
+	m_fRandomK					= 1.f;// NULL;
 }
 
 CSE_ALifeItemArtefact::~CSE_ALifeItemArtefact()

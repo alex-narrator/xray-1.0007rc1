@@ -134,6 +134,7 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			float _actor_val = pSettings->r_float("actor", af_actor_param_names[i]);
 			if (fis_zero(_val))				continue;
 			_val *= art->GetRandomKoef();
+			_val *= art->GetCondition();
 			_val *= 100.0f;
 		}
 		else
@@ -150,6 +151,7 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 #endif
 			if					(fis_zero(_val))				continue;
 			_val				*= art->GetRandomKoef();
+			_val				*= art->GetCondition();
 			_val				= (_val/_actor_val)*100.0f;
 		}
 		else
@@ -166,6 +168,7 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			//_val				= (1.0f - _val);
 			if					(fis_zero(_val))	continue;
 			_val				*= art->GetRandomKoef();
+			_val				*= art->GetCondition();
 			_val				*= 100.0f;
 
 		}

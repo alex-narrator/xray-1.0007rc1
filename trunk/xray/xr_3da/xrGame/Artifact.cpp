@@ -12,6 +12,7 @@
 #include "restriction_space.h"
 #include "../IGame_Persistent.h"
 #include "xrServer_Objects_ALife_Items.h"
+#include "hudmanager.h"
 #include "../../build_config_defines.h"
 
 #define	FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
@@ -72,7 +73,7 @@ CArtefact::CArtefact(void)
 	SetSlot (ARTEFACT_SLOT);
 #endif
 	//
-	m_fRandomK					= NULL;
+	m_fRandomK					= 1.f; //NULL;
 	//
 	m_ArtefactHitImmunities.resize(ALife::eHitTypeMax);
 	for (int i = 0; i<ALife::eHitTypeMax; i++)
@@ -130,11 +131,7 @@ void CArtefact::Load(LPCSTR section)
 	}
 	m_bCanSpawnZone = !!pSettings->line_exist("artefact_spawn_zones", section);
 
-	//random koef
-	m_fRandomKMin = READ_IF_EXISTS(pSettings, r_float, section, "random_k_min", 1.0f);
-	m_fRandomKMax = READ_IF_EXISTS(pSettings, r_float, section, "random_k_max", 1.0f);
-	//Msg("Load [%s] (id [%d]) with random k [%.4f]", cNameSect().c_str(), ID(), GetRandomKoef());
-	//
+	m_fConditionDecOnEffect = READ_IF_EXISTS(pSettings, r_float, section, "condition_dec_on_effect", 0.f);
 
 	animGetEx(m_anim_idle, "anim_idle");
 	animGetEx(m_anim_idle_sprint, "anim_idle_sprint");
@@ -168,10 +165,20 @@ BOOL CArtefact::net_Spawn(CSE_Abstract* DC)
 	SetState					(eHidden);
 	//
 	if (auto se_artefact = smart_cast<CSE_ALifeItemArtefact*>(DC))
-		if (se_artefact->m_fRandomK != NULL)
+		if (se_artefact->m_fRandomK != 1.f/*NULL*/)
 			m_fRandomK = se_artefact->m_fRandomK;
-		else
-			m_fRandomK = ::Random.randF(m_fRandomKMin, m_fRandomKMax);
+		else if (pSettings->line_exist(cNameSect(), "random_k"))
+		{
+			LPCSTR str = pSettings->r_string(cNameSect(), "random_k");
+			int cnt = _GetItemCount(str);
+			if (cnt > 1)							//заданы границы рандома свойств
+			{
+				Fvector2 m = pSettings->r_fvector2(cNameSect(), "random_k");
+				m_fRandomK = ::Random.randF(m.x, m.y);
+			}
+			else if (cnt == 1)
+				m_fRandomK = ::Random.randF(0.f, pSettings->r_float(cNameSect(), "random_k"));
+		}
 	//debug
 	//Msg("net_Spawn [%s] (id [%d]) with random k [%.4f]", cNameSect().c_str(), ID(), GetRandomKoef());
 
@@ -442,17 +449,17 @@ void CArtefact::OnStateSwitch		(u32 S)
 	case eShowing:
 		{
 			m_bPending = true;
-			m_pHUD->animPlay(random_anim(m_anim_show),		FALSE, this, S);
+			m_pHUD->animPlay(random_anim(m_anim_show),		/*FALSE*/TRUE, this, S);
 		}break;
 	case eHiding:
 		{
 			m_bPending = true;
-			m_pHUD->animPlay(random_anim(m_anim_hide),		FALSE, this, S);
+			m_pHUD->animPlay(random_anim(m_anim_hide),		/*FALSE*/TRUE, this, S);
 		}break;
 	case eActivating:
 		{
 			m_bPending = true;
-			m_pHUD->animPlay(random_anim(m_anim_activate),	FALSE, this, S);
+			m_pHUD->animPlay(random_anim(m_anim_activate),	/*FALSE*/TRUE, this, S);
 		}break;
 	case eIdle:
 		{
@@ -464,7 +471,7 @@ void CArtefact::OnStateSwitch		(u32 S)
 
 void CArtefact::PlayAnimIdle()
 {
-	m_pHUD->animPlay(random_anim(m_anim_idle),		FALSE, NULL, eIdle);
+	m_pHUD->animPlay(random_anim(m_anim_idle),		/*FALSE*/TRUE, NULL, eIdle);
 }
 
 void CArtefact::OnAnimationEnd		(u32 state)
@@ -483,12 +490,17 @@ void CArtefact::OnAnimationEnd		(u32 state)
 		}break;
 	case eActivating:
 		{
-			if(Local()){
+			if(Local() && !fis_zero(GetCondition())){
 				SwitchState		(eHiding);
 				NET_Packet		P;
 				u_EventGen		(P, GEG_PLAYER_ACTIVATEARTEFACT, H_Parent()->ID());
 				P.w_u16			(ID());
 				u_EventSend		(P);	
+			}
+			else if (fis_zero(GetCondition()))
+			{
+				HUD().GetUI()->AddInfoMessage("failed_to_activate_artefact");
+				SwitchState(eIdle);
 			}
 		}break;
 	};
@@ -499,6 +511,23 @@ void CArtefact::OnAnimationEnd		(u32 state)
 u16	CArtefact::bone_count_to_synchronize	() const
 {
 	return CInventoryItem::object().PHGetSyncItemsNumber();
+}
+
+void CArtefact::UpdateConditionDecOnEffect()
+{
+	if (fis_zero(m_fConditionDecOnEffect) || 
+		fis_zero(m_fCondition)) return;
+
+	ChangeCondition(-m_fConditionDecOnEffect);
+}
+
+#include "Actor.h"
+bool CArtefact::InContainer()
+{
+	return m_pCurrentInventory == g_actor->m_inventory &&
+		psActorFlags.test(AF_ARTEFACTS_FROM_ALL) &&
+		m_pCurrentInventory->ItemFromSlot(ARTEFACT_SLOT) == this &&	//артефакт в слоте артефакта
+		m_pCurrentInventory->ActiveItem() != this;					//артефакт в слоте артефакта не взят в руки
 }
 
 
@@ -637,9 +666,21 @@ void SArtefactActivation::SpawnAnomaly()
 	VERIFY(!ph_world->Processing());
 	string128 tmp;
 	LPCSTR str			= pSettings->r_string("artefact_spawn_zones",*m_af->cNameSect());
-	VERIFY3(3==_GetItemCount(str),"Bad record format in artefact_spawn_zones",str);
+	VERIFY3(4==_GetItemCount(str),"Bad record format in artefact_spawn_zones",str);
+
 	float zone_radius	= (float)atof(_GetItem(str,1,tmp));
 	float zone_power	= (float)atof(_GetItem(str,2,tmp));
+	//
+	u32 zone_ttl		= (u32)atof(_GetItem(str, 3, tmp));
+	//
+	float af_condition = m_af->GetCondition();
+	if (af_condition < 1.f)
+	{
+		zone_radius	*= af_condition;
+		zone_power	*= af_condition;
+		zone_ttl	= (u32)ceil((float)zone_ttl * af_condition);
+	}
+	//
 	LPCSTR zone_sect	= _GetItem(str,0,tmp); //must be last call of _GetItem... (LPCSTR !!!)
 
 		Fvector pos;
@@ -659,14 +700,16 @@ void SArtefactActivation::SpawnAnomaly()
 		AlifeZone->assign_shapes	(&_shape,1);
 		AlifeZone->m_maxPower		= zone_power;
 		AlifeZone->m_owner_id		= m_owner_id;
-		AlifeZone->m_space_restrictor_type	= RestrictionSpace::eRestrictorTypeNone;
+		AlifeZone->m_space_restrictor_type = RestrictionSpace::eRestrictorTypeNone;
+		//
+		AlifeZone->m_zone_ttl		= zone_ttl;
 
 		NET_Packet					P;
 		object->Spawn_Write			(P,TRUE);
 		Level().Send				(P,net_flags(TRUE));
 		F_entity_Destroy			(object);
 //. #ifdef DEBUG
-		//Msg("artefact [%s] spawned a zone [%s] at [%f]", *m_af->cName(), zone_sect, Device.fTimeGlobal);
+		Msg("artefact [%s] spawned a zone [%s] (zone_radius: [%f], zone_power: [%f], zone_ttl [%u]) at [%f]", *m_af->cName(), zone_sect, zone_radius, zone_power, zone_ttl, Device.fTimeGlobal);
 //. #endif
 }
 

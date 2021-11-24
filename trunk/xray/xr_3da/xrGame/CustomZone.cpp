@@ -53,6 +53,8 @@ CCustomZone::CCustomZone(void)
 	m_fDistanceToCurEntity		= flt_max;
 	m_ef_weapon_type			= u32(-1);
 	m_owner_id					= u32(-1);
+	//
+	m_zone_ttl					= u32(-1);
 
 	m_effector					= NULL;
 	m_bIdleObjectParticlesDontStop = FALSE;
@@ -89,9 +91,7 @@ void CCustomZone::Load(LPCSTR section)
 	m_zone_flags.set(eIgnoreSmall,		pSettings->r_bool(section,	"ignore_small"));
 	m_zone_flags.set(eIgnoreArtefact,	pSettings->r_bool(section,	"ignore_artefacts"));
 	m_zone_flags.set(eVisibleByDetector,pSettings->r_bool(section,	"visible_by_detector"));
-#ifdef SHORT_LIVED_ANOMS
-	m_zone_ttl = READ_IF_EXISTS(pSettings, r_u32, section, "time_to_live", 40);
-#endif
+
 	// bak
 	m_zone_flags.set(eBirthOnNonAlive,READ_IF_EXISTS(pSettings, r_bool, section, "birth_on_nonalive", false));
 	m_zone_flags.set(eBirthOnAlive,READ_IF_EXISTS(pSettings, r_bool, section, "birth_on_alive", false));
@@ -331,6 +331,9 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	m_fAttenuation				= pSettings->r_float(cNameSect(),"attenuation");
 	m_dwPeriod					= pSettings->r_u32(cNameSect(),"period");
 	m_owner_id					= Z->m_owner_id;
+	//
+	m_zone_ttl					= Z->m_zone_ttl;
+	//
 	if(m_owner_id != u32(-1))
 #ifdef SHORT_LIVED_ANOMS
 		m_ttl                   = Device.dwTimeGlobal + 1000 * m_zone_ttl;// m_zone_ttl in seconds
@@ -338,7 +341,7 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 		m_ttl					= Device.dwTimeGlobal + 40000;// 40 sec
 #endif
 	else
-		m_ttl					= u32(-1);
+		m_ttl					= m_zone_ttl;//u32(-1);
 
 	if (GameID() != GAME_SINGLE)
 		m_zone_flags.set(eSpawnBlowoutArtefacts,	FALSE);
@@ -386,6 +389,9 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	{
 		m_b_always_fastmode		= spawn_ini()->r_bool("fast_mode","always_fast");
 	}
+	//
+	Msg("Spawned zone: [%s], m_fMaxPower [%f], m_zone_ttl [%u]", Name_script(), m_fMaxPower, m_zone_ttl);
+	//
 	return						(TRUE);
 }
 

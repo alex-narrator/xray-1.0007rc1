@@ -953,7 +953,7 @@ void CInventory::TryAmmoToBelt(CInventoryItem *pIItem)
 			if (!CanPutInBelt(pIItem) && psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE))	//если патроны не помещаются на пояс
 			pAmmo->SetDropManual(TRUE);		//уронить пароны на землю
 		}
-		//pWeapon->SetAmmoWasSpawned(false);	//сбрасываем флажок спавна патронов
+		pWeapon->SetAmmoWasSpawned(false);	//сбрасываем флажок спавна патронов
 	}
 }
 

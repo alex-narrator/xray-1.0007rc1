@@ -204,8 +204,8 @@ public:
 	virtual	int		GetCurrentFireMode	() { return m_bHasDifferentFireModes ? m_aFireModes[m_iCurFireMode] : 1; };
 	virtual LPCSTR	GetCurrentFireModeStr	() {return m_sCurFireMode;};
 
-	virtual bool	HasDetachableMagazine	() { return psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && ParentIsActor() && m_bHasDetachableMagazine; };
-	virtual bool	HasChamber				() { return psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) && ParentIsActor() && m_bHasChamber; };
+	virtual bool	HasDetachableMagazine	() { return /*psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) &&*/ ParentIsActor() && m_bHasDetachableMagazine; };
+	virtual bool	HasChamber				() { return /*psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) &&*/ ParentIsActor() && m_bHasChamber; };
 
 	virtual const	xr_vector<int>&	GetFireModes() const				{return m_aFireModes;}
 	virtual	void					SetCurFireMode(int fire_mode)		{m_iCurFireMode = fire_mode;}

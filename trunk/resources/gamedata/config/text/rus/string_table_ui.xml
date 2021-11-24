@@ -18,6 +18,9 @@
 	<string id="gun_not_jammed">
 		<text>Задержка устранена</text>
 	</string>
+	<string id="failed_to_activate_artefact">
+		<text>Не удалось активировать артефакт</text>
+	</string>
 	<string id="inventory_box_use">
 		<text>Обыскать ящик [$$ACTION_USE$$]</text>
 	</string>

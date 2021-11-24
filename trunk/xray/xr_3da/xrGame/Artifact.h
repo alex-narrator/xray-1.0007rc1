@@ -89,7 +89,9 @@ public:
 	float							m_fRandomK;
 	float							GetRandomKoef						()				{ return m_fRandomK; };
 	//
-
+	float							m_fConditionDecOnEffect;
+	void							UpdateConditionDecOnEffect			();
+	bool							InContainer							();
 protected:
 	MotionSVec						m_anim_idle;
 	MotionSVec						m_anim_idle_sprint;

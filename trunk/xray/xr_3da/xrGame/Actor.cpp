@@ -1554,13 +1554,22 @@ void CActor::OnItemRuck		(CInventoryItem *inventory_item, EItemPlace previous_pl
 {
 	CInventoryOwner::OnItemRuck(inventory_item, previous_place);
 
-	UpdateArtefactPanel();
+	if (previous_place == eItemPlaceBelt)
+		UpdateArtefactPanel();
 }
 void CActor::OnItemBelt		(CInventoryItem *inventory_item, EItemPlace previous_place)
 {
 	CInventoryOwner::OnItemBelt(inventory_item, previous_place);
 
 	UpdateArtefactPanel();
+}
+
+void CActor::OnItemSlot(CInventoryItem* inventory_item, EItemPlace previous_place)
+{
+	CInventoryOwner::OnItemSlot(inventory_item, previous_place);
+
+	if (previous_place == eItemPlaceBelt)
+		UpdateArtefactPanel();
 }
 
 
@@ -1595,21 +1604,20 @@ void CActor::UpdateArtefactsOnBelt()
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		//
-		bool artefact_in_container = psActorFlags.test(AF_ARTEFACTS_FROM_ALL) && 
-			inventory().ItemFromSlot(ARTEFACT_SLOT) == artefact &&	//артефакт в слоте артефакта
-			inventory().ActiveItem() != artefact;					//артефакт в слоте артефакта не взят в руки
-		//
-		if (artefact && !artefact_in_container)
+		if (artefact && !artefact->InContainer() && !fis_zero(artefact->GetCondition()))
 		{
 			float random_k = artefact->GetRandomKoef();
+			float condition = artefact->GetCondition();
 			//
-			conditions().ChangeBleeding	(artefact->m_fBleedingRestoreSpeed	* f_update_time * random_k);
-			conditions().ChangeHealth	(artefact->m_fHealthRestoreSpeed	* f_update_time * random_k);
-			conditions().ChangePower	(artefact->m_fPowerRestoreSpeed		* f_update_time * random_k);
-			conditions().ChangeSatiety	(artefact->m_fSatietyRestoreSpeed	* f_update_time * random_k);
+			conditions().ChangeBleeding	(artefact->m_fBleedingRestoreSpeed	* f_update_time * random_k * condition);
+			conditions().ChangeHealth	(artefact->m_fHealthRestoreSpeed	* f_update_time * random_k * condition);
+			conditions().ChangePower	(artefact->m_fPowerRestoreSpeed		* f_update_time * random_k * condition);
+			conditions().ChangeSatiety	(artefact->m_fSatietyRestoreSpeed	* f_update_time * random_k * condition);
 #ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
-			conditions().ChangeRadiation(artefact->m_fRadiationRestoreSpeed * f_update_time * random_k);
+			conditions().ChangeRadiation(artefact->m_fRadiationRestoreSpeed * f_update_time * random_k * condition);
 #endif
+			//
+			artefact->UpdateConditionDecOnEffect();
 		}
 
 	} // for belt items
@@ -1633,17 +1641,14 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		//
-		bool artefact_in_container = psActorFlags.test(AF_ARTEFACTS_FROM_ALL) &&
-			inventory().ItemFromSlot(ARTEFACT_SLOT) == artefact &&	//артефакт в слоте артефакта
-			inventory().ActiveItem() != artefact;					//артефакт в слоте артефакта не взят в руки
-		//
-		if (artefact && artefact->m_ArtefactHitImmunities[hit_type] && !artefact_in_container)
+		if (artefact && artefact->m_ArtefactHitImmunities[hit_type] && !artefact->InContainer() && !fis_zero(artefact->GetCondition()))
 		{
 			float random_k = artefact->GetRandomKoef();
+			float condition = artefact->GetCondition();
 			//
 			//res_hit_power_k += artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
-			res_hit_power_k += 1.0f - artefact->m_ArtefactHitImmunities[hit_type] * random_k;
-			_af_count		+= 1.0f;
+			res_hit_power_k += 1.0f - artefact->m_ArtefactHitImmunities[hit_type] * random_k * condition;
+			_af_count += 1.0f;
 		}
 	}
 

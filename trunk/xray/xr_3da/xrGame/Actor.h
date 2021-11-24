@@ -173,6 +173,7 @@ public:
 	
 	virtual void OnItemRuck		(CInventoryItem *inventory_item, EItemPlace previous_place);
 	virtual void OnItemBelt		(CInventoryItem *inventory_item, EItemPlace previous_place);
+	virtual void OnItemSlot		(CInventoryItem *inventory_item, EItemPlace previous_place);
 	
 	virtual void OnItemDrop		(CInventoryItem *inventory_item);
 	virtual void OnItemDropUpdate ();

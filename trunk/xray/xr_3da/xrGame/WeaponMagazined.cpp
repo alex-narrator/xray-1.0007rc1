@@ -320,7 +320,7 @@ void CWeaponMagazined::UnloadAmmo(int unload_count, bool spawn_ammo)
 	xr_map<LPCSTR, u16>::iterator l_it;
 	for (l_it = l_ammo.begin(); l_ammo.end() != l_it; ++l_it)
 	{
-		if (m_pCurrentInventory && !HasDetachableMagazine()/*(!psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) || !HasDetachableMagazine())*/) //упаковать разряжаемые патроны в неполную пачку
+		if (m_pCurrentInventory && (!psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) || !HasDetachableMagazine())) //упаковать разряжаемые патроны в неполную пачку
 		{
 			CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(l_it->first, ParentIsActor()));
 
@@ -361,9 +361,9 @@ void CWeaponMagazined::HandleCartridgeInChamber()
 		if (*m_magazine[m_magazine.size() - 2].m_ammoSect == *m_magazine.front().m_ammoSect) //предпоследний патрон аналогичен первому
 		{//начало разряжания магазина
 			//перекладываем патрон отличного типа (последний заряженный, он же первый на отстрел) из конца вектора (реверсного начала) в начало (реверсный конец)
-			Msg("weapon:[%s]|back:[%s]|front:[%s]|[size() - 2]:[%s] on unloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[m_magazine.size() - 1].m_ammoSect);
+			Msg("weapon:[%s]|back:[%s]|front:[%s]|[size() - 2]:[%s] on unloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[m_magazine.size() - 2].m_ammoSect);
 			rotate(m_magazine.rbegin(), m_magazine.rbegin() + 1, m_magazine.rend());
-			Msg("weapon:[%s]|back:[%s]|front:[%s]|[size() - 2]:[%s] after rotate on unloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[m_magazine.size() - 1].m_ammoSect);
+			Msg("weapon:[%s]|back:[%s]|front:[%s]|[size() - 2]:[%s] after rotate on unloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[m_magazine.size() - 2].m_ammoSect);
 		}
 		else if (*m_magazine[1].m_ammoSect == *m_magazine.back().m_ammoSect) //второй патрон аналогичен последнему патрону
 		{//конец заряжания магазина
@@ -779,7 +779,7 @@ void CWeaponMagazined::switch2_Idle()
 	HUD_SOUND::StopSound(sndReload);
 	HUD_SOUND::StopSound(sndShutter);
 
-	m_bAmmoWasSpawned = false;
+	//m_bAmmoWasSpawned = false;
 
 	m_bPending = false;
 	PlayAnimIdle(m_idle_state);
@@ -1487,9 +1487,6 @@ void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_na
 
 	string256		sItemName;
 	strcpy_s(sItemName, *CStringTable().translate(pSettings->r_string(icon_sect_name.c_str(), "inv_name_short")));
-	//
-	if (iMagazineSize > 1 && !m_magazine.empty())
-		sprintf_s(sItemName, "%s | %s", *m_magazine.back().m_InvShortName, iAmmoElapsed > 1 ? * m_magazine[m_magazine.size() - 2].m_InvShortName : "");
 
 	if (HasFireModes() && b_wpn_info)
 		strcat_s(sItemName, GetCurrentFireModeStr());
