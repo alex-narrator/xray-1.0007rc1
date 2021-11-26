@@ -991,7 +991,7 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 
 	//чтоб не делать лишних пересчетов
 	if (m_pCurrentInventory->ModifyFrame() <= m_dwAmmoCurrentCalcFrame)
-		if (g_actor->m_inventory != m_pCurrentInventory) //очень некрасивый костыль!
+		if (g_actor->m_inventory != m_pCurrentInventory || !psActorFlags.test(AF_AMMO_FROM_BELT)) //очень некрасивый костыль!
 		return l_count + iAmmoCurrent;
 
 	m_dwAmmoCurrentCalcFrame = Device.dwFrame;

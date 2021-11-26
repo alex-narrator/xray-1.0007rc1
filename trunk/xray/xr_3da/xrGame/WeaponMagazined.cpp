@@ -297,17 +297,19 @@ void CWeaponMagazined::OnMagazineEmpty()
 
 void CWeaponMagazined::UnloadAmmo(int unload_count, bool spawn_ammo)
 {
+	bool b_detach_magazine = (unload_count == iAmmoElapsed - 1);
+
 	xr_map<LPCSTR, u16> l_ammo;
 	for (int i = 0; i < unload_count; ++i)
 	{
-		CCartridge &l_cartridge = m_magazine.back();
+		CCartridge &l_cartridge = b_detach_magazine ? m_magazine.front() : m_magazine.back();
 
 			if (!l_ammo[*l_cartridge.m_ammoSect])
 				l_ammo[*l_cartridge.m_ammoSect] = 1;
 			else
 				l_ammo[*l_cartridge.m_ammoSect]++;
 
-			m_magazine.pop_back();
+			b_detach_magazine ? m_magazine.erase(m_magazine.begin()) : m_magazine.pop_back();
 			--iAmmoElapsed;
 	}
 
@@ -339,7 +341,7 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 {
 	if (HasChamber() && HasDetachableMagazine())
 	{
-		HandleCartridgeInChamber();
+		//HandleCartridgeInChamber();
 		UnloadAmmo(iAmmoElapsed - 1, spawn_ammo);
 		/*if (!m_bLockType &&	(!m_pAmmo || xr_strcmp(m_pAmmo->cNameSect(), *m_magazine.back().m_ammoSect)))
 		{
@@ -358,14 +360,14 @@ void CWeaponMagazined::HandleCartridgeInChamber()
 	//отстрел и заряжание нового патрона идёт от конца вектора m_magazine.back() - первым подаётся последний добавленный патрон
 	if (*m_magazine.back().m_ammoSect != *m_magazine.front().m_ammoSect) //первый и последний патрон различны, значит зарядка смешанная
 	{
-		if (*m_magazine[m_magazine.size() - 2].m_ammoSect == *m_magazine.front().m_ammoSect) //предпоследний патрон аналогичен первому
-		{//начало разряжания магазина
-			//перекладываем патрон отличного типа (последний заряженный, он же первый на отстрел) из конца вектора (реверсного начала) в начало (реверсный конец)
-			Msg("weapon:[%s]|back:[%s]|front:[%s]|[size() - 2]:[%s] on unloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[m_magazine.size() - 2].m_ammoSect);
-			rotate(m_magazine.rbegin(), m_magazine.rbegin() + 1, m_magazine.rend());
-			Msg("weapon:[%s]|back:[%s]|front:[%s]|[size() - 2]:[%s] after rotate on unloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[m_magazine.size() - 2].m_ammoSect);
-		}
-		else if (*m_magazine[1].m_ammoSect == *m_magazine.back().m_ammoSect) //второй патрон аналогичен последнему патрону
+		//if (*m_magazine[m_magazine.size() - 2].m_ammoSect == *m_magazine.front().m_ammoSect) //предпоследний патрон аналогичен первому
+		//{//начало разряжания магазина
+		//	//перекладываем патрон отличного типа (последний заряженный, он же первый на отстрел) из конца вектора (реверсного начала) в начало (реверсный конец)
+		//	Msg("weapon:[%s]|back:[%s]|front:[%s]|[size() - 2]:[%s] on unloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[m_magazine.size() - 2].m_ammoSect);
+		//	rotate(m_magazine.rbegin(), m_magazine.rbegin() + 1, m_magazine.rend());
+		//	Msg("weapon:[%s]|back:[%s]|front:[%s]|[size() - 2]:[%s] after rotate on unloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[m_magazine.size() - 2].m_ammoSect);
+		//}
+		//else if (*m_magazine[1].m_ammoSect == *m_magazine.back().m_ammoSect) //второй патрон аналогичен последнему патрону
 		{//конец заряжания магазина
 			//перекладываем патрон отличного типа (первый заряженный, он же последний на отстрел) из начала вектора в конец
 			Msg("weapon:[%s]|back:[%s]|front:[%s]|[1]:[%s] on reloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[1].m_ammoSect);
