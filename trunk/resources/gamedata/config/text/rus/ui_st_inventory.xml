@@ -155,6 +155,9 @@
 	<string id="st_next_ammo_type">
 		<text>сменить боеприпас</text>
 	</string>
+	<string id="st_load_ammo_type">
+		<text>зарядить</text>
+	</string>
 	<string id="st_detector_check">
 		<text>проверить детектором</text>
 	</string>

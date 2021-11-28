@@ -259,15 +259,13 @@ void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				m_uidata->UIItemInfo.TryAddArtefactInfo(CurrentIItem()->object().cNameSect());
 				break;
 			case INVENTORY_RELOAD_MAGAZINE:
-				pWeapon->Action(kWPN_RELOAD, CMD_START);
+				pWeapon->m_set_next_ammoType_on_reload = (u8)(m_pUIPropertiesBox->GetClickedItem()->GetData());
+				pWeapon->ReloadWeapon();
 				SetCurrentItem(NULL);
 				break;
 			case INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE:
 				pWeapon->Action(kWPN_FUNC, CMD_START);
 				SetCurrentItem(NULL);
-				break;
-			case INVENTORY_NEXT_AMMO_TYPE:
-				pWeapon->Action(kWPN_NEXT, CMD_START);
 				break;
 			case INVENTORY_UNLOAD_MAGAZINE:
 			{
@@ -730,21 +728,18 @@ void CUITradeWnd::ActivatePropertiesBox()
 
 		bool b = (0 != pWeapon->GetAmmoElapsed());
 
-		if (pActor->inventory().InSlot(pWeapon) && pWeapon->GetAmmoElapsed() < pWeapon->GetAmmoMagSize() && pWeapon->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
+		if (pActor->inventory().InSlot(pWeapon))
 		{
-			const char *reload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_reload_magazine_gl" : "st_reload_magazine") : "st_reload_magazine";
-			m_pUIPropertiesBox->AddItem(reload_text, NULL, INVENTORY_RELOAD_MAGAZINE);
-			b_show = true;
-		}
-
-
-		if (pActor->inventory().InSlot(pWeapon) && pWeapon->IsAmmoAvailable()) //перезарядить контекстным меню можно только оружие в слоте
-		{
-			if (pWeapon->HasNextAmmoType())
+			for (u8 i = 0; i < pWeapon->m_ammoTypes.size(); ++i)
 			{
-				m_pUIPropertiesBox->AddItem("st_next_ammo_type", NULL, INVENTORY_NEXT_AMMO_TYPE);
-				b_show = true;
-			}
+				if (Actor()->inventory().GetAmmo(pWeapon->m_ammoTypes[i].c_str(), false))
+				{
+					strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
+						*CStringTable().translate(pSettings->r_string(pWeapon->m_ammoTypes[i].c_str(), "inv_name_short")));
+					m_pUIPropertiesBox->AddItem(temp, (void*)i, INVENTORY_RELOAD_MAGAZINE);
+					b_show = true;
+				}
+			};
 		}
 
 		if (!b)

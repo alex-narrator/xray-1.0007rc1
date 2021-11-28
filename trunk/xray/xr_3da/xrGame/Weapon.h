@@ -449,6 +449,8 @@ public:
 	//  [8/3/2005]
 	bool IsAmmoWasSpawned	()			{ return m_bAmmoWasSpawned; };
 	void SetAmmoWasSpawned	(bool value){ m_bAmmoWasSpawned = value; };
+	//
+	IC void ReloadWeapon	()			{ Reload(); };
 protected:
 	int						iAmmoElapsed;		// ammo in magazine, currently
 	int						iMagazineSize;		// size (in bullets) of magazine
