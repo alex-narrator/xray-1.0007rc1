@@ -1046,7 +1046,8 @@ public:
 			return;
 		}
 		
-		Level().g_cl_Spawn(args, 0xff, M_SPAWN_OBJECT_LOCAL, Actor()->Position());
+		if (auto tpGame = smart_cast<game_sv_Single*>(Level().Server->game))
+			tpGame->alife().spawn_item(args, Actor()->Position(), Actor()->ai_location().level_vertex_id(), Actor()->ai_location().game_vertex_id(), ALife::_OBJECT_ID(-1));
 	}
 };
 
