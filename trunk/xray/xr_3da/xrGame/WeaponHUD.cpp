@@ -11,6 +11,7 @@
 #include "MathUtils.h"
 #include "actor.h"
 #include "ActorCondition.h"
+#include "HUDManager.h"
 #include "../../../build_config_defines.h"
 weapon_hud_container* g_pWeaponHUDContainer=0;
 
@@ -27,7 +28,9 @@ BOOL weapon_hud_value::load(const shared_str& section, CHudItem* owner)
 	string256  visual_name;
 
 	//Bobbing
-	m_bBobbingAllow = !!READ_IF_EXISTS(pSettings, r_bool, section, "allow_bobbing", TRUE);
+	m_bBobbingAllow			= !!READ_IF_EXISTS(pSettings, r_bool, section, "allow_bobbing",			TRUE);
+	m_bCollideHud			= !!READ_IF_EXISTS(pSettings, r_bool, section, "allow_collision",		TRUE);
+	m_bCollideHudAim		= !!READ_IF_EXISTS(pSettings, r_bool, section, "allow_collision_aim",	TRUE);
 
 	// Geometry and transform	
 	Fvector						pos,ypr;
@@ -104,17 +107,15 @@ CWeaponHUD::CWeaponHUD			(CHudItem* pHudItem)
 	m_bHidden					= true;
 	m_bStopAtEndAnimIsRunning	= false;
 	m_pCallbackItem				= NULL;
-//#ifdef WPN_BOBBING
-	m_bobbing			= xr_new<CWeaponBobbing>();
-//#endif
+	m_bobbing					= xr_new<CWeaponBobbing>();
+	m_collision					= xr_new<CWeaponCollision>();
 	m_Transform.identity		();
 }
 
 CWeaponHUD::~CWeaponHUD()
 {
-//#ifdef WPN_BOBBING
 	xr_delete(m_bobbing);
-//#endif
+	xr_delete(m_collision);
 }
 
 void CWeaponHUD::Load(LPCSTR section)
@@ -139,11 +140,20 @@ void  CWeaponHUD::net_DestroyHud()
 void CWeaponHUD::UpdatePosition(const Fmatrix& trans)
 {
 	Fmatrix xform = trans;
-//#ifdef WPN_BOBBING
+
 	if (m_shared_data.get_value()->m_bBobbingAllow)
-	m_bobbing->Update(xform);
-//#endif
-	m_Transform.mul				(xform,m_shared_data.get_value()->m_offset);
+		m_bobbing->Update(xform);
+
+	Fmatrix offset = m_shared_data.get_value()->m_offset;
+	collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+	CActor* pActor = smart_cast<CActor*>(m_pParentWeapon->object().H_Parent());
+	if (m_shared_data.get_value()->m_bCollideHud && pActor)
+	{ 
+		bool disable_in_aim = pActor->IsZoomAimingMode() && !m_shared_data.get_value()->m_bCollideHudAim;
+		m_collision->Update(offset, RQ.range, disable_in_aim);
+	}
+
+	m_Transform.mul				(xform, offset);
 	VERIFY						(!fis_zero(DET(m_Transform)));
 }
 
@@ -237,7 +247,6 @@ MotionIDEx::MotionIDEx(MotionID id)
 	stop_k = 1.f;
 }
 
-//#ifdef WPN_BOBBING
 CWeaponBobbing::CWeaponBobbing()
 {
 	Load();
@@ -269,6 +278,9 @@ void CWeaponBobbing::CheckState()
 	m_bZoomMode		= Actor()->IsZoomAimingMode();
 	fTime			+= Device.fTimeDelta;
 }
+
+static const float CROUCH_FACTOR	= 0.75f;
+static const float SPEED_REMINDER	= 5.f;
 
 void CWeaponBobbing::Update(Fmatrix &m)
 {
@@ -328,4 +340,61 @@ void CWeaponBobbing::Update(Fmatrix &m)
 		m.j.set(mR.j);
 	}
 }
-//#endif
+
+CWeaponCollision::CWeaponCollision()
+{
+	Load();
+}
+
+CWeaponCollision::~CWeaponCollision()
+{
+}
+
+void CWeaponCollision::Load()
+{
+	fReminderDist = 0;
+	fReminderNeedDist = 0;
+	bFirstUpdate = true;
+}
+
+static const float SPEED_REMINDER_COLLISION = 1.f;
+
+void CWeaponCollision::Update(Fmatrix &o, float range, bool is_zoom)
+{
+	Fvector	xyz = o.c;
+	Fvector	dir;
+	o.getHPB(dir.x, dir.y, dir.z);
+
+	//////collision of weapon hud:
+
+	if (bFirstUpdate) 
+	{
+		fReminderDist = xyz.z;
+		fReminderNeedDist = xyz.z;
+		bFirstUpdate = false;
+	}
+
+	if (range < 0.8f && !is_zoom)
+		fReminderNeedDist = (float)(xyz.z - ((1 - range - 0.2) * 0.6));
+	else
+		fReminderNeedDist = xyz.z;
+
+	if (!fsimilar(fReminderDist, fReminderNeedDist)) {
+		if (fReminderDist < fReminderNeedDist) {
+			fReminderDist += SPEED_REMINDER_COLLISION * Device.fTimeDelta;
+			if (fReminderDist > fReminderNeedDist)
+				fReminderDist = fReminderNeedDist;
+		}
+		else if (fReminderDist > fReminderNeedDist) {
+			fReminderDist -= SPEED_REMINDER_COLLISION * Device.fTimeDelta;
+			if (fReminderDist < fReminderNeedDist)
+				fReminderDist = fReminderNeedDist;
+		}
+	}
+
+	if (!fsimilar(fReminderDist, xyz.z))
+	{
+		xyz.z = fReminderDist;
+		o.c.set(xyz);
+	}
+}

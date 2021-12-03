@@ -4,12 +4,7 @@
 #include "../../../build_config_defines.h"
 class CHudItem;
 
-//#ifdef WPN_BOBBING
-
 #define BOBBING_SECT "wpn_bobbing_effector"
-
-#define CROUCH_FACTOR	0.75f
-#define SPEED_REMINDER	5.f 
 
 class CWeaponBobbing
 {
@@ -39,7 +34,20 @@ class CWeaponBobbing
 		float	m_fSpeedWalk;
 		float	m_fSpeedLimp;
 };
-//#endif
+
+class CWeaponCollision
+{
+public:
+	CWeaponCollision();
+	virtual ~CWeaponCollision();
+	void Load();
+	void Update(Fmatrix &o, float range, bool is_zoom);
+
+private:
+	float		fReminderDist;
+	float		fReminderNeedDist;
+	bool		bFirstUpdate;
+};
 
 struct weapon_hud_value: public shared_value
 {
@@ -53,6 +61,8 @@ public:
 	Fmatrix				m_offset;
 	//
 	bool				m_bBobbingAllow;
+	bool				m_bCollideHud;
+	bool				m_bCollideHudAim;
 public:
 	virtual				~weapon_hud_value		();
 	BOOL				load					(const shared_str& section, CHudItem* owner);
@@ -172,10 +182,9 @@ public:
 	void				dbg_SetFirePoint2	(const Fvector &fp)			{((weapon_hud_value*)m_shared_data.get_value())->m_fp2_offset.set(fp);}
 	void				dbg_SetShellPoint	(const Fvector &sp)			{((weapon_hud_value*)m_shared_data.get_value())->m_sp_offset.set(sp);}
 
-//#ifdef WPN_BOBBING
 private:
-	CWeaponBobbing *m_bobbing;
-//#endif	
+	CWeaponBobbing		*m_bobbing;
+	CWeaponCollision	*m_collision;	
 };
 
 #define		MAX_ANIM_COUNT							8
