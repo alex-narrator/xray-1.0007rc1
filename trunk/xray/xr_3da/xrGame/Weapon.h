@@ -417,7 +417,7 @@ protected:
 	void			StopFlameParticles2();
 	void			UpdateFlameParticles2();
 protected:
-	shared_str					m_sFlameParticles2;
+	shared_str				m_sFlameParticles2;
 	//объект партиклов для стрельбы из 2-го ствола
 	CParticlesObject*		m_pFlameParticles2;
 
@@ -477,7 +477,7 @@ public:
 	CCartridge				m_DefaultCartridge;
 	float					m_fCurrentCartirdgeDisp;
 
-	bool				unlimited_ammo();
+	bool					unlimited_ammo();
 	IC	bool				can_be_strapped() const { return m_can_be_strapped; };
 
 	LPCSTR					GetCurrentAmmo_ShortName();
@@ -498,8 +498,8 @@ protected:
 public:
 	virtual	void			modify_holder_params(float &range, float &fov) const;
 	virtual bool			use_crosshair()	const { return true; }
-	bool			show_crosshair();
-	bool			show_indicators();
+	bool					show_crosshair();
+	bool					show_indicators();
 	virtual BOOL			ParentMayHaveAimBullet();
 	virtual BOOL			ParentIsActor();
 

@@ -117,6 +117,7 @@ protected:
 private:
 	bool					m_bInertionEnable;
 	bool					m_bInertionAllow;
+	bool					m_bInertionAllowAim;
 protected:
 	u32						m_animation_slot;
 	//
@@ -129,6 +130,13 @@ protected:
 	float m_origin_offset_aim;
 	// скорость возврата худ модели в нужное положение во время прицеливания
 	float m_tendto_speed_aim;
+	//
+	//
+	float	m_fLR_MovingFactor; // !!!!
+	float	m_fFB_MovingFactor;
+	float	m_longitudinal_offset[6];
+	Fvector m_strafe_offset[3][2]; //pos,rot,data/ normal,aim-GL --#SM+#--
+	u8		GetCurrentHudOffsetIdx() const;
 	//
 public:
 	IC		u32				animation_slot			()	{	return m_animation_slot;}

@@ -42,7 +42,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CWeapon::CWeapon(LPCSTR name) : m_fLR_MovingFactor(0.f), m_strafe_offset{}
+CWeapon::CWeapon(LPCSTR name)
 {
 	SetState(eHidden);
 	SetNextState(eHidden);
@@ -1504,7 +1504,7 @@ bool CWeapon::ready_to_kill() const
 
 void CWeapon::UpdateHudAdditonal(Fmatrix& trans)
 {
-	CActor* pActor = smart_cast<CActor*>(H_Parent());
+	auto pActor = smart_cast<const CActor*>(H_Parent());
 	if (!pActor) return;
 
 	if ((pActor->IsZoomAimingMode() && m_fZoomRotationFactor <= 1.f) ||

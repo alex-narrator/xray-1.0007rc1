@@ -29,6 +29,7 @@ BOOL weapon_hud_value::load(const shared_str& section, CHudItem* owner)
 
 	//Bobbing
 	m_bBobbingAllow			= !!READ_IF_EXISTS(pSettings, r_bool, section, "allow_bobbing",			TRUE);
+	//HUD collision
 	m_bCollideHud			= !!READ_IF_EXISTS(pSettings, r_bool, section, "allow_collision",		TRUE);
 	m_bCollideHudAim		= !!READ_IF_EXISTS(pSettings, r_bool, section, "allow_collision_aim",	TRUE);
 
