@@ -83,6 +83,7 @@ public:
 	PIItem					GetSame				(const PIItem pIItem, bool bSearchRuck) const; //получаем айтем из всего инвентаря или с пояса
 	void					RepackAmmo			();
 	void					TryAmmoToBelt		(CInventoryItem *pIItem);
+	void					TryReloadAmmoBox	(CInventoryItem *pIItem); //автозаряжалка магазинов для NPC
 	bool                    m_bRuckAmmoPlacement	= false; //класть/брать патроны из рюкзака (для AF_AMMO_FROM_BELT)
 	// AF_FREE_HANDS - свободна ли хотябы одна рука актора
 	bool                    IsFreeHands			();      
@@ -93,9 +94,9 @@ public:
 	// get all the items with the same section name
 	virtual u32				dwfGetSameItemCount	(LPCSTR caSection, bool SearchAll = false);	
 	virtual u32				dwfGetGrenadeCount	(LPCSTR caSection, bool SearchAll);	
-//#if defined(GRENADE_FROM_BELT)
-	virtual u32				dwfGetItemCount     (LPCSTR caSection, bool SearchRuck); //считаем предметы на поясе или в рюкзаке
-//#endif
+	//считаем предметы на поясе или в рюкзаке (+/- предмет в слоте)
+	virtual u32				GetSameItemCount    (LPCSTR caSection, bool SearchRuck, bool CountInSlot = true); 
+
 	// get all the items with the same object id
 	virtual bool			bfCheckForObject	(ALife::_OBJECT_ID tObjectID);	
 	PIItem					get_object_by_id	(ALife::_OBJECT_ID tObjectID);

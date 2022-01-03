@@ -93,7 +93,6 @@ protected:
 	virtual void	UpdateSounds	();
 
 	bool			TryReload		();
-	bool			TryPlayAnimIdle	(u8);
 
 protected:
 	virtual void	ReloadMagazine	();
@@ -101,9 +100,7 @@ protected:
 	
 	//действие передёргивания затвора
 	virtual void	ShutterAction	();
-	//расширение вместимости магазина за счёт патронника
-	virtual void	UpdateExpansionToChamber	();
-	//сохранение патрона в патроннике при смешанной зарядке
+	//сохранение типа патрона в патроннике при смешанной зарядке
 	virtual void	HandleCartridgeInChamber	();
 
 	virtual void	state_Fire		(float dt);
@@ -143,7 +140,10 @@ public:
 	bool			IsAmmoAvailable	();
 	virtual void	UnloadMagazine	(bool spawn_ammo = true);
 	//разрядить кол-во патронов
-	virtual void	UnloadAmmo		(int unload_count, bool spawn_ammo = true);
+	virtual void	UnloadAmmo		(int unload_count, bool spawn_ammo = true, bool detach_magazine = false);
+	IC void			PullShutter		(){ ShutterAction(); };
+	//
+	int				GetMagazineCount() const;
 
 	virtual void	GetBriefInfo	(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 
@@ -183,10 +183,12 @@ protected:
 	int				m_iPrefferedFireMode;
 	//скорострельность привилегированного режима стрельбы
 	float			fTimeToFirePreffered;
-	//оружие использует отъёмный магазин
-	bool			m_bHasDetachableMagazine;
 	//у оружия есть патронник
 	bool			m_bHasChamber;
+	//последний заряженный тип магазина
+	u32				m_LastLoadedMagType;
+	//присоединён ли магазин
+	bool			m_bIsMagazineAttached;
 
 	//переменная блокирует использование
 	//только разных типов патронов
@@ -204,8 +206,11 @@ public:
 	virtual	int		GetCurrentFireMode	() { return m_bHasDifferentFireModes ? m_aFireModes[m_iCurFireMode] : 1; };
 	virtual LPCSTR	GetCurrentFireModeStr	() {return m_sCurFireMode;};
 
-	virtual bool	HasDetachableMagazine	() { return /*psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) &&*/ ParentIsActor() && m_bHasDetachableMagazine; };
-	virtual bool	HasChamber				() { return /*psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE) &&*/ ParentIsActor() && m_bHasChamber; };
+	//оружие использует отъёмный магазин
+	virtual bool	HasDetachableMagazine	();
+	virtual bool	IsMagazineAttached		() { return m_bIsMagazineAttached; };
+	//у оружия есть патронник
+	virtual bool	HasChamber				() { return /*ParentIsActor() &&*/ m_bHasChamber; };
 
 	virtual const	xr_vector<int>&	GetFireModes() const				{return m_aFireModes;}
 	virtual	void					SetCurFireMode(int fire_mode)		{m_iCurFireMode = fire_mode;}
@@ -217,6 +222,7 @@ protected:
 	virtual bool	AllowFireWhileWorking() {return false;}
 
 	//виртуальные функции для проигрывания анимации HUD
+	virtual bool	TryPlayAnimIdle		(u8);
 	virtual void	PlayAnimShow		();
 	virtual void	PlayAnimHide		();
 	virtual void	PlayAnimReload		();

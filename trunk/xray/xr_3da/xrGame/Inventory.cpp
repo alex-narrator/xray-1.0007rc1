@@ -183,6 +183,8 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	//if (smart_cast<CWeaponAmmo*>(pIItem)) TryAmmoToBelt(pIItem);
 	TryAmmoToBelt(pIItem);
 
+	TryReloadAmmoBox(pIItem);
+
 	bool result = false;
 	switch (pIItem->m_eItemPlace)
 	{
@@ -950,10 +952,54 @@ void CInventory::TryAmmoToBelt(CInventoryItem *pIItem)
 		{
 			pAmmo->m_eItemPlace = eItemPlaceBelt;	//укажем патронам попадать на пояс (если не проставлен флаг необходимости сброса в рюкзак)
 			Msg("ammo [%s] with ID [%d] placed to belt", pIItem->object().cNameSect().c_str(), pIItem->object().ID());
-			if (!CanPutInBelt(pIItem) && psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE))	//если патроны не помещаются на пояс
+			if (!CanPutInBelt(pIItem)/* && psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE)*/)	//если патроны не помещаются на пояс
 			pAmmo->SetDropManual(TRUE);		//уронить пароны на землю
 		}
 		pWeapon->SetAmmoWasSpawned(false);	//сбрасываем флажок спавна патронов
+	}
+}
+
+#include "WeaponMagazined.h"
+void CInventory::TryReloadAmmoBox(CInventoryItem *pIItem)
+{
+	auto pAmmo = smart_cast<CWeaponAmmo*>(pIItem);
+	if (!pAmmo) return;
+
+	if (auto pActor = smart_cast<CActor*>(m_pOwner)) return;
+
+	CEntityAlive *entity_alive = smart_cast<CEntityAlive*>(m_pOwner);
+
+	if (!entity_alive || !entity_alive->g_Alive()) return;
+
+	LPCSTR ammo_to_load;
+
+	if (pAmmo->IsBoxReloadable()) //box reloadable
+	{
+		if (pAmmo->m_boxCurr < pAmmo->m_boxSize)
+		{
+			ammo_to_load = *pAmmo->m_ammoSect;
+			if (GetAmmo(ammo_to_load, false))
+			{
+				pAmmo->ReloadBox(ammo_to_load);
+				Msg("[%s] reload box [%s] by ammo [%s]", m_pOwner->Name(), *pAmmo->cNameSect(), ammo_to_load);
+				return;
+			}
+			//break;
+		}
+	}
+	else if (pAmmo->IsBoxReloadableEmpty()) //box reloadable empty
+	{
+		xr_vector<shared_str>	AmmoTypes = pAmmo->m_ammoTypes;
+		for (u8 i = 0; i < AmmoTypes.size(); ++i)
+		{
+			ammo_to_load = *AmmoTypes[i];
+			if (GetAmmo(ammo_to_load, false))
+			{
+				pAmmo->ReloadBox(ammo_to_load);
+				Msg("[%s] reload box [%s] by ammo [%s]", m_pOwner->Name(), *pAmmo->cNameSect(), ammo_to_load);
+				return;
+			}
+		}
 	}
 }
 
@@ -1002,8 +1048,10 @@ void CInventory::RepackAmmo()
 							cnt = 0;
 						}
 					}
-					else 
+					else if (!ammo->IsBoxReloadableEmpty())
 					{
+						if (ammo->IsBoxReloadable())	//spawn empty box
+							ammo->SpawnAmmo(0, *ammo->m_EmptySect);
 						ammo->DestroyObject();
 					}
 				}
@@ -1125,9 +1173,9 @@ u32		CInventory::dwfGetGrenadeCount(LPCSTR caSection, bool SearchAll)
 }
 
 //#if defined(GRENADE_FROM_BELT)
-u32 CInventory::dwfGetItemCount(LPCSTR caSection, bool SearchRuck)
+u32 CInventory::GetSameItemCount(LPCSTR caSection, bool SearchRuck, bool CountInSlot)
 {
-	u32			l_dwCount = 1;//SearchAll ? 0 : 1; //для учета айтема в слоте при выведении худовых каунтеров
+	u32			l_dwCount = CountInSlot ? 1 : 0; //для учета айтема в слоте при выведении худовых каунтеров
 	TIItemContainer	&l_list = SearchRuck ? m_ruck : m_belt;
 	for (TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it)
 	{

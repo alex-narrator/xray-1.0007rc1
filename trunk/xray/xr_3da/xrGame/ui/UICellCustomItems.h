@@ -29,7 +29,8 @@ class CUIAmmoCellItem :public CUIInventoryCellItem
 {
 	typedef  CUIInventoryCellItem	inherited;
 protected:
-	virtual		void			UpdateItemText			();
+	virtual		void			UpdateItemText				();
+	virtual		void			UpdateItemTextCustom		();
 public:
 								CUIAmmoCellItem				(CWeaponAmmo* itm);
 	virtual		void			Update						();

@@ -10,8 +10,7 @@ class CWeaponMagazinedWGrenade : public CWeaponMagazined,
 								 public CRocketLauncher
 {
 	typedef CWeaponMagazined inherited;
-protected:
-	bool			TryPlayAnimIdle(u8);
+
 public:
 					CWeaponMagazinedWGrenade	(LPCSTR name="AK74",ESoundTypes eSoundType=SOUND_TYPE_WEAPON_SUBMACHINEGUN);
 	virtual			~CWeaponMagazinedWGrenade	();
@@ -51,6 +50,8 @@ public:
 	virtual bool	HasFireModes	()	{ return m_bHasDifferentFireModes && !m_bGrenadeMode; }; 
 	//передёргивание затвора
 	virtual void	switch2_Shutter	();
+	//оружие использует отъёмный магазин
+	virtual bool	HasDetachableMagazine() { return inherited::HasDetachableMagazine() && !m_bGrenadeMode; };
 
 	virtual bool	Action			(s32 cmd, u32 flags);
 
@@ -65,6 +66,7 @@ public:
 	virtual bool	IsNecessaryItem	    (const shared_str& item_sect);
 
 	//виртуальные функции для проигрывания анимации HUD
+	virtual bool	TryPlayAnimIdle(u8);
 	virtual void	PlayAnimShow();
 	virtual void	PlayAnimHide();
 	virtual void	PlayAnimReload();

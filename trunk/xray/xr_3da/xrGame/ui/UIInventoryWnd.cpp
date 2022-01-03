@@ -288,7 +288,7 @@ m_slots_array[GRENADE_SLOT] = m_pUIGrenadeList;
 	AttachChild							(UIExitButton);
 	xml_init.Init3tButton				(uiXml, "exit_button", 0, UIExitButton);
 
-	UIRepackAmmoButton					= xr_new<CUI3tButton>(); UIExitButton->SetAutoDelete(true);
+	UIRepackAmmoButton					= xr_new<CUI3tButton>(); UIRepackAmmoButton->SetAutoDelete(true);
 	AttachChild							(UIRepackAmmoButton);
 	xml_init.Init3tButton				(uiXml, "repack_ammo_button", 0, UIRepackAmmoButton);
 
@@ -490,7 +490,7 @@ void CUIInventoryWnd::Show()
 		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = true; //установим флаг перезарядки из рюкзака
 	}
 	//
-	UIRepackAmmoButton->Show(!!psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE)); //покажем кнопку перепаковки патронов, если опция включена
+	//UIRepackAmmoButton->Show(!!psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE)); //покажем кнопку перепаковки патронов, если опция включена
 	//
 	Update								();
 	PlaySnd								(eInvSndOpen);
@@ -528,7 +528,7 @@ void CUIInventoryWnd::Hide()
 		pActor->inventory().TryToHideWeapon(false);
 		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = false; //сбросим флаг перезарядки из рюкзака
 		//
-		if (!psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE)) pActor->inventory().RepackAmmo(); //перепакуем патроны автоматически, если опция выключена
+		//if (!psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE)) pActor->inventory().RepackAmmo(); //перепакуем патроны автоматически, если опция выключена
 	}
 }
 

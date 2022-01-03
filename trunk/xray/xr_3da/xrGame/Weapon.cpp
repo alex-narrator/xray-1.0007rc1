@@ -930,14 +930,6 @@ void CWeapon::SpawnAmmo(u32 boxCurr, LPCSTR ammoSect, u32 ParentID)
 	if (OnClient())					return;
 	m_bAmmoWasSpawned = true;
 
-	/*int l_type = 0;
-	l_type %= m_ammoTypes.size();
-
-	if (!ammoSect) ammoSect = *m_ammoTypes[l_type];
-
-	++l_type;
-	l_type %= m_ammoTypes.size();*/
-
 	if (!ammoSect) ammoSect = m_ammoTypes.front().c_str();
 
 	CSE_Abstract *D = F_entity_Create(ammoSect);
@@ -968,17 +960,26 @@ void CWeapon::SpawnAmmo(u32 boxCurr, LPCSTR ammoSect, u32 ParentID)
 		if (boxCurr == 0xffffffff)
 			boxCurr = l_pA->m_boxSize;
 
-		while (boxCurr)
+		if (boxCurr > 0)
 		{
-			l_pA->a_elapsed = (u16)(boxCurr > l_pA->m_boxSize ? l_pA->m_boxSize : boxCurr);
+			while (boxCurr)
+			{
+				l_pA->a_elapsed = (u16)(boxCurr > l_pA->m_boxSize ? l_pA->m_boxSize : boxCurr);
+				NET_Packet				P;
+				D->Spawn_Write(P, TRUE);
+				Level().Send(P, net_flags(TRUE));
+
+				if (boxCurr > l_pA->m_boxSize)
+					boxCurr -= l_pA->m_boxSize;
+				else
+					boxCurr = 0;
+			}
+		}
+		else
+		{
 			NET_Packet				P;
 			D->Spawn_Write(P, TRUE);
 			Level().Send(P, net_flags(TRUE));
-
-			if (boxCurr > l_pA->m_boxSize)
-				boxCurr -= l_pA->m_boxSize;
-			else
-				boxCurr = 0;
 		}
 	};
 	F_entity_Destroy(D);
@@ -1001,9 +1002,6 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 	{
 		LPCSTR l_ammoType = *m_ammoTypes[i];
 
-		/*auto parent = const_cast<CObject*>(H_Parent());
-		auto entity_alive = smart_cast<CEntityAlive*>(parent);
-		bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT) || entity_alive == NULL || !entity_alive->cast_actor();*/
 		bool search_ruck = g_actor->m_inventory != m_pCurrentInventory || !psActorFlags.test(AF_AMMO_FROM_BELT);
 		TIItemContainer &list = search_ruck ? m_pCurrentInventory->m_ruck : m_pCurrentInventory->m_belt;
 		for (TIItemContainer::iterator l_it = list.begin(); list.end() != l_it; ++l_it)

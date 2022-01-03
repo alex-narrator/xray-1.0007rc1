@@ -126,7 +126,11 @@ CUIDragItem* CUIInventoryCellItem::CreateDragItem()
 					s->SetOriginalRect(s_child->GetOriginalRect());
 
 					s->SetStretchTexture(s_child->GetStretchTexture());
+
 					s->SetText(s_child->GetText());
+					s->SetTextPos(s_child->GetTextX(), s_child->GetTextY());
+
+					s->SetTextColor(s_child->GetTextColor());
 
 					if (auto text = s_child->GetTextureName())
 						s->InitTextureEx(text, s_child->GetShaderName());
@@ -144,12 +148,11 @@ CUIDragItem* CUIInventoryCellItem::CreateDragItem()
 	auto	R = color_get_R(color);
 	auto	G = color_get_G(color);
 	auto	B = color_get_B(color);
-	i->wnd()->SetColorAll(color_argb(170, R, G, B));
-	i->wnd()->SetText(GetText());
-	i->wnd()->SetTextPos(GetTextX(), GetTextY());
-	i->wnd()->SetTextAlignment(GetTextAlignment());
-	i->wnd()->SetTextColor(GetTextColor());
-
+	i->wnd()->SetColorAll		(color_argb(170, R, G, B));
+	i->wnd()->SetText			(GetText());
+	i->wnd()->SetTextPos		(GetTextX(), GetTextY());
+	i->wnd()->SetTextAlignment	(GetTextAlignment());
+	i->wnd()->SetTextColor		(GetTextColor());
 	return	i;
 }
 
@@ -170,7 +173,10 @@ bool CUIAmmoCellItem::EqualTo(CUICellItem* itm)
 void CUIAmmoCellItem::Update()
 {
 	inherited::Update	();
-	UpdateItemText		();
+	if (object()->IsBoxReloadable() || object()->IsBoxReloadableEmpty())
+		UpdateItemTextCustom();
+	else
+		UpdateItemText();
 }
 
 void CUIAmmoCellItem::UpdateItemText()
@@ -179,19 +185,30 @@ void CUIAmmoCellItem::UpdateItemText()
 	{
 		xr_vector<CUICellItem*>::iterator it = m_childs.begin();
 		xr_vector<CUICellItem*>::iterator it_e = m_childs.end();
-		
+
 		u16 total				= object()->m_boxCurr;
-		for(;it!=it_e;++it)
-			total				= total + ((CUIAmmoCellItem*)(*it))->object()->m_boxCurr;
+		for (; it != it_e; ++it)
+			total = total + ((CUIAmmoCellItem*)(*it))->object()->m_boxCurr;
 
 		string32				str;
-		sprintf_s					(str,"%d",total);
+		sprintf_s				(str,"%d",total);
 
 		SetText					(str);
 	}else
 	{
 		SetText					("");
 	}
+}
+
+void CUIAmmoCellItem::UpdateItemTextCustom()
+{
+	inherited::UpdateItemText();
+
+	string32		str;
+	sprintf_s(str, "%d/%d", object()->m_boxCurr, object()->m_boxSize);
+
+	m_text->SetText(str);
+	m_text->Show(true);
 }
 
 

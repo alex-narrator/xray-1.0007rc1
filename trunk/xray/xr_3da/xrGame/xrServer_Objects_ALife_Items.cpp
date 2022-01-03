@@ -589,6 +589,9 @@ CSE_ALifeItemWeaponMagazined::CSE_ALifeItemWeaponMagazined	(LPCSTR caSection) : 
 	}
 	//
 	m_AmmoIDs.clear();
+	//
+	m_LastLoadedMagType = 0;
+	m_bIsMagazineAttached = true;
 }
 
 CSE_ALifeItemWeaponMagazined::~CSE_ALifeItemWeaponMagazined	()
@@ -607,6 +610,9 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Read		(NET_Packet& P)
 	{
 		m_AmmoIDs.push_back(P.r_u8());
 	}
+	//
+	m_LastLoadedMagType = P.r_u8();
+	m_bIsMagazineAttached	= !!(P.r_u8() & 0x1);
 }
 void CSE_ALifeItemWeaponMagazined::UPDATE_Write	(NET_Packet& P)
 {
@@ -619,6 +625,9 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Write	(NET_Packet& P)
 	{
 		P.w_u8(u8(m_AmmoIDs[i]));
 	}
+	//
+	P.w_u8(m_LastLoadedMagType);
+	P.w_u8(m_bIsMagazineAttached ? 1 : 0);
 }
 void CSE_ALifeItemWeaponMagazined::STATE_Read		(NET_Packet& P, u16 size)
 {
@@ -654,7 +663,6 @@ void CSE_ALifeItemWeaponMagazinedWGL::UPDATE_Read		(NET_Packet& P)
 	m_bGrenadeMode = !!(_data & 0x1);
 	inherited::UPDATE_Read(P);
 
-	//if (!P.r_eof()) 
 	if (m_wVersion > 120)
 	{
 		ammo_type2 = P.r_u8();
@@ -690,7 +698,13 @@ void CSE_ALifeItemWeaponMagazinedWGL::FillProps			(LPCSTR pref, PropItemVec& ite
 ////////////////////////////////////////////////////////////////////////////
 CSE_ALifeItemAmmo::CSE_ALifeItemAmmo		(LPCSTR caSection) : CSE_ALifeItem(caSection)
 {
-	a_elapsed					= m_boxSize = (u16)pSettings->r_s32(caSection, "box_size");
+	if (pSettings->line_exist(caSection, "ammo_types") && pSettings->line_exist(caSection, "mag_types"))
+	{
+		a_elapsed = 0;
+		m_boxSize = (u16)pSettings->r_s32(caSection, "box_size");
+	}
+	else
+		a_elapsed					= m_boxSize = (u16)pSettings->r_s32(caSection, "box_size");
 	if (pSettings->section_exist(caSection) && pSettings->line_exist(caSection,"visual"))
         set_visual				(pSettings->r_string(caSection,"visual"));
 }

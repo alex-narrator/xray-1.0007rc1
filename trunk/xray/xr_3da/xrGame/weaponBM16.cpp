@@ -18,10 +18,10 @@ void CWeaponBM16::Load	(LPCSTR section)
 	animGetEx(mhud_zoomed_idle1, "anim_zoomed_idle_1");
 	animGetEx(mhud_zoomed_idle2, "anim_zoomedidle_2");
 
-	animGetEx(mhud_idle_sprint_1, pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint_1") ? "anim_idle_sprint_1" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint") ? "anim_idle_sprint" : "anim_idle");
-	animGetEx(mhud_idle_sprint_2, pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint_2") ? "anim_idle_sprint_2" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint") ? "anim_idle_sprint" : "anim_idle");
-	animGetEx(mhud_idle_moving_1, pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving_1") ? "anim_idle_moving_1" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving") ? "anim_idle_moving" : "anim_idle");
-	animGetEx(mhud_idle_moving_2, pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving_2") ? "anim_idle_moving_2" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving") ? "anim_idle_moving" : "anim_idle");
+	animGetEx(mhud_idle_sprint_1, pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint_1") ? "anim_idle_sprint_1" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint") ? "anim_idle_sprint" : "anim_idle_1");
+	animGetEx(mhud_idle_sprint_2, pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint_2") ? "anim_idle_sprint_2" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_sprint") ? "anim_idle_sprint" : "anim_idle_2");
+	animGetEx(mhud_idle_moving_1, pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving_1") ? "anim_idle_moving_1" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving") ? "anim_idle_moving" : "anim_idle_1");
+	animGetEx(mhud_idle_moving_2, pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving_2") ? "anim_idle_moving_2" : pSettings->line_exist(hud_sect.c_str(), "anim_idle_moving") ? "anim_idle_moving" : "anim_idle_2");
 
 // Real Wolf. 03.08.2014.
 #if defined(BM16_ANIMS_FIX)
@@ -64,6 +64,45 @@ void CWeaponBM16::PlayAnimReload()
 	else
 		m_pHUD->animPlay(random_anim(mhud.mhud_reload),TRUE,this,GetState());
 
+}
+
+bool CWeaponBM16::TryPlayAnimIdle(u8 state = eIdle) {
+	VERIFY(GetState() == eIdle);
+	if (!IsZoomed()) {
+		switch (state) {
+		case eSubstateIdleMoving:
+			switch (m_magazine.size())
+			{
+			case 0: {
+				m_pHUD->animPlay(random_anim(mhud.mhud_idle_moving), TRUE, NULL, GetState());
+			}break;
+			case 1: {
+				m_pHUD->animPlay(random_anim(mhud_idle_moving_1), TRUE, NULL, GetState());
+			}break;
+			case 2: {
+				m_pHUD->animPlay(random_anim(mhud_idle_moving_2), TRUE, NULL, GetState());
+			}break;
+			};
+			return true;
+		case eSubstateIdleSprint:
+			switch (m_magazine.size())
+			{
+			case 0: {
+				m_pHUD->animPlay(random_anim(mhud.mhud_idle_sprint), TRUE, NULL, GetState());
+			}break;
+			case 1: {
+				m_pHUD->animPlay(random_anim(mhud_idle_sprint_1), TRUE, NULL, GetState());
+			}break;
+			case 2: {
+				m_pHUD->animPlay(random_anim(mhud_idle_sprint_2), TRUE, NULL, GetState());
+			}break;
+			};
+			return true;
+		default:
+			return false;
+		}
+	}
+	return false;
 }
 
 void CWeaponBM16::PlayAnimIdle(u8 state = eIdle) 

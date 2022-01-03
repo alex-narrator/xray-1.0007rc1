@@ -8,6 +8,7 @@
 #include "../eatable_item.h"
 #include "../BottleItem.h"
 #include "../WeaponMagazined.h"
+#include "../WeaponAmmo.h"
 #include "../inventory.h"
 #include "../game_base.h"
 #include "../game_cl_base.h"
@@ -56,18 +57,19 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		
 	UIPropertiesBox.RemoveAll();
 
-	CMedkit*			pMedkit				= smart_cast<CMedkit*>			(CurrentIItem());
-	CAntirad*			pAntirad			= smart_cast<CAntirad*>			(CurrentIItem());
-	CEatableItem*		pEatableItem		= smart_cast<CEatableItem*>		(CurrentIItem());
-	CCustomOutfit*		pOutfit				= smart_cast<CCustomOutfit*>	(CurrentIItem());
-	CWeapon*			pWeapon				= smart_cast<CWeapon*>			(CurrentIItem());
-	CWeaponMagazined*	pWeaponMag          = smart_cast<CWeaponMagazined*>	(CurrentIItem());
-	CWeaponMagazinedWGrenade*	pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>(CurrentIItem());
-	CScope*				pScope				= smart_cast<CScope*>			(CurrentIItem());
-	CSilencer*			pSilencer			= smart_cast<CSilencer*>		(CurrentIItem());
-	CGrenadeLauncher*	pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>	(CurrentIItem());
-	CBottleItem*		pBottleItem			= smart_cast<CBottleItem*>		(CurrentIItem());
-	CArtefact*		    pArtefact           = smart_cast<CArtefact*>		(CurrentIItem());
+	CMedkit*					pMedkit				= smart_cast<CMedkit*>					(CurrentIItem());
+	CAntirad*					pAntirad			= smart_cast<CAntirad*>					(CurrentIItem());
+	CEatableItem*				pEatableItem		= smart_cast<CEatableItem*>				(CurrentIItem());
+	CCustomOutfit*				pOutfit				= smart_cast<CCustomOutfit*>			(CurrentIItem());
+	CWeapon*					pWeapon				= smart_cast<CWeapon*>					(CurrentIItem());
+	CWeaponMagazined*			pWeaponMag          = smart_cast<CWeaponMagazined*>			(CurrentIItem());
+	CWeaponMagazinedWGrenade*	pWeaponMagWGren		= smart_cast<CWeaponMagazinedWGrenade*>	(CurrentIItem());
+	CScope*						pScope				= smart_cast<CScope*>					(CurrentIItem());
+	CSilencer*					pSilencer			= smart_cast<CSilencer*>				(CurrentIItem());
+	CGrenadeLauncher*			pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>			(CurrentIItem());
+	CBottleItem*				pBottleItem			= smart_cast<CBottleItem*>				(CurrentIItem());
+	CArtefact*					pArtefact           = smart_cast<CArtefact*>				(CurrentIItem());
+	CWeaponAmmo*				pAmmo				= smart_cast<CWeaponAmmo*>				(CurrentIItem());
 
 	bool	b_show			= false;
 
@@ -147,6 +149,44 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		b_show = true;
 	}
 
+	if (pAmmo)
+	{
+		LPCSTR _ammo_sect;
+
+		if (pAmmo->IsBoxReloadable())
+		{
+			//unload AmmoBox
+			UIPropertiesBox.AddItem("st_unload", NULL, INVENTORY_UNLOAD_AMMO_BOX);
+			b_show = true;
+			//reload AmmoBox
+			if (pAmmo->m_boxCurr < pAmmo->m_boxSize)
+			{
+				if (Actor()->inventory().GetAmmo(*pAmmo->m_ammoSect, true))
+				{
+					strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
+						*CStringTable().translate(pSettings->r_string(pAmmo->m_ammoSect, "inv_name_short")));
+					_ammo_sect = *pAmmo->m_ammoSect;
+					UIPropertiesBox.AddItem(temp, (void*)_ammo_sect, INVENTORY_RELOAD_AMMO_BOX);
+					b_show = true;
+				}
+			}
+		}
+		else if (pAmmo->IsBoxReloadableEmpty())
+		{
+			for (u8 i = 0; i < pAmmo->m_ammoTypes.size(); ++i)
+			{
+				if (Actor()->inventory().GetAmmo(*pAmmo->m_ammoTypes[i], true))
+				{
+					strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
+						*CStringTable().translate(pSettings->r_string(pAmmo->m_ammoTypes[i], "inv_name_short")));
+					_ammo_sect = *pAmmo->m_ammoTypes[i];
+					UIPropertiesBox.AddItem(temp, (void*)_ammo_sect, INVENTORY_RELOAD_AMMO_BOX);
+					b_show = true;
+				}
+			}
+		}
+	}
+
 	//отсоединение аддонов от вещи
 	if(pWeapon)
 	{
@@ -180,20 +220,20 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		}
 		if(smart_cast<CWeaponMagazined*>(pWeapon) && IsGameTypeSingle())
 		{
-			bool b = (0!=pWeapon->GetAmmoElapsed());
+			bool b = (0 != pWeapon->GetAmmoElapsed() || pWeaponMag && pWeaponMag->HasDetachableMagazine() && pWeaponMag->IsMagazineAttached());
 
 			if (m_pInv->InSlot(pWeapon))
 			{
 				for (u8 i = 0; i < pWeaponMag->m_ammoTypes.size(); ++i)
 				{
-					if (Actor()->inventory().GetAmmo(pWeaponMag->m_ammoTypes[i].c_str(), false))
+					if (Actor()->inventory().GetAmmo(pWeaponMag->m_ammoTypes[i].c_str(), true))
 					{
 						strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ", 
 							*CStringTable().translate(pSettings->r_string(pWeaponMag->m_ammoTypes[i].c_str(), "inv_name_short")));
 						UIPropertiesBox.AddItem(temp, (void*)i, INVENTORY_RELOAD_MAGAZINE);
 						b_show = true;
 					}
-				};
+				}
 			}
 
 			if(!b)
@@ -202,7 +242,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 				for(u32 i=0; i<itm->ChildsCount(); ++i)
 				{
 					pWeapon		= smart_cast<CWeaponMagazined*>((CWeapon*)itm->Child(i)->m_pData);
-					if(pWeapon->GetAmmoElapsed())
+					if (pWeapon->GetAmmoElapsed())
 					{
 						b = true;
 						break;
@@ -211,7 +251,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			}
 
 			if(b){
-				const char *unload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_unload_magazine_gl" : "st_unload_magazine") : "st_unload_magazine";
+				const char *unload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_unload_gl" : "st_unload") : "st_unload";
 				UIPropertiesBox.AddItem(unload_text, NULL, INVENTORY_UNLOAD_MAGAZINE);
 				b_show			= true;
 			}
@@ -420,7 +460,8 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 			return;
 		}
 #endif
-		CWeapon* pWeapon = smart_cast<CWeapon*>(CurrentIItem());
+		CWeapon*		pWeapon = smart_cast<CWeapon*>		(CurrentIItem());
+		CWeaponAmmo*	pAmmo	= smart_cast<CWeaponAmmo*>	(CurrentIItem());
 		switch(num)
 		{
 		case INVENTORY_TO_SLOT_ACTION:	
@@ -471,11 +512,26 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 			{
 				CUICellItem * itm = CurrentItem();
 				(smart_cast<CWeaponMagazined*>((CWeapon*)itm->m_pData))->UnloadMagazine();
+				(smart_cast<CWeaponMagazined*>((CWeapon*)itm->m_pData))->PullShutter();
 				for(u32 i=0; i<itm->ChildsCount(); ++i)
 				{
 					CUICellItem * child_itm			= itm->Child(i);
 					(smart_cast<CWeaponMagazined*>((CWeapon*)child_itm->m_pData))->UnloadMagazine();
+					(smart_cast<CWeaponMagazined*>((CWeapon*)child_itm->m_pData))->PullShutter();
 				}
+				SetCurrentItem(NULL);
+			}break;
+		case INVENTORY_RELOAD_AMMO_BOX:
+			{
+			//Msg("load %s to %s", (LPCSTR)UIPropertiesBox.GetClickedItem()->GetData(), pAmmo->cNameSect().c_str());
+			pAmmo->ReloadBox((LPCSTR)UIPropertiesBox.GetClickedItem()->GetData());
+			SetCurrentItem(NULL);
+			m_b_need_reinit = true;
+			}break;
+		case INVENTORY_UNLOAD_AMMO_BOX:
+			{
+			pAmmo->UnloadBox();
+			SetCurrentItem(NULL);
 			}break;
 		}
 	}

@@ -1065,8 +1065,6 @@ public:
 		if (!weather_name[0])	return;
 		g_pGamePersistent->Environment().SetWeather(weather_name, true);
 	};
-
-//	virtual void	Info(TInfo& I){ strcpy(I, "Set new weather"); }
 };
 //#endif // MASTER_GOLD
 
@@ -1431,7 +1429,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"g_artefact_detector_check",	&psActorFlags,	AF_ARTEFACT_DETECTOR_CHECK		);	//свойства артефактов отображаются после проверки детектором
 	//оружие
 	CMD3(CCC_Mask,				"g_no_auto_reload",				&psActorFlags,	AF_NO_AUTO_RELOAD				);	//запрет автоперезарядки оружия
-	CMD3(CCC_Mask,				"g_ammo_box_as_magazine",		&psActorFlags,	AF_AMMO_BOX_AS_MAGAZINE			);	//перезарядка оружия кол-вом патронов в пачке
+	//CMD3(CCC_Mask,				"g_ammo_box_as_magazine",		&psActorFlags,	AF_AMMO_BOX_AS_MAGAZINE			);	//перезарядка оружия кол-вом патронов в пачке
 	CMD3(CCC_Mask,				"g_wpn_actions_reset_sprint",	&psActorFlags,	AF_WPN_ACTIONS_RESET_SPRINT		);	//перезарядка/смена типа патрона/бросок гранаты/болта/удар ножом сбрасывают спринт
 	//параметры персонажа
 	CMD3(CCC_Mask,				"g_smooth_overweight",			&psActorFlags,	AF_SMOOTH_OVERWEIGHT			);	//плавный перегруз без обездвиживания

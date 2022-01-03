@@ -444,19 +444,14 @@ void CGrenade::Deactivate()
 void CGrenade::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)
 {
 	str_name				= NameShort();
-//#if defined(GRENADE_FROM_BELT)
 	bool SearchRuck = !psActorFlags.test(AF_AMMO_FROM_BELT);
-	u32 ThisGrenadeCount = m_pCurrentInventory->dwfGetItemCount(*cNameSect(), SearchRuck);
-/*#else
-	u32 ThisGrenadeCount	= m_pCurrentInventory->dwfGetSameItemCount(*cNameSect(), true);
-#endif*/
+	u32 ThisGrenadeCount = m_pCurrentInventory->GetSameItemCount(*cNameSect(), SearchRuck);
 	string16				stmp;
 	auto CurrentHUD = HUD().GetUI()->UIMainIngameWnd;
-	//if (HUD().GetUI()->UIMainIngameWnd->AllowHUDElement(eGear))
+	
 	if (CurrentHUD->IsHUDElementAllowed(eGear))
        sprintf_s			(stmp, "%d", ThisGrenadeCount);
 	else
-	//if(HUD().GetUI()->UIMainIngameWnd->AllowHUDElement(eActiveItem))
 	if (CurrentHUD->IsHUDElementAllowed(eActiveItem))
 	   sprintf_s			(stmp, "");
 	str_count				= stmp;

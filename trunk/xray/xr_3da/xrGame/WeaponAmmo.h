@@ -61,6 +61,18 @@ public:
 	u16			m_boxSize;
 	u16			m_boxCurr;
 	bool		m_tracer;
+	//
+	shared_str	m_ammoSect, m_EmptySect;
+	shared_str	m_InvShortName;
+
+public:
+	xr_vector<shared_str>		m_ammoTypes;
+	xr_vector<shared_str>		m_magTypes;
+	virtual bool IsBoxReloadable		() const;
+	virtual bool IsBoxReloadableEmpty	() const;
+	void ReloadBox				(LPCSTR ammo_sect);
+	void UnloadBox				();
+	void SpawnAmmo				(u32 boxCurr = 0xffffffff, LPCSTR ammoSect = NULL, u32 ParentID = 0xffffffff);
 
 
 public:

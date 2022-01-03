@@ -30,6 +30,7 @@ public:
 	virtual void	Load							(LPCSTR section);
 
 protected:
+	virtual bool	TryPlayAnimIdle					(u8);
 	virtual void	PlayAnimShoot					();
 	virtual void	PlayAnimReload					();
 	virtual void	PlayReloadSound					();

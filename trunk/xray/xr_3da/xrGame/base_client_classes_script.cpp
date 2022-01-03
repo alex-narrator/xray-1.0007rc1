@@ -483,7 +483,7 @@ const SLargeInteger get_bones_visible(CKinematics *K)
 
 bool get_bone_visible_by_id(CKinematics *K, u16 bone_id)
 {
-	if (bone_id != BI_NONE)	return K->LL_GetBoneVisible(bone_id);
+	if (bone_id != BI_NONE)	return !!K->LL_GetBoneVisible(bone_id);
 	return false;
 }
 

@@ -271,8 +271,7 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 {
 	m_bGrenadeMode		= !m_bGrenadeMode;
 
-	m_bHasDetachableMagazine	= !m_bGrenadeMode;
-	m_bHasChamber				= !m_bGrenadeMode;
+	m_bHasChamber		= !m_bGrenadeMode;
 
 	iMagazineSize		= m_bGrenadeMode?1:iMagazineSize2;
 

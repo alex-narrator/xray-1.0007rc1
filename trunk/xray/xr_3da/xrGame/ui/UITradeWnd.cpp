@@ -237,8 +237,9 @@ void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	{
 		if (m_pUIPropertiesBox->GetClickedItem())
 		{
-			CUICellItem * itm = CurrentItem();
-			CWeapon* pWeapon = smart_cast<CWeapon*>(CurrentIItem());
+			CUICellItem *	itm		= CurrentItem();
+			CWeapon*		pWeapon = smart_cast<CWeapon*>		(CurrentIItem());
+			CWeaponAmmo*	pAmmo	= smart_cast<CWeaponAmmo*>	(CurrentIItem());
 			//
 			switch (m_pUIPropertiesBox->GetClickedItem()->GetTAG())
 			{
@@ -269,13 +270,25 @@ void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				break;
 			case INVENTORY_UNLOAD_MAGAZINE:
 			{
-				//CUICellItem * itm = CurrentItem();
 				(smart_cast<CWeaponMagazined*>((CWeapon*)itm->m_pData))->UnloadMagazine();
+				(smart_cast<CWeaponMagazined*>((CWeapon*)itm->m_pData))->PullShutter();
 				for (u32 i = 0; i<itm->ChildsCount(); ++i)
 				{
 					CUICellItem * child_itm = itm->Child(i);
 					(smart_cast<CWeaponMagazined*>((CWeapon*)child_itm->m_pData))->UnloadMagazine();
+					(smart_cast<CWeaponMagazined*>((CWeapon*)child_itm->m_pData))->PullShutter();
 				}
+			}break;
+			case INVENTORY_RELOAD_AMMO_BOX:
+			{
+				pAmmo->ReloadBox((LPCSTR)m_pUIPropertiesBox->GetClickedItem()->GetData());
+				SetCurrentItem(NULL);
+				UpdateLists(e1st);
+			}break;
+			case INVENTORY_UNLOAD_AMMO_BOX:
+			{
+				pAmmo->UnloadBox();
+				SetCurrentItem(NULL);
 			}break;
 			case INVENTORY_DETACH_SCOPE_ADDON:
 			{
@@ -681,10 +694,13 @@ void CUITradeWnd::ActivatePropertiesBox()
 	//
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 
-	CWeaponMagazined*		pWeapon = smart_cast<CWeaponMagazined*> (CurrentIItem());
-	CWeaponMagazinedWGrenade*	pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>(CurrentIItem());
-	CArtefact*		        pArtefact = smart_cast<CArtefact*>		(CurrentIItem());
-	bool					b_show = false;
+	CWeaponMagazined*			pWeapon			= smart_cast<CWeaponMagazined*>			(CurrentIItem());
+	CWeaponMagazinedWGrenade*	pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>	(CurrentIItem());
+	CArtefact*					pArtefact		= smart_cast<CArtefact*>				(CurrentIItem());
+	CWeaponAmmo*				pAmmo			= smart_cast<CWeaponAmmo*>				(CurrentIItem());
+
+	bool						b_show			= false;
+
 	string1024 temp;
 	//
 	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
@@ -695,72 +711,114 @@ void CUITradeWnd::ActivatePropertiesBox()
 		b_show = true;
 	}
 
-	if (pWeapon && owner == &m_uidata->UIOurBagList)
+	if (owner == &m_uidata->UIOurBagList)
 	{
-		if (pWeapon->IsGrenadeLauncherAttached())
+		if (pAmmo)
 		{
-			const char *switch_gl_text = pWeaponMagWGren->m_bGrenadeMode ? "st_deactivate_gl" : "st_activate_gl";
-			if (pActor->inventory().InSlot(pWeapon))
-				m_pUIPropertiesBox->AddItem(switch_gl_text, NULL, INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE);
-			b_show = true;
-		}
-		if (pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
-		{
-			//m_pUIPropertiesBox->AddItem("st_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
-			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetGrenadeLauncherName(), "inv_name")));
-			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
-			b_show = true;
-		}
-		if (pWeapon->ScopeAttachable() && pWeapon->IsScopeAttached())
-		{
-			//m_pUIPropertiesBox->AddItem("st_detach_scope", NULL, INVENTORY_DETACH_SCOPE_ADDON);
-			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetScopeName(), "inv_name")));
-			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_SCOPE_ADDON);
-			b_show = true;
-		}
-		if (pWeapon->SilencerAttachable() && pWeapon->IsSilencerAttached())
-		{
-			//m_pUIPropertiesBox->AddItem("st_detach_silencer", NULL, INVENTORY_DETACH_SILENCER_ADDON);
-			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetSilencerName(), "inv_name")));
-			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_SILENCER_ADDON);
-			b_show = true;
-		}
+			LPCSTR _ammo_sect;
 
-		bool b = (0 != pWeapon->GetAmmoElapsed());
-
-		if (pActor->inventory().InSlot(pWeapon))
-		{
-			for (u8 i = 0; i < pWeapon->m_ammoTypes.size(); ++i)
+			if (pAmmo->IsBoxReloadable())
 			{
-				if (Actor()->inventory().GetAmmo(pWeapon->m_ammoTypes[i].c_str(), false))
+				//unload AmmoBox
+				m_pUIPropertiesBox->AddItem("st_unload", NULL, INVENTORY_UNLOAD_AMMO_BOX);
+				b_show = true;
+				//reload AmmoBox
+				if (pAmmo->m_boxCurr < pAmmo->m_boxSize)
 				{
-					strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
-						*CStringTable().translate(pSettings->r_string(pWeapon->m_ammoTypes[i].c_str(), "inv_name_short")));
-					m_pUIPropertiesBox->AddItem(temp, (void*)i, INVENTORY_RELOAD_MAGAZINE);
-					b_show = true;
+					if (Actor()->inventory().GetAmmo(*pAmmo->m_ammoSect, true))
+					{
+						strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
+							*CStringTable().translate(pSettings->r_string(pAmmo->m_ammoSect, "inv_name_short")));
+						_ammo_sect = *pAmmo->m_ammoSect;
+						m_pUIPropertiesBox->AddItem(temp, (void*)_ammo_sect, INVENTORY_RELOAD_AMMO_BOX);
+						b_show = true;
+					}
 				}
-			};
-		}
-
-		if (!b)
-		{
-			CUICellItem * itm = CurrentItem();
-			for (u32 i = 0; i<itm->ChildsCount(); ++i)
+			}
+			else if (pAmmo->IsBoxReloadableEmpty())
 			{
-				pWeapon = smart_cast<CWeaponMagazined*>((CWeapon*)itm->Child(i)->m_pData);
-				if (pWeapon->GetAmmoElapsed())
+				for (u8 i = 0; i < pAmmo->m_ammoTypes.size(); ++i)
 				{
-					b = true;
-					break;
+					if (Actor()->inventory().GetAmmo(*pAmmo->m_ammoTypes[i], true))
+					{
+						strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
+							*CStringTable().translate(pSettings->r_string(pAmmo->m_ammoTypes[i], "inv_name_short")));
+						_ammo_sect = *pAmmo->m_ammoTypes[i];
+						m_pUIPropertiesBox->AddItem(temp, (void*)_ammo_sect, INVENTORY_RELOAD_AMMO_BOX);
+						b_show = true;
+					}
 				}
 			}
 		}
 
-		if (b) 
+		if (pWeapon)
 		{
-			const char *unload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_unload_magazine_gl" : "st_unload_magazine") : "st_unload_magazine";
-			m_pUIPropertiesBox->AddItem(unload_text, NULL, INVENTORY_UNLOAD_MAGAZINE);
-			b_show = true;
+			if (pWeapon->IsGrenadeLauncherAttached())
+			{
+				const char *switch_gl_text = pWeaponMagWGren->m_bGrenadeMode ? "st_deactivate_gl" : "st_activate_gl";
+				if (pActor->inventory().InSlot(pWeapon))
+					m_pUIPropertiesBox->AddItem(switch_gl_text, NULL, INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE);
+				b_show = true;
+			}
+			if (pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
+			{
+				//m_pUIPropertiesBox->AddItem("st_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
+				strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetGrenadeLauncherName(), "inv_name")));
+				m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
+				b_show = true;
+			}
+			if (pWeapon->ScopeAttachable() && pWeapon->IsScopeAttached())
+			{
+				//m_pUIPropertiesBox->AddItem("st_detach_scope", NULL, INVENTORY_DETACH_SCOPE_ADDON);
+				strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetScopeName(), "inv_name")));
+				m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_SCOPE_ADDON);
+				b_show = true;
+			}
+			if (pWeapon->SilencerAttachable() && pWeapon->IsSilencerAttached())
+			{
+				//m_pUIPropertiesBox->AddItem("st_detach_silencer", NULL, INVENTORY_DETACH_SILENCER_ADDON);
+				strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetSilencerName(), "inv_name")));
+				m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_SILENCER_ADDON);
+				b_show = true;
+			}
+
+			bool b = (0 != pWeapon->GetAmmoElapsed() || pWeapon->HasDetachableMagazine() && pWeapon->IsMagazineAttached());
+
+			if (pActor->inventory().InSlot(pWeapon))
+			{
+				for (u8 i = 0; i < pWeapon->m_ammoTypes.size(); ++i)
+				{
+					if (Actor()->inventory().GetAmmo(pWeapon->m_ammoTypes[i].c_str(), false))
+					{
+						strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
+							*CStringTable().translate(pSettings->r_string(pWeapon->m_ammoTypes[i].c_str(), "inv_name_short")));
+						m_pUIPropertiesBox->AddItem(temp, (void*)i, INVENTORY_RELOAD_MAGAZINE);
+						b_show = true;
+					}
+				};
+			}
+
+			if (!b)
+			{
+				CUICellItem * itm = CurrentItem();
+				for (u32 i = 0; i < itm->ChildsCount(); ++i)
+				{
+					pWeapon = smart_cast<CWeaponMagazined*>((CWeapon*)itm->Child(i)->m_pData);
+					if (pWeapon->GetAmmoElapsed())
+					{
+						b = true;
+						break;
+					}
+				}
+			}
+
+			if (b)
+			{
+				const char *unload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_unload_gl" : "st_unload") : "st_unload";
+				m_pUIPropertiesBox->AddItem(unload_text, NULL, INVENTORY_UNLOAD_MAGAZINE);
+				b_show = true;
+			}
+
 		}
 	}
 

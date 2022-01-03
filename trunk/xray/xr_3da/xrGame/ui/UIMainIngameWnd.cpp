@@ -1816,7 +1816,7 @@ void CUIQuickSlotPanel::Update()
             m_UseQuickSlot_0_Text->Show(true);
 
 			itm_name = itm->object().cNameSect();
-			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
+			count = pActor->inventory().GetSameItemCount(itm_name.c_str(), SearchRuck);
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_0_Text->SetText(str);
             m_CountItemQuickSlot_0_Text->Show(true);
@@ -1838,7 +1838,7 @@ void CUIQuickSlotPanel::Update()
             m_UseQuickSlot_1_Text->Show(true);
 
 			itm_name = itm->object().cNameSect();
-			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
+			count = pActor->inventory().GetSameItemCount(itm_name.c_str(), SearchRuck);
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_1_Text->SetText(str);
             m_CountItemQuickSlot_1_Text->Show(true);
@@ -1860,7 +1860,7 @@ void CUIQuickSlotPanel::Update()
             m_UseQuickSlot_2_Text->Show(true);
 
 			itm_name = itm->object().cNameSect();
-			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
+			count = pActor->inventory().GetSameItemCount(itm_name.c_str(), SearchRuck);
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_2_Text->SetText(str);
             m_CountItemQuickSlot_2_Text->Show(true);
@@ -1882,7 +1882,7 @@ void CUIQuickSlotPanel::Update()
             m_UseQuickSlot_3_Text->Show(true);
 
 			itm_name = itm->object().cNameSect();
-			count = pActor->inventory().dwfGetItemCount(itm_name.c_str(), SearchRuck);
+			count = pActor->inventory().GetSameItemCount(itm_name.c_str(), SearchRuck);
             sprintf(str, "x%d", count);
             m_CountItemQuickSlot_3_Text->SetText(str);
             m_CountItemQuickSlot_3_Text->Show(true);

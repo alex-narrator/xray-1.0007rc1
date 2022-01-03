@@ -1,0 +1,66 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;МАГАЗИНЫ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[mag_base]:identity_immunities
+belt 			= true
+class			= AMMO
+cform           = skeleton
+visual          = weapons\ammo\ammo_762x54_ap.ogf
+description		= enc_weapons1_ammo_ammo-7.62x54-ap
+$prefetch 		= 64
+
+cost 			= 100
+box_size 		= 30
+
+inv_name		= mag_empty
+inv_name_short 	= mag_empty_short
+inv_weight 		= 0.1
+
+inv_grid_width		= 2
+inv_grid_height		= 1
+inv_grid_x			= 15
+inv_grid_y			= 10
+
+[mag_8_pm_fmj]:mag_base
+inv_name		= mag_8_pm_fmj
+inv_name_short 	= mag_8_pm_fmj_short
+box_size 		= 8
+ammo_in_box 	= ammo_9x18_fmj
+empty_box 		= mag_8_pm_empty
+
+[mag_8_pm_ap]:mag_base
+inv_name		= mag_8_pm_ap
+inv_name_short 	= mag_8_pm_ap_short
+box_size 		= 8
+ammo_in_box 	= ammo_9x18_pmm
+empty_box 		= mag_8_pm_empty
+
+[mag_8_pm_empty]:mag_base
+inv_name		= mag_8_empty
+inv_name_short 	= mag_8_empty_short
+box_size 		= 8
+ammo_types 		= ammo_9x18_fmj, ammo_9x18_pmm
+mag_types 		= mag_8_pm_fmj, mag_8_pm_ap
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[mag_12_pm_fmj]:mag_base
+inv_name		= mag_12_pm_fmj
+inv_name_short 	= mag_12_pm_fmj_short
+box_size 		= 12
+ammo_in_box 	= ammo_9x18_fmj
+empty_box 		= mag_12_pm_empty
+
+[mag_12_pm_ap]:mag_base
+inv_name		= mag_12_pm_ap
+inv_name_short 	= mag_12_pm_ap_short
+box_size 		= 12
+ammo_in_box 	= ammo_9x18_pmm
+empty_box 		= mag_12_pm_empty
+
+[mag_12_pm_empty]:mag_base
+inv_name		= mag_12_empty
+inv_name_short 	= mag_12_empty_short
+box_size 		= 12
+cost 			= 200
+inv_weight 		= 0.2
+ammo_types 		= ammo_9x18_fmj, ammo_9x18_pmm
+mag_types 		= mag_12_pm_fmj, mag_12_pm_ap

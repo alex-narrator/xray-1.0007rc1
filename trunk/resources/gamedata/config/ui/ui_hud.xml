@@ -4,7 +4,7 @@
     <texture id="ui_hud_map_counter" x="0" y="192" width="35" height="28" />
     <texture id="ui_hud_shkala_car" x="35" y="192" width="155" height="34" />
     <texture id="ui_hud_shkala_armor" x="185" y="0" width="164" height="38" />
-    <texture id="ui_hud_shkala_health" x="185" y="38" width="164" height="34" />
+    <texture id="ui_hud_shkala_health" x="185" y="38" width="164" height="32" />
     <texture id="ui_hud_frame_patron" x="185" y="72" width="157" height="65" />
     <texture id="ui_hud_frame_clock" x="190" y="137" width="157" height="67" />
     <texture id="ui_hud_frame_rank" x="349" y="0" width="60" height="65" />

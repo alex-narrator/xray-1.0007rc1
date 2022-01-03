@@ -187,6 +187,10 @@ add_to_type_list(CSE_ALifeItemWeapon)
 
 SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeaponMagazined,CSE_ALifeItemWeapon)
 u8			m_u8CurFireMode;
+//последний заряженный тип магазина
+u8			m_LastLoadedMagType;
+//присоединён ли магазин
+bool		m_bIsMagazineAttached;
 CSE_ALifeItemWeaponMagazined(LPCSTR caSection);
 virtual							~CSE_ALifeItemWeaponMagazined();
 

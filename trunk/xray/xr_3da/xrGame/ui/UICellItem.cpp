@@ -206,17 +206,19 @@ bool CUICellItem::HasChild(CUICellItem* item)
 
 void CUICellItem::UpdateItemText()
 {
-	string32			str;
+	string32 str;
 
 		if ( ChildsCount() )
 		{
-			sprintf_s				(str,"x%d",ChildsCount()+1);
-			m_text->SetText(str);
-			m_text->Show( true );
+			sprintf_s(str,"x%d",ChildsCount()+1);
+			/*m_text->SetText(str);
+			m_text->Show( true );*/
 		}else{
-			sprintf_s				(str,"");
-			m_text->Show( false );
+			sprintf_s(str,"");
+			//m_text->Show( false );
 		}
+
+		SetText(str);
 }
 
 void CUICellItem::Update()
@@ -272,19 +274,32 @@ void CUICellItem::ColorizeWeapon(CUIDragDropListEx* List1, CUIDragDropListEx* Li
 		ClearTextureColor(List4);
 
 	auto Wpn = smart_cast<CWeaponMagazined*>(inventoryitem);
-	if (!Wpn)
+	auto Ammo = smart_cast<CWeaponAmmo*>(inventoryitem);
+	if (!Wpn && !Ammo)
 		return;
 
 	xr_vector<shared_str> ColorizeSects;
-	std::copy(Wpn->m_ammoTypes.begin(), Wpn->m_ammoTypes.end(), std::back_inserter(ColorizeSects));
-	if (auto WpnGl = smart_cast<CWeaponMagazinedWGrenade*>(inventoryitem))
-		std::copy(WpnGl->m_ammoTypes2.begin(), WpnGl->m_ammoTypes2.end(), std::back_inserter(ColorizeSects));
-	if (Wpn->SilencerAttachable())
-		ColorizeSects.push_back(Wpn->GetSilencerName());
-	if (Wpn->ScopeAttachable())
-		ColorizeSects.push_back(Wpn->GetScopeName());
-	if (Wpn->GrenadeLauncherAttachable())
-		ColorizeSects.push_back(Wpn->GetGrenadeLauncherName());
+	if (Wpn)
+	{
+		std::copy(Wpn->m_ammoTypes.begin(), Wpn->m_ammoTypes.end(), std::back_inserter(ColorizeSects));
+		if (auto WpnGl = smart_cast<CWeaponMagazinedWGrenade*>(inventoryitem))
+			std::copy(WpnGl->m_ammoTypes2.begin(), WpnGl->m_ammoTypes2.end(), std::back_inserter(ColorizeSects));
+		if (Wpn->SilencerAttachable())
+			ColorizeSects.push_back(Wpn->GetSilencerName());
+		if (Wpn->ScopeAttachable())
+			ColorizeSects.push_back(Wpn->GetScopeName());
+		if (Wpn->GrenadeLauncherAttachable())
+			ColorizeSects.push_back(Wpn->GetGrenadeLauncherName());
+	}
+	else if (Ammo)	//ammo mag
+	{
+		if (Ammo->IsBoxReloadableEmpty())
+			std::copy(Ammo->m_ammoTypes.begin(), Ammo->m_ammoTypes.end(), std::back_inserter(ColorizeSects));
+		if (Ammo->IsBoxReloadable())
+			ColorizeSects.push_back(Ammo->m_ammoSect);
+	}
+
+
 
 	auto ProcessColorize = [=](CUIDragDropListEx* DdListEx) 
 	{

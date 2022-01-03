@@ -276,9 +276,10 @@
 	</condition_progess_bar>
 
 	<!-- кастомный статик вывода кол-ва предметов в ячейке инвентаря с подложкой. отключен-->
-	<cell_item_text x="1" y="1" width="23" height="16" stretch="1">
+	<cell_item_text x="0" y="0" width="23" height="16" stretch="1">
 	<!--	<texture a="200">ui\ui_dg_time</texture>  -->
 	<!--	<text x="0" y="0" width="29" height="16" font="graffiti19" color="red" align="c" vert_align="c"/>  -->
+	<text x="0" y="14" width="29" height="16" />
 	</cell_item_text>
 
 </w>

@@ -140,20 +140,11 @@
 	<string id="st_undress_outfit">
 		<text>снять костюм</text>
 	</string>
-	<string id="st_unload_magazine">
+	<string id="st_unload">
 		<text>разрядить</text>
 	</string>
-	<string id="st_unload_magazine_gl">
+	<string id="st_unload_gl">
 		<text>разрядить гранатомёт</text>
-	</string>
-	<string id="st_reload_magazine">
-		<text>перезарядить</text>
-	</string>
-	<string id="st_reload_magazine_gl">
-		<text>перезарядить гранатомёт</text>
-	</string>
-	<string id="st_next_ammo_type">
-		<text>сменить боеприпас</text>
 	</string>
 	<string id="st_load_ammo_type">
 		<text>зарядить</text>
