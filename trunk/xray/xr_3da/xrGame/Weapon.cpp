@@ -27,6 +27,9 @@
 #include "object_broker.h"
 #include "../igame_persistent.h"
 
+#include "UIGameCustom.h"
+#include "string_table.h"
+
 // Headers included by Cribbledirge (for callbacks).
 #include "pch_script.h"
 #include "script_callback_ex.h"
@@ -496,7 +499,7 @@ BOOL CWeapon::net_Spawn(CSE_Abstract* DC)
 	SetNextState(E->wpn_state);
 	//
 	bMisfire = E->bMisfire;
-
+	Msg("net_Spawn: weapon [%s] with m_ammoType [%d]", Name_script(), m_ammoType);
 	m_DefaultCartridge.Load(*m_ammoTypes[m_ammoType], u8(m_ammoType));
 	if (iAmmoElapsed)
 	{
@@ -838,31 +841,27 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 
 		if (flags&CMD_START)
 		{
-			/*u32 l_newType = m_ammoType;
-			bool b1, b2;
-			do
-			{
-				l_newType = (l_newType + 1) % m_ammoTypes.size();
-				b1 = l_newType != m_ammoType;
-				b2 = unlimited_ammo() ? false : (!m_pCurrentInventory->GetAmmo(*m_ammoTypes[l_newType], ParentIsActor()));
-			} while (b1 && b2);
+			bool manually = !!psActorFlags.test(AF_NO_AUTO_RELOAD);
 
-			if (l_newType != m_ammoType)*/
-			if (HasNextAmmoType())
+			if (GetNextAmmoType(manually) != u32(-1))
 			{
-				m_set_next_ammoType_on_reload = GetNextAmmoType();//l_newType;
-				/*						m_ammoType = l_newType;
-										m_pAmmo = NULL;
-										if (unlimited_ammo())
-										{
-										m_DefaultCartridge.Load(*m_ammoTypes[m_ammoType], u8(m_ammoType));
-										};
-										*/
+				m_set_next_ammoType_on_reload = GetNextAmmoType(manually);
+
 				if (OnServer())
 				{
 					if (ParentIsActor() && psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT))
 						g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint));
-					Reload();
+
+					if (!manually) Reload();
+
+					Msg("m_set_next_ammoType_on_reload [%d]", m_set_next_ammoType_on_reload);
+
+					LPCSTR ammo_sect = pSettings->r_string(m_ammoTypes[m_set_next_ammoType_on_reload].c_str(), "inv_name_short");
+					string1024	str;
+					strconcat(sizeof(str), str, *CStringTable().translate("st_next_ammo_type"), ": ", *CStringTable().translate(ammo_sect));
+					SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("next_ammo_type", true);
+					_s->m_endTime = Device.fTimeGlobal + 1.0f;// 1 sec
+					_s->wnd()->SetText(str);
 				}
 			}
 		}
@@ -1024,16 +1023,10 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 	return l_count + iAmmoCurrent;
 }
 //
-u32 CWeapon::GetNextAmmoType()
+u32 CWeapon::GetNextAmmoType(bool looped)
 {
-	u32 l_newType = m_ammoType;
-	/*bool b1, b2;
-	do
-	{
-		l_newType = (l_newType + 1) % m_ammoTypes.size();
-		b1 = l_newType != m_ammoType;
-		b2 = unlimited_ammo() ? false : (!m_pCurrentInventory->GetAmmo(*m_ammoTypes[l_newType], ParentIsActor()));
-	} while (b1 && b2);*/
+	u32 l_newType = looped ? m_set_next_ammoType_on_reload : m_ammoType;
+
 	for (;;)
 	{
 		if (++l_newType >= m_ammoTypes.size())
@@ -1048,18 +1041,10 @@ u32 CWeapon::GetNextAmmoType()
 			break;
 	}
 
-	if (l_newType != m_ammoType)
+	if (l_newType != (looped ? m_set_next_ammoType_on_reload : m_ammoType) && l_newType < m_ammoTypes.size())
 		return l_newType;
 	else
 		return u32(-1);
-}
-
-bool CWeapon::HasNextAmmoType()
-{
-	if (GetNextAmmoType() != m_ammoType && GetNextAmmoType() != u32(-1))
-		return true;
-
-		return false;
 }
 //
 float CWeapon::GetConditionMisfireProbability() const

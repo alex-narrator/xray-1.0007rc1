@@ -66,6 +66,10 @@
 		<text font="graffiti32"  r="240" g="217" b="182" a="255" align="c">gun_not_jammed</text>
 	</gun_not_jammed>
 	
+	<next_ammo_type  x="100" y="730" width="800" height="30">
+		<text font="graffiti22"  r="240" g="217" b="182" a="255" align="c"/>
+	</next_ammo_type>
+	
 	<failed_to_activate_artefact x="200" y="70" width="600" height="50" ttl="3">
 		<text font="graffiti32"  r="240" g="217" b="182" a="255" align="c">failed_to_activate_artefact</text>
 	</failed_to_activate_artefact>

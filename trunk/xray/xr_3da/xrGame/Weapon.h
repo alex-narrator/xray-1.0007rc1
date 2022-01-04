@@ -431,8 +431,7 @@ public:
 
 	void					SetAmmoElapsed(int ammo_count);
 	//
-	u32						GetNextAmmoType(); //какие патроны будут заряжены при смене типа боеприпаса
-	bool					HasNextAmmoType(); //есть ли патроны для смены типа боеприпаса
+	u32						GetNextAmmoType(bool looped); //какие патроны будут заряжены при смене типа боеприпаса
 	//
 	virtual void			OnMagazineEmpty();
 	void			SpawnAmmo(u32 boxCurr = 0xffffffff,

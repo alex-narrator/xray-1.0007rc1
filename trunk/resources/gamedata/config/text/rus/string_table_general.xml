@@ -177,6 +177,9 @@
 	<string id="st_no_free_hands">
 		<text>Руки заняты</text>
 	</string>
+	<string id="st_next_ammo_type">
+		<text>Зарядить</text>
+	</string>
 	<string id="st_not_enough_money">
 		<text>Недостаточно денег</text>
 	</string>

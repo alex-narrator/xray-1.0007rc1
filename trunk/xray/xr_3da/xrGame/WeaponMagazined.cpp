@@ -232,9 +232,7 @@ bool CWeaponMagazined::TryToGetAmmo(u32 id)
 {
 	m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[id], ParentIsActor()));
 
-	bool has_ammo = m_pAmmo != NULL && (!HasDetachableMagazine() || m_pAmmo->IsBoxReloadable() || HasChamber() && iAmmoElapsed == 0 /*&& ParentIsActor()*/);
-
-	return has_ammo;//m_pAmmo != NULL;
+	return m_pAmmo != NULL;
 }
 
 bool CWeaponMagazined::TryReload()
