@@ -288,7 +288,7 @@ bool CGrenade::Action(s32 cmd, u32 flags)
 	{
 		if (flags&CMD_START)
 		{
-			if (m_pCurrentInventory)
+			if (m_pCurrentInventory && m_pCurrentInventory->GetActiveSlot() == GRENADE_SLOT)
 			{
 				// (c) NanoBot
 				xr_vector<shared_str>    types_sect_grn;        // текущий список секций гранат

@@ -179,8 +179,6 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	if (!strict_placement)
 		pIItem->m_eItemPlace = eItemPlaceUndefined;
 	
-	// AF_AMMO_FROM_BELT
-	//if (smart_cast<CWeaponAmmo*>(pIItem)) TryAmmoToBelt(pIItem);
 	TryAmmoToBelt(pIItem);
 
 	TryReloadAmmoBox(pIItem);
@@ -222,11 +220,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		bool def_to_slot = true;
 #endif
 
-/*#if defined(GRENADE_FROM_BELT) && !defined (SHOW_GRENADE_SLOT)
-		if (CanPutInSlot(pIItem) && pIItem->GetSlot() != GRENADE_SLOT && def_to_slot)
-#else*/
 		if (CanPutInSlot(pIItem) && def_to_slot)
-//#endif
 		{
 			result = Slot(pIItem, bNotActivate); VERIFY(result);
 		}
@@ -330,7 +324,7 @@ bool CInventory::DropItem(CGameObject *pObj)
 bool CInventory::Slot(PIItem pIItem, bool bNotActivate) 
 {
 	VERIFY(pIItem);
-//	Msg("To Slot %s[%d]", *pIItem->object().cName(), pIItem->object().ID());
+	//Msg("To Slot %s[%d]", *pIItem->object().cName(), pIItem->object().ID());
 	
 	if(!CanPutInSlot(pIItem)) 
 	{
@@ -689,15 +683,12 @@ bool CInventory::Action(s32 cmd, u32 flags)
 		{
 		case kUSE:
 			{
-			}break;
-		
-		case kDROP:		
-		
+			}break;		
+		case kDROP:				
 			{
 				SendActionEvent(cmd, flags);
 				return true;
 			}break;
-
 		case kWPN_NEXT:
 		case kWPN_RELOAD:
 		case kWPN_FIRE:
@@ -760,6 +751,43 @@ bool CInventory::Action(s32 cmd, u32 flags)
 				}else {
 					b_send_event = Activate(ARTEFACT_SLOT);
 				}
+			}
+		}break;
+	case kUSE_SLOT_QUICK_ACCESS_0:
+	case kUSE_SLOT_QUICK_ACCESS_1:
+	case kUSE_SLOT_QUICK_ACCESS_2:
+	case kUSE_SLOT_QUICK_ACCESS_3:
+		{
+			if (!IsGameTypeSingle()) return false;
+
+			PIItem itm = NULL;
+
+			switch (cmd)
+			{
+			case kUSE_SLOT_QUICK_ACCESS_0:
+				itm = m_slots[SLOT_QUICK_ACCESS_0].m_pIItem;
+				break;
+			case kUSE_SLOT_QUICK_ACCESS_1:
+				itm = m_slots[SLOT_QUICK_ACCESS_1].m_pIItem;
+				break;
+			case kUSE_SLOT_QUICK_ACCESS_2:
+				itm = m_slots[SLOT_QUICK_ACCESS_2].m_pIItem;
+				break;
+			case kUSE_SLOT_QUICK_ACCESS_3:
+				itm = m_slots[SLOT_QUICK_ACCESS_3].m_pIItem;
+				break;
+			}
+
+			if (flags&CMD_START)
+			{
+				auto pHudItem = smart_cast<CHudItem*>(itm);
+				//если в слоте предмет без худа то и активировать его не нужно
+				if (!pHudItem) return false;
+
+				if (m_iActiveSlot == itm->GetSlot())
+					b_send_event = Activate(NO_ACTIVE_SLOT);
+				else
+					b_send_event = Activate(itm->GetSlot(), eKeyAction);
 			}
 		}break;
 	}
@@ -924,12 +952,27 @@ PIItem CInventory::GetAny(const char *name) const
 	return itm;
 }
 
+//найти в слотах вещь с указанным именем
+PIItem CInventory::GetFromSlots(const char *name) const
+{
+	for (u32 i = 0; i < m_slots.size(); ++i)
+	{
+		PIItem pIItem = m_slots[i].m_pIItem;
+		if (pIItem && !xr_strcmp(pIItem->object().cNameSect(), name) &&
+			pIItem->Useful())
+			return pIItem;
+	}
+	return NULL;
+}
+
 //получаем патроны из всего инвентаря или с пояса по условию
 PIItem CInventory::GetAmmo(const char *name, BOOL forActor) const
 {
 	bool include_ruck = !forActor || !psActorFlags.test(AF_AMMO_FROM_BELT) || m_bRuckAmmoPlacement;
 
 	PIItem itm = Get(name, include_ruck);
+	if (!include_ruck && !itm)
+		itm = GetFromSlots(name);
 	return itm;
 }
 
@@ -948,15 +991,32 @@ void CInventory::TryAmmoToBelt(CInventoryItem *pIItem)
 
 	if (psActorFlags.test(AF_AMMO_FROM_BELT) && pWeapon->IsAmmoWasSpawned()) //если включены патроны с пояса, то для боеприпасов актора, которые спавнятся при разрядке
 	{
-		if (!m_bRuckAmmoPlacement)
-		{
-			pAmmo->m_eItemPlace = eItemPlaceBelt;	//укажем патронам попадать на пояс (если не проставлен флаг необходимости сброса в рюкзак)
-			Msg("ammo [%s] with ID [%d] placed to belt", pIItem->object().cNameSect().c_str(), pIItem->object().ID());
-			if (!CanPutInBelt(pIItem)/* && psActorFlags.test(AF_AMMO_BOX_AS_MAGAZINE)*/)	//если патроны не помещаются на пояс
-			pAmmo->SetDropManual(TRUE);		//уронить пароны на землю
+			if (CanPutInBelt(pAmmo)) //попробуем положить патроны в пояс
+			{
+				Msg("ammo [%s] with ID [%d] was placed to belt", pIItem->object().cNameSect().c_str(), pIItem->object().ID());
+				pAmmo->m_eItemPlace = eItemPlaceBelt;
+			}
+			else //попробуем определить свободный слот и положить в него
+			{
+				auto slots = pAmmo->GetSlots();
+				for (u8 i = 0; i < (u8)slots.size(); ++i)
+				{
+					pAmmo->SetSlot(slots[i]);
+
+					if (CanPutInSlot(pAmmo))
+					{
+						Msg("ammo [%s] with ID [%d] was placed to slot [%d]", pIItem->object().cNameSect().c_str(), pIItem->object().ID(), pIItem->GetSlot());
+						pAmmo->m_eItemPlace = eItemPlaceSlot;
+						break;
+					}
+				}
+			}
+
+			if (!CanPutInBelt(pAmmo) && !CanPutInSlot(pAmmo)) //никуда не поместились - роняем на землю
+				pAmmo->SetDropManual(TRUE);
+
 		}
 		pWeapon->SetAmmoWasSpawned(false);	//сбрасываем флажок спавна патронов
-	}
 }
 
 #include "WeaponMagazined.h"
@@ -1173,9 +1233,9 @@ u32		CInventory::dwfGetGrenadeCount(LPCSTR caSection, bool SearchAll)
 }
 
 //#if defined(GRENADE_FROM_BELT)
-u32 CInventory::GetSameItemCount(LPCSTR caSection, bool SearchRuck, bool CountInSlot)
+u32 CInventory::GetSameItemCount(LPCSTR caSection, bool SearchRuck)
 {
-	u32			l_dwCount = CountInSlot ? 1 : 0; //для учета айтема в слоте при выведении худовых каунтеров
+	u32			l_dwCount = 0;
 	TIItemContainer	&l_list = SearchRuck ? m_ruck : m_belt;
 	for (TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it)
 	{
@@ -1183,6 +1243,14 @@ u32 CInventory::GetSameItemCount(LPCSTR caSection, bool SearchRuck, bool CountIn
 		if (l_pIItem && !xr_strcmp(l_pIItem->object().cNameSect(), caSection))
 			++l_dwCount;
 	}
+	//помимо пояса еще и в слотах поищем
+	if (!SearchRuck)
+		for (u32 i = 0; i < m_slots.size(); ++i)
+		{
+			PIItem l_pIItem = m_slots[i].m_pIItem;
+			if (l_pIItem && !xr_strcmp(l_pIItem->object().cNameSect(), caSection))
+				++l_dwCount;
+		}
 
 	return		(l_dwCount);
 }

@@ -581,6 +581,8 @@ void CWeapon::net_Import(NET_Packet& P)
 
 	u8 Zoom;
 	P.r_u8((u8)Zoom);
+	//
+	bMisfire = !!(P.r_u8() & 0x1);
 
 	if (H_Parent() && H_Parent()->Remote())
 	{
@@ -1009,6 +1011,18 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 			if (l_pAmmo && !xr_strcmp(l_pAmmo->cNameSect(), l_ammoType))
 			{
 				iAmmoCurrent = iAmmoCurrent + l_pAmmo->m_boxCurr;
+			}
+		}
+		//помимо пояса еще и в слотах поищем
+		if (!search_ruck)
+		{
+			for (u32 i = 0; i < m_pCurrentInventory->m_slots.size(); ++i)
+			{
+				CWeaponAmmo *l_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->m_slots[i].m_pIItem);
+				if (l_pAmmo && !xr_strcmp(l_pAmmo->cNameSect(), l_ammoType))
+				{
+					iAmmoCurrent = iAmmoCurrent + l_pAmmo->m_boxCurr;
+				}
 			}
 		}
 

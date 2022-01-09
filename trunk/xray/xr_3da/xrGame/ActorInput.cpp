@@ -192,7 +192,6 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				PIItem itm = 0;
 				switch (cmd){
 				case kUSE_SLOT_QUICK_ACCESS_0:
-					
 					itm = inventory().m_slots[SLOT_QUICK_ACCESS_0].m_pIItem;
 					break;
 				case kUSE_SLOT_QUICK_ACCESS_1:	

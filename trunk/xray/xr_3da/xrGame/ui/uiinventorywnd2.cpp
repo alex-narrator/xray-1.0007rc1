@@ -436,13 +436,6 @@ bool CUIInventoryWnd::ToBelt(CUICellItem* itm, bool b_use_cursor_pos)
 		VERIFY								(result);
 		CUICellItem* i						= old_owner->RemoveItem(itm, (old_owner==new_owner) );
 
-//#ifdef GRENADE_FROM_BELT //чтобы не вылетало при генерации ячейки слота гранаты на поясе - xer-urg
-		//result = new_owner->CanSetItem(i);
-		//if (result || new_owner->IsAutoGrow())
-		//{
-//#endif
-		
-	//.	UIBeltList.RearrangeItems();
 		if(b_use_cursor_pos)
 			new_owner->SetItem				(i,old_owner->GetDragItemPosition());
 		else
@@ -455,24 +448,9 @@ bool CUIInventoryWnd::ToBelt(CUICellItem* itm, bool b_use_cursor_pos)
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 
-//#ifdef GRENADE_FROM_BELT //чтобы не вылетало при генерации ячейки слота гранаты на поясе - xer-urg
-		//}
-		//else
-		//{
-		//	NET_Packet					P;
-		//	iitem->object().u_EventGen	(P, GEG_PLAYER_ITEM2RUCK, iitem->object().H_Parent()->ID()); //сброс не поместившегося айтема в рюкзак - xer-urg (GE_OWNERSHIP_REJECT - сброс на пол)
-		//	P.w_u16						(u16(iitem->object().ID()));
-		//	iitem->object().u_EventSend(P);
-		//}
-
-		//m_b_need_reinit = true;
-		//
-		//return result;
-//#else
 		m_b_need_reinit = true;
 		
 		return true;
-//#endif
 	}
 	return	false;
 }

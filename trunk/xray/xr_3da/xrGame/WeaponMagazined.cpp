@@ -1402,6 +1402,9 @@ void CWeaponMagazined::save(NET_Packet &output_packet)
 	save_data(m_iQueueSize, output_packet);
 	save_data(m_iShotNum, output_packet);
 	save_data(m_iCurFireMode, output_packet);
+	//
+	save_data(m_LastLoadedMagType, output_packet);
+	save_data(m_bIsMagazineAttached, output_packet);
 }
 
 void CWeaponMagazined::load(IReader &input_packet)
@@ -1410,6 +1413,9 @@ void CWeaponMagazined::load(IReader &input_packet)
 	load_data(m_iQueueSize, input_packet); SetQueueSize(m_iQueueSize);
 	load_data(m_iShotNum, input_packet);
 	load_data(m_iCurFireMode, input_packet);
+	//
+	load_data(m_LastLoadedMagType, input_packet);
+	load_data(m_bIsMagazineAttached, input_packet);
 }
 
 BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
@@ -1572,7 +1578,7 @@ int CWeaponMagazined::GetMagazineCount() const
 	{
 		bool b_search_ruck = !psActorFlags.test(AF_AMMO_FROM_BELT);
 
-		iMagazinesCount += (int)g_actor->inventory().GetSameItemCount(m_ammoTypes[i].c_str(), b_search_ruck, false);
+		iMagazinesCount += (int)g_actor->inventory().GetSameItemCount(m_ammoTypes[i].c_str(), b_search_ruck);
 	}
 	return iMagazinesCount;
 }

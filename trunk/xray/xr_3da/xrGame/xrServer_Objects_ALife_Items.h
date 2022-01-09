@@ -191,12 +191,14 @@ u8			m_u8CurFireMode;
 u8			m_LastLoadedMagType;
 //присоединён ли магазин
 bool		m_bIsMagazineAttached;
+//
+xr_vector<u8> m_AmmoIDs;
+//
 CSE_ALifeItemWeaponMagazined(LPCSTR caSection);
 virtual							~CSE_ALifeItemWeaponMagazined();
 
 virtual CSE_ALifeItemWeapon		*cast_item_weapon	() {return this;}
-//
-xr_vector<u8>					m_AmmoIDs;
+
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeItemWeaponMagazined)
 #define script_type_list save_type_list(CSE_ALifeItemWeaponMagazined)

@@ -577,7 +577,7 @@ void CSE_ALifeItemWeaponShotGun::FillProps			(LPCSTR pref, PropItemVec& items)
 ////////////////////////////////////////////////////////////////////////////
 CSE_ALifeItemWeaponMagazined::CSE_ALifeItemWeaponMagazined	(LPCSTR caSection) : CSE_ALifeItemWeapon(caSection)
 {
-	auto FireModesList = READ_IF_EXISTS(pSettings, r_string, caSection, "fire_modes", nullptr);
+	auto FireModesList = READ_IF_EXISTS(pSettings, r_string, caSection, "fire_modes", NULL);
 	if (FireModesList) 
 	{
 		int ModesCount = _GetItemCount(FireModesList);
