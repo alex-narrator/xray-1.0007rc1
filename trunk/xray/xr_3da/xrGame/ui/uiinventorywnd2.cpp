@@ -175,8 +175,6 @@ void CUIInventoryWnd::InitInventory()
 		CUICellItem* itm			= create_cell_item(*it);
 		m_pUIBeltList->SetItem		(itm);
 	}
-
-
 	
 	ruck_list		= m_pInv->m_ruck;
 	std::sort		(ruck_list.begin(),ruck_list.end(),InventoryUtilities::GreaterRoomInRuck);
@@ -192,32 +190,12 @@ void CUIInventoryWnd::InitInventory()
 	if(_itm)
 	{
 		CUICellItem* itm				= create_cell_item(_itm);
-
-//вариации отображения и использования слота гранаты - начало		
-//#if defined(GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
 		m_pUIGrenadeList->SetItem(itm);
-//#endif
-/*#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
-		m_pUIBeltList->SetItem(itm);
-#endif*/
-/*#if !defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
-		m_pUIBagList->SetItem			(itm);
-#endif*/
-//вариации отображения и использования слота гранаты - конец
 	}
-	
-//#ifdef INV_NEW_SLOTS_SYSTEM
-//	for(i=SLOT_QUICK_ACCESS_0; i <= SLOT_QUICK_ACCESS_3; ++i ) {
-//		_itm								= m_pInv->m_slots[i].m_pIItem;
-//		if(_itm)
-//		{
-//			CUICellItem* itm				= create_cell_item(_itm);
-//			m_pUIBagList->SetItem			(itm);
-//		}
-//	}
-//#endif
 
 	InventoryUtilities::UpdateWeight					(UIBagWnd, true);
+	
+	UpdateCustomDraw();
 
 	m_b_need_reinit					= false;
 }
@@ -324,7 +302,10 @@ bool CUIInventoryWnd::ToSlot(CUICellItem* itm, bool force_place)
 #else
 		SendEvent_ActivateSlot(iitem);
 #endif
-
+		if (_slot == OUTFIT_SLOT)
+		{
+			InventoryUtilities::UpdateItemsPlace(m_pUIBeltList);
+		}
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
 		// обновляем статик веса в инвентаре
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
@@ -405,6 +386,8 @@ bool CUIInventoryWnd::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 			P.w_u16						(u16(iitem->object().ID()));
 			iitem->object().u_EventSend(P);
 		}
+
+		InventoryUtilities::UpdateItemsPlace(m_pUIBeltList);
 
 		m_b_need_reinit = true;
 		

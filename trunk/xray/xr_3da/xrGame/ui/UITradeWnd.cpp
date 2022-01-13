@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "UITradeWnd.h"
+#include "../smart_cast.h"
 
 #include "xrUIXmlParser.h"
 #include "UIXmlInit.h"
@@ -321,6 +322,8 @@ extern void UpdateCameraDirection(CGameObject* pTo);
 void CUITradeWnd::Update()
 {
 	EListType et					= eNone;
+	
+	InventoryUtilities::UpdateItemsPlace(&m_uidata->UIOurBagList);
 
 	if(m_pInv->ModifyFrame()==Device.dwFrame && m_pOthersInv->ModifyFrame()==Device.dwFrame){
 		et = eBoth;
@@ -519,7 +522,8 @@ void CUITradeWnd::PerformTrade()
 		
 		TransferItems		(&m_uidata->UIOurTradeList,		&m_uidata->UIOthersBagList, m_pOthersTrade,	true);
 		TransferItems		(&m_uidata->UIOthersTradeList,	&m_uidata->UIOurBagList,	m_pOthersTrade,	false);
-	}else
+	}
+	else
 	{
 		/*if(others_money<0)
 			m_uidata->UIDealMsg		= HUD().GetUI()->UIGame()->AddCustomStatic("not_enough_money_other", true);

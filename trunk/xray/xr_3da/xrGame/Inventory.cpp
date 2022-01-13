@@ -90,7 +90,7 @@ CInventory::CInventory()
 {
 	m_fTakeDist									= pSettings->r_float	("inventory","take_dist");
 	m_fMaxWeight								= pSettings->r_float	("inventory","max_weight");
-	m_iMaxBelt									= pSettings->r_s32		("inventory","max_belt");
+	//m_iMaxBelt									= pSettings->r_s32		("inventory","max_belt");
 #ifdef LUAICP_COMPAT
 	static u32 saved = 0;
 	if (!saved++)
@@ -989,7 +989,7 @@ void CInventory::TryAmmoToBelt(CInventoryItem *pIItem)
 
 	Msg("ammo [%s] with ID [%d] has taken", pIItem->object().cNameSect().c_str(), pIItem->object().ID());
 
-	if (psActorFlags.test(AF_AMMO_FROM_BELT) && pWeapon->IsAmmoWasSpawned()) //если включены патроны с пояса, то для боеприпасов актора, которые спавнятся при разрядке
+	if (psActorFlags.test(AF_AMMO_FROM_BELT) && pWeapon->IsAmmoWasSpawned() && !m_bRuckAmmoPlacement) //если включены патроны с пояса, то для боеприпасов актора, которые спавнятся при разрядке
 	{
 			if (CanPutInBelt(pAmmo)) //попробуем положить патроны в пояс
 			{
@@ -1015,8 +1015,8 @@ void CInventory::TryAmmoToBelt(CInventoryItem *pIItem)
 			if (!CanPutInBelt(pAmmo) && !CanPutInSlot(pAmmo)) //никуда не поместились - роняем на землю
 				pAmmo->SetDropManual(TRUE);
 
-		}
-		pWeapon->SetAmmoWasSpawned(false);	//сбрасываем флажок спавна патронов
+	}
+	pWeapon->SetAmmoWasSpawned(false);	//сбрасываем флажок спавна патронов
 }
 
 #include "WeaponMagazined.h"
@@ -1422,10 +1422,19 @@ bool CInventory::CanTakeItem(CInventoryItem *inventory_item) const
 	return	true;
 }
 
-
+#include "CustomOutfit.h"
 u32  CInventory::BeltWidth() const
 {
-	return m_iMaxBelt;
+	CActor* pActor = smart_cast<CActor*>(m_pOwner);
+	if (pActor)
+	{
+		CCustomOutfit* outfit = pActor->GetOutfit();
+		if (outfit)
+		{
+			return outfit->GetBeltWidth();
+		}
+	}
+	return 0; //m_iMaxBelt;
 }
 
 void  CInventory::AddAvailableItems(TIItemContainer& items_container, bool for_trade) const

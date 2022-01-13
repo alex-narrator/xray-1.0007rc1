@@ -396,6 +396,8 @@ void CUICarBodyWnd::Draw()
 
 void CUICarBodyWnd::Update()
 {
+	InventoryUtilities::UpdateItemsPlace(m_pUIOurBagList);
+
 	if(	m_b_need_update||
 		m_pOurObject->inventory().ModifyFrame()==Device.dwFrame || 
 		(m_pOthersObject&&m_pOthersObject->inventory().ModifyFrame()==Device.dwFrame))
@@ -982,16 +984,15 @@ bool CUICarBodyWnd::TransferItem(PIItem itm, CInventoryOwner* owner_from, CInven
 	}
 	//
 	CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(pActor->inventory().ActiveItem());
-	//CWeaponKnife* Knife = smart_cast<CWeaponKnife*>(pActor->inventory().ItemFromSlot(pActor->inventory().GetPrevActiveSlot())); 
-	CBaseMonster* Monster = smart_cast<CBaseMonster*>(go_from);
-	if (g_eFreeHands != eFreeHandsOff && pActor && Monster)      //если мы забираем что-то из инвентаря монстра в режиме "свободных рук"
+	CWeaponKnife* pKnife = smart_cast<CWeaponKnife*>(pActor->inventory().ActiveItem());
+	CBaseMonster* pMonster = smart_cast<CBaseMonster*>(go_from);
+	if (g_eFreeHands != eFreeHandsOff && pActor && pMonster)      //если мы забираем что-то из инвентаря монстра в режиме "свободных рук"
 	{
-		if (Knife)                                                       //убедимся что оружие в активном слоте - нож
+		if (pKnife)                                                       //убедимся что оружие в активном слоте - нож
 		{
-			Knife->Fire2Start();                                         //нанесём удар ножом
-			itm->ChangeCondition( -(1 - Knife->GetCondition()) );        //уменьшим Condition части монстра на величину износа ножа (1 - Knife->GetCondition())
-			Knife->ChangeCondition(-Knife->GetCondDecPerShotOnHit() * Monster->m_uStabsToCutOff); //уменьшим Condition ножа кол-во ударов * износ за удар
+			pKnife->Fire2Start();                                         //нанесём удар ножом
+			itm->ChangeCondition( -(1 - pKnife->GetCondition()) );        //уменьшим Condition части монстра на величину износа ножа (1 - Knife->GetCondition())
+			pKnife->ChangeCondition(-pKnife->GetCondDecPerShotOnHit() * pMonster->m_uStabsToCutOff); //уменьшим Condition ножа кол-во ударов * износ за удар
 		}
 	}
 	//

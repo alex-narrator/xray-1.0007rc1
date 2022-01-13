@@ -22,6 +22,8 @@ CCustomOutfit::CCustomOutfit()
 
 	m_boneProtection = xr_new<SBoneProtections>();
 	m_bAlwaysProcessing = TRUE;
+
+	m_iMaxBelt			= 0;
 }
 
 CCustomOutfit::~CCustomOutfit() 
@@ -78,6 +80,8 @@ void CCustomOutfit::Load(LPCSTR section)
 		m_NightVisionSect = NULL;
 
 	m_full_icon_name								= pSettings->r_string(section,"full_icon_name");
+
+	m_iMaxBelt										= READ_IF_EXISTS(pSettings, r_u32, section, "max_belt", 0);
 }
 
 void CCustomOutfit::Hit(float hit_power, ALife::EHitType hit_type)

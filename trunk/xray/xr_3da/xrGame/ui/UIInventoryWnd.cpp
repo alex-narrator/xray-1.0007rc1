@@ -245,22 +245,10 @@ void CUIInventoryWnd::Init()
 	m_slots_array[RIFLE_SLOT]				= m_pUIAutomaticList;
 	m_slots_array[OUTFIT_SLOT]				= m_pUIOutfitList;
 
-//вариации отображения и использования слота гранаты - начало
-//#if defined (GRENADE_FROM_BELT) && defined(SHOW_GRENADE_SLOT)
-m_pUIGrenadeList = xr_new<CUIDragDropListEx>(); AttachChild(m_pUIGrenadeList); m_pUIGrenadeList->SetAutoDelete(true);
-xml_init.InitDragDropListEx(uiXml, "dragdrop_slot_grenade", 0, m_pUIGrenadeList);
-BindDragDropListEnents(m_pUIGrenadeList);
-m_slots_array[GRENADE_SLOT] = m_pUIGrenadeList;
-//#endif
-//
-/*#if defined (GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
-    m_slots_array[GRENADE_SLOT] = m_pUIBeltList;
-#endif*/
-//
-/*#if !defined (GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
-	m_slots_array[GRENADE_SLOT]				= NULL;	
-#endif*/
-//вариации отображения и использования слота гранаты - конец
+	m_pUIGrenadeList = xr_new<CUIDragDropListEx>(); AttachChild(m_pUIGrenadeList); m_pUIGrenadeList->SetAutoDelete(true);
+	xml_init.InitDragDropListEx(uiXml, "dragdrop_slot_grenade", 0, m_pUIGrenadeList);
+	BindDragDropListEnents(m_pUIGrenadeList);
+	m_slots_array[GRENADE_SLOT] = m_pUIGrenadeList;
 
 	m_slots_array[BOLT_SLOT]				= NULL;		
 #if defined(SHOW_ARTEFACT_SLOT)
@@ -578,6 +566,18 @@ void CUIInventoryWnd::DetachAddon(const char* addon_name)
 	}
 }
 
+void CUIInventoryWnd::UpdateCustomDraw()
+{
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+
+	if (!pActor) return;
+
+	u32 belt_width = pActor->inventory().BeltWidth();
+
+	Ivector2 belt_array = { belt_width , 1 };
+
+	m_pUIBeltList->SetCellsCapacity(belt_array);
+}
 
 void	CUIInventoryWnd::SendEvent_ActivateSlot	(PIItem	pItem)
 {

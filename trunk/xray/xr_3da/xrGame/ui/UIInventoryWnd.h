@@ -53,7 +53,8 @@ public:
 	virtual void			Hide						();
 
 	void					AddItemToBag				(PIItem pItem);
-
+	//обновление отрисовки сетки пояса
+	void					UpdateCustomDraw			();
 	
 protected:
 	enum eInventorySndAction{	eInvSndOpen	=0,
@@ -184,7 +185,6 @@ protected:
 
 	void						SetCurrentItem				(CUICellItem* itm);
 	CUICellItem*				CurrentItem					();
-	
 
 	TIItemContainer				ruck_list;
 	u32							m_iCurrentActiveSlot;
