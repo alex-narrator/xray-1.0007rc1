@@ -181,7 +181,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	
 	TryAmmoToBelt(pIItem);
 
-	TryReloadAmmoBox(pIItem);
+	//TryReloadAmmoBox(pIItem);
 
 	bool result = false;
 	switch (pIItem->m_eItemPlace)
@@ -1232,7 +1232,6 @@ u32		CInventory::dwfGetGrenadeCount(LPCSTR caSection, bool SearchAll)
 	return		(l_dwCount);
 }
 
-//#if defined(GRENADE_FROM_BELT)
 u32 CInventory::GetSameItemCount(LPCSTR caSection, bool SearchRuck)
 {
 	u32			l_dwCount = 0;
@@ -1254,7 +1253,6 @@ u32 CInventory::GetSameItemCount(LPCSTR caSection, bool SearchRuck)
 
 	return		(l_dwCount);
 }
-//#endif
 
 bool CInventory::bfCheckForObject(ALife::_OBJECT_ID tObjectID)
 {
@@ -1539,5 +1537,29 @@ void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
 				if(Activate(NO_ACTIVE_SLOT))
 					SetPrevActiveSlot(ActiveSlot);
 		}
+	}
+}
+
+void CInventory::UpdateItemsPlace(PIItem check_item, bool b_can_be_worn)
+{
+	auto pActor = smart_cast<CActor*>(m_pOwner);
+	if (!pActor) return;
+
+	auto pOutfit = smart_cast<CCustomOutfit*>(check_item);
+
+	bool b_drop_to_ruck = pOutfit && (pOutfit == ItemFromSlot(OUTFIT_SLOT) || b_can_be_worn && CanPutInSlot(pOutfit));
+
+	if (b_drop_to_ruck)
+	{
+		TIItemContainer::iterator it = m_all.begin();
+		TIItemContainer::iterator it_e = m_all.end();
+
+		for (; it != it_e; ++it)
+		{
+			PIItem pIItem = *it;
+			if (InBelt(pIItem)) Ruck(pIItem);
+		}
+
+		Msg("UpdateItemsPlace for item [%s]", check_item->Name());
 	}
 }

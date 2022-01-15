@@ -81,11 +81,8 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	string1024 temp;
 	for(u8 i = 0; i < (u8)slots.size(); ++i) 
 	{
-/*#ifndef SHOW_GRENADE_SLOT
-		if (slots[i] != NO_ACTIVE_SLOT && slots[i] != GRENADE_SLOT)
-#else*/
 		if (slots[i] != NO_ACTIVE_SLOT)
-//#endif
+
 			if (!m_pInv->m_slots[slots[i]].m_pIItem || m_pInv->m_slots[slots[i]].m_pIItem != CurrentIItem() )
 			{
 #ifndef INV_MOVE_ITM_INTO_QUICK_SLOTS
@@ -109,23 +106,12 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	}
 #endif
 
-/*#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
-	if (CurrentIItem() != m_pInv->m_slots[GRENADE_SLOT].m_pIItem)
-#endif*/
 	if(CurrentIItem()->Belt() && m_pInv->CanPutInBelt(CurrentIItem()))
 	{
 		UIPropertiesBox.AddItem("st_move_on_belt",  NULL, INVENTORY_TO_BELT_ACTION);
 		b_show			= true;
 	}
-/*#if defined(GRENADE_FROM_BELT) && !defined(SHOW_GRENADE_SLOT)
-	if (CurrentIItem()->GetSlot() == GRENADE_SLOT && CurrentIItem()->m_eItemPlace != eItemPlaceRuck)
-	{
-		UIPropertiesBox.AddItem("st_move_to_bag",  NULL, INVENTORY_TO_BAG_ACTION);
-		bAlreadyDressed = true;
-		b_show			= true;
-	}
-	else
-#endif*/
+
 	if(CurrentIItem()->Ruck() && m_pInv->CanPutInRuck(CurrentIItem()) && (CurrentIItem()->GetSlot()==u32(-1) || !m_pInv->m_slots[CurrentIItem()->GetSlot()].m_bPersistent) )
 	{
 		if(!pOutfit)
@@ -161,7 +147,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			//reload AmmoBox
 			if (pAmmo->m_boxCurr < pAmmo->m_boxSize)
 			{
-				if (Actor()->inventory().GetAmmo(*pAmmo->m_ammoSect, true))
+				if (/*Actor()->inventory().*/m_pInv->GetAmmo(*pAmmo->m_ammoSect, true))
 				{
 					strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
 						*CStringTable().translate(pSettings->r_string(pAmmo->m_ammoSect, "inv_name_short")));
@@ -175,7 +161,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		{
 			for (u8 i = 0; i < pAmmo->m_ammoTypes.size(); ++i)
 			{
-				if (Actor()->inventory().GetAmmo(*pAmmo->m_ammoTypes[i], true))
+				if (/*Actor()->inventory().*/m_pInv->GetAmmo(*pAmmo->m_ammoTypes[i], true))
 				{
 					strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
 						*CStringTable().translate(pSettings->r_string(pAmmo->m_ammoTypes[i], "inv_name_short")));
@@ -226,7 +212,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			{
 				for (u8 i = 0; i < pWeaponMag->m_ammoTypes.size(); ++i)
 				{
-					if (Actor()->inventory().GetAmmo(pWeaponMag->m_ammoTypes[i].c_str(), true))
+					if (/*Actor()->inventory().*/m_pInv->GetAmmo(pWeaponMag->m_ammoTypes[i].c_str(), true))
 					{
 						strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ", 
 							*CStringTable().translate(pSettings->r_string(pWeaponMag->m_ammoTypes[i].c_str(), "inv_name_short")));

@@ -82,20 +82,27 @@ public:
 	PIItem					GetAmmo     		(const char *name, BOOL forActor) const;		//получаем айтем из всего инвентаря или с пояса по условию
 	PIItem					GetSame				(const PIItem pIItem, bool bSearchRuck) const;	//получаем айтем из всего инвентаря или с пояса
 	PIItem					GetFromSlots		(const char *name) const;						//получаем айтем из слотов
+	//перепаковщик патронов
 	void					RepackAmmo			();
+	//размещение патронов на поясе при разрядке оружия в руках
 	void					TryAmmoToBelt		(CInventoryItem *pIItem);
-	void					TryReloadAmmoBox	(CInventoryItem *pIItem); //автозаряжалка магазинов для NPC
-	bool                    m_bRuckAmmoPlacement	= false; //класть/брать патроны из рюкзака (для AF_AMMO_FROM_BELT)
+	//автозаряжалка магазинов для NPC
+	void					TryReloadAmmoBox	(CInventoryItem *pIItem); 
+	//класть/брать патроны из рюкзака (для AF_AMMO_FROM_BELT)
+	bool                    m_bRuckAmmoPlacement	= false;
 	// AF_FREE_HANDS - свободна ли хотябы одна рука актора
 	bool                    IsFreeHands			();      
-	void                    TryToHideWeapon     (bool b_hide_state, bool b_save_prev_slot = true); //сокрытие/восстановлени показа оружия в режиме AF_FREE_HANDS
+	//сокрытие/восстановлени показа оружия в режиме AF_FREE_HANDS
+	void                    TryToHideWeapon     (bool b_hide_state, bool b_save_prev_slot = true); 
+	//сброс предметов в рюкзак в зависимости от наличия экипировки
+	void					UpdateItemsPlace	(PIItem check_item, bool b_can_be_worn = false);
 	//
 	PIItem					item				(CLASS_ID cls_id) const;
 	
 	// get all the items with the same section name
 	virtual u32				dwfGetSameItemCount	(LPCSTR caSection, bool SearchAll = false);	
 	virtual u32				dwfGetGrenadeCount	(LPCSTR caSection, bool SearchAll);	
-	//считаем предметы на поясе или в рюкзаке (+/- предмет в слоте)
+	//считаем предметы в рюкзаке или на поясе + в слотах
 	virtual u32				GetSameItemCount    (LPCSTR caSection, bool SearchRuck); 
 
 	// get all the items with the same object id

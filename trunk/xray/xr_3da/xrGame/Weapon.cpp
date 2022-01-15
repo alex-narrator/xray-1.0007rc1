@@ -499,7 +499,7 @@ BOOL CWeapon::net_Spawn(CSE_Abstract* DC)
 	SetNextState(E->wpn_state);
 	//
 	bMisfire = E->bMisfire;
-	Msg("net_Spawn: weapon [%s] with m_ammoType [%d]", Name_script(), m_ammoType);
+	Msg("CWeapon::net_Spawn: weapon [%s] with m_ammoType [%d], ammo [%s]", Name_script(), m_ammoType, *m_ammoTypes[m_ammoType]);
 	m_DefaultCartridge.Load(*m_ammoTypes[m_ammoType], u8(m_ammoType));
 	if (iAmmoElapsed)
 	{
@@ -996,6 +996,8 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 		if (g_actor->m_inventory != m_pCurrentInventory || !psActorFlags.test(AF_AMMO_FROM_BELT)) //очень некрасивый костыль!
 		return l_count + iAmmoCurrent;
 
+	Msg("[%s] get ammo current [%d]:[%s] weapon [%s] ", m_pCurrentInventory->GetOwner()->Name(), l_count + iAmmoCurrent, *m_ammoTypes[m_ammoType], this->Name_script());
+
 	m_dwAmmoCurrentCalcFrame = Device.dwFrame;
 	iAmmoCurrent = 0;
 
@@ -1033,6 +1035,8 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 			continue;
 
 		iAmmoCurrent += inventory_owner().ammo_in_box_to_spawn();
+
+		Msg("[%s] get ammo current [%d]:[%s] weapon [%s] ", m_pCurrentInventory->GetOwner()->Name(), l_count + iAmmoCurrent, l_ammoType, this->Name_script());
 	}
 	return l_count + iAmmoCurrent;
 }

@@ -251,43 +251,8 @@ bool CUIInventoryWnd::ToSlot(CUICellItem* itm, bool force_place)
 			return false;
 		}
 
-/*		if(_slot == GRENADE_SLOT && !new_owner )
-#if defined(GRENADE_FROM_BELT)
-			return false;
-#else
-			return true; //fake, sorry (((
-#endif*/
-		
-#if defined(INV_MOVE_ITM_INTO_QUICK_SLOTS) 
-		//if (_slot >= SLOT_QUICK_ACCESS_0 && _slot <= SLOT_QUICK_ACCESS_3)
-		//{
-		//	for (u32 i = SLOT_QUICK_ACCESS_0; i <= SLOT_QUICK_ACCESS_3; ++i)
-		//	{	
-		//		if(i != _slot)
-		//		{
-		//			auto item	= GetInventory()->m_slots[i].m_pIItem;
+		GetInventory()->UpdateItemsPlace(iitem, true); //проверим не надо ли сбросить предметы в рюкзак
 
-		//			if (item)
-		//			{
-		//				auto name1	= item->object().cNameSect();
-		//				auto name2	= iitem->object().cNameSect();
-
-		//				if (!xr_strcmp(name1, name2) && item != iitem)
-		//				{
-
-		//					CUIDragDropListEx* slot_list		= GetSlotList(i);
-
-		//					CUICellItem* slot_cell				= slot_list->GetItemIdx(0);
-
-		//					bool result							= ToBag(slot_cell, false);
-
-		//				}
-		//			}
-		//		}
-		//	}
-		//}
-#endif	
-	
 #ifdef DEBUG_SLOTS
 		Msg("# inventory wnd ToSlot (0x%p) from old_owner = 0x%p ", itm, old_owner);
 #endif
@@ -302,10 +267,7 @@ bool CUIInventoryWnd::ToSlot(CUICellItem* itm, bool force_place)
 #else
 		SendEvent_ActivateSlot(iitem);
 #endif
-		if (_slot == OUTFIT_SLOT)
-		{
-			InventoryUtilities::UpdateItemsPlace(m_pUIBeltList);
-		}
+
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
 		// обновляем статик веса в инвентаре
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
@@ -353,6 +315,7 @@ bool CUIInventoryWnd::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 		}else
 				new_owner					= m_pUIBagList;
 
+		GetInventory()->UpdateItemsPlace(iitem); //проверим не надо ли сбросить предметы в рюкзак
 
 		bool result							= GetInventory()->Ruck(iitem);
 		VERIFY								(result);
@@ -386,8 +349,6 @@ bool CUIInventoryWnd::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 			P.w_u16						(u16(iitem->object().ID()));
 			iitem->object().u_EventSend(P);
 		}
-
-		InventoryUtilities::UpdateItemsPlace(m_pUIBeltList);
 
 		m_b_need_reinit = true;
 		

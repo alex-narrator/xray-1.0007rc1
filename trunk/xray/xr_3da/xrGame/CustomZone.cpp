@@ -390,7 +390,7 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 		m_b_always_fastmode		= spawn_ini()->r_bool("fast_mode","always_fast");
 	}
 	//
-	Msg("Spawned zone: [%s], m_fMaxPower [%f], m_zone_ttl [%u]", Name_script(), m_fMaxPower, m_zone_ttl);
+	//Msg("Spawned zone: [%s], m_fMaxPower [%f], m_zone_ttl [%u]", Name_script(), m_fMaxPower, m_zone_ttl);
 	//
 	return						(TRUE);
 }

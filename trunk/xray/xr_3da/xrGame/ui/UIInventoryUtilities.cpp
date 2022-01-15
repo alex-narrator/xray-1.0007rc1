@@ -14,7 +14,6 @@
 #include "../InfoPortion.h"
 #include "../game_base_space.h"
 #include "../actor.h"
-#include "UICellItem.h"
 
 #define BUY_MENU_TEXTURE "ui\\ui_mp_buy_menu"
 #define EQUIPMENT_ICONS  "ui\\ui_icon_equipment"
@@ -339,31 +338,6 @@ void InventoryUtilities::UpdateWeight(CUIStatic &wnd, bool withPrefix)
 	//	UIStaticWeight.ClipperOff();
 }
 
-void InventoryUtilities::UpdateItemsPlace(CUIDragDropListEx* list)
-{
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-
-	if (!pActor) return;
-
-	CCustomOutfit* pOutfit = pActor->GetOutfit();
-
-	if (!pOutfit) MoveItemsToRuck(list);
-}
-
-void InventoryUtilities::MoveItemsToRuck(CUIDragDropListEx* list)
-{
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-
-	for (u32 i = 0, item_count = list->ItemsCount(); i < item_count; ++i)
-	{
-		CUICellItem* CellItem = list->GetItemIdx(i);
-
-		PIItem iitem = (PIItem)CellItem->m_pData;
-
-		if (iitem->m_eItemPlace == eItemPlaceBelt)
-			pActor->inventory().Ruck(iitem);
-	}
-}
 //////////////////////////////////////////////////////////////////////////
 
 void LoadStrings(CharInfoStrings *container, LPCSTR section, LPCSTR field)

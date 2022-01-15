@@ -396,8 +396,6 @@ void CUICarBodyWnd::Draw()
 
 void CUICarBodyWnd::Update()
 {
-	InventoryUtilities::UpdateItemsPlace(m_pUIOurBagList);
-
 	if(	m_b_need_update||
 		m_pOurObject->inventory().ModifyFrame()==Device.dwFrame || 
 		(m_pOthersObject&&m_pOthersObject->inventory().ModifyFrame()==Device.dwFrame))
@@ -475,6 +473,9 @@ void CUICarBodyWnd::TakeAll()
 		for(u32 j=0; j<ci->ChildsCount(); ++j)
 		{
 			PIItem _itm		= (PIItem)(ci->Child(j)->m_pData);
+
+			m_pOurObject->inventory().UpdateItemsPlace(_itm, true); //проверим не надо ли сбросить предметы в рюкзак
+
 			if(m_pOthersObject)
 				TransferItem	(_itm, m_pOthersObject, m_pOurObject, false);
 			else{
@@ -484,6 +485,9 @@ void CUICarBodyWnd::TakeAll()
 		
 		}
 		PIItem itm		= (PIItem)(ci->m_pData);
+
+		m_pOurObject->inventory().UpdateItemsPlace(itm, true); //проверим не надо ли сбросить предметы в рюкзак
+
 		if(m_pOthersObject)
 			TransferItem	(itm, m_pOthersObject, m_pOurObject, false);
 		else{
@@ -540,11 +544,17 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 		{
 			CUICellItem*	itm = ci->PopChild();
 			PIItem			iitm = (PIItem)itm->m_pData;
+
+			if (owner_list == m_pUIOurBagList)
+				m_pOurObject->inventory().UpdateItemsPlace(iitm); //проверим не надо ли сбросить предметы в рюкзак
+
 			SendEvent_Item_Drop(iitm, owner_id);
 		}
 	}
 
 	PIItem	iitm = (PIItem)ci->m_pData;
+	if (owner_list == m_pUIOurBagList)
+		m_pOurObject->inventory().UpdateItemsPlace(iitm); //проверим не надо ли сбросить предметы в рюкзак
 	//SendEvent_Item_Drop(CurrentIItem());
 	SendEvent_Item_Drop(iitm, owner_id);
 
@@ -611,6 +621,9 @@ bool CUICarBodyWnd::MoveOneFromCell(CUICellItem* itm)
 	CUIDragDropListEx*	old_owner = itm->OwnerList();
 	CUIDragDropListEx*	new_owner = (old_owner == m_pUIOthersBagList) ? m_pUIOurBagList : m_pUIOthersBagList;
 
+	PIItem	iitm = (PIItem)itm->m_pData;
+	m_pOurObject->inventory().UpdateItemsPlace(iitm, new_owner == m_pUIOurBagList); //проверим не надо ли сбросить предметы в рюкзак
+
 	if (m_pOthersObject)
 	{
 		if (TransferItem(CurrentIItem(),
@@ -653,6 +666,9 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 		for (u32 j = 0; j<ci->ChildsCount(); ++j)
 		{
 			PIItem _itm = (PIItem)(ci->Child(j)->m_pData);
+
+			m_pOurObject->inventory().UpdateItemsPlace(_itm, true); //проверим не надо ли сбросить предметы в рюкзак
+
 			if (m_pOthersObject)
 				TransferItem(_itm, m_pOurObject, m_pOthersObject, false);
 			else
@@ -663,6 +679,9 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 			}
 		}
 		PIItem itm = (PIItem)(ci->m_pData);
+
+		m_pOurObject->inventory().UpdateItemsPlace(itm, true); //проверим не надо ли сбросить предметы в рюкзак
+
 		if (m_pOthersObject)
 			TransferItem(itm, m_pOurObject, m_pOthersObject, false);
 		else
@@ -678,6 +697,9 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 		for (u32 j = 0; j<ci->ChildsCount(); ++j)
 		{
 			PIItem _itm = (PIItem)(ci->Child(j)->m_pData);
+
+			m_pOurObject->inventory().UpdateItemsPlace(_itm); //проверим не надо ли сбросить предметы в рюкзак
+
 			if (m_pOthersObject)
 				TransferItem(_itm, m_pOthersObject, m_pOurObject, false);
 			else
@@ -688,6 +710,9 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 			}
 		}
 		PIItem itm = (PIItem)(ci->m_pData);
+
+		m_pOurObject->inventory().UpdateItemsPlace(itm); //проверим не надо ли сбросить предметы в рюкзак
+
 		if (m_pOthersObject)
 			TransferItem(itm, m_pOthersObject, m_pOurObject, false);
 		else
@@ -710,8 +735,6 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	//if(m_pInventoryBox)	return;
 		
 	m_pUIPropertiesBox->RemoveAll();
-	
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 
 	CWeaponMagazined*			pWeapon			= smart_cast<CWeaponMagazined*>			(CurrentIItem());
 	CWeaponMagazinedWGrenade*	pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>	(CurrentIItem());
@@ -730,13 +753,13 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
 
 
-	if (psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK) && pArtefact && g_actor->GetDetector() && !m_pUIItemInfo->UIArtefactParams->IsShown())
+	if (psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK) && pArtefact && m_pOurObject->GetDetector() && !m_pUIItemInfo->UIArtefactParams->IsShown())
 	{
 		m_pUIPropertiesBox->AddItem("st_detector_check", NULL, INVENTORY_DETECTOR_CHECK_ACTION);
 		b_show = true;
 	}
 
-	if (pAmmo && owner == m_pUIOurBagList)
+	if (pAmmo)
 	{
 		LPCSTR _ammo_sect;
 
@@ -746,9 +769,9 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 			m_pUIPropertiesBox->AddItem("st_unload", NULL, INVENTORY_UNLOAD_AMMO_BOX);
 			b_show = true;
 			//reload AmmoBox
-			if (pAmmo->m_boxCurr < pAmmo->m_boxSize)
+			if (pAmmo->m_boxCurr < pAmmo->m_boxSize && owner == m_pUIOurBagList)
 			{
-				if (Actor()->inventory().GetAmmo(*pAmmo->m_ammoSect, true))
+				if (m_pOurObject->inventory().GetAmmo(*pAmmo->m_ammoSect, true))
 				{
 					strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
 						*CStringTable().translate(pSettings->r_string(pAmmo->m_ammoSect, "inv_name_short")));
@@ -758,11 +781,11 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 				}
 			}
 		}
-		else if (pAmmo->IsBoxReloadableEmpty())
+		else if (pAmmo->IsBoxReloadableEmpty() && owner == m_pUIOurBagList)
 		{
 			for (u8 i = 0; i < pAmmo->m_ammoTypes.size(); ++i)
 			{
-				if (Actor()->inventory().GetAmmo(*pAmmo->m_ammoTypes[i], true))
+				if (m_pOurObject->inventory().GetAmmo(*pAmmo->m_ammoTypes[i], true))
 				{
 					strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
 						*CStringTable().translate(pSettings->r_string(pAmmo->m_ammoTypes[i], "inv_name_short")));
@@ -779,7 +802,7 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 		if (pWeapon->IsGrenadeLauncherAttached())
 		{
 			const char *switch_gl_text = pWeaponMagWGren->m_bGrenadeMode ? "st_deactivate_gl" : "st_activate_gl";
-			if (pActor->inventory().InSlot(pWeapon))
+			if (m_pOurObject->inventory().InSlot(pWeapon))
 				m_pUIPropertiesBox->AddItem(switch_gl_text, NULL, INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE);
 			b_show = true;
 		}
@@ -807,11 +830,11 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 
 		bool b = (0 != pWeapon->GetAmmoElapsed() || pWeapon->HasDetachableMagazine() && pWeapon->IsMagazineAttached());
 
-		if (pActor->inventory().InSlot(pWeapon))
+		if (m_pOurObject->inventory().InSlot(pWeapon))
 		{
 			for (u8 i = 0; i < pWeapon->m_ammoTypes.size(); ++i)
 			{
-				if (Actor()->inventory().GetAmmo(pWeapon->m_ammoTypes[i].c_str(), false))
+				if (m_pOurObject->inventory().GetAmmo(pWeapon->m_ammoTypes[i].c_str(), false))
 				{
 					strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
 						*CStringTable().translate(pSettings->r_string(pWeapon->m_ammoTypes[i].c_str(), "inv_name_short")));
@@ -983,10 +1006,9 @@ bool CUICarBodyWnd::TransferItem(PIItem itm, CInventoryOwner* owner_from, CInven
 		if(invWeight+itmWeight >=maxWeight)	return false;
 	}
 	//
-	CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	CWeaponKnife* pKnife = smart_cast<CWeaponKnife*>(pActor->inventory().ActiveItem());
+	CWeaponKnife* pKnife = smart_cast<CWeaponKnife*>(/*pActor*/m_pOurObject->inventory().ActiveItem());
 	CBaseMonster* pMonster = smart_cast<CBaseMonster*>(go_from);
-	if (g_eFreeHands != eFreeHandsOff && pActor && pMonster)      //если мы забираем что-то из инвентаря монстра в режиме "свободных рук"
+	if (g_eFreeHands != eFreeHandsOff && pMonster)      //если мы забираем что-то из инвентаря монстра в режиме "свободных рук"
 	{
 		if (pKnife)                                                       //убедимся что оружие в активном слоте - нож
 		{

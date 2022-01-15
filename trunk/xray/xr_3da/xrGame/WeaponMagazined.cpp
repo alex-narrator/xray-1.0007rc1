@@ -370,7 +370,7 @@ bool CWeaponMagazined::HasDetachableMagazine()
 
 void CWeaponMagazined::HandleCartridgeInChamber()
 {
-	if (!HasChamber() || !HasDetachableMagazine())
+	if (!HasChamber() || !HasDetachableMagazine() || m_magazine.empty())
 		return;
 	//отстрел и заряжание нового патрона идёт от конца вектора m_magazine.back() - первым подаётся последний добавленный патрон
 	if (*m_magazine.back().m_ammoSect != *m_magazine.front().m_ammoSect) //первый и последний патрон различны, значит зарядка смешанная
@@ -1428,7 +1428,7 @@ BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
 	if (iAmmoElapsed && wpn->m_AmmoIDs.size()>0)
 	{
 		m_magazine.clear();
-		Msg("spawn weapon [%s] with ammo [%s]", *cNameSect(), *m_ammoTypes[m_ammoType]);
+		Msg("CWeaponMagazined::net_Spawn weapon [%s] with m_ammoType [%d], ammo [%s]", Name_script(), m_ammoType, *m_ammoTypes[m_ammoType]);
 		std::for_each(wpn->m_AmmoIDs.begin(), wpn->m_AmmoIDs.end(), [&](u8 at)
 		{
 			if (at > m_ammoTypes.size())

@@ -211,7 +211,7 @@ void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 	UpdateLists							(eBoth);
 
 // режим бартерной торговли
-	if (!g_actor->GetPDA())
+	if (!/*g_actor*/m_pInvOwner->GetPDA())
 	{
 		m_uidata->UIOurMoneyStatic.SetText(*CStringTable().translate("ui_st_pda_account_unavailable"));   //закроем статиком кол-во денег актора, т.к. оно еще не обновилось и не ноль
 		m_uidata->UIOtherMoneyStatic.SetText(*CStringTable().translate("ui_st_pda_account_unavailable")); //закроем статиком кол-во денег контрагента, т.к. оно еще не обновилось и не ---
@@ -323,8 +323,6 @@ void CUITradeWnd::Update()
 {
 	EListType et					= eNone;
 	
-	InventoryUtilities::UpdateItemsPlace(&m_uidata->UIOurBagList);
-
 	if(m_pInv->ModifyFrame()==Device.dwFrame && m_pOthersInv->ModifyFrame()==Device.dwFrame){
 		et = eBoth;
 	}else if(m_pInv->ModifyFrame()==Device.dwFrame){
@@ -533,7 +531,7 @@ void CUITradeWnd::PerformTrade()
 		string256				deal_refuse_text; //строка с текстом сообщения-отказа при невозмжности совершить торговую сделку
 		//условия для формирования текста
 		LPCSTR                  trader_name = others_money < 0 ? m_pOthersInvOwner->Name() : m_pInvOwner->Name(); //от чьего имени выдаётся сообщение
-		STRING_ID               refusal_text = g_actor->GetPDA() ? "st_not_enough_money_to_trade" : "st_not_enough_money_to_barter"; //текст сообщения отказа в зависимости от торговля/бартер
+		STRING_ID               refusal_text = /*g_actor*/m_pInvOwner->GetPDA() ? "st_not_enough_money_to_trade" : "st_not_enough_money_to_barter"; //текст сообщения отказа в зависимости от торговля/бартер
 		//показываем статик с текстом отказа
 		m_uidata->UIDealMsg = HUD().GetUI()->UIGame()->AddCustomStatic("not_enough_money", true); //показать статик
 		strconcat(sizeof(deal_refuse_text), deal_refuse_text, trader_name, ": ", *CStringTable().translate(refusal_text)); //сформировать текст
@@ -580,7 +578,7 @@ void CUITradeWnd::UpdatePrices()
 		m_uidata->UIOtherMoneyStatic.SetText(buf);
 	}
 	//
-	/*else*/ if (m_pOthersInvOwner->InfinitiveMoney() || (!m_pOthersInvOwner->InfinitiveMoney() && !g_actor->GetPDA())) //закроем --- счетчик денег контрагента, если в режиме бартера
+	/*else*/ if (m_pOthersInvOwner->InfinitiveMoney() || (!m_pOthersInvOwner->InfinitiveMoney() && !/*g_actor*/m_pInvOwner->GetPDA())) //закроем --- счетчик денег контрагента, если в режиме бартера
 	{
 		m_uidata->UIOtherMoneyStatic.SetText("---");
 	}
@@ -594,7 +592,9 @@ void CUITradeWnd::TransferItems(CUIDragDropListEx* pSellList,
 	while(pSellList->ItemsCount())
 	{
 		CUICellItem* itm	=	pSellList->RemoveItem(pSellList->GetItemIdx(0),false);
-		pTrade->TransferItem	((PIItem)itm->m_pData, bBuying);
+		PIItem	iitm		= (PIItem)itm->m_pData;
+		m_pInvOwner->inventory().UpdateItemsPlace(iitm, bBuying); //проверим не надо ли сбросить предметы в рюкзак
+		pTrade->TransferItem	(iitm, bBuying);
 		pBuyList->SetItem		(itm);
 	}
 
@@ -696,7 +696,7 @@ void CUITradeWnd::ActivatePropertiesBox()
 {
 	m_pUIPropertiesBox->RemoveAll();
 	//
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	//CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 
 	CWeaponMagazined*			pWeapon			= smart_cast<CWeaponMagazined*>			(CurrentIItem());
 	CWeaponMagazinedWGrenade*	pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>	(CurrentIItem());
@@ -709,7 +709,7 @@ void CUITradeWnd::ActivatePropertiesBox()
 	//
 	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
 
-	if (psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK) && pArtefact && g_actor->GetDetector() && !m_uidata->UIItemInfo.UIArtefactParams->IsShown())
+	if (psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK) && pArtefact && /*g_actor*/m_pInvOwner->GetDetector() && !m_uidata->UIItemInfo.UIArtefactParams->IsShown())
 	{
 		m_pUIPropertiesBox->AddItem("st_detector_check", NULL, INVENTORY_DETECTOR_CHECK_ACTION);
 		b_show = true;
@@ -729,7 +729,7 @@ void CUITradeWnd::ActivatePropertiesBox()
 				//reload AmmoBox
 				if (pAmmo->m_boxCurr < pAmmo->m_boxSize)
 				{
-					if (Actor()->inventory().GetAmmo(*pAmmo->m_ammoSect, true))
+					if (m_pInv->GetAmmo(*pAmmo->m_ammoSect, true))
 					{
 						strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
 							*CStringTable().translate(pSettings->r_string(pAmmo->m_ammoSect, "inv_name_short")));
@@ -743,7 +743,7 @@ void CUITradeWnd::ActivatePropertiesBox()
 			{
 				for (u8 i = 0; i < pAmmo->m_ammoTypes.size(); ++i)
 				{
-					if (Actor()->inventory().GetAmmo(*pAmmo->m_ammoTypes[i], true))
+					if (m_pInv->GetAmmo(*pAmmo->m_ammoTypes[i], true))
 					{
 						strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
 							*CStringTable().translate(pSettings->r_string(pAmmo->m_ammoTypes[i], "inv_name_short")));
@@ -760,7 +760,7 @@ void CUITradeWnd::ActivatePropertiesBox()
 			if (pWeapon->IsGrenadeLauncherAttached())
 			{
 				const char *switch_gl_text = pWeaponMagWGren->m_bGrenadeMode ? "st_deactivate_gl" : "st_activate_gl";
-				if (pActor->inventory().InSlot(pWeapon))
+				if (m_pInv->InSlot(pWeapon))
 					m_pUIPropertiesBox->AddItem(switch_gl_text, NULL, INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE);
 				b_show = true;
 			}
@@ -788,11 +788,11 @@ void CUITradeWnd::ActivatePropertiesBox()
 
 			bool b = (0 != pWeapon->GetAmmoElapsed() || pWeapon->HasDetachableMagazine() && pWeapon->IsMagazineAttached());
 
-			if (pActor->inventory().InSlot(pWeapon))
+			if (m_pInv->InSlot(pWeapon))
 			{
 				for (u8 i = 0; i < pWeapon->m_ammoTypes.size(); ++i)
 				{
-					if (Actor()->inventory().GetAmmo(pWeapon->m_ammoTypes[i].c_str(), false))
+					if (m_pInv->GetAmmo(pWeapon->m_ammoTypes[i].c_str(), false))
 					{
 						strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ",
 							*CStringTable().translate(pSettings->r_string(pWeapon->m_ammoTypes[i].c_str(), "inv_name_short")));
@@ -869,37 +869,13 @@ bool CUITradeWnd::OnItemDrop(CUICellItem* itm)
 	if(old_owner==new_owner || !old_owner || !new_owner)
 					return false;
 
-	/*if(old_owner==&m_uidata->UIOurBagList && new_owner==&m_uidata->UIOurTradeList)
-		ToOurTrade				();
-	else if(old_owner==&m_uidata->UIOurTradeList && new_owner==&m_uidata->UIOurBagList)
-		ToOurBag				();
-	else if(old_owner==&m_uidata->UIOthersBagList && new_owner==&m_uidata->UIOthersTradeList)
-		ToOthersTrade			();
-	else if(old_owner==&m_uidata->UIOthersTradeList && new_owner==&m_uidata->UIOthersBagList)
-		ToOthersBag				();
-
-	return true;*/
 	return MoveOneFromCell(itm);
 }
 
 bool CUITradeWnd::OnItemDbClick(CUICellItem* itm)
 {
 	SetCurrentItem						(itm);
-	/*CUIDragDropListEx*	old_owner		= itm->OwnerList();
-	
-	if(old_owner == &m_uidata->UIOurBagList)
-		ToOurTrade				();
-	else if(old_owner == &m_uidata->UIOurTradeList)
-		ToOurBag				();
-	else if(old_owner == &m_uidata->UIOthersBagList)
-		ToOthersTrade			();
-	else if(old_owner == &m_uidata->UIOthersTradeList)
-		ToOthersBag				();
-	else
-		R_ASSERT2(false, "wrong parent for cell item");
 
-	return true;*/
-	//
 	return b_TakeAllActionKeyHolded ? MoveAllFromCell(itm) : MoveOneFromCell(itm);
 }
 
@@ -923,29 +899,11 @@ bool CUITradeWnd::MoveOneFromCell(CUICellItem* itm)
 
 bool CUITradeWnd::MoveAllFromCell(CUICellItem* itm)
 {
-	//CUICellItem* cur_item = CurrentItem();
-
-	//if (!cur_item) return false;
-	
-	//u32 cnt = cur_item->ChildsCount();
 	CUIDragDropListEx* old_owner = itm->OwnerList();
-	//CUIDragDropListEx* to;
-
-	/*if (old_owner == &m_uidata->UIOurBagList)
-		to = &m_uidata->UIOurTradeList;
-	else if (old_owner == &m_uidata->UIOurTradeList)
-		to = &m_uidata->UIOurBagList;
-	else if (old_owner == &m_uidata->UIOthersBagList)
-		to = &m_uidata->UIOthersTradeList;
-	else if (old_owner == &m_uidata->UIOthersTradeList)
-		to = &m_uidata->UIOthersBagList;*/
 
 	u32 cnt = itm->ChildsCount();
 	for (u32 i = 0; i < cnt; ++i)
 	{
-//		CUICellItem* itm = itm->PopChild();
-
-		//to->SetItem(itm);
 		if (old_owner == &m_uidata->UIOurBagList)
 			ToOurTrade();
 		else if (old_owner == &m_uidata->UIOurTradeList)
@@ -958,7 +916,6 @@ bool CUITradeWnd::MoveAllFromCell(CUICellItem* itm)
 			R_ASSERT2(false, "wrong parent for cell item");
 	}
 	
-	//return MoveOneFromCell(itm);
 	return MoveOneFromCell(itm);
 	SetCurrentItem(NULL);
 }

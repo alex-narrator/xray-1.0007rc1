@@ -306,25 +306,7 @@ EListType CUIInventoryWnd::GetType(CUIDragDropListEx* l)
 	for (u32 i = 0; i < SLOTS_TOTAL; i++)
 		if (m_slots_array[i] == l)
 			return iwSlot;
-#pragma todo("alpet: после теста удалить")
-/* 
-	if(l==m_pUIAutomaticList)	return iwSlot;
-	if(l==m_pUIPistolList)		return iwSlot;
-	if(l==m_pUIOutfitList)		return iwSlot;
 
-#ifdef INV_NEW_SLOTS_SYSTEM
-	if(l==m_pUIKnifeList)				return iwSlot;
-	if(l==m_pUIBinocularList)			return iwSlot;
-	if(l==m_pUIDetectorList)			return iwSlot;
-	if(l==m_pUITorchList)				return iwSlot;
-	if(l==m_pUIPDAList)					return iwSlot;
-	if(l==m_pUIHelmetList)				return iwSlot;
-	if(l==m_pUISlotQuickAccessList_0)	return iwSlot;
-	if(l==m_pUISlotQuickAccessList_1)	return iwSlot;
-	if(l==m_pUISlotQuickAccessList_2)	return iwSlot;
-	if(l==m_pUISlotQuickAccessList_3)	return iwSlot;
-#endif
-	*/
 	NODEFAULT;
 #ifdef DEBUG
 	return iwSlot;
