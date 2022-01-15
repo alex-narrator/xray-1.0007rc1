@@ -166,6 +166,8 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	u32								m_ef_weapon_type;
 	//
 	bool							bMisfire;
+	//
+	xr_vector<u8>					m_AmmoIDs;
 
 									CSE_ALifeItemWeapon	(LPCSTR caSection);
 	virtual							~CSE_ALifeItemWeapon();
@@ -192,7 +194,7 @@ u8			m_LastLoadedMagType;
 //присоединён ли магазин
 bool		m_bIsMagazineAttached;
 //
-xr_vector<u8> m_AmmoIDs;
+//xr_vector<u8> m_AmmoIDs;
 //
 CSE_ALifeItemWeaponMagazined(LPCSTR caSection);
 virtual							~CSE_ALifeItemWeaponMagazined();

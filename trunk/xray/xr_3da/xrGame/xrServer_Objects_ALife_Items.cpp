@@ -383,6 +383,8 @@ CSE_ALifeItemWeapon::CSE_ALifeItemWeapon	(LPCSTR caSection) : CSE_ALifeItem(caSe
 	m_ef_weapon_type			= READ_IF_EXISTS(pSettings,r_u32,caSection,"ef_weapon_type",u32(-1));
 	//
 	bMisfire					= false;
+	//
+	m_AmmoIDs.clear				();
 }
 
 CSE_ALifeItemWeapon::~CSE_ALifeItemWeapon	()
@@ -418,6 +420,14 @@ void CSE_ALifeItemWeapon::UPDATE_Read(NET_Packet	&tNetPacket)
 		u8 _data = tNetPacket.r_u8();
 		bMisfire = !!(_data & 0x1);
 	}
+	//
+	m_AmmoIDs.clear();
+	u8 AmmoCount = tNetPacket.r_u8();
+	for (u8 i = 0; i<AmmoCount; i++)
+	{
+		m_AmmoIDs.push_back(tNetPacket.r_u8());
+	}
+	//
 }
 
 void CSE_ALifeItemWeapon::UPDATE_Write(NET_Packet	&tNetPacket)
@@ -433,6 +443,13 @@ void CSE_ALifeItemWeapon::UPDATE_Write(NET_Packet	&tNetPacket)
 	tNetPacket.w_u8				(m_bZoom);
 	//
 	tNetPacket.w_u8				(bMisfire ? 1 : 0);
+	//
+	tNetPacket.w_u8				(u8(m_AmmoIDs.size()));
+	for (u32 i = 0; i<m_AmmoIDs.size(); i++)
+	{
+		tNetPacket.w_u8			(u8(m_AmmoIDs[i]));
+	}
+	//
 }
 
 void CSE_ALifeItemWeapon::STATE_Read(NET_Packet	&tNetPacket, u16 size)
@@ -588,8 +605,6 @@ CSE_ALifeItemWeaponMagazined::CSE_ALifeItemWeaponMagazined	(LPCSTR caSection) : 
 		m_u8CurFireMode = 0;
 	}
 	//
-	m_AmmoIDs.clear();
-	//
 	m_LastLoadedMagType = 0;
 	m_bIsMagazineAttached = true;
 }
@@ -604,13 +619,6 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Read		(NET_Packet& P)
 
 	m_u8CurFireMode = P.r_u8();
 	//
-	m_AmmoIDs.clear();
-	u8 AmmoCount = P.r_u8();
-	for (u8 i = 0; i<AmmoCount; i++)
-	{
-		m_AmmoIDs.push_back(P.r_u8());
-	}
-	//
 	m_LastLoadedMagType = P.r_u8();
 	m_bIsMagazineAttached	= !!(P.r_u8() & 0x1);
 }
@@ -619,12 +627,6 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Write	(NET_Packet& P)
 	inherited::UPDATE_Write(P);
 
 	P.w_u8(m_u8CurFireMode);	
-	//
-	P.w_u8(u8(m_AmmoIDs.size()));
-	for (u32 i = 0; i<m_AmmoIDs.size(); i++)
-	{
-		P.w_u8(u8(m_AmmoIDs[i]));
-	}
 	//
 	P.w_u8(m_LastLoadedMagType);
 	P.w_u8(m_bIsMagazineAttached ? 1 : 0);
