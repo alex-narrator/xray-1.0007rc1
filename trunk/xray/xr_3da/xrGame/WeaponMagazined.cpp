@@ -1424,22 +1424,24 @@ BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
 	CSE_ALifeItemWeaponMagazined* const wpn = smart_cast<CSE_ALifeItemWeaponMagazined*>(DC);
 	m_iCurFireMode = wpn->m_u8CurFireMode;
 	SetQueueSize(GetCurrentFireMode());
-
+	//если оружие не заряжено то это не нужно делать
+	if (iAmmoElapsed && wpn->m_AmmoIDs.size()>0)
+	{
+		m_magazine.clear();
+		Msg("CWeaponMagazined::net_Spawn weapon [%s] with m_ammoType [%d], ammo [%s]", Name_script(), m_ammoType, *m_ammoTypes[m_ammoType]);
+		std::for_each(wpn->m_AmmoIDs.begin(), wpn->m_AmmoIDs.end(), [&](u8 at)
+		{
+			if (at > m_ammoTypes.size())
+				at = 0;
+			CCartridge l_cartridge;
+			l_cartridge.Load(*m_ammoTypes[at], at);
+			m_magazine.push_back(l_cartridge);
+		});
+	}
 	//если номер типа магазина некорректен (это бывает при спавне разряженного оружия) - не будем присваивать значение, пусть будет тип по умолчанию
 	if (wpn->m_LastLoadedMagType < m_ammoTypes.size())
-	{
-		/*Msg("CWeaponMagazined::net_Spawn weapon [%s] with m_LastLoadedMagType [%d], mag name [%s]", Name_script(), m_LastLoadedMagType, *m_ammoTypes[m_LastLoadedMagType]);
-		Msg("CWeaponMagazined::net_Spawn weapon [%s] with m_bIsMagazineAttached [%u]", Name_script(), m_bIsMagazineAttached);
-		Msg("CWeaponMagazined::net_Spawn weapon [%s] with wpn->m_LastLoadedMagType [%d], mag name [%s]", Name_script(), wpn->m_LastLoadedMagType, *m_ammoTypes[wpn->m_LastLoadedMagType]);
-		Msg("CWeaponMagazined::net_Spawn weapon [%s] with wpn->m_bIsMagazineAttached [%u]", Name_script(), wpn->m_bIsMagazineAttached);*/
 		m_LastLoadedMagType = wpn->m_LastLoadedMagType;
-		m_bIsMagazineAttached = wpn->m_bIsMagazineAttached;
-	}
-	else
-	{
-		Msg("!CWeaponMagazined::net_Spawn weapon [%s] with INVALID wpn->m_LastLoadedMagType [%d], keep default m_LastLoadedMagType [%d]", Name_script(), wpn->m_LastLoadedMagType, m_LastLoadedMagType);
-		Msg("!CWeaponMagazined::net_Spawn weapon [%s] with INVALID wpn->m_bIsMagazineAttached [%u], keep default m_bIsMagazineAttached [%u]", Name_script(), wpn->m_bIsMagazineAttached, m_bIsMagazineAttached);
-	}
+	m_bIsMagazineAttached = wpn->m_bIsMagazineAttached;
 	//
 	return bRes;
 }
@@ -1449,6 +1451,13 @@ void CWeaponMagazined::net_Export(NET_Packet& P)
 	inherited::net_Export(P);
 
 	P.w_u8(u8(m_iCurFireMode & 0x00ff));
+	//
+	P.w_u8(u8(m_magazine.size()));
+	for (u32 i = 0; i<m_magazine.size(); i++)
+	{
+		CCartridge& l_cartridge = *(m_magazine.begin() + i);
+		P.w_u8(l_cartridge.m_LocalAmmoType);
+	}
 	//
 	P.w_u8(u8(m_LastLoadedMagType));
 	P.w_u8(m_bIsMagazineAttached ? 1 : 0);
@@ -1463,6 +1472,20 @@ void CWeaponMagazined::net_Import(NET_Packet& P)
 
 	m_iCurFireMode = P.r_u8();
 	SetQueueSize(GetCurrentFireMode());
+	//
+	u8 AmmoCount = P.r_u8();
+	for (u32 i = 0; i<AmmoCount; i++)
+	{
+		u8 LocalAmmoType = P.r_u8();
+		if (i >= m_magazine.size()) continue;
+		CCartridge& l_cartridge = *(m_magazine.begin() + i);
+		if (LocalAmmoType == l_cartridge.m_LocalAmmoType) continue;
+#ifdef DEBUG
+		Msg("! %s reload to %s", *l_cartridge.m_ammoSect, *(m_ammoTypes[LocalAmmoType]));
+#endif
+		l_cartridge.Load(*(m_ammoTypes[LocalAmmoType]), LocalAmmoType);
+		//		m_fCurrentCartirdgeDisp = m_DefaultCartridge.m_kDisp;		
+	}
 	//
 	m_LastLoadedMagType = P.r_u8();
 	m_bIsMagazineAttached = !!(P.r_u8() & 0x1);
