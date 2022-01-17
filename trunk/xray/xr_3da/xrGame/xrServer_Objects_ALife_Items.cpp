@@ -590,8 +590,7 @@ CSE_ALifeItemWeaponMagazined::CSE_ALifeItemWeaponMagazined	(LPCSTR caSection) : 
 	//
 	m_AmmoIDs.clear();
 	//
-	m_LastLoadedMagType = 0;
-	m_bIsMagazineAttached = true;
+	//m_bIsMagazineAttached = true;
 }
 
 CSE_ALifeItemWeaponMagazined::~CSE_ALifeItemWeaponMagazined	()
@@ -611,8 +610,7 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Read		(NET_Packet& P)
 		m_AmmoIDs.push_back(P.r_u8());
 	}
 	//
-	m_LastLoadedMagType = P.r_u8();
-	m_bIsMagazineAttached	= !!(P.r_u8() & 0x1);
+	//m_bIsMagazineAttached	= !!(P.r_u8() & 0x1);
 }
 void CSE_ALifeItemWeaponMagazined::UPDATE_Write	(NET_Packet& P)
 {
@@ -626,8 +624,7 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Write	(NET_Packet& P)
 		P.w_u8(u8(m_AmmoIDs[i]));
 	}
 	//
-	P.w_u8(m_LastLoadedMagType);
-	P.w_u8(m_bIsMagazineAttached ? 1 : 0);
+	//P.w_u8(m_bIsMagazineAttached ? 1 : 0);
 }
 void CSE_ALifeItemWeaponMagazined::STATE_Read		(NET_Packet& P, u16 size)
 {

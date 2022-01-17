@@ -50,7 +50,7 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	//
 	m_bHasChamber				= true;
 	m_LastLoadedMagType			= 0;
-	m_bIsMagazineAttached		= true;
+	//m_bIsMagazineAttached		= true;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -302,14 +302,15 @@ void CWeaponMagazined::UnloadAmmo(int unload_count, bool spawn_ammo, bool detach
 	{
 		int chamber_ammo = HasChamber() ? 1 : 0;	//учтём дополнительный патрон в патроннике
 
-		if (iAmmoElapsed <= chamber_ammo && m_bIsMagazineAttached)	//spawn mag empty
+		if (iAmmoElapsed <= chamber_ammo && IsMagazineAttached() && ParentIsActor())	//spawn mag empty - for actor only
 		{
 			LPCSTR empty_sect = pSettings->r_string(*m_ammoTypes[m_LastLoadedMagType], "empty_box");
 			SpawnAmmo(0, empty_sect);
 		}
 
 		iMagazineSize = 1;
-		m_bIsMagazineAttached = false;
+		//m_bIsMagazineAttached = false;
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonMagazine;
 	}
 
 	xr_map<LPCSTR, u16> l_ammo;
@@ -356,7 +357,7 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 	UnloadAmmo(iAmmoElapsed - chamber_ammo, spawn_ammo, HasDetachableMagazine());
 }
 
-bool CWeaponMagazined::HasDetachableMagazine()
+bool CWeaponMagazined::HasDetachableMagazine() const
 {
 	for (u32 i = 0; i < m_ammoTypes.size(); ++i)
 	{
@@ -366,6 +367,12 @@ bool CWeaponMagazined::HasDetachableMagazine()
 	}
 
 	return false;
+}
+
+bool CWeaponMagazined::IsMagazineAttached()
+{
+	//return m_bIsMagazineAttached;
+	return (0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonMagazine)) && HasDetachableMagazine();
 }
 
 void CWeaponMagazined::HandleCartridgeInChamber()
@@ -459,7 +466,8 @@ void CWeaponMagazined::ReloadMagazine()
 		int chamber_ammo = HasChamber() ? 1 : 0;	//учтём дополнительный патрон в патроннике
 		iMagazineSize = m_pAmmo->m_boxSize + chamber_ammo; 
 		m_LastLoadedMagType = m_ammoType;
-		m_bIsMagazineAttached = true;
+		//m_bIsMagazineAttached = true;
+		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonMagazine;
 	}
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
@@ -1403,8 +1411,8 @@ void CWeaponMagazined::save(NET_Packet &output_packet)
 	save_data(m_iShotNum, output_packet);
 	save_data(m_iCurFireMode, output_packet);
 	//
-	save_data(m_LastLoadedMagType, output_packet);
-	save_data(m_bIsMagazineAttached, output_packet);
+	//save_data(m_LastLoadedMagType, output_packet);
+	//save_data(m_bIsMagazineAttached, output_packet);
 }
 
 void CWeaponMagazined::load(IReader &input_packet)
@@ -1414,8 +1422,8 @@ void CWeaponMagazined::load(IReader &input_packet)
 	load_data(m_iShotNum, input_packet);
 	load_data(m_iCurFireMode, input_packet);
 	//
-	load_data(m_LastLoadedMagType, input_packet);
-	load_data(m_bIsMagazineAttached, input_packet);
+	//load_data(m_LastLoadedMagType, input_packet);
+	//load_data(m_bIsMagazineAttached, input_packet);
 }
 
 BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
@@ -1424,24 +1432,21 @@ BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
 	CSE_ALifeItemWeaponMagazined* const wpn = smart_cast<CSE_ALifeItemWeaponMagazined*>(DC);
 	m_iCurFireMode = wpn->m_u8CurFireMode;
 	SetQueueSize(GetCurrentFireMode());
-	//если оружие не заряжено то это не нужно делать
-	if (iAmmoElapsed && wpn->m_AmmoIDs.size()>0)
+	//multitype ammo loading
+	xr_vector<u8> ammo_ids = wpn->m_AmmoIDs;
+
+	for (u32 i = 0; i < ammo_ids.size(); i++)
 	{
-		m_magazine.clear();
-		Msg("CWeaponMagazined::net_Spawn weapon [%s] with m_ammoType [%d], ammo [%s]", Name_script(), m_ammoType, *m_ammoTypes[m_ammoType]);
-		std::for_each(wpn->m_AmmoIDs.begin(), wpn->m_AmmoIDs.end(), [&](u8 at)
-		{
-			if (at > m_ammoTypes.size())
-				at = 0;
-			CCartridge l_cartridge;
-			l_cartridge.Load(*m_ammoTypes[at], at);
-			m_magazine.push_back(l_cartridge);
-		});
+		u8 LocalAmmoType = ammo_ids[i];
+		if (i >= m_magazine.size()) continue;
+		CCartridge& l_cartridge = *(m_magazine.begin() + i);
+		if (LocalAmmoType == l_cartridge.m_LocalAmmoType) continue;
+		l_cartridge.Load(*m_ammoTypes[LocalAmmoType], LocalAmmoType);
 	}
-	//если номер типа магазина некорректен (это бывает при спавне разряженного оружия) - не будем присваивать значение, пусть будет тип по умолчанию
-	if (wpn->m_LastLoadedMagType < m_ammoTypes.size())
-		m_LastLoadedMagType = wpn->m_LastLoadedMagType;
-	m_bIsMagazineAttached = wpn->m_bIsMagazineAttached;
+	//
+	if (IsMagazineAttached())
+		m_LastLoadedMagType = m_ammoType;
+	//m_bIsMagazineAttached = wpn->m_bIsMagazineAttached;
 	//
 	return bRes;
 }
@@ -1459,8 +1464,7 @@ void CWeaponMagazined::net_Export(NET_Packet& P)
 		P.w_u8(l_cartridge.m_LocalAmmoType);
 	}
 	//
-	P.w_u8(u8(m_LastLoadedMagType));
-	P.w_u8(m_bIsMagazineAttached ? 1 : 0);
+	//P.w_u8(m_bIsMagazineAttached ? 1 : 0);
 }
 
 void CWeaponMagazined::net_Import(NET_Packet& P)
@@ -1487,8 +1491,7 @@ void CWeaponMagazined::net_Import(NET_Packet& P)
 		//		m_fCurrentCartirdgeDisp = m_DefaultCartridge.m_kDisp;		
 	}
 	//
-	m_LastLoadedMagType = P.r_u8();
-	m_bIsMagazineAttached = !!(P.r_u8() & 0x1);
+	//m_bIsMagazineAttached = !!(P.r_u8() & 0x1);
 }
 #include "string_table.h"
 #include "ui/UIMainIngameWnd.h"
