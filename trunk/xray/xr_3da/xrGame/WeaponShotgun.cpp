@@ -454,12 +454,51 @@ u8 CWeaponShotgun::AddCartridge		(u8 cnt)
 	return cnt;
 }
 
+/*BOOL	CWeaponShotgun::net_Spawn(CSE_Abstract* DC)
+{
+	BOOL bRes = inherited::net_Spawn(DC);
+
+	CSE_ALifeItemWeaponShotGun* _dc = smart_cast<CSE_ALifeItemWeaponShotGun*>(DC);
+	xr_vector<u8> ammo_ids = _dc->m_AmmoIDs;
+
+	for (u32 i = 0; i < ammo_ids.size(); i++)
+	{
+		u8 LocalAmmoType = ammo_ids[i];
+		if (i >= m_magazine.size()) continue;
+		CCartridge& l_cartridge = *(m_magazine.begin() + i);
+		if (LocalAmmoType == l_cartridge.m_LocalAmmoType) continue;
+		l_cartridge.Load(*m_ammoTypes[LocalAmmoType], LocalAmmoType);
+	}
+
+	return bRes;
+}
+
 void	CWeaponShotgun::net_Export	(NET_Packet& P)
 {
 	inherited::net_Export(P);	
+
+	P.w_u8(u8(m_magazine.size()));
+	for (u32 i = 0; i<m_magazine.size(); i++)
+	{
+		CCartridge& l_cartridge = *(m_magazine.begin() + i);
+		P.w_u8(l_cartridge.m_LocalAmmoType);
+	}
 }
 
 void	CWeaponShotgun::net_Import	(NET_Packet& P)
 {
 	inherited::net_Import(P);	
-}
+
+	u8 AmmoCount = P.r_u8();
+	for (u32 i = 0; i<AmmoCount; i++)
+	{
+		u8 LocalAmmoType = P.r_u8();
+		if (i >= m_magazine.size()) continue;
+		CCartridge& l_cartridge = *(m_magazine.begin() + i);
+		if (LocalAmmoType == l_cartridge.m_LocalAmmoType) continue;
+#ifdef DEBUG
+		Msg("! %s reload to %s", *l_cartridge.m_ammoSect, *(m_ammoTypes[LocalAmmoType]));
+#endif
+		l_cartridge.Load(*(m_ammoTypes[LocalAmmoType]), LocalAmmoType);
+	}
+}*/

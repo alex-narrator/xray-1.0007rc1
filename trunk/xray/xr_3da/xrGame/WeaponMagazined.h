@@ -188,7 +188,7 @@ protected:
 	//последний заряженный тип магазина
 	u32				m_LastLoadedMagType;
 	//присоединён ли магазин
-	bool			m_bIsMagazineAttached;
+	//bool			m_bIsMagazineAttached;
 
 	//переменная блокирует использование
 	//только разных типов патронов
@@ -207,8 +207,8 @@ public:
 	virtual LPCSTR	GetCurrentFireModeStr	() {return m_sCurFireMode;};
 
 	//оружие использует отъёмный магазин
-	virtual bool	HasDetachableMagazine	();
-	virtual bool	IsMagazineAttached		() { return m_bIsMagazineAttached; };
+	virtual bool	HasDetachableMagazine	() const;
+	virtual bool	IsMagazineAttached		();
 	//у оружия есть патронник
 	virtual bool	HasChamber				() { return /*ParentIsActor() &&*/ m_bHasChamber; };
 

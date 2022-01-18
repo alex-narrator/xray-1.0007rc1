@@ -501,35 +501,11 @@ BOOL CWeapon::net_Spawn(CSE_Abstract* DC)
 	bMisfire = E->bMisfire;
 	//Msg("CWeapon::net_Spawn: weapon [%s] with m_ammoType [%d], ammo [%s]", Name_script(), m_ammoType, *m_ammoTypes[m_ammoType]);
 	m_DefaultCartridge.Load(*m_ammoTypes[m_ammoType], u8(m_ammoType));
-	/*if (iAmmoElapsed)
+	if (iAmmoElapsed)
 	{
 		m_fCurrentCartirdgeDisp = m_DefaultCartridge.m_kDisp;
 		for (int i = 0; i < iAmmoElapsed; ++i)
 			m_magazine.push_back(m_DefaultCartridge);
-	}*/
-	if (iAmmoElapsed)
-	{
-		m_magazine.clear();
-		m_fCurrentCartirdgeDisp = m_DefaultCartridge.m_kDisp;
-
-		if (E->m_AmmoIDs.empty())
-		{
-			//Msg("CWeapon::net_Spawn weapon [%s] with m_ammoType [%d], ammo [%s] - E->m_AmmoIDs.empty()", Name_script(), m_ammoType, *m_ammoTypes[m_ammoType]);
-			for (int i = 0; i < iAmmoElapsed; ++i)
-				m_magazine.push_back(m_DefaultCartridge);
-		}
-		else
-		{
-			//Msg("CWeapon::net_Spawn weapon [%s] with m_ammoType [%d], ammo [%s]", Name_script(), m_ammoType, *m_ammoTypes[m_ammoType]);
-			std::for_each(E->m_AmmoIDs.begin(), E->m_AmmoIDs.end(), [&](u8 at)
-			{
-				if (at > m_ammoTypes.size())
-					at = 0;
-				m_DefaultCartridge.Load(*m_ammoTypes[at], at);
-				m_magazine.push_back(m_DefaultCartridge);
-				//Msg("CWeapon::net_Spawn weapon [%s] loaded with m_ammoType [%d], ammo [%s] - has E->m_AmmoIDs", Name_script(), at, *m_ammoTypes[at]);
-			});
-		}
 	}
 
 	UpdateAddonsVisibility();
@@ -579,14 +555,6 @@ void CWeapon::net_Export(NET_Packet& P)
 	P.w_u8((u8)m_bZoomMode);
 	//
 	P.w_u8((u8)bMisfire);
-	//
-	P.w_u8(u8(m_magazine.size()));
-	for (u32 i = 0; i<m_magazine.size(); i++)
-	{
-		CCartridge& l_cartridge = *(m_magazine.begin() + i);
-		P.w_u8(l_cartridge.m_LocalAmmoType);
-	}
-	//
 }
 
 void CWeapon::net_Import(NET_Packet& P)
@@ -615,11 +583,6 @@ void CWeapon::net_Import(NET_Packet& P)
 	P.r_u8((u8)Zoom);
 	//
 	bMisfire = !!(P.r_u8() & 0x1);
-	//
-	u8 AmmoCount, LocalAmmoType;
-	P.r_u8(AmmoCount);
-	P.r_u8(LocalAmmoType);
-	//
 
 	if (H_Parent() && H_Parent()->Remote())
 	{
@@ -642,19 +605,6 @@ void CWeapon::net_Import(NET_Packet& P)
 		{
 			m_ammoType = ammoType;
 			SetAmmoElapsed((ammo_elapsed));
-			//
-			for (u32 i = 0; i<AmmoCount; i++)
-			{
-				if (i >= m_magazine.size()) continue;
-				CCartridge& l_cartridge = *(m_magazine.begin() + i);
-				if (LocalAmmoType == l_cartridge.m_LocalAmmoType) continue;
-#ifdef DEBUG
-				Msg("! %s reload to %s", *l_cartridge.m_ammoSect, *(m_ammoTypes[LocalAmmoType]));
-#endif
-				l_cartridge.Load(*(m_ammoTypes[LocalAmmoType]), LocalAmmoType);
-				//		m_fCurrentCartirdgeDisp = m_DefaultCartridge.m_kDisp;		
-			}
-			//
 		}
 	}break;
 	}
