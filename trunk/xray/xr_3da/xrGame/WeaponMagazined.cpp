@@ -51,6 +51,8 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	m_bHasChamber				= true;
 	m_LastLoadedMagType			= 0;
 	//m_bIsMagazineAttached		= true;
+	//
+	m_fAttachedSilencerCondition = 1.f;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -697,6 +699,9 @@ void CWeaponMagazined::state_Fire(float dt)
 			//Msg("fTimeToFire = %.6f", fTimeToFire);
 		}
 		//
+		//повысить изношенность глушителя
+		DeteriorateSilencerAttachable(-GetSilencerDeterioration());
+		//
 		++m_iShotNum;
 
 		OnShot();
@@ -1032,6 +1037,7 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 	{
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonSilencer;
 		result = true;
+		m_fAttachedSilencerCondition = pIItem->GetCondition();
 	}
 	else if (pGrenadeLauncher &&
 		m_eGrenadeLauncherStatus == CSE_ALifeItemWeapon::eAddonAttachable &&
@@ -1060,7 +1066,7 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 		return inherited::Attach(pIItem, b_send_event);
 }
 
-bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
+bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item, float item_condition)
 {
 	if (m_eScopeStatus == CSE_ALifeItemWeapon::eAddonAttachable &&
 		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope) &&
@@ -1078,10 +1084,13 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 		(m_sSilencerName == item_section_name))
 	{
 		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonSilencer;
-
+		//
+		if (b_spawn_item) item_condition = m_fAttachedSilencerCondition;
+		m_fAttachedSilencerCondition = 1.f;
+		//
 		UpdateAddonsVisibility();
 		InitAddons();
-		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item, item_condition);
 	}
 	else if (m_eGrenadeLauncherStatus == CSE_ALifeItemWeapon::eAddonAttachable &&
 		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&
@@ -1404,6 +1413,26 @@ float	CWeaponMagazined::GetWeaponDeterioration()
 	return m_iShotNum*conditionDecreasePerShot * silencer_dec_k;
 };
 
+float	CWeaponMagazined::GetSilencerDeterioration()
+{
+	return conditionDecreasePerShotSilencer;
+};
+
+void CWeaponMagazined::DeteriorateSilencerAttachable(float fDeltaCondition)
+{
+	if (IsSilencerAttached() && SilencerAttachable() && !fis_zero(conditionDecreasePerShotSilencer))
+	{
+		if (fis_zero(m_fAttachedSilencerCondition))
+			Detach(m_sSilencerName.c_str(), false);
+		else
+		{
+			CCartridge &l_cartridge = m_magazine.back(); //с учетом влияния конкретного патрона
+			m_fAttachedSilencerCondition += fDeltaCondition * l_cartridge.m_impair;
+			clamp(m_fAttachedSilencerCondition, 0.f, 1.f);
+		}
+	}
+};
+
 void CWeaponMagazined::save(NET_Packet &output_packet)
 {
 	inherited::save(output_packet);
@@ -1411,7 +1440,6 @@ void CWeaponMagazined::save(NET_Packet &output_packet)
 	save_data(m_iShotNum, output_packet);
 	save_data(m_iCurFireMode, output_packet);
 	//
-	//save_data(m_LastLoadedMagType, output_packet);
 	//save_data(m_bIsMagazineAttached, output_packet);
 }
 
@@ -1422,7 +1450,6 @@ void CWeaponMagazined::load(IReader &input_packet)
 	load_data(m_iShotNum, input_packet);
 	load_data(m_iCurFireMode, input_packet);
 	//
-	//load_data(m_LastLoadedMagType, input_packet);
 	//load_data(m_bIsMagazineAttached, input_packet);
 }
 
@@ -1434,7 +1461,6 @@ BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
 	SetQueueSize(GetCurrentFireMode());
 	//multitype ammo loading
 	xr_vector<u8> ammo_ids = wpn->m_AmmoIDs;
-
 	for (u32 i = 0; i < ammo_ids.size(); i++)
 	{
 		u8 LocalAmmoType = ammo_ids[i];
@@ -1447,6 +1473,9 @@ BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
 	if (IsMagazineAttached())
 		m_LastLoadedMagType = m_ammoType;
 	//m_bIsMagazineAttached = wpn->m_bIsMagazineAttached;
+	//
+	if (SilencerAttachable() && IsSilencerAttached() && wpn->m_fAttachedSilencerCondition < 1.f)
+		m_fAttachedSilencerCondition = wpn->m_fAttachedSilencerCondition;
 	//
 	return bRes;
 }
@@ -1465,6 +1494,8 @@ void CWeaponMagazined::net_Export(NET_Packet& P)
 	}
 	//
 	//P.w_u8(m_bIsMagazineAttached ? 1 : 0);
+	//
+	P.w_float_q8(m_fAttachedSilencerCondition, 0.0f, 1.0f);
 }
 
 void CWeaponMagazined::net_Import(NET_Packet& P)
@@ -1492,6 +1523,8 @@ void CWeaponMagazined::net_Import(NET_Packet& P)
 	}
 	//
 	//m_bIsMagazineAttached = !!(P.r_u8() & 0x1);
+	//
+	P.r_float_q8(m_fAttachedSilencerCondition, 0.f, 1.f);
 }
 #include "string_table.h"
 #include "ui/UIMainIngameWnd.h"

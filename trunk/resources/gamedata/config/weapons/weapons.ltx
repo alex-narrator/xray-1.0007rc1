@@ -1805,11 +1805,13 @@ inv_grid_height		= 1
 inv_grid_x			= 18
 inv_grid_y			= 1
 
+condition_shot_dec = 0.1 ;износ глушителя за выстрел
+
 bullet_hit_power_k	= 0.8
 bullet_speed_k	 	= 0.8
 fire_dispersion_base_k = 1.25;2
 cam_dispersion_k	= 0.8
-condition_shot_dec_k = 10
+condition_shot_dec_k = 10 ;множитель износа оружия при стрельбе с установленным глушителем
 
 [wpn_addon_grenade_launcher]:identity_immunities
 GroupControlSection	= spawn_group

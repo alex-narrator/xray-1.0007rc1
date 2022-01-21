@@ -129,7 +129,7 @@ public:
 	virtual void	OnH_A_Chield		();
 
 	virtual bool	Attach(PIItem pIItem, bool b_send_event);
-	virtual bool	Detach(const char* item_section_name, bool b_spawn_item);
+	virtual bool	Detach(const char* item_section_name, bool b_spawn_item, float item_condition = 1.f);
 	virtual bool	CanAttach(PIItem pIItem);
 	virtual bool	CanDetach(const char* item_section_name);
 
@@ -235,6 +235,11 @@ protected:
 	virtual void	StartIdleAnim		();
 	virtual	int		ShotsFired			() { return m_iShotNum; }
 	virtual float	GetWeaponDeterioration	();
+	//для хранения состояния присоединённого глушителя
+	float			m_fAttachedSilencerCondition;
+	//износ самого глушителя при стрельбе
+	virtual float	GetSilencerDeterioration();
+	virtual void	DeteriorateSilencerAttachable(float fDeltaCondition);
 
 	// Callback function added by Cribbledirge.
 	virtual IC void	StateSwitchCallback(GameObject::ECallbackType actor_type, GameObject::ECallbackType npc_type);

@@ -343,7 +343,7 @@ protected:
 	virtual void			Fire2Start();
 	virtual void			Fire2End();
 	virtual void			Reload();
-	void			StopShooting();
+	void					StopShooting();
 
 	// обработка визуализации выстрела
 	virtual void			OnShot(){};
@@ -389,6 +389,8 @@ protected:
 	float					conditionDecreasePerShotGL;
 	//увеличение изношености при попадании
 	float					conditionDecreasePerShotOnHit;
+	//увеличение изношености при выстреле с глушителем для самого глушителя
+	float					conditionDecreasePerShotSilencer;
 
 	//  [8/2/2005]
 	float					m_fPDM_disp_base;

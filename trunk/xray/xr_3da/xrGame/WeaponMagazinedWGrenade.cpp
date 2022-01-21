@@ -364,13 +364,12 @@ void CWeaponMagazinedWGrenade::state_Fire(float dt)
 		{
 
 			fTime			+=	fTimeToFire;
-
-			++m_iShotNum;
-			OnShot			();
 			//снижаем кондицию оружи при выстреле из ПГ
 			//Msg("GetWeaponDeterioration GL = %f", GetWeaponDeterioration());
 			ChangeCondition(-GetWeaponDeterioration());
 			//
+			++m_iShotNum;
+			OnShot			();
 			
 			// Ammo
 			if(Local()) 
@@ -614,7 +613,7 @@ bool CWeaponMagazinedWGrenade::Attach(PIItem pIItem, bool b_send_event)
         return inherited::Attach(pIItem, b_send_event);
 }
 
-bool CWeaponMagazinedWGrenade::Detach(const char* item_section_name, bool b_spawn_item)
+bool CWeaponMagazinedWGrenade::Detach(const char* item_section_name, bool b_spawn_item, float item_condition)
 {
 	if (CSE_ALifeItemWeapon::eAddonAttachable == m_eGrenadeLauncherStatus &&
 	   0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&

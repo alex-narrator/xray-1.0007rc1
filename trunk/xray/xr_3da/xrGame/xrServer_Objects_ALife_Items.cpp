@@ -591,6 +591,8 @@ CSE_ALifeItemWeaponMagazined::CSE_ALifeItemWeaponMagazined	(LPCSTR caSection) : 
 	m_AmmoIDs.clear();
 	//
 	//m_bIsMagazineAttached = true;
+	//
+	m_fAttachedSilencerCondition = 1.f;
 }
 
 CSE_ALifeItemWeaponMagazined::~CSE_ALifeItemWeaponMagazined	()
@@ -611,6 +613,8 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Read		(NET_Packet& P)
 	}
 	//
 	//m_bIsMagazineAttached	= !!(P.r_u8() & 0x1);
+	//
+	P.r_float_q8(m_fAttachedSilencerCondition, 0.0f, 1.0f);
 }
 void CSE_ALifeItemWeaponMagazined::UPDATE_Write	(NET_Packet& P)
 {
@@ -625,6 +629,8 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Write	(NET_Packet& P)
 	}
 	//
 	//P.w_u8(m_bIsMagazineAttached ? 1 : 0);
+	//
+	P.w_float_q8(m_fAttachedSilencerCondition, 0.0f, 1.0f);
 }
 void CSE_ALifeItemWeaponMagazined::STATE_Read		(NET_Packet& P, u16 size)
 {
