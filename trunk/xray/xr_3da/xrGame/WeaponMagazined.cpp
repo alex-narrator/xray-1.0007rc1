@@ -50,7 +50,7 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	//
 	m_bHasChamber				= true;
 	m_LastLoadedMagType			= 0;
-	//m_bIsMagazineAttached		= true;
+	m_bIsMagazineAttached		= true;
 	//
 	m_fAttachedSilencerCondition = 1.f;
 }
@@ -306,13 +306,12 @@ void CWeaponMagazined::UnloadAmmo(int unload_count, bool spawn_ammo, bool detach
 
 		if (iAmmoElapsed <= chamber_ammo && IsMagazineAttached() && spawn_ammo)	//spawn mag empty
 		{
-			LPCSTR empty_sect = pSettings->r_string(*m_ammoTypes[m_LastLoadedMagType], "empty_box");
+			LPCSTR empty_sect = pSettings->r_string(m_ammoTypes[m_LastLoadedMagType], "empty_box");
 			SpawnAmmo(0, empty_sect);
 		}
 
 		iMagazineSize = 1;
-		//m_bIsMagazineAttached = false;
-		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonMagazine;
+		m_bIsMagazineAttached = false;
 	}
 
 	xr_map<LPCSTR, u16> l_ammo;
@@ -371,10 +370,9 @@ bool CWeaponMagazined::HasDetachableMagazine() const
 	return false;
 }
 
-bool CWeaponMagazined::IsMagazineAttached()
+bool CWeaponMagazined::IsMagazineAttached() const
 {
-	//return m_bIsMagazineAttached;
-	return (0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonMagazine)) && HasDetachableMagazine();
+	return m_bIsMagazineAttached && HasDetachableMagazine();
 }
 
 void CWeaponMagazined::HandleCartridgeInChamber()
@@ -405,7 +403,7 @@ void CWeaponMagazined::ReloadMagazine()
 {
 	m_dwAmmoCurrentCalcFrame = 0;
 
-	//устранить осечку при перезарядке
+	//устранить осечку при полной перезарядке
 	if (IsMisfire() && (!HasChamber() || m_magazine.empty()))
 	{
 		bMisfire = false;
@@ -468,8 +466,7 @@ void CWeaponMagazined::ReloadMagazine()
 		int chamber_ammo = HasChamber() ? 1 : 0;	//учтём дополнительный патрон в патроннике
 		iMagazineSize = m_pAmmo->m_boxSize + chamber_ammo; 
 		m_LastLoadedMagType = m_ammoType;
-		//m_bIsMagazineAttached = true;
-		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonMagazine;
+		m_bIsMagazineAttached = true;
 	}
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
@@ -681,6 +678,18 @@ void CWeaponMagazined::state_Fire(float dt)
 	//	Msg("%d && %d && (%d || %d) && (%d || %d)", !m_magazine.empty(), fTime<=0, IsWorking(), m_bFireSingleShot, m_iQueueSize < 0, m_iShotNum < m_iQueueSize);
 	while (!m_magazine.empty() && fTime <= 0 && (IsWorking() || m_bFireSingleShot) && (m_iQueueSize < 0 || m_iShotNum < m_iQueueSize))
 	{
+		if (CheckForMisfire()) 
+		{
+			StopShooting();
+			OnEmptyClick();
+			//чтобы npc мог выбросить хреновый патрон
+			if (!ParentIsActor())
+			{
+				ShutterAction();
+			}
+			return;
+		}
+
 		m_bFireSingleShot = false;
 		//если у оружия есть разные размеры очереди
 		//привилегированный режим очереди не полный автомат
@@ -1432,6 +1441,20 @@ void CWeaponMagazined::DeteriorateSilencerAttachable(float fDeltaCondition)
 		}
 	}
 };
+//
+float CWeaponMagazined::GetConditionMisfireProbability() const
+{
+	float mis = inherited::GetConditionMisfireProbability();
+	//вероятность осечки от магазина
+	if (HasDetachableMagazine() && IsMagazineAttached())
+	{
+		LPCSTR empty_sect = pSettings->r_string(m_ammoTypes[m_LastLoadedMagType], "empty_box");
+		float mag_missfire_prob = READ_IF_EXISTS(pSettings, r_float, empty_sect, "misfire_probability_box", 0.0f);
+		mis += mag_missfire_prob;
+	}
+	clamp(mis, 0.0f, 0.99f);
+	return mis;
+}
 
 void CWeaponMagazined::save(NET_Packet &output_packet)
 {
@@ -1456,7 +1479,7 @@ void CWeaponMagazined::load(IReader &input_packet)
 BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
 {
 	BOOL bRes = inherited::net_Spawn(DC);
-	CSE_ALifeItemWeaponMagazined* const wpn = smart_cast<CSE_ALifeItemWeaponMagazined*>(DC);
+	const auto wpn = smart_cast<CSE_ALifeItemWeaponMagazined*>(DC);
 	m_iCurFireMode = wpn->m_u8CurFireMode;
 	SetQueueSize(GetCurrentFireMode());
 	//multitype ammo loading
@@ -1470,9 +1493,10 @@ BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
 		l_cartridge.Load(*m_ammoTypes[LocalAmmoType], LocalAmmoType);
 	}
 	//
+	m_bIsMagazineAttached = wpn->m_bIsMagazineAttached;
+
 	if (IsMagazineAttached())
 		m_LastLoadedMagType = m_ammoType;
-	//m_bIsMagazineAttached = wpn->m_bIsMagazineAttached;
 	//
 	if (SilencerAttachable() && IsSilencerAttached() && wpn->m_fAttachedSilencerCondition < 1.f)
 		m_fAttachedSilencerCondition = wpn->m_fAttachedSilencerCondition;
@@ -1493,7 +1517,7 @@ void CWeaponMagazined::net_Export(NET_Packet& P)
 		P.w_u8(l_cartridge.m_LocalAmmoType);
 	}
 	//
-	//P.w_u8(m_bIsMagazineAttached ? 1 : 0);
+	P.w_u8(m_bIsMagazineAttached ? 1 : 0);
 	//
 	P.w_float_q8(m_fAttachedSilencerCondition, 0.0f, 1.0f);
 }
@@ -1522,7 +1546,7 @@ void CWeaponMagazined::net_Import(NET_Packet& P)
 		//		m_fCurrentCartirdgeDisp = m_DefaultCartridge.m_kDisp;		
 	}
 	//
-	//m_bIsMagazineAttached = !!(P.r_u8() & 0x1);
+	m_bIsMagazineAttached = !!(P.r_u8() & 0x1);
 	//
 	P.r_float_q8(m_fAttachedSilencerCondition, 0.f, 1.f);
 }
@@ -1600,9 +1624,14 @@ void CWeaponMagazined::ShutterAction() //передёргивание затво
 			HUD().GetUI()->AddInfoMessage("gun_not_jammed");
 		}
 	}
-	else if (HasChamber() && !m_magazine.empty())
+	/*else*/ if (HasChamber() && !m_magazine.empty())
 	{
 		UnloadAmmo(1);
+
+		// Shell Drop
+		Fvector vel;
+		PHGetLinearVell(vel);
+		OnShellDrop(get_LastSP(), vel);
 	}
 }
 //

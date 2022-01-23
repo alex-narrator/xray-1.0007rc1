@@ -27,6 +27,8 @@ public:
 	Flags8	m_flags;
 
 	shared_str	m_InvShortName;
+	//вероятность осечки
+	float		m_misfireProbability;
 };
 
 class CWeaponAmmo :	public CInventoryItemObject {
@@ -64,6 +66,10 @@ public:
 	//
 	shared_str	m_ammoSect, m_EmptySect;
 	shared_str	m_InvShortName;
+	//вероятность осечки от патрона
+	float		m_misfireProbability;
+	//вероятность осечки от магазина
+	float		m_misfireProbabilityBox;
 
 public:
 	xr_vector<shared_str>		m_ammoTypes;

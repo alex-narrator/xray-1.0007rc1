@@ -360,7 +360,7 @@ public:
 
 	//параметы оружия в зависимоти от его состояния исправности
 	float					GetConditionDispersionFactor() const;
-	float					GetConditionMisfireProbability() const;
+	virtual float			GetConditionMisfireProbability() const;
 	virtual	float			GetConditionToShow() const;
 
 public:

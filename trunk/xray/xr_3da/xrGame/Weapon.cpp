@@ -1069,9 +1069,22 @@ u32 CWeapon::GetNextAmmoType(bool looped)
 //
 float CWeapon::GetConditionMisfireProbability() const
 {
-	if (GetCondition() > 0.95f) return 0.0f;
+	float mis = 0.0f;
 
-	float mis = misfireProbability + powf(1.f - GetCondition(), 3.f)*misfireConditionK;
+	//if (GetCondition() > 0.95f) return 0.0f;
+
+	//float mis = misfireProbability + powf(1.f - GetCondition(), 3.f)*misfireConditionK;
+
+	//вероятность осечки от патрона
+	if (!m_magazine.empty())
+	{
+		const auto &l_cartridge = m_magazine.back();
+		mis = l_cartridge.m_misfireProbability;
+	}
+	//вероятность осечки от состояния оружия
+	if (GetCondition() < 0.95f)
+		mis += (misfireProbability + powf(1.f - GetCondition(), 3.f)*misfireConditionK);
+
 	clamp(mis, 0.0f, 0.99f);
 	return mis;
 }

@@ -144,7 +144,6 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 		eWeaponAddonScope			= (1 << 0),//0x01,
 		eWeaponAddonGrenadeLauncher = (1 << 1),//0x02,
 		eWeaponAddonSilencer		= (1 << 2),//0x04
-		eWeaponAddonMagazine		= (1 << 3) //флаг присоединённости отъёмного магазина
 	};
 
 	EWeaponAddonStatus				m_scope_status;
@@ -189,7 +188,7 @@ add_to_type_list(CSE_ALifeItemWeapon)
 SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeaponMagazined,CSE_ALifeItemWeapon)
 u8			m_u8CurFireMode;
 //присоединён ли магазин
-//bool		m_bIsMagazineAttached;
+bool		m_bIsMagazineAttached;
 //для хранения состояния присоединённого глушителя
 float		m_fAttachedSilencerCondition;
 //

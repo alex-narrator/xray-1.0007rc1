@@ -22,6 +22,8 @@ CCartridge::CCartridge()
 	m_kAirRes = 0.0f;
 	m_buckShot = 1;
 	m_impair = 1.f;
+	//
+	m_misfireProbability = 0.f;
 
 	bullet_material_idx = u16(-1);
 }
@@ -54,6 +56,8 @@ void CCartridge::Load(LPCSTR section, u8 LocalAmmoType)
 	m_buckShot				= pSettings->r_s32(m_ammoSect, "buck_shot");
 	m_impair				= pSettings->r_float(m_ammoSect, "impair");
 	fWallmarkSize			= pSettings->r_float(m_ammoSect, "wm_size");
+	//
+	m_misfireProbability	= READ_IF_EXISTS(pSettings, r_float, m_ammoSect, "misfire_probability", 0.0f);
 
 	m_flags.set				(cfCanBeUnlimited | cfRicochet, TRUE);
 	if(pSettings->line_exist(m_ammoSect,"can_be_unlimited"))
@@ -76,6 +80,8 @@ CWeaponAmmo::CWeaponAmmo(void)
 	//
 	m_ammoSect				= NULL;
 	m_EmptySect				= NULL;
+	//
+	m_misfireProbabilityBox = 0.f;
 }
 
 CWeaponAmmo::~CWeaponAmmo(void)
@@ -117,7 +123,9 @@ void CWeaponAmmo::Load(LPCSTR section)
 				m_magTypes.push_back(_magItem);
 			}
 		}
-
+		//
+		m_misfireProbabilityBox = READ_IF_EXISTS(pSettings, r_float, section, "misfire_probability_box", 0.0f);
+		//
 		return;
 	}
 	//
@@ -148,6 +156,8 @@ void CWeaponAmmo::Load(LPCSTR section)
 	m_impair				= pSettings->r_float(m_ammoSect, "impair");
 	fWallmarkSize			= pSettings->r_float(m_ammoSect,"wm_size");
 	R_ASSERT				(fWallmarkSize>0);
+	//
+	m_misfireProbability	= READ_IF_EXISTS(pSettings, r_float, m_ammoSect, "misfire_probability", 0.0f);
 }
 
 BOOL CWeaponAmmo::net_Spawn(CSE_Abstract* DC) 
@@ -232,6 +242,8 @@ bool CWeaponAmmo::Get(CCartridge &cartridge)
 	cartridge.fWallmarkSize = fWallmarkSize;
 	cartridge.bullet_material_idx = GMLib.GetMaterialIdx(WEAPON_MATERIAL_NAME);
 	cartridge.m_InvShortName = m_InvShortName;//NameShort();
+	//
+	cartridge.m_misfireProbability = m_misfireProbability;
 	--m_boxCurr;
 	if(m_pCurrentInventory)
 		m_pCurrentInventory->InvalidateState();
