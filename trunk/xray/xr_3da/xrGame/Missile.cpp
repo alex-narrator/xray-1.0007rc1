@@ -4,6 +4,7 @@
 #include "../CustomHUD.h"
 #include "PhysicsShell.h"
 #include "actor.h"
+#include "ActorCondition.h"
 #include "../CameraBase.h"
 #include "xrserver_objects_alife.h"
 #include "ActorEffector.h"
@@ -16,6 +17,7 @@
 #include "characterphysicssupport.h"
 #include "inventory.h"
 #include "../IGame_Persistent.h"
+#include "HUDManager.h"
 #ifdef DEBUG
 #	include "phdebug.h"
 
@@ -71,7 +73,7 @@ void CMissile::Load(LPCSTR section)
 	inherited::Load		(section);
 
 	m_fMinForce			= pSettings->r_float(section,"force_min");
-	m_fConstForce		= pSettings->r_float(section,"force_const");
+	//m_fConstForce		= pSettings->r_float(section,"force_const");
 	m_fMaxForce			= pSettings->r_float(section,"force_max");
 	m_fForceGrowSpeed	= pSettings->r_float(section,"force_grow_speed");
 
@@ -204,7 +206,10 @@ void CMissile::UpdateCL()
 	if (!psHUD_Flags.test(HUD_STOP_MISSILE_PLAYING))
 	if (GetState() == MS_IDLE && m_idle_state == MS_IDLE && m_dwStateTime > PLAYING_ANIM_TIME)
 		OnStateSwitch(MS_PLAYING);
-
+	//
+	auto pActor = smart_cast<CActor*>(H_Parent());
+	bool b_have_no_power = pActor && pActor->conditions().IsCantWalk();
+	//
 	if (GetState() == MS_IDLE) {
 		auto state = idle_state();
 		if (m_idle_state != state) {
@@ -215,7 +220,7 @@ void CMissile::UpdateCL()
 	else {
 		m_idle_state = MS_IDLE;
 		if (GetState() == MS_READY) {
-			if (m_throw) {
+			if (m_throw || b_have_no_power) {
 				SwitchState(MS_THROW);
 			}
 			else {
@@ -499,8 +504,16 @@ void CMissile::Throw()
 		
 	CInventoryOwner						*inventory_owner = smart_cast<CInventoryOwner*>(H_Parent());
 	VERIFY								(inventory_owner);
+
 	if (inventory_owner->use_default_throw_force())
-		m_fake_missile->m_fThrowForce	= m_constpower ? m_fConstForce : m_fThrowForce; 
+	{
+		//
+		float f_const_force = (m_fMinForce + m_fMaxForce) / 2;
+		auto pActor			= smart_cast<CActor*>(H_Parent());
+		float power_k = pActor ? pActor->conditions().GetPowerKoef() : 0.f;
+		//
+		m_fake_missile->m_fThrowForce = (m_constpower ? /*m_fConstForce*/f_const_force : m_fThrowForce) * power_k;
+	}
 	else
 		m_fake_missile->m_fThrowForce	= inventory_owner->missile_throw_force(); 
 	
@@ -558,7 +571,15 @@ void CMissile::Destroy()
 bool CMissile::Action(s32 cmd, u32 flags) 
 {
 	if(inherited::Action(cmd, flags)) return true;
-
+	//
+	auto pActor = smart_cast<CActor*>(H_Parent());
+	bool b_have_no_power = pActor && pActor->conditions().IsCantWalk();
+	if (b_have_no_power && GetState() != MS_READY)
+	{
+		HUD().GetUI()->AddInfoMessage("cant_walk");
+		return false;
+	}
+	//
 	switch(cmd) 
 	{
 	case kWPN_FIRE:
@@ -569,6 +590,9 @@ bool CMissile::Action(s32 cmd, u32 flags)
 				m_throw = true;
 				if (GetState() == MS_IDLE)
 					SwitchState(MS_THREATEN);
+				//
+				if (pActor) pActor->conditions().ConditionJump(Weight() * 0.1f);
+				//
 			} 
 			return true;
 		}break;
@@ -584,13 +608,19 @@ bool CMissile::Action(s32 cmd, u32 flags)
 				else if(GetState() == MS_READY)
 				{
 					m_throw = true; 
+					//
+					if (pActor) pActor->conditions().ConditionJump(Weight() * 0.1f);
+					//
 				}
 
 			} 
 			else if (GetState() == MS_READY || GetState() == MS_THREATEN || GetState() == MS_IDLE)
 			{
 				m_throw = true; 
-				if(GetState() == MS_READY) SwitchState(MS_THROW);
+				if (GetState() == MS_READY) SwitchState(MS_THROW);
+				//
+				if (pActor && !b_have_no_power) pActor->conditions().ConditionJump(Weight() * 0.1f);
+				//
 			}
 			return true;
 		}break;
