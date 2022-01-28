@@ -81,6 +81,8 @@ extern	BOOL	g_show_wnd_rect			;
 extern	BOOL	g_show_wnd_rect2			;
 //-----------------------------------------------------------
 extern	float	g_fTimeFactor;
+//
+extern float	g_fForceGrowSpeed;
 
 
 void register_mp_console_commands();
@@ -1431,6 +1433,8 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"g_no_auto_reload",				&psActorFlags,	AF_NO_AUTO_RELOAD				);	//запрет автоперезарядки оружия
 	//CMD3(CCC_Mask,				"g_ammo_box_as_magazine",		&psActorFlags,	AF_AMMO_BOX_AS_MAGAZINE			);	//перезарядка оружия кол-вом патронов в пачке
 	CMD3(CCC_Mask,				"g_wpn_actions_reset_sprint",	&psActorFlags,	AF_WPN_ACTIONS_RESET_SPRINT		);	//перезарядка/смена типа патрона/бросок гранаты/болта/удар ножом сбрасывают спринт
+	//
+	CMD4(CCC_Float,				"missile_force_grow_speed",		&g_fForceGrowSpeed,					 1.0f, 50.0f);
 	//параметры персонажа
 	CMD3(CCC_Mask,				"g_smooth_overweight",			&psActorFlags,	AF_SMOOTH_OVERWEIGHT			);	//плавный перегруз без обездвиживания
 	CMD3(CCC_Mask,				"g_condition_interdependence",	&psActorFlags,	AF_CONDITION_INTERDEPENDENCE	);	//взаимозависимость параметров здоровья ГГ

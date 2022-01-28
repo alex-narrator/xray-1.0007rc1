@@ -132,11 +132,18 @@
 		<track_brightness x="194" y="170" width="261" height="21">
 			<options_item entry="rs_c_brightness" group="mm_opt_video"/>
 		</track_brightness>
+		
+		<cap_caminert x="20" y="200" width="143" height="21">
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_cam_inert</text>
+		</cap_caminert>
+		<track_caminert x="194" y="200" width="261" height="21">
+			<options_item entry="cam_inert" group="mm_opt_video"/>
+		</track_caminert>
 
-		<cap_fullscreen x="20" y="200" width="143" height="21">
+		<cap_fullscreen x="20" y="230" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_fullscreen</text>
 		</cap_fullscreen>
-		<check_fullscreen x="194" y="200" width="30" height="21">
+		<check_fullscreen x="194" y="230" width="30" height="21">
 			<options_item entry="rs_fullscreen" group="mm_opt_video"/>	
 		</check_fullscreen>
 		
@@ -508,18 +515,26 @@
 		<cap_mousesens x="20" y="20" width="150" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_mouse_sense</text>
 		</cap_mousesens>
+		<track_mousesens x="194" y="20" width="261" height="21" step="0.01">
+			<options_item entry="mouse_sens" group="mm_opt_controls"/>
+		</track_mousesens>
+		<check_mouseinvert x="20" y="40" width="143" height="21">
+			<options_item entry="mouse_invert" group="mm_opt_controls"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_invert_mouse</text>
+		</check_mouseinvert>
+		
+		<cap_missile_force_grow_speed x="20" y="70" width="150" height="21">
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_missile_force_grow_speed</text>
+		</cap_missile_force_grow_speed>
+		<track_missile_force_grow_speed x="194" y="70" width="261" height="21" step="1">
+			<options_item entry="missile_force_grow_speed" group="mm_opt_controls"/>
+		</track_missile_force_grow_speed>
+		
 		<cap_keyboardsetup x="6" y="95" width="456" height="23">
 			<texture>ui_brokenline</texture>
 			<text font="letterica16" r="215" g="195" b="170" x="10">ui_mm_keyboard_setup</text>
 		</cap_keyboardsetup>
 	
-		<track_mousesens x="194" y="20" width="261" height="21" step="0.01">
-			<options_item entry="mouse_sens" group="mm_opt_controls"/>
-		</track_mousesens>
-		<check_mouseinvert x="20" y="55" width="143" height="21">
-			<options_item entry="mouse_invert" group="mm_opt_controls"/>
-			<text font="letterica16" r="215" g="195" b="170">ui_mm_invert_mouse</text>
-		</check_mouseinvert>
 		<key_binding x="10" y="120" width="451" height="199">
 			<!-- headers -->
 			<header_1 x="0" y="0" width="229" height="17">
@@ -566,6 +581,9 @@
 	<frame_gameplay x="0" y="0" width="470" height="330">
 		<texture>ui_tablist_textbox</texture>		
 	</frame_gameplay>
+	<frame_gameplay_opt x="18" y="120" width="422" height="190">
+		<texture>ui_cb_listbox</texture>		
+	</frame_gameplay_opt>
 	<frame_videoadv x="0" y="0" width="470" height="330">
 		<texture>ui_tablist_textbox</texture>		
 	</frame_videoadv>

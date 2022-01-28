@@ -26,6 +26,8 @@
 
 #define PLAYING_ANIM_TIME 10000
 
+float g_fForceGrowSpeed = 25.f;
+
 #pragma optimize("gyt", off)
 
 #include "ui/UIProgressShape.h"
@@ -75,7 +77,7 @@ void CMissile::Load(LPCSTR section)
 	m_fMinForce			= pSettings->r_float(section,"force_min");
 	//m_fConstForce		= pSettings->r_float(section,"force_const");
 	m_fMaxForce			= pSettings->r_float(section,"force_max");
-	m_fForceGrowSpeed	= pSettings->r_float(section,"force_grow_speed");
+	//m_fForceGrowSpeed	= pSettings->r_float(section,"force_grow_speed");
 
 	m_dwDestroyTimeMax	= pSettings->r_u32(section,"destroy_time");
 	
@@ -226,7 +228,7 @@ void CMissile::UpdateCL()
 			else {
 				CActor *actor = smart_cast<CActor*>(H_Parent());
 				if (actor) {
-					m_fThrowForce += (m_fForceGrowSpeed * Device.dwTimeDelta) * .001f;
+					m_fThrowForce += (/*m_fForceGrowSpeed*/g_fForceGrowSpeed * Device.dwTimeDelta) * .001f;
 					clamp(m_fThrowForce, m_fMinForce, m_fMaxForce);
 				}
 			}
