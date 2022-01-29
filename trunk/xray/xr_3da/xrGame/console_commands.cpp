@@ -1431,7 +1431,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"g_artefact_detector_check",	&psActorFlags,	AF_ARTEFACT_DETECTOR_CHECK		);	//свойства артефактов отображаются после проверки детектором
 	//оружие
 	CMD3(CCC_Mask,				"g_no_auto_reload",				&psActorFlags,	AF_NO_AUTO_RELOAD				);	//запрет автоперезарядки оружия
-	//CMD3(CCC_Mask,				"g_ammo_box_as_magazine",		&psActorFlags,	AF_AMMO_BOX_AS_MAGAZINE			);	//перезарядка оружия кол-вом патронов в пачке
+	CMD3(CCC_Mask,				"g_bullet_from_barrel",			&psActorFlags,	AF_BULLET_FROM_BARREL			);	//пули летят из ствола
 	CMD3(CCC_Mask,				"g_wpn_actions_reset_sprint",	&psActorFlags,	AF_WPN_ACTIONS_RESET_SPRINT		);	//перезарядка/смена типа патрона/бросок гранаты/болта/удар ножом сбрасывают спринт
 	//
 	CMD4(CCC_Float,				"missile_force_grow_speed",		&g_fForceGrowSpeed,					 1.0f, 50.0f);

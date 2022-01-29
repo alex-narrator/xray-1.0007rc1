@@ -41,7 +41,7 @@
 #endif
 
 
-bool g_bAutoClearCrouch = true;
+//bool g_bAutoClearCrouch = true;
 
 #include "script_engine.h"
 void CActor::IR_OnKeyboardPress(int cmd)
@@ -94,15 +94,32 @@ void CActor::IR_OnKeyboardPress(int cmd)
 //				u_EventSend(P);
 			}
 		}break;
-	case kCROUCH_TOGGLE:
+/*	case kCROUCH_TOGGLE:
 		{
 			g_bAutoClearCrouch = !g_bAutoClearCrouch;
 			if (!g_bAutoClearCrouch)
 				mstate_wishful |= mcCrouch;
 
+		}break;*/
+	case kCROUCH:
+		{
+			if (mstate_wishful & mcSprint)							//сбросим спринт
+				mstate_wishful &= ~mcSprint;
+
+			if (mstate_wishful&mcCrouch && mstate_wishful&mcAccel)	//глубокий присед
+				mstate_wishful &= ~(mcCrouch|mcAccel);
+			else if (mstate_wishful&~mcAccel)						//присед
+				mstate_wishful |= (mcCrouch | mcAccel);
+			else													//не присед
+				mstate_wishful |= mcCrouch;
 		}break;
 	case kSPRINT_TOGGLE:	
 		{
+			if (mstate_wishful&mcCrouch && mstate_wishful&mcAccel)	//сбросим глубокий присед
+				mstate_wishful &= ~(mcCrouch | mcAccel);
+			else if (mstate_wishful&~mcAccel)						//сбросим присед
+				mstate_wishful &= ~mcCrouch;
+
 			if (mstate_wishful & mcSprint)
 				mstate_wishful &=~mcSprint;
 			else
@@ -293,9 +310,10 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 
 		switch(cmd)
 		{
-		case kJUMP:		mstate_wishful &=~mcJump;		break;
-		case kDROP:		if(GAME_PHASE_INPROGRESS == Game().Phase()) g_PerformDrop();				break;
-		case kCROUCH:	g_bAutoClearCrouch = true;
+		case kJUMP:		mstate_wishful &=~mcJump;											break;
+		case kDROP:		if(GAME_PHASE_INPROGRESS == Game().Phase()) g_PerformDrop();		break;
+		//case kCROUCH:	g_bAutoClearCrouch = true;
+		case kACCEL:	if (mstate_wishful&mcCrouch) return; mstate_wishful &= ~mcAccel;	break;
 		}
 	}
 }
@@ -320,23 +338,23 @@ void CActor::IR_OnKeyboardHold(int cmd)
 	{
 	case kUP:
 	case kDOWN: 
-		cam_Active()->Move( (cmd==kUP) ? kDOWN : kUP, 0, LookFactor);									break;
+		cam_Active()->Move( (cmd==kUP) ? kDOWN : kUP, 0, LookFactor);				break;
 	case kCAM_ZOOM_IN: 
 	case kCAM_ZOOM_OUT: 
-		cam_Active()->Move(cmd);												break;
+		cam_Active()->Move(cmd);													break;
 	case kLEFT:
 	case kRIGHT:
-		if (eacFreeLook!=cam_active) cam_Active()->Move(cmd, 0, LookFactor);	break;
+		if (eacFreeLook!=cam_active) cam_Active()->Move(cmd, 0, LookFactor);		break;
 
-	case kACCEL:	mstate_wishful |= mcAccel;									break;
-	case kL_STRAFE:	mstate_wishful |= mcLStrafe;								break;
-	case kR_STRAFE:	mstate_wishful |= mcRStrafe;								break;
-	case kL_LOOKOUT:mstate_wishful |= mcLLookout;								break;
-	case kR_LOOKOUT:mstate_wishful |= mcRLookout;								break;
-	case kFWD:		mstate_wishful |= mcFwd;									break;
-	case kBACK:		mstate_wishful |= mcBack;									break;
-	case kCROUCH:	mstate_wishful |= mcCrouch;									break;
-	case kJUMP:     mstate_wishful |= mcJump;                                   break; //без этого при текущей реализации закрытия инвентаря по кнопкам движения в AF_FREE_HANDS прыжок просто не работал
+	case kACCEL:	if (mstate_wishful&mcCrouch) return; mstate_wishful |= mcAccel;	break;
+	case kL_STRAFE:	mstate_wishful |= mcLStrafe;									break;
+	case kR_STRAFE:	mstate_wishful |= mcRStrafe;									break;
+	case kL_LOOKOUT:mstate_wishful |= mcLLookout;									break;
+	case kR_LOOKOUT:mstate_wishful |= mcRLookout;									break;
+	case kFWD:		mstate_wishful |= mcFwd;										break;
+	case kBACK:		mstate_wishful |= mcBack;										break;
+	//case kCROUCH:	mstate_wishful |= mcCrouch;										break;
+	case kJUMP:     mstate_wishful |= mcJump;										break; //без этого при текущей реализации закрытия инвентаря по кнопкам движения в AF_FREE_HANDS прыжок просто не работал
 
 	}
 }

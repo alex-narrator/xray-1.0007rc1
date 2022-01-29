@@ -9,7 +9,7 @@ enum	EGameActions
 	kDOWN,
 	kJUMP,
 	kCROUCH,
-	kCROUCH_TOGGLE,
+//	kCROUCH_TOGGLE,
 	kACCEL,
 	kSPRINT_TOGGLE,
 						

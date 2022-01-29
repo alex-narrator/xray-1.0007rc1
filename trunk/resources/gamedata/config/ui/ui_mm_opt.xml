@@ -499,10 +499,10 @@
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_pause_after_loading</text>
 		</check_pause_after_loading>
 		
-<!-- 		<check_ammo_box_as_magazine x="20" y="0" width="400" height="21">
-			<options_item entry="g_ammo_box_as_magazine" group="mm_opt_gameplay"/>
-			<text font="letterica16" r="215" g="195" b="170">ui_mm_ammo_box_as_magazine</text>
-		</check_ammo_box_as_magazine> -->
+		<check_bullet_from_barrel x="20" y="0" width="400" height="21">
+			<options_item entry="g_bullet_from_barrel" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_bullet_from_barrel</text>
+		</check_bullet_from_barrel>
 <!-- END Новые опции геймплея -->>
 
 		<btn_check_updates x="342" y="330" width="111" height="29">

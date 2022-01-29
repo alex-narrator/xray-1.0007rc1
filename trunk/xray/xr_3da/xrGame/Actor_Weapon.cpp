@@ -65,16 +65,19 @@ void CActor::g_fireParams(const CHudItem* pHudItem, Fvector &fire_pos, Fvector &
 
 	const CMissile    *pMissile = smart_cast <const CMissile*> (pHudItem);
 	CWeaponMagazined*    wpn = smart_cast<CWeaponMagazined*>(pHudItem->item().cast_weapon());
-	if (pMissile){
+	if (pMissile)
+	{
 		Fvector offset;
 		XFORM().transform_dir(offset, m_vMissileOffset);
 		fire_pos.add(offset);
 	}
-	else if (wpn){
+	else if (wpn && psActorFlags.test(AF_BULLET_FROM_BARREL))
+	{
 		fire_pos.set(wpn->get_LastFP());
 		if (active_cam() == eacFreeLook)
 			fire_dir.set(wpn->get_LastFD());
-		else{
+		else
+		{
 			Fvector        pos;
 			pos.mad(Device.vCameraPosition, Device.vCameraDirection, HUD().GetCurrentRayQuery().range);    //точка куда стреляем
 			fire_dir.sub(pos, fire_pos).normalize();

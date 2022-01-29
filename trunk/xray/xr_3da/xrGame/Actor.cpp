@@ -1085,16 +1085,16 @@ void CActor::shedule_Update	(u32 DT)
 		if (!Level().IsDemoPlay())
 		{		
 		//-----------------------------------------------------
-		mstate_wishful &=~mcAccel;
+		//mstate_wishful &=~mcAccel;
 		mstate_wishful &=~mcLStrafe;
 		mstate_wishful &=~mcRStrafe;
 		mstate_wishful &=~mcLLookout;
 		mstate_wishful &=~mcRLookout;
 		mstate_wishful &=~mcFwd;
 		mstate_wishful &=~mcBack;
-		extern bool g_bAutoClearCrouch;
+		/*extern bool g_bAutoClearCrouch;
 		if (g_bAutoClearCrouch)
-			mstate_wishful &=~mcCrouch;
+			mstate_wishful &=~mcCrouch;*/
 		//-----------------------------------------------------
 		}
 	}
@@ -1737,8 +1737,13 @@ void CActor::UpdateMotionIcon(u32 mstate_rl)
 		if(mstate_rl&mcSprint)
 				motion_icon.ShowState(CUIMotionIcon::stSprint);
 		else
-		if(mstate_rl&mcAnyMove && isActorAccelerated(mstate_rl, IsZoomAimingMode()))
-			motion_icon.ShowState(CUIMotionIcon::stRun);
+		if(mstate_rl&mcAnyMove/* && isActorAccelerated(mstate_rl, IsZoomAimingMode())*/)
+		{
+			if (isActorAccelerated(mstate_rl, IsZoomAimingMode()))
+				motion_icon.ShowState(CUIMotionIcon::stNormal);
+			else
+				motion_icon.ShowState(CUIMotionIcon::stRun);
+		}
 		else
 			motion_icon.ShowState(CUIMotionIcon::stNormal);
 	}
