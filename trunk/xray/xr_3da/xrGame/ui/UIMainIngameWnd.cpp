@@ -405,7 +405,7 @@ void CUIMainIngameWnd::Draw()
 bool CUIMainIngameWnd::IsHUDElementAllowed(EHUDElement element)
 {
 	bool result = false;
-	bool allow_devices_hud = g_eHudOnKey == eHudOnKeyOff || Level().IR_GetKeyState(get_action_dik(kSCORES)) || m_pActor->inventory().GetActiveSlot() == BOLT_SLOT;
+	bool allow_devices_hud = g_eHudOnKey == eHudOnKeyOff || OnKeyboardHold(kSCORES) || m_pActor->inventory().GetActiveSlot() == BOLT_SLOT;
 
 	switch (element)
 	{
@@ -419,15 +419,15 @@ bool CUIMainIngameWnd::IsHUDElementAllowed(EHUDElement element)
 		}break;
 		case eActiveItem: //Информация об предмете в руках (для оружия - кол-во/тип заряженных патронов, режим огня)
 		{
-			result = m_pActor->inventory().ActiveItem() && (g_eHudOnKey == eHudOnKeyOff || Level().IR_GetKeyState(get_action_dik(kCHECKACTIVEITEM)));
+			result = m_pActor->inventory().ActiveItem() && (g_eHudOnKey == eHudOnKeyOff || OnKeyboardHold(kCHECKACTIVEITEM));
 		}break;
 		case eGear: //Информация о снаряжении - панель артефактов, наполнение квикслотов, общее кол-во патронов к оружию в руках
 		{
-			result = g_eHudOnKey == eHudOnKeyOff || Level().IR_GetKeyState(get_action_dik(kCHECKGEAR));
+			result = g_eHudOnKey == eHudOnKeyOff || OnKeyboardHold(kCHECKGEAR);
 		}break;
 		case eArmor: //Иконка состояния брони
 		{
-			result = g_eHudOnKey != eHudOnKeyOff && m_pActor->inventory().ItemFromSlot(OUTFIT_SLOT) && Level().IR_GetKeyState(get_action_dik(kCHECKGEAR));
+			result = g_eHudOnKey != eHudOnKeyOff && m_pActor->inventory().ItemFromSlot(OUTFIT_SLOT) && OnKeyboardHold(kCHECKGEAR);
 		}break;
 	}
 
@@ -1035,6 +1035,11 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 		}
 	}
 	return false;
+}
+
+bool CUIMainIngameWnd::OnKeyboardHold(int cmd)
+{
+	return !!Level().IR_GetKeyState(get_action_dik((EGameActions)cmd));
 }
 
 void CUIMainIngameWnd::RenderQuickInfos()

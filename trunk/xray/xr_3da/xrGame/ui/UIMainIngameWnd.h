@@ -95,6 +95,7 @@ public:
 	virtual void Update();
 
 	bool OnKeyboardPress(int dik);
+	bool OnKeyboardHold(int cmd);
 	void HudAdjustMode(int);
 
 protected:
