@@ -46,7 +46,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_object					= object;
 	m_condition_flags.zero		();
 	//
-	m_bFlagState				= !!psActorFlags.test(AF_CONDITION_INTERDEPENDENCE);
+	m_bFlagState				= !!psActorFlags.test(AF_SURVIVAL);
 
 }
 
@@ -98,16 +98,16 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 
 	m_MaxWalkWeight				= pSettings->r_float(section,"max_walk_weight");
     //
-	m_fBleedingPowerDecrease		= READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "bleeding_power_dec",						0.f);
+	m_fBleedingPowerDecrease		= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "bleeding_power_dec",						0.f);
     //
-	m_fMinPowerWalkJump				= READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_power_walk_jump",						1.0f);
+	m_fMinPowerWalkJump				= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "min_power_walk_jump",						1.0f);
 	//
-	m_fMinHealthRadiation			= READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_health_radiation",						1.0f);
-	m_fMinHealthRadiationTreshold	= READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "min_health_radiation_treshold",			0.f);
+	m_fMinHealthRadiation			= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "min_health_radiation",						1.0f);
+	m_fMinHealthRadiationTreshold	= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "min_health_radiation_treshold",				0.f);
     //
-	m_fAlcoholSatietyIntens			= READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "satiety_to_alcohol_effector_intensity",	1.0f);
+	m_fAlcoholSatietyIntens			= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "satiety_to_alcohol_effector_intensity",		1.0f);
 	//
-	m_fExerciseStressFactor			= READ_IF_EXISTS(pSettings, r_float, "actor_condition_interdependence", "exercise_stress_factor",					1.0f);
+	m_fExerciseStressFactor			= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "exercise_stress_factor",					1.0f);
 }
 
 
@@ -170,7 +170,7 @@ void CActorCondition::UpdateHealth()
 	ChangeBleeding(m_change_v.m_fV_WoundIncarnation * m_fDeltaTime * GetRegenKoef());
 
 	//радиация влияет на максимальное здоровье
-	if (psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) && m_fRadiation > m_fMinHealthRadiationTreshold) //защита от потенциального деления на 0 если m_fRadiationTreshold = 1
+	if (psActorFlags.test(AF_SURVIVAL) && m_fRadiation > m_fMinHealthRadiationTreshold) //защита от потенциального деления на 0 если m_fRadiationTreshold = 1
 		SetMaxHealth(m_fMinHealthRadiation + (1.0f - m_fMinHealthRadiation) * (1.0f - m_fRadiation) / (1.0f - m_fMinHealthRadiationTreshold));
 	else
 		SetMaxHealth(1.0f);
@@ -264,7 +264,7 @@ void CActorCondition::UpdateRadiation()
 	{
 		m_fDeltaRadiation -= m_change_v.m_fV_Radiation*m_fDeltaTime;
 		//радиация постоянно отнимает здоровье только если выкючена опция взаимозависимости параметров
-		m_fDeltaHealth -= CanBeHarmed() && !psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) ? m_change_v.m_fV_RadiationHealth*m_fRadiation*m_fDeltaTime : 0.0f;
+		m_fDeltaHealth -= CanBeHarmed() && !psActorFlags.test(AF_SURVIVAL) ? m_change_v.m_fV_RadiationHealth*m_fRadiation*m_fDeltaTime : 0.0f;
 		//Msg("CActorCondition m_fDeltaHealth [%f]", m_fDeltaHealth);
 	}
 }
@@ -274,7 +274,7 @@ void CActorCondition::UpdateAlcohol()
 	m_fAlcohol += m_fV_Alcohol*m_fDeltaTime;
 	clamp(m_fAlcohol, 0.0f, 1.0f);
 
-	bool flag_state = !!psActorFlags.test(AF_CONDITION_INTERDEPENDENCE);
+	bool flag_state = !!psActorFlags.test(AF_SURVIVAL);
 
 	if (IsGameTypeSingle())
 	{
@@ -340,7 +340,7 @@ float CActorCondition::GetSmoothOwerweightKoef()
 
 float CActorCondition::GetStress()
 {
-	float exercise_stress	= psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) && object().get_state()&(mcSprint|mcJump) ? 
+	float exercise_stress = psActorFlags.test(AF_SURVIVAL) && object().get_state()&(mcSprint | mcJump) ?
 								m_fExerciseStressFactor : 
 								1.0f;
 

@@ -1437,7 +1437,7 @@ void CCC_RegisterCommands()
 	CMD4(CCC_Float,				"missile_force_grow_speed",		&g_fForceGrowSpeed,					 1.0f, 50.0f);
 	//параметры персонажа
 	CMD3(CCC_Mask,				"g_smooth_overweight",			&psActorFlags,	AF_SMOOTH_OVERWEIGHT			);	//плавный перегруз без обездвиживания
-	CMD3(CCC_Mask,				"g_condition_interdependence",	&psActorFlags,	AF_CONDITION_INTERDEPENDENCE	);	//взаимозависимость параметров здоровья ГГ
+	CMD3(CCC_Mask,				"g_survival_mode",				&psActorFlags,	AF_SURVIVAL						);	//взаимозависимость параметров здоровья ГГ
 
 	// alife
 #ifdef DEBUG

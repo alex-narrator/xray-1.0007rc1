@@ -54,9 +54,9 @@ public:
 	//
 	float				GetSmoothOwerweightKoef		();
 	//коэфф. выносливости - на будущее для влияния на удар ножа, бросок гранаты и т.д.
-	float				GetPowerKoef				() { return psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) ? GetPower() : 1.0f; };
+	float				GetPowerKoef				() { return psActorFlags.test(AF_SURVIVAL) ? GetPower() : 1.0f; };
 	//коэфф. регенерации актора - зависит от сытости и дозы облучения
-	float				GetRegenKoef				() { return psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) ? (1.0f - GetRadiation()) * GetSatiety() : 1.0f; };
+	float				GetRegenKoef				() { return psActorFlags.test(AF_SURVIVAL) ? (1.0f - GetRadiation()) * GetSatiety() : 1.0f; };
 	//коэффициент нагрузки актора
 	float               GetStress					();
 

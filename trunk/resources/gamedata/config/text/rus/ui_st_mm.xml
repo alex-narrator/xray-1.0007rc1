@@ -230,8 +230,8 @@
 	<string id="ui_mm_smooth_overweight">
 		<text>Плавный перегруз без обездвиживания</text>
 	</string>
-	<string id="ui_mm_condition_interdependence">
-		<text>Взаимозависимость параметров здоровья ГГ</text>
+	<string id="ui_mm_survival_mode">
+		<text>Режим выживания</text>
 	</string>
 	<string id="ui_mm_pause_after_loading">
 		<text>Пауза после загрузки сохранения</text>

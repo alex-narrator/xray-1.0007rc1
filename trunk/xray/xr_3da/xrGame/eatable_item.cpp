@@ -120,7 +120,7 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 	R_ASSERT		(object().H_Parent()->ID()==entity_alive->ID());
 	//влияние поглощённой дозы радиации на насыщение едой
 	CActor* pActor = smart_cast<CActor*>(IO);
-	float radiation_k = pActor && m_fSatietyInfluence > 0 && psActorFlags.test(AF_CONDITION_INTERDEPENDENCE) ?
+	float radiation_k = pActor && m_fSatietyInfluence > 0 && psActorFlags.test(AF_SURVIVAL) ?
 						(1.0f - entity_alive->conditions().GetRadiation()) :
 						 1.0f;
 	Msg("eatable item [%s] used by [%s], radiation_k = %.2f, satiety changed on %.2f", 

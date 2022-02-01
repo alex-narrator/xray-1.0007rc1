@@ -583,7 +583,7 @@ void	CActor::Hit							(SHit* pHDS)
 			{
 				//inherited::Hit		(hit_power,dir,who,element,position_in_bone_space, impulse, hit_type);
 				//
-				if (HDS.hit_type == ALife::eHitTypeTelepatic && psActorFlags.test(AF_CONDITION_INTERDEPENDENCE)) //если хит телепатический и включена соотв. опция
+				if (HDS.hit_type == ALife::eHitTypeTelepatic && psActorFlags.test(AF_SURVIVAL)) //если хит телепатический и включена соотв. опция
 				{
 					hit_power -= HDS.power * conditions().GetAlcohol(); //уменьшаем телепатический хит если актор пьян
 					//Msg("telepatic hit power = %.6f, HDS.power = %.6f, alcohol = %.6f", hit_power, HDS.power, conditions().GetAlcohol());
@@ -1737,13 +1737,8 @@ void CActor::UpdateMotionIcon(u32 mstate_rl)
 		if(mstate_rl&mcSprint)
 				motion_icon.ShowState(CUIMotionIcon::stSprint);
 		else
-		if(mstate_rl&mcAnyMove/* && isActorAccelerated(mstate_rl, IsZoomAimingMode())*/)
-		{
-			if (isActorAccelerated(mstate_rl, IsZoomAimingMode()))
-				motion_icon.ShowState(CUIMotionIcon::stNormal);
-			else
+		if(mstate_rl&mcAnyMove && !isActorAccelerated(mstate_rl, IsZoomAimingMode()))
 				motion_icon.ShowState(CUIMotionIcon::stRun);
-		}
 		else
 			motion_icon.ShowState(CUIMotionIcon::stNormal);
 	}
@@ -1831,7 +1826,7 @@ float		CActor::GetCarryWeight() const
 {
 	float add = 0;
 	CPHCapture* capture = character_physics_support()->movement()->PHCapture();
-	if (capture && capture->taget_object() && psActorFlags.test(AF_CONDITION_INTERDEPENDENCE))
+	if (capture && capture->taget_object() && psActorFlags.test(AF_SURVIVAL))
 	{
 		add = GetTotalMass(capture->taget_object(), 0.1f);
 	}
