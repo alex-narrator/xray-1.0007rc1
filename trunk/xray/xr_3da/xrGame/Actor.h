@@ -256,6 +256,11 @@ protected:
 	//разрешения на удаление трупа актера 
 	//после того как контролирующий его игрок зареспавнился заново. 
 	//устанавливается в game
+	u8						m_loaded_ph_box_id;
+
+	float					moving_box_delay;
+	bool					crouch_move;
+	bool					crouch_stop;
 private:
 	void					SwitchOutBorder(bool new_border_state);
 public:
@@ -371,6 +376,8 @@ protected:
 	float					fCurAVelocity;
 	CEffectorBobbing*		pCamBobbing;
 
+	float					current_ik_cam_shift;
+
 //	void					LoadShootingEffector	(LPCSTR section);
 //	SShootingEffector*		m_pShootingEffector;
 
@@ -460,6 +467,7 @@ public:
 	bool					CanJump					();
 	bool					CanMove					();
 	float					CameraHeight			();
+	float					CurrentHeight;
 	bool					CanSprint				();
 	bool					CanRun					();
 	void					StopAnyMove				();
@@ -487,6 +495,8 @@ protected:
 
 	float					m_fWalk_StrafeFactor;
 	float					m_fRun_StrafeFactor;
+
+	float					m_fLookoutAngle;
 
 	//////////////////////////////////////////////////////////////////////////
 	// User input/output
@@ -833,3 +843,5 @@ IC	CActorCondition	&CActor::conditions	() const{ VERIFY(m_entity_condition); ret
 extern CActor*		g_actor;
 CActor*				Actor		();
 extern const float	s_fFallTime;
+extern float		cam_HeightInterpolationSpeed;
+extern float		cam_LookoutSpeed;

@@ -28,6 +28,12 @@ function opt_video:InitControls(x, y, xml, handler)
 	
 	xml:InitStatic					("tab_video:cap_caminert",			self)
 	xml:InitTrackBar				("tab_video:track_caminert",		self)
+	
+	xml:InitStatic					("tab_video:cap_cam_height_speed",	self)
+	xml:InitTrackBar				("tab_video:track_cam_height_speed",self)
+	
+	xml:InitStatic					("tab_video:cap_cam_lookout_speed",	self)
+	xml:InitTrackBar				("tab_video:track_cam_lookout_speed",self)
 
 	xml:InitStatic					("tab_video:cap_resolution",		self)
 	xml:InitComboBox				("tab_video:list_resolution",		self)

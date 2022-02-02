@@ -132,6 +132,12 @@
 	<string id="ui_mm_cam_inert">
 		<text>Раскачка (инерция) камеры</text>
 	</string>
+	<string id="ui_mm_cam_height_speed">
+		<text>Скорость приседания</text>
+	</string>
+	<string id="ui_mm_cam_lookout_speed">
+		<text>Скорость выглядывания</text>
+	</string>
 	<string id="ui_mm_cancel">
 		<text>Отмена</text>
 	</string>

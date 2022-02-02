@@ -94,10 +94,10 @@ private:
 	EEnvironment		eOldEnvironment;
 	EEnvironment		eEnvironment;
 	Fbox				aabb;
-	Fbox				boxes	[4];
+	Fbox				boxes	[5];
 
-	u32					trying_times[4];
-	Fvector				trying_poses[4];
+	u32					trying_times[5];
+	Fvector				trying_poses[5];
 	DWORD				m_dwCurBox;
 
 	float				fMass;

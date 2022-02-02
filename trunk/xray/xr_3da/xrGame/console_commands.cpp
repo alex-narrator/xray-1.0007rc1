@@ -1434,7 +1434,9 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"g_bullet_from_barrel",			&psActorFlags,	AF_BULLET_FROM_BARREL			);	//пули летят из ствола
 	CMD3(CCC_Mask,				"g_wpn_actions_reset_sprint",	&psActorFlags,	AF_WPN_ACTIONS_RESET_SPRINT		);	//перезарядка/смена типа патрона/бросок гранаты/болта/удар ножом сбрасывают спринт
 	//
-	CMD4(CCC_Float,				"missile_force_grow_speed",		&g_fForceGrowSpeed,					 1.0f, 50.0f);
+	CMD4(CCC_Float,				"missile_force_grow_speed",		&g_fForceGrowSpeed,					 1.0f, 50.0f); //скорость замаха гранатой/болтом
+	CMD4(CCC_Float,				"cam_height_speed",				&cam_HeightInterpolationSpeed,		 4.0f, 16.0f); //скорость приседания
+	CMD4(CCC_Float,				"cam_lookout_speed",			&cam_LookoutSpeed,					 1.0f,  4.0f); //скорость выглядывания
 	//параметры персонажа
 	CMD3(CCC_Mask,				"g_smooth_overweight",			&psActorFlags,	AF_SMOOTH_OVERWEIGHT			);	//плавный перегруз без обездвиживания
 	CMD3(CCC_Mask,				"g_survival_mode",				&psActorFlags,	AF_SURVIVAL						);	//взаимозависимость параметров здоровья ГГ

@@ -89,7 +89,7 @@ Flags32			psActorFlags={0};
 
 
 
-CActor::CActor() : CEntityAlive()
+CActor::CActor() : CEntityAlive(), current_ik_cam_shift(0)
 {
 	encyclopedia_registry	= xr_new<CEncyclopediaRegistryWrapper	>();
 	game_news_registry		= xr_new<CGameNewsRegistryWrapper		>();
@@ -195,6 +195,15 @@ CActor::CActor() : CEntityAlive()
 	//-----------------------------------------------------------------------------------
 	m_dwILastUpdateTime		= 0;
 
+	m_loaded_ph_box_id		= 0;
+
+	moving_box_delay		= 0.f;
+	crouch_move				= false;
+	crouch_stop				= false;
+
+	// Alex ADD: for smooth crouch fix
+	CurrentHeight			= 0.f;
+
 	m_location_manager		= xr_new<CLocationManager>(this);
 	#ifdef LUAICP_COMPAT
 		LogXrayOffset("CActor.physics_support", this, &this->m_pPhysics_support);
@@ -289,11 +298,29 @@ void CActor::Load	(LPCSTR section )
 	bb.set	(vBOX_center,vBOX_center); bb.grow(vBOX_size);
 	character_physics_support()->movement()->SetBox		(2,bb);
 
+	if (pSettings->line_exist(section, "ph_box4_center") && pSettings->line_exist(section, "ph_box4_size")) {
+		vBOX_center = pSettings->r_fvector3(section, "ph_box4_center");
+		vBOX_size = pSettings->r_fvector3(section, "ph_box4_size");
+		bb.set(vBOX_center, vBOX_center); bb.grow(vBOX_size);
+		character_physics_support()->movement()->SetBox(4, bb);
+	}
+	else
+		character_physics_support()->movement()->SetBox(4, bb);
+
 	// m_PhysicMovementControl: BOX
 	vBOX_center= pSettings->r_fvector3	(section,"ph_box1_center"	);
 	vBOX_size	= pSettings->r_fvector3	(section,"ph_box1_size"		);
 	bb.set	(vBOX_center,vBOX_center); bb.grow(vBOX_size);
 	character_physics_support()->movement()->SetBox		(1,bb);
+
+	if (pSettings->line_exist(section, "ph_box3_center") && pSettings->line_exist(section, "ph_box3_size")) {
+		vBOX_center = pSettings->r_fvector3(section, "ph_box3_center");
+		vBOX_size = pSettings->r_fvector3(section, "ph_box3_size");
+		bb.set(vBOX_center, vBOX_center); bb.grow(vBOX_size);
+		character_physics_support()->movement()->SetBox(3, bb);
+	}
+	else
+		character_physics_support()->movement()->SetBox(3, bb);
 
 	// m_PhysicMovementControl: BOX
 	vBOX_center= pSettings->r_fvector3	(section,"ph_box0_center"	);
@@ -437,6 +464,16 @@ if(!g_dedicated_server)
 	m_fKickImpulse		= READ_IF_EXISTS(pSettings, r_float, "actor_capture", "kick_impulse",		250.f);	//сила с которой актор пинает предмет
 	m_fHoldingDistance	= READ_IF_EXISTS(pSettings, r_float, "actor_capture", "holding_distance",	.5f);	//расстояние перед актором на котором находится удерживаемый предмет
 	clamp(m_fHoldingDistance, 0.0f, inventory().GetTakeDist());
+
+	if (pSettings->line_exist(section, "lookout_angle")) {
+		m_fLookoutAngle = pSettings->r_float(section, "lookout_angle");
+		m_fLookoutAngle = deg2rad(m_fLookoutAngle);
+	}
+	else
+		m_fLookoutAngle = ACTOR_LOOKOUT_ANGLE;
+
+	// Alex ADD: for smooth crouch fix
+	CurrentHeight		= CameraHeight();
 }
 
 void CActor::PHHit(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_object_space, float impulse, ALife::EHitType hit_type /* = ALife::eHitTypeWound */)

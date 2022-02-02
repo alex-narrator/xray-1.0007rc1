@@ -87,11 +87,15 @@ void CActor::cam_UnsetLadder()
 	C->lim_yaw[1]			= 0;
 	C->bClampYaw			= false;
 }
+
+float cammera_into_collision_shift = 0.05f;
+
 float CActor::CameraHeight()
 {
 	Fvector						R;
 	character_physics_support()->movement()->Box().getsize		(R);
-	return						m_fCamHeightFactor*R.y;
+	//return						m_fCamHeightFactor*R.y;
+	return m_fCamHeightFactor*(R.y - cammera_into_collision_shift);
 }
 
 IC float viewport_near(float& w, float& h)
@@ -129,6 +133,10 @@ ICF BOOL test_point(xrXRC& xrc, const Fmatrix& xform, const Fmatrix33& mat, cons
 #include "physics.h"
 #include "PHActivationShape.h"
 #include "debug_renderer.h"
+
+// Alex ADD: smooth crouch fix
+float cam_HeightInterpolationSpeed = 8.f;
+
 void CActor::cam_Update(float dt, float fFOV)
 {
 	if(m_holder)		return;
@@ -136,7 +144,21 @@ void CActor::cam_Update(float dt, float fFOV)
 	if(mstate_real & mcClimb&&cam_active!=eacFreeLook)
 		camUpdateLadder(dt);
 
-	Fvector point={0,CameraHeight(),0}, dangle={0,0,0};
+	//Fvector point={0,CameraHeight(),0}, dangle={0,0,0};
+
+	current_ik_cam_shift = 0;
+
+	// Alex ADD: smooth crouch fix
+	if (CurrentHeight != CameraHeight())
+	{
+		float smoothK = cam_HeightInterpolationSpeed * dt;
+		if (smoothK > 1.0f)
+			smoothK = 1.0f;
+
+		CurrentHeight = (CurrentHeight * (1.0f - smoothK)) + (CameraHeight() * smoothK);
+	}
+
+	Fvector point = { 0, CurrentHeight + current_ik_cam_shift, 0 }, dangle = { 0, 0, 0 };
 	
 
 	Fmatrix				xform,xformR;
