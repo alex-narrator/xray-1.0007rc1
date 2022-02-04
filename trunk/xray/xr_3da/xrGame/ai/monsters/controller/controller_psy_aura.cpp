@@ -16,8 +16,8 @@ CPPEffectorControllerAura::CPPEffectorControllerAura(const SPPInfo &ppi, u32 tim
 	m_snd_left.clone		(snd_left,st_Effect,sg_SourceType);	
 	m_snd_right.clone		(snd_right,st_Effect,sg_SourceType);	
 
-	m_snd_left.play_at_pos	(Actor(), Fvector().set(-1.f, 0.f, 1.f), sm_Looped | sm_2D);
-	m_snd_right.play_at_pos	(Actor(), Fvector().set(-1.f, 0.f, 1.f), sm_Looped | sm_2D);
+	m_snd_left.play_at_pos	(Actor(), Fvector().set(-1.f, 0.f, 1.f), /*sm_Looped |*/ sm_2D);
+	m_snd_right.play_at_pos	(Actor(), Fvector().set(-1.f, 0.f, 1.f), /*sm_Looped |*/ sm_2D);
 
 }
 
@@ -27,6 +27,11 @@ void CPPEffectorControllerAura::switch_off()
 	m_time_state_started	= Device.dwTimeGlobal;
 }
 
+void CPPEffectorControllerAura::terminate()
+{
+	if (m_snd_left._feedback()) m_snd_left.stop();
+	if (m_snd_right._feedback()) m_snd_right.stop();
+}
 
 BOOL CPPEffectorControllerAura::update()
 {
@@ -50,8 +55,8 @@ BOOL CPPEffectorControllerAura::update()
 
 	// start new or play again?
 	if (!m_snd_left._feedback() && !m_snd_right._feedback()) {
-		m_snd_left.play_at_pos	(Actor(), Fvector().set(-1.f, 0.f, 1.f), sm_Looped | sm_2D);
-		m_snd_right.play_at_pos	(Actor(), Fvector().set(-1.f, 0.f, 1.f), sm_Looped | sm_2D);
+		m_snd_left.play_at_pos	(Actor(), Fvector().set(-1.f, 0.f, 1.f), /*sm_Looped |*/ sm_2D);
+		m_snd_right.play_at_pos	(Actor(), Fvector().set(-1.f, 0.f, 1.f), /*sm_Looped |*/ sm_2D);
 	} 
 
 	if (m_snd_left._feedback())		m_snd_left.set_volume	(m_factor);
@@ -171,6 +176,15 @@ void CControllerAura::on_death()
 		m_effector->switch_off	();
 		m_effector				= 0;
 		m_hit_state				= eNone;
+	}
+}
+
+void CControllerAura::on_destroy()
+{
+	if (active()) {
+		m_effector->terminate();
+		m_effector = 0;
+		m_hit_state = eNone;
 	}
 }
 
