@@ -16,6 +16,7 @@
 
 #include "actor.h"
 #include "actoreffector.h"
+#include "ActorCondition.h"
 #include "level.h"
 
 #include "xr_level_controller.h"
@@ -770,6 +771,10 @@ void CWeapon::UpdateCL()
 	}
 	else
 		m_idle_state = eIdle;
+	//
+	if (ParentIsActor() && g_actor->conditions().IsCantWalk() && IsZoomed())
+		OnZoomOut();
+	//
 }
 
 void CWeapon::renderable_Render()
@@ -875,11 +880,16 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 	case kWPN_ZOOM:
 		if (IsZoomEnabled())
 		{
-			if (flags&CMD_START && !IsPending())
-				OnZoomIn();
-			else if (IsZoomed())
-				OnZoomOut();
-			return true;
+			if (!ParentIsActor() || (ParentIsActor() && !g_actor->conditions().IsCantWalk()))
+			{
+				if (flags&CMD_START && !IsPending())
+					OnZoomIn();
+				else if (IsZoomed())
+					OnZoomOut();
+				return true;
+			}
+			else
+				HUD().GetUI()->AddInfoMessage("cant_walk");
 		}
 		else
 			return false;
