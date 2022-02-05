@@ -131,8 +131,8 @@ void CSoundRender_Source::load(LPCSTR name)
 
 //#ifdef _EDITOR
 	if (!FS.exist(fn)){ 
+		Msg				("! Can't find sound '%s'", name);
 		FS.update_path	(fn,"$game_sounds$","$no_sound.ogg");
-		Msg("! Can't find sound '%s'", fname);
     }
 //#endif
 	LoadWave			(fn);		//.R_ASSERT(wave);
