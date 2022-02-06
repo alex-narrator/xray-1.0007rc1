@@ -29,9 +29,6 @@ CHudItem::CHudItem(void)
 	m_tendto_speed		= 0.;
 	m_origin_offset_aim	= 0.;
 	m_tendto_speed_aim	= 0.;
-	//
-	m_fLR_MovingFactor	= 0.;
-	m_fFB_MovingFactor	= 0.;
 }
 
 CHudItem::~CHudItem(void)
@@ -77,40 +74,35 @@ void CHudItem::Load(LPCSTR section)
 		//
 		////////////////////////////////////////////
 		//--#SM+# Begin--
-		string16 _prefix = { "" };
 
-		string128 val_name;
 		// Смещение в стрейфе
-		m_strafe_offset[0][0] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, strconcat(sizeof(val_name), val_name, "strafe_hud_offset_pos", _prefix), Fvector().set(0.015f, 0.f, 0.f));
-		m_strafe_offset[1][0] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, strconcat(sizeof(val_name), val_name, "strafe_hud_offset_rot", _prefix), Fvector().set(0.f, 0.f, 4.5f));
+		m_strafe_offset[0][0] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "strafe_hud_offset_pos", (Fvector{ 0.015f, 0.f, 0.f }));
+		m_strafe_offset[1][0] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "strafe_hud_offset_rot", (Fvector{ 0.f, 0.f, 4.5f }));
 
-		// Поворот в стрейфе
-		m_strafe_offset[0][1] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, strconcat(sizeof(val_name), val_name, "strafe_aim_hud_offset_pos", _prefix), Fvector().set(0.005f, 0.f, 0.f));
-		m_strafe_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, strconcat(sizeof(val_name), val_name, "strafe_aim_hud_offset_rot", _prefix), Fvector().set(0.f, 0.f, 2.5f));
+		m_strafe_offset[0][1] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "strafe_aim_hud_offset_pos", (Fvector{ 0.005f, 0.f, 0.f }));
+		m_strafe_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "strafe_aim_hud_offset_rot", (Fvector{ 0.f, 0.f, 2.5f }));
+
+		m_strafe_offset[2][0].set(READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "strafe_enabled", true), READ_IF_EXISTS(pSettings, r_float, *hud_sect, "strafe_transition_time", 0.25f), 0.f); // normal
+		m_strafe_offset[2][1].set(READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "strafe_aim_enabled", true), READ_IF_EXISTS(pSettings, r_float, *hud_sect, "strafe_aim_transition_time", 0.15f), 0.f); // aim-GL
+
+		m_lookout_offset[0][0] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "lookout_hud_offset_pos", (Fvector{ 0.045f, 0.f, 0.f }));
+		m_lookout_offset[1][0] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "lookout_hud_offset_rot", (Fvector{ 0.f, 0.f, 10.f }));
+
+		m_lookout_offset[0][1] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "lookout_aim_hud_offset_pos", (Fvector{ 0.f, 0.f, 0.f }));
+		m_lookout_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "lookout_aim_hud_offset_rot", (Fvector{ 0.f, 0.f, 15.f }));
+
+		m_lookout_offset[2][0].set(READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "lookout_enabled", true), READ_IF_EXISTS(pSettings, r_float, *hud_sect, "lookout_transition_time", 0.25f), 0.f); // normal
+		m_lookout_offset[2][1].set(READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "lookout_aim_enabled", true), READ_IF_EXISTS(pSettings, r_float, *hud_sect, "lookout_aim_transition_time", 0.15f), 0.f); // aim-GL
 
 		// Смещение при движении вперёд/назад
-		m_longitudinal_offset[0] = READ_IF_EXISTS(pSettings, r_float, *hud_sect, strconcat(sizeof(val_name), val_name, "longitudinal_hud_offset", _prefix), 0.04f);
-		m_longitudinal_offset[1] = READ_IF_EXISTS(pSettings, r_float, *hud_sect, strconcat(sizeof(val_name), val_name, "longitudinal_hud_offset_aim", _prefix), m_longitudinal_offset[0]);
-
-		// Параметры стрейфа
-		float fFullStrafeTime		= READ_IF_EXISTS(pSettings, r_float, *hud_sect, "strafe_transition_time",		0.25f);
-		float fFullStrafeTime_aim	= READ_IF_EXISTS(pSettings, r_float, *hud_sect, "strafe_aim_transition_time",	0.15f);
-		bool bStrafeEnabled			= !!READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "strafe_enabled",				true);
-		bool bStrafeEnabled_aim		= !!READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "strafe_aim_enabled",			true);
+		m_longitudinal_offset[0] = READ_IF_EXISTS(pSettings, r_float, *hud_sect, "longitudinal_hud_offset", 0.04f);
+		m_longitudinal_offset[1] = READ_IF_EXISTS(pSettings, r_float, *hud_sect, "longitudinal_aim_hud_offset", m_longitudinal_offset[0]);
 
 		// Параметры движения вперёд/назад
-		float fFullLongitudinalTime			= READ_IF_EXISTS(pSettings, r_float, *hud_sect, "longitudinal_transition_time",		0.18f);
-		float fFullLongitudinalTime_aim		= READ_IF_EXISTS(pSettings, r_float, *hud_sect, "longitudinal_transition_time_aim", fFullLongitudinalTime);
-		bool bLongitudinalOffsetEnabled		= !!READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "longitudinal_offset_enabled",		true);
-		bool bLongitudinalOffsetEnabled_aim = !!READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "longitudinal_offset_aim_enabled", bLongitudinalOffsetEnabled);
-
-		m_strafe_offset[2][0].set(bStrafeEnabled, fFullStrafeTime, 0.f); // normal
-		m_strafe_offset[2][1].set(bStrafeEnabled_aim, fFullStrafeTime_aim, 0.f); // aim-GL
-
-		m_longitudinal_offset[2] = fFullLongitudinalTime;
-		m_longitudinal_offset[3] = fFullLongitudinalTime_aim;
-		m_longitudinal_offset[4] = bLongitudinalOffsetEnabled;
-		m_longitudinal_offset[5] = bLongitudinalOffsetEnabled_aim;
+		m_longitudinal_offset[2] = READ_IF_EXISTS(pSettings, r_float, *hud_sect, "longitudinal_transition_time", 0.18f);
+		m_longitudinal_offset[3] = READ_IF_EXISTS(pSettings, r_float, *hud_sect, "longitudinal_aim_transition_time", m_longitudinal_offset[2]);
+		m_longitudinal_offset[4] = READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "longitudinal_enabled", true);
+		m_longitudinal_offset[5] = READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "longitudinal_aim_enabled", m_longitudinal_offset[4]);
 		//--#SM+# End--
 		////////////////////////////////////////////
 	}else{
@@ -470,6 +462,93 @@ void CHudItem::UpdateHudInertion		(Fmatrix& hud_trans)
 		hud_position.translate(0.0f, 0.0f, curr_offs);
 		hud_trans.mulB_43(hud_position);
 	}
+
+	//=============== Эффекты выглядываний ===============//
+	for (int _idx = 0; _idx <= 1; _idx++)
+	{
+		bool bEnabled = !!m_lookout_offset[2][_idx].x;
+		if (!bEnabled)
+			continue;
+
+		float fLookoutMaxTime = m_lookout_offset[2][idx].y; // Макс. время в секундах, за которое мы наклонимся из центрального положения
+		if (fLookoutMaxTime <= EPS)
+			fLookoutMaxTime = 0.01f;
+
+		const float fStepPerUpdL = Device.fTimeDelta / fLookoutMaxTime; // Величина изменение фактора поворота
+
+		if ((iMovingState & mcLLookout) && !(iMovingState & mcRLookout))
+		{ // Выглядываем влево
+			float fVal = (m_fLookout_MovingFactor > 0.f ? fStepPerUpdL * 3 : fStepPerUpdL);
+			m_fLookout_MovingFactor -= fVal;
+		}
+		else if ((iMovingState & mcRLookout) && !(iMovingState & mcLLookout))
+		{ // Выглядываем вправо
+			float fVal = (m_fLookout_MovingFactor < 0.f ? fStepPerUpdL * 3 : fStepPerUpdL);
+			m_fLookout_MovingFactor += fVal;
+		}
+		else
+		{ // Двигаемся в любом другом направлении
+			if (m_fLookout_MovingFactor < 0.0f)
+			{
+				m_fLookout_MovingFactor += fStepPerUpdL;
+				clamp(m_fLookout_MovingFactor, -1.0f, 0.0f);
+			}
+			else
+			{
+				m_fLookout_MovingFactor -= fStepPerUpdL;
+				clamp(m_fLookout_MovingFactor, 0.0f, 1.0f);
+			}
+		}
+
+		clamp(m_fLookout_MovingFactor, -1.0f, 1.0f); // не должен превышать эти лимиты
+
+		float koef{ 1.f };
+		if ((iMovingState & mcCrouch) && (iMovingState & mcAccel))
+			koef = 0.5; // во сколько раз менять амплитуду при полном присяде
+		else if (iMovingState & mcCrouch)
+			koef = 0.75; // во сколько раз менять амплитуду при присяде
+
+		// Смещение позиции худа
+		Fvector lookout_offs = m_lookout_offset[0][idx]; //pos
+		lookout_offs.mul(koef);
+		lookout_offs.mul(m_fLookout_MovingFactor); // Умножаем на фактор наклона
+
+		// Поворот худа
+		Fvector lookout_rot = m_lookout_offset[1][idx]; //rot
+		lookout_rot.mul(koef);
+		lookout_rot.mul(-PI / 180.f); // Преобразуем углы в радианы
+		lookout_rot.mul(m_fLookout_MovingFactor); // Умножаем на фактор наклона
+
+		if (idx == 0)
+		{ // От бедра
+			lookout_offs.mul(1.f - m_fZoomRotationFactor);
+			lookout_rot.mul(1.f - m_fZoomRotationFactor);
+		}
+		else
+		{ // Во время аима
+			lookout_offs.mul(m_fZoomRotationFactor);
+			lookout_rot.mul(m_fZoomRotationFactor);
+		}
+
+		Fmatrix hud_rotation;
+		Fmatrix hud_rotation_y;
+
+		hud_rotation.identity();
+		hud_rotation.rotateX(lookout_rot.x);
+
+		hud_rotation_y.identity();
+		hud_rotation_y.rotateY(lookout_rot.y);
+		hud_rotation.mulA_43(hud_rotation_y);
+
+		hud_rotation_y.identity();
+		hud_rotation_y.rotateZ(lookout_rot.z);
+		hud_rotation.mulA_43(hud_rotation_y);
+
+		hud_rotation.translate_over(lookout_offs);
+		hud_trans.mulB_43(hud_rotation);
+		
+	}
+	//====================================================//
 }
 
 void CHudItem::UpdateCL()

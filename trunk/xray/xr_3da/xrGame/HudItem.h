@@ -132,10 +132,9 @@ protected:
 	float m_tendto_speed_aim;
 	//
 	//
-	float	m_fLR_MovingFactor; // !!!!
-	float	m_fFB_MovingFactor;
+	float	m_fLR_MovingFactor, m_fFB_MovingFactor, m_fLookout_MovingFactor; // !!!!
 	float	m_longitudinal_offset[6];
-	Fvector m_strafe_offset[3][2]; //pos,rot,data/ normal,aim-GL --#SM+#--
+	Fvector m_strafe_offset[3][2], m_lookout_offset[3][2]; //pos,rot,data/ normal,aim-GL --#SM+#--
 	u8		GetCurrentHudOffsetIdx() const;
 	//
 public:
