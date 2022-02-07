@@ -611,6 +611,12 @@ bool CUICarBodyWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 		}
 	}
 
+	if (m_pUIPropertiesBox->IsShown())
+	{
+		if (mouse_action == WINDOW_MOUSE_WHEEL_DOWN || mouse_action == WINDOW_MOUSE_WHEEL_UP)
+			return true;
+	}
+
 	CUIWindow::OnMouse(x, y, mouse_action);
 
 	return true; // always returns true, because ::StopAnyMove() == true;
