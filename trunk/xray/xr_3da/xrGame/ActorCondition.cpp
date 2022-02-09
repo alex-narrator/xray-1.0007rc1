@@ -47,7 +47,6 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_condition_flags.zero		();
 	//
 	m_bFlagState				= !!psActorFlags.test(AF_SURVIVAL);
-
 }
 
 CActorCondition::~CActorCondition(void)
@@ -108,6 +107,10 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fAlcoholSatietyIntens			= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "satiety_to_alcohol_effector_intensity",		1.0f);
 	//
 	m_fExerciseStressFactor			= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "exercise_stress_factor",					1.0f);
+	//
+	m_fZoomEffectorK				= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "zoom_effector_k",							10.0f);
+	//
+	m_fV_HoldBreath					= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "hold_breath_v",								0.f);
 }
 
 
@@ -220,6 +223,12 @@ void CActorCondition::UpdatePower()
 		//radiation_power_k*
 		//satiety_power_k*
 		m_fDeltaTime * GetRegenKoef() - bleeding_power_dec;
+
+	//задержка дыхания
+	if (object().IsBreathHold() && !object().is_actor_creep() && GetPower() > m_fCantWalkPowerEnd)
+		m_fDeltaPower -= m_fDeltaTime * m_fV_HoldBreath;
+	else
+		object().SetBreathHold(false);
 }
 
 void CActorCondition::UpdatePsyHealth()

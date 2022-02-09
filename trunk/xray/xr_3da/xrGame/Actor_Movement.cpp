@@ -115,7 +115,7 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 		}
 	}
 
-	if(!CanAccelerate()&&isActorAccelerated(mstate_real, IsZoomAimingMode()))
+	if (!CanAccelerate() && isActorAccelerated(mstate_real, IsZoomAimingMode()) && mstate_real&~mcCrouch)
 	{
 		mstate_real				^=mcAccel;
 	};	

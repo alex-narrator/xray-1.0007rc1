@@ -147,7 +147,7 @@ CActor::CActor() : CEntityAlive(), current_ik_cam_shift(0)
 
 	m_pPhysicsShell			=	NULL;
 
-
+	m_bIsBreathHold			=	false;
 
 	m_holder				=	NULL;
 	m_holderID				=	u16(-1);
@@ -928,9 +928,9 @@ void CActor::g_Physics(Fvector& _accel, float jump, float dt)
 }
 
 DLL_API float g_fov = 67.5f;
-#ifndef SIMPLE_ZOOM_SETTINGS
-DLL_API float wpn_fov_ratio = 0.75f;
-#endif
+
+//DLL_API float wpn_fov_ratio = 0.75f;
+
 
 float CActor::currentFOV()
 {
@@ -941,9 +941,7 @@ float CActor::currentFOV()
 		pWeapon->IsZoomed() && (!pWeapon->ZoomTexture() ||
 		(!pWeapon->IsRotatingToZoom() && pWeapon->ZoomTexture())))
 		return pWeapon->GetZoomFactor()
-#ifndef SIMPLE_ZOOM_SETTINGS
-		* (wpn_fov_ratio)
-#endif
+//		* (wpn_fov_ratio)
 		;
 	else
 		return g_fov; // cam_Active()->f_fov;
@@ -1985,4 +1983,18 @@ bool CActor::is_actor_climbing() {
 
 bool CActor::is_actor_moving() {
 	return mstate_real & mcAnyAction ? true : false;
+}
+
+float CActor::GetZoomEffectorK()
+{
+	float k = 0.f;
+
+	if (is_actor_creep() || IsBreathHold())
+		return k;
+	else if (is_actor_crouch())
+		k = (1.f + (conditions().GetZoomEffectorKoef() * (1.f - conditions().GetPowerKoef()))) * 0.5f;
+	else
+		k = 1.f + (conditions().GetZoomEffectorKoef() * (1.f - conditions().GetPowerKoef()));
+
+	return k;
 }

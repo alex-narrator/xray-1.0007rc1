@@ -213,7 +213,7 @@ protected:
 	ref_sound			m_HeavyBreathSnd;
 	ref_sound			m_BloodSnd;
 
-	
+	bool				m_bIsBreathHold;
 
 protected:
 	//Sleep params
@@ -270,6 +270,10 @@ public:
 	////////////////////////////////////////////////////////
 	void					SetZoomRndSeed			(s32 Seed = 0);
 	s32						GetZoomRndSeed			()	{ return m_ZoomRndSeed;	};
+	//множитель для управления интенсивностью эффектора качания в прицеливании
+	float					GetZoomEffectorK		();
+	void					SetBreathHold			(bool val){ m_bIsBreathHold = val; };
+	bool					IsBreathHold			() { return m_bIsBreathHold; };
 	////////////////////////////////////////////////////////
 	void					SetShotRndSeed			(s32 Seed = 0);
 	s32						GetShotRndSeed			()	{ return m_ShotRndSeed;	};

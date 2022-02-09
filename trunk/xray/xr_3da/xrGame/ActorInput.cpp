@@ -121,9 +121,14 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				mstate_wishful &= ~mcCrouch;
 
 			if (mstate_wishful & mcSprint)
-				mstate_wishful &=~mcSprint;
+				mstate_wishful &= ~mcSprint;
 			else
-				mstate_wishful |= mcSprint;					
+				mstate_wishful |= mcSprint;
+		}break;
+	case kACCEL: //задержка дыхания
+		{
+			if (IsZoomAimingMode())
+				SetBreathHold(!IsBreathHold());
 		}break;
 	case kCAM_1:{	cam_Set(eacFirstEye	); psActorFlags.set(AF_PSP, FALSE);				}break;
 	case kCAM_2:{	cam_Set(eacLookAt	); psActorFlags.set(AF_PSP, TRUE);				}break;

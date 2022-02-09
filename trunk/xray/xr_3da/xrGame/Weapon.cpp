@@ -1333,7 +1333,7 @@ float CWeapon::CurrentZoomFactor()
 void CWeapon::OnZoomIn()
 {
 	m_bZoomMode = true;
-	m_fZoomFactor = CurrentZoomFactor();
+	m_fZoomFactor = g_fov / CurrentZoomFactor();
 	//StopHudInertion();
 }
 

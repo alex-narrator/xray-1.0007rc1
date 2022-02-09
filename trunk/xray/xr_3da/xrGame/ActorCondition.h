@@ -59,6 +59,8 @@ public:
 	float				GetRegenKoef				() { return psActorFlags.test(AF_SURVIVAL) ? (1.0f - GetRadiation()) * GetSatiety() : 1.0f; };
 	//коэффициент нагрузки актора
 	float               GetStress					();
+	//во сколько раз больше трясутся руки в прицеливании при полном отсутствии выносливости
+	float				GetZoomEffectorKoef			() { return m_fZoomEffectorK; };
 
 	virtual void 		ChangeAlcohol				(float value);
 	virtual void 		ChangeSatiety				(float value);
@@ -121,6 +123,9 @@ public:
 	float m_fAlcoholSatietyIntens; //коэфф. для рассчета интенсивности постэффекта опьянения от голода
 	//
 	float m_fExerciseStressFactor; //фактор физнагрузки - множитель для коэффициента нагрузки актора при спринте и прыжке
+	//
+	float m_fZoomEffectorK;
+	float m_fV_HoldBreath;
 protected:
 	mutable bool m_bLimping;
 	mutable bool m_bCantWalk;
