@@ -257,6 +257,7 @@ public:
 	virtual	float			CurrentZoomFactor();
 	//показывает, что оружие находится в соостоянии поворота для приближенного прицеливания
 	bool			IsRotatingToZoom() const		{ return (m_fZoomRotationFactor < 1.f); }
+	float			GetZoomRotationFactor() { return m_fZoomRotationFactor; };
 
 	void			LoadZoomOffset(LPCSTR section, LPCSTR prefix);
 

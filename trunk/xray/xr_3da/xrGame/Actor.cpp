@@ -147,7 +147,7 @@ CActor::CActor() : CEntityAlive(), current_ik_cam_shift(0)
 
 	m_pPhysicsShell			=	NULL;
 
-	m_bIsBreathHold			=	false;
+	m_bIsHardHold			=	false;
 
 	m_holder				=	NULL;
 	m_holderID				=	u16(-1);
@@ -1989,9 +1989,9 @@ float CActor::GetZoomEffectorK()
 {
 	float k = 0.f;
 
-	if (is_actor_creep() || IsBreathHold())
-		return k;
-	else if (is_actor_crouch())
+	if (IsHardHold()) return k;
+
+	if (is_actor_crouch())
 		k = (1.f + (conditions().GetZoomEffectorKoef() * (1.f - conditions().GetPowerKoef()))) * 0.5f;
 	else
 		k = 1.f + (conditions().GetZoomEffectorKoef() * (1.f - conditions().GetPowerKoef()));

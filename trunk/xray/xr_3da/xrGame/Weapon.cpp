@@ -880,12 +880,26 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 	case kWPN_ZOOM:
 		if (IsZoomEnabled())
 		{
-			if (!ParentIsActor() || (ParentIsActor() && !g_actor->conditions().IsCantWalk()))
+			if (!g_actor->conditions().IsCantWalk())
 			{
-				if (flags&CMD_START && !IsPending())
+				/*if (flags&CMD_START && !IsPending())
 					OnZoomIn();
 				else if (IsZoomed())
 					OnZoomOut();
+				return true;*/
+				if (flags & CMD_START && !IsPending())
+				{
+					if (!psActorFlags.is(AF_HOLD_TO_AIM) && IsZoomed())
+					{
+						OnZoomOut();
+					}
+					else
+						OnZoomIn();
+				}
+				else if (IsZoomed() && psActorFlags.is(AF_HOLD_TO_AIM))
+				{
+					OnZoomOut();
+				}
 				return true;
 			}
 			else

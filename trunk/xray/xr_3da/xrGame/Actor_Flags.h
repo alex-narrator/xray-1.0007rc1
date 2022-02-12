@@ -19,6 +19,7 @@ enum{
 		AF_PICKUP_TARGET_ONLY        =(1<<15), //можно подобрать только те предметы на которые непосредственно смотрит прицел
 		AF_PAUSE_AFTER_LOADING       =(1<<16), //пауза после загрузки сохранения
 		AF_BULLET_FROM_BARREL	     =(1<<17), //пули летят из ствола
+		AF_HOLD_TO_AIM				 =(1<<18), //удерживать клавишу для зума
 };
 
 extern Flags32 psActorFlags;

@@ -267,6 +267,9 @@
 	<string id="ui_mm_invert_mouse">
 		<text>Инвертировать мышь</text>
 	</string>
+	<string id="ui_mm_hold_to_aim">
+		<text>Удерживать клавишу [$$ACTION_WPN_ZOOM$$] для прицеливания</text>
+	</string>
 	<string id="ui_mm_missile_force_grow_speed">
 		<text>Скорость замаха при броске</text>
 	</string>

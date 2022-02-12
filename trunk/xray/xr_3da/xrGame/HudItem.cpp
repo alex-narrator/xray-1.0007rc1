@@ -15,6 +15,9 @@
 #include "inventory.h"
 #include "../CameraBase.h"
 
+#include "Inventory.h"
+#include "Weapon.h"
+
 
 CHudItem::CHudItem(void)
 {
@@ -271,6 +274,7 @@ static const float PITCH_OFFSET_D	= 0.02f;
 void CHudItem::UpdateHudInertion		(Fmatrix& hud_trans)
 {
 	CActor* pActor = smart_cast<CActor*>(object().H_Parent());
+	bool b_hard_holded = pActor->IsHardHold();
 
 	if (m_pHUD && m_bInertionAllow && m_bInertionEnable)
 	{
@@ -318,7 +322,7 @@ void CHudItem::UpdateHudInertion		(Fmatrix& hud_trans)
 			origin.mad(xform.i, -pitch * PITCH_OFFSET_R);
 			origin.mad(xform.j, -pitch * PITCH_OFFSET_N);
 		}
-		else if (m_bInertionAllowAim) // в режиме прицеливания
+		else if (m_bInertionAllowAim && !b_hard_holded) // в режиме прицеливания
 		{
 			// tend to forward
 			m_last_dir.mad(diff_dir, m_tendto_speed_aim*Device.fTimeDelta);
@@ -329,9 +333,9 @@ void CHudItem::UpdateHudInertion		(Fmatrix& hud_trans)
 	}
 
 	/////////////////////////////
-	//auto pActor = smart_cast<const CActor*>(object().H_Parent());
 
-	float m_fZoomRotationFactor = pActor->IsZoomAimingMode() ? 1.f : 0.f;
+	auto* pWeapon = smart_cast<CWeapon*>(pActor->inventory().ActiveItem());
+	float m_fZoomRotationFactor = pWeapon ? pWeapon->GetZoomRotationFactor() : 0.f;
 
 	u8 idx = GetCurrentHudOffsetIdx();
 	// Боковой стрейф с оружием
@@ -406,7 +410,7 @@ void CHudItem::UpdateHudInertion		(Fmatrix& hud_trans)
 	// Производим наклон ствола для нормального режима и аима
 	for (int _idx = 0; _idx <= 1; _idx++)
 	{
-		bool bEnabled = !!m_strafe_offset[2][_idx].x;
+		bool bEnabled = !!m_strafe_offset[2][_idx].x && !b_hard_holded;
 		if (!bEnabled)
 			continue;
 
@@ -450,7 +454,7 @@ void CHudItem::UpdateHudInertion		(Fmatrix& hud_trans)
 		hud_trans.mulB_43(hud_rotation);
 	}
 
-	bool bEnabled = !!m_longitudinal_offset[4 + idx];
+	bool bEnabled = !!m_longitudinal_offset[4 + idx] && !b_hard_holded;
 	if (bEnabled)
 	{ // Смещение худа при движении вперёд/назад
 		float curr_offs;

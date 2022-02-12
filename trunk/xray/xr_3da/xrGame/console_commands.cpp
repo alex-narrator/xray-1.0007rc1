@@ -1433,6 +1433,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"g_no_auto_reload",				&psActorFlags,	AF_NO_AUTO_RELOAD				);	//запрет автоперезарядки оружия
 	CMD3(CCC_Mask,				"g_bullet_from_barrel",			&psActorFlags,	AF_BULLET_FROM_BARREL			);	//пули летят из ствола
 	CMD3(CCC_Mask,				"g_wpn_actions_reset_sprint",	&psActorFlags,	AF_WPN_ACTIONS_RESET_SPRINT		);	//перезарядка/смена типа патрона/бросок гранаты/болта/удар ножом сбрасывают спринт
+	CMD3(CCC_Mask,				"g_hold_to_aim",				&psActorFlags,	AF_HOLD_TO_AIM					);	//удерживать клавишу для зума
 	//
 	CMD4(CCC_Float,				"missile_force_grow_speed",		&g_fForceGrowSpeed,					 1.0f, 50.0f); //скорость замаха гранатой/болтом
 	CMD4(CCC_Float,				"cam_height_speed",				&cam_HeightInterpolationSpeed,		 4.0f, 16.0f); //скорость приседания

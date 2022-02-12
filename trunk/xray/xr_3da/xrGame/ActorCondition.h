@@ -125,7 +125,7 @@ public:
 	float m_fExerciseStressFactor; //фактор физнагрузки - множитель для коэффициента нагрузки актора при спринте и прыжке
 	//
 	float m_fZoomEffectorK;
-	float m_fV_HoldBreath;
+	float m_fV_HardHoldPower;
 protected:
 	mutable bool m_bLimping;
 	mutable bool m_bCantWalk;

@@ -20,6 +20,7 @@ function opt_controls:InitControls(x, y, xml, handler)
 	xml:InitTrackBar	("tab_controls:track_mousesens",					self)
 	xml:InitTrackBar	("tab_controls:track_missile_force_grow_speed",		self)
 	xml:InitCheck		("tab_controls:check_mouseinvert",					self)	
+	xml:InitCheck		("tab_controls:check_hold_to_aim",					self)	
 	xml:InitKeyBinding	("tab_controls:key_binding",						self)
 
 	local btn

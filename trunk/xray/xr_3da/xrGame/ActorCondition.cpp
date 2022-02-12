@@ -108,9 +108,9 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	//
 	m_fExerciseStressFactor			= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "exercise_stress_factor",					1.0f);
 	//
-	m_fZoomEffectorK				= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "zoom_effector_k",							10.0f);
+	m_fZoomEffectorK				= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "power_to_zoom_effector_k",					10.0f);
 	//
-	m_fV_HoldBreath					= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "hold_breath_v",								0.f);
+	m_fV_HardHoldPower				= READ_IF_EXISTS(pSettings, r_float, section, "hard_hold_power_v",									0.f);
 }
 
 
@@ -225,10 +225,10 @@ void CActorCondition::UpdatePower()
 		m_fDeltaTime * GetRegenKoef() - bleeding_power_dec;
 
 	//задержка дыхания
-	if (object().IsBreathHold() && !object().is_actor_creep() && GetPower() > m_fCantWalkPowerEnd)
-		m_fDeltaPower -= m_fDeltaTime * m_fV_HoldBreath;
+	if (object().IsHardHold() && !object().is_actor_creep() && GetPower() > m_fCantWalkPowerEnd)
+		m_fDeltaPower -= m_fDeltaTime * m_fV_HardHoldPower;
 	else
-		object().SetBreathHold(false);
+		object().SetHardHold(false);
 }
 
 void CActorCondition::UpdatePsyHealth()

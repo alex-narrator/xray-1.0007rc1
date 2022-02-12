@@ -1540,14 +1540,14 @@ void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
 	}
 }
 
-void CInventory::UpdateItemsPlace(PIItem check_item, bool b_can_be_worn)
+void CInventory::UpdateItemsPlace(PIItem check_item, bool b_check_for_immediate_dressing)
 {
 	auto pActor = smart_cast<CActor*>(m_pOwner);
 	if (!pActor) return;
 
 	auto pOutfit = smart_cast<CCustomOutfit*>(check_item);
 
-	bool b_drop_to_ruck = pOutfit && (pOutfit == ItemFromSlot(OUTFIT_SLOT) || b_can_be_worn && CanPutInSlot(pOutfit));
+	bool b_drop_to_ruck = pOutfit && (pOutfit == ItemFromSlot(OUTFIT_SLOT) || b_check_for_immediate_dressing && CanPutInSlot(pOutfit));
 
 	if (b_drop_to_ruck)
 	{

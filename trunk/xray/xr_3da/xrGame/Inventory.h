@@ -95,7 +95,7 @@ public:
 	//сокрытие/восстановлени показа оружия в режиме AF_FREE_HANDS
 	void                    TryToHideWeapon     (bool b_hide_state, bool b_save_prev_slot = true); 
 	//сброс предметов в рюкзак в зависимости от наличия экипировки
-	void					UpdateItemsPlace	(PIItem check_item, bool b_can_be_worn = false);
+	void					UpdateItemsPlace	(PIItem check_item, bool b_check_for_immediate_dressing = false);
 	//
 	PIItem					item				(CLASS_ID cls_id) const;
 	

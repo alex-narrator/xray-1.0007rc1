@@ -126,7 +126,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kACCEL: 
 		{
 			if (IsZoomAimingMode())
-				SetBreathHold(!IsBreathHold()); //задержка дыхания
+				SetHardHold(!IsHardHold()); //задержка дыхания
 			else
 			{
 				if (mstate_wishful&mcCrouch)

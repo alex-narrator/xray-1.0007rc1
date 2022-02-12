@@ -1333,7 +1333,7 @@ void CWeaponMagazined::OnZoomOut()
 	if (pActor)
 	{
 		pActor->Cameras().RemoveCamEffector(eCEZoom);
-		pActor->SetBreathHold(false);
+		pActor->SetHardHold(false);
 	}
 }
 
