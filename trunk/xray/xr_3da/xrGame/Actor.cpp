@@ -1998,3 +1998,9 @@ float CActor::GetZoomEffectorK()
 
 	return k;
 }
+
+void CActor::TryToBlockSprint(bool bReason)
+{
+	if (psActorFlags.is(AF_WPN_ACTIONS_RESET_SPRINT) && bReason && mstate_wishful & mcSprint)
+		mstate_wishful &= ~mcSprint;
+}

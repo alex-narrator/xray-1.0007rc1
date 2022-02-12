@@ -940,12 +940,6 @@ bool CWeaponMagazined::Action(s32 cmd, u32 flags)
 	{
 	case kWPN_RELOAD:
 	{
-/*#if defined(LOCK_RELOAD_IN_SPRINT)
-	if (!ParentIsActor() || !(g_actor->get_state() & mcSprint) )
-#endif*/
-		if (ParentIsActor() && psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT)) 
-			g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint));
-
 		if (flags&CMD_START)
 		{
 			if (Level().IR_GetKeyState(get_action_dik(kSPRINT_TOGGLE)))

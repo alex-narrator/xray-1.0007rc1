@@ -58,9 +58,6 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	{
 	case kWPN_FIRE:
 		{
-			if (psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT) && inventory().ActiveItem())
-				mstate_wishful &=~mcSprint;
-			//-----------------------------
 			if (OnServer())
 			{
 				NET_Packet P;
@@ -126,7 +123,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kACCEL: 
 		{
 			if (IsZoomAimingMode())
-				SetHardHold(!IsHardHold()); //задержка дыхания
+				SetHardHold(!IsHardHold()); //жесткий хват
 			else
 			{
 				if (mstate_wishful&mcCrouch)

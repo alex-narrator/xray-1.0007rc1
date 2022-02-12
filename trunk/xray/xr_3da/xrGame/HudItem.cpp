@@ -561,6 +561,11 @@ void CHudItem::UpdateCL()
 
 	if(m_pHUD) m_pHUD->Update();
 	UpdateHudPosition	();
+
+	CActor* pActor = smart_cast<CActor*>(object().H_Parent());
+	
+	if (pActor)
+		pActor->TryToBlockSprint(IsPending());
 }
 
 void CHudItem::OnH_A_Chield		()

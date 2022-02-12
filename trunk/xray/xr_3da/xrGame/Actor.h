@@ -838,6 +838,8 @@ public:
 			bool is_actor_creeping();
 			bool is_actor_climbing();
 			bool is_actor_moving();
+			//
+			void TryToBlockSprint(bool bReason);
 };
 
 extern bool		isActorAccelerated			(u32 mstate, bool ZoomMode);

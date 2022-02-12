@@ -287,21 +287,11 @@ void CWeaponKnife::Fire2Start ()
 		inherited::Fire2Start();
 		SwitchState(eFire2);
 	}
-	// Real Wolf: Прерывание спринта при ударе. 17.07.2014.
-/*#if defined(KNIFE_SPRINT_FIX)
-	if (ParentIsActor() && psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT))
-		g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint) );
-#endif*/
-	//
+
 	if (ParentIsActor())
 	{
 		if (!g_actor->conditions().IsCantWalk())
-		{
-			if (psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT))
-				g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint));
-			//
-			g_actor->conditions().ConditionJump(this->Weight() * 0.1f);
-		}
+			g_actor->conditions().ConditionJump(Weight() * 0.1f);
 		else
 			HUD().GetUI()->AddInfoMessage("cant_walk");
 	}
@@ -374,8 +364,6 @@ void CWeaponKnife::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, 
 	icon_sect_name	= *cNameSect();
 }
 
-// Real Wolf: Анимация бега. 17.07.2014.
-//#if defined(KNIFE_SPRINT_MOTION)
 void CWeaponKnife::onMovementChanged(ACTOR_DEFS::EMoveCommand cmd)
 {
 	if (cmd == ACTOR_DEFS::mcSprint && GetState() == eIdle) 
@@ -401,4 +389,3 @@ void CWeaponKnife::PlayAnimIdle(u8 state)
 		m_pHUD->animPlay(random_anim(mhud_idle), TRUE, this, GetState());
 	}
 }
-//#endif

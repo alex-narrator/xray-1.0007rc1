@@ -772,8 +772,13 @@ void CWeapon::UpdateCL()
 	else
 		m_idle_state = eIdle;
 	//
-	if (ParentIsActor() && g_actor->conditions().IsCantWalk() && IsZoomed())
-		OnZoomOut();
+	if (ParentIsActor())
+	{
+		g_actor->TryToBlockSprint(!!IsWorking());
+
+		if(g_actor->conditions().IsCantWalk() && IsZoomed())
+			OnZoomOut();
+	}
 	//
 }
 
@@ -858,9 +863,6 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 
 				if (OnServer())
 				{
-					if (ParentIsActor() && psActorFlags.test(AF_WPN_ACTIONS_RESET_SPRINT))
-						g_actor->set_state_wishful(g_actor->get_state_wishful() & (~mcSprint));
-
 					if (!manually) Reload();
 
 					Msg("m_set_next_ammoType_on_reload [%d]", m_set_next_ammoType_on_reload);
