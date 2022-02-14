@@ -428,6 +428,9 @@
 	<string id="ui_mm_detail_radius">
 		<text>Дальность отрисовки травы</text>
 	</string>
+	<string id="ui_mm_detail_height">
+		<text>Высота травы</text>
+	</string>
 	<string id="ui_mm_parallax">
 		<text>Рельефность поверхностей</text>
 	</string>

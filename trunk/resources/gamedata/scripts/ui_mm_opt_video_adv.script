@@ -105,6 +105,10 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	-- KD addition end
 	
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_detail_height",			_st)
+	xml:InitTrackBar							("video_adv:track_detail_height",		_st)
+	
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_detail_density",		_st)
 	xml:InitTrackBar							("video_adv:track_detail_density",		_st)	
 

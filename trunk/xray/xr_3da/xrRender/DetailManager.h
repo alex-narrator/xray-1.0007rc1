@@ -45,7 +45,7 @@ const int		dm_cache_line		= dm_size + 1 + dm_size;
 const int		dm_cache_size		= dm_cache_line * dm_cache_line;
 const float		dm_fade				= float ( 2 * dm_size) - .5f;
 #endif
-
+extern float	ps_current_detail_height;
 
 
 class CDetailManager

@@ -91,6 +91,7 @@ CDetailManager::CDetailManager	()
 	dm_cache1_line	= dm_current_cache1_line;
 	dm_cache_size	= dm_current_cache_size;
 	dm_fade			= dm_current_fade;
+	ps_r__Detail_height = ps_current_detail_height;
 	ps_r__Detail_density	= ps_current_detail_density;
 	cache_level1	= (CacheSlot1**)Memory.mem_alloc(dm_cache1_line*sizeof(CacheSlot1*)
 #ifdef USE_MEMORY_MONITOR
@@ -249,6 +250,10 @@ extern ECORE_API float r_ssaDISCARD;
 
 void CDetailManager::UpdateVisibleM()
 {
+	for (int i = 0; i != 2; ++i)
+		for (auto& vis : m_visibles[i])
+			vis.clear();
+
 	Fvector		EYE				= Device.vCameraPosition;
 	
 	CFrustum	View;

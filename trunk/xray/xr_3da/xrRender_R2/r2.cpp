@@ -265,7 +265,7 @@ void CRender::reset_begin()
 
 	// KD: let's reload details while changed details options on vid_restart
 #ifdef KD_DETAIL_RADIUS
-	if (b_loaded && ((dm_current_size != dm_size) || (ps_r__Detail_density	!= ps_current_detail_density)))
+	if (b_loaded && ((dm_current_size != dm_size) || (ps_r__Detail_density != ps_current_detail_density) || (ps_r__Detail_height != ps_current_detail_height)))
 	{
 		Details->Unload				();
 		xr_delete					(Details);
@@ -288,7 +288,7 @@ void CRender::reset_end()
 
 	// KD: let's reload details while changed details options on vid_restart
 #ifdef KD_DETAIL_RADIUS
-	if (b_loaded && ((dm_current_size != dm_size) || (ps_r__Detail_density	!= ps_current_detail_density)))
+	if (b_loaded && ((dm_current_size != dm_size) || (ps_r__Detail_density != ps_current_detail_density) || (ps_r__Detail_height != ps_current_detail_height)))
 	{
 		Details						=	xr_new<CDetailManager>	();
 		Details->Load();

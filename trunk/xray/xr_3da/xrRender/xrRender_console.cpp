@@ -21,6 +21,7 @@ int			ps_r__LightSleepFrames		= 10	;
 float		ps_r__Detail_l_ambient		= 0.9f	;
 float		ps_r__Detail_l_aniso		= 0.25f	;
 float		ps_r__Detail_density		= 0.3f	;
+float		ps_r__Detail_height			= 1.f ;
 float		ps_r__Detail_rainbow_hemi	= 0.75f	;
 
 float		ps_r__Tree_w_rot			= 10.0f	;
@@ -125,7 +126,8 @@ int			ps_r__detail_radius			= 49;
 	u32			dm_current_cache_size		= 2401;	//dm_current_cache_line*dm_current_cache_line
 	float		dm_current_fade				= 47.5;	//float(2*dm_current_size)-.5f;
 #endif
-float		ps_current_detail_density = 0.6;
+float		ps_current_detail_density	= 0.6;
+float		ps_current_detail_height	= 1.f;
 
 xr_token							ext_quality_token							[ ]={
 	{ "qt_off",						0											},
@@ -450,6 +452,7 @@ void		xrRender_initconsole	()
 #ifdef KD_DETAIL_RADIUS
 	CMD4(CCC_detail_radius,	"r__detail_radius",		&ps_r__detail_radius,		49,	250	);
 #endif
+	CMD4(CCC_Float,			"r__detail_height",		&ps_current_detail_height,		1, 3 );
 	CMD3(CCC_Mask,			"r__actor_shadow",		&ps_common_flags,			RFLAG_ACTOR_SHADOW	);
 }
 
