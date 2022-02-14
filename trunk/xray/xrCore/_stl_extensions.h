@@ -5,6 +5,8 @@ using std::swap;
 
 #include "_type_traits.h"
 #include <hash_map>
+#include <unordered_map>
+#include <malloc.h>
 
 #ifdef	__BORLANDC__
 #define M_NOSTDCONTAINERS_EXT
@@ -207,6 +209,10 @@ template	<typename K, class V, class P = stdext::hash_compare<K, std::less<K> >,
 #endif
 
 template	<class _Ty1, class _Ty2> inline	std::pair<_Ty1, _Ty2>		mk_pair		(_Ty1 _Val1, _Ty2 _Val2)	{	return (std::pair<_Ty1, _Ty2>(_Val1, _Val2));	}
+
+template <typename K, class V, class Hasher = std::hash<K>, class Traits = std::equal_to<K>,
+	typename allocator = xalloc<std::pair<const K, V>>>
+	using xr_unordered_map = std::unordered_map<K, V, Hasher, Traits, allocator>;
 
 struct pred_str		: public std::binary_function<char*, char*, bool>	{	
 	IC bool operator()(const char* x, const char* y) const				{	return xr_strcmp(x,y)<0;	}

@@ -122,6 +122,8 @@ void IGame_Persistent::OnGameStart()
 	float	p_time		=			1000.f*Device.GetTimerGlobal()->GetElapsed_sec();
 	u32	mem_0			=			Memory.mem_usage()	;
 
+	Log				("Loading sounds...");
+	::Sound->prefetch					();
 	Log				("Loading objects...");
 	ObjectPool.prefetch					();
 	Log				("Loading models...");

@@ -86,9 +86,13 @@ void CSoundRender_Core::_clear	()
 	env_unload					();
 
     // remove sources
-	for (u32 sit=0; sit<s_sources.size(); sit++)
+/*	for (u32 sit=0; sit<s_sources.size(); sit++)
     	xr_delete				(s_sources[sit]);
-    s_sources.clear				();
+    s_sources.clear				();*/
+	for (auto& kv : s_sources)
+	{
+		xr_delete(kv.second);
+	}
     
     // remove emmiters
 	for (u32 eit=0; eit<s_emitters.size(); eit++)
