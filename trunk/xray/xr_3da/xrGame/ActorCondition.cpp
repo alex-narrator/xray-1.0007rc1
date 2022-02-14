@@ -226,7 +226,10 @@ void CActorCondition::UpdatePower()
 
 	//задержка дыхания
 	if (object().IsHardHold() && !object().is_actor_creep() && GetPower() > m_fCantWalkPowerEnd)
-		m_fDeltaPower -= m_fDeltaTime * m_fV_HardHoldPower;
+	{
+		float inertion_factor = object().inventory().ActiveItem()->GetControlInertionFactor();
+		m_fDeltaPower -= m_fDeltaTime * m_fV_HardHoldPower * inertion_factor;
+	}
 	else
 		object().SetHardHold(false);
 }
