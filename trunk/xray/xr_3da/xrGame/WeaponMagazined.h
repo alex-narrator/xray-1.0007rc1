@@ -54,6 +54,7 @@ protected:
 		MotionSVec		mhud_idle_aim;
 		MotionSVec		mhud_reload;	//
 		MotionSVec		mhud_reload_partly;
+		MotionSVec		mhud_reload_single;
 		MotionSVec		mhud_hide;		//
 		MotionSVec		mhud_show;		//
 		MotionSVec		mhud_shots;		//
@@ -144,6 +145,9 @@ public:
 	IC void			PullShutter		(){ ShutterAction(); };
 	//
 	int				GetMagazineCount() const;
+	//
+	virtual bool	IsSingleReloading	();
+	virtual bool	AmmoTypeIsMagazine	(u32 type) const;
 
 	virtual void	GetBriefInfo	(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 

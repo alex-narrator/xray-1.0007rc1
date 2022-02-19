@@ -86,10 +86,10 @@ void CWeaponPistol::PlayAnimIdle(u8 state = eIdle)
 	VERIFY(GetState()==eIdle);
 	//чтобы при разрядке последнего патрона из патронника анимки сразу переходили в empty
 	//удалить если будет раздражать съежжание затвора
-	if (iAmmoElapsed >= 1)
+	/*if (iAmmoElapsed >= 1)
 		m_opened = false;
 	else
-		m_opened = true;
+		m_opened = true;*/
 	//
 	if(m_opened)
 	{ 
@@ -112,18 +112,25 @@ void CWeaponPistol::PlayAnimIdle(u8 state = eIdle)
 void CWeaponPistol::PlayAnimReload() 
 {
 	VERIFY(GetState() == eReload);
+
+	CWeaponMagazined::SWMmotions& mwm = swm_current();
+	CWeaponPistol::WWPMotions& mwp = wwpm_current();
+
 	if (m_opened) 
 	{
-		CWeaponPistol::WWPMotions& m = wwpm_current();
-		m_pHUD->animPlay(random_anim(m.mhud_reload_empty), TRUE, this, GetState());
+		if (IsSingleReloading())
+			m_pHUD->animPlay(random_anim(mwm.mhud_reload_single), TRUE, this, GetState());
+		else
+			m_pHUD->animPlay(random_anim(mwp.mhud_reload_empty), TRUE, this, GetState());
 	}
 	else 
 	{
-		CWeaponMagazined::SWMmotions& m = swm_current();
 		if (IsPartlyReloading())
-			m_pHUD->animPlay(random_anim(m.mhud_reload_partly), TRUE, this, GetState());
+			m_pHUD->animPlay(random_anim(mwm.mhud_reload_partly), TRUE, this, GetState());
+		else if (IsSingleReloading())
+			m_pHUD->animPlay(random_anim(mwm.mhud_reload_single), TRUE, this, GetState());
 		else
-			m_pHUD->animPlay(random_anim(m.mhud_reload), TRUE, this, GetState());
+			m_pHUD->animPlay(random_anim(mwm.mhud_reload), TRUE, this, GetState());
 	}
 
 	m_opened = false;
@@ -169,7 +176,7 @@ void CWeaponPistol::switch2_Reload()
 
 void CWeaponPistol::OnAnimationEnd(u32 state)
 {
-	if(state == eHiding && m_opened) 
+	if ((state == eHiding || state == eShutter) && m_opened)
 	{
 		m_opened = false;
 //		switch2_Hiding();

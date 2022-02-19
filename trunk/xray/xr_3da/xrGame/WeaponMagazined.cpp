@@ -130,6 +130,7 @@ void CWeaponMagazined::Load(LPCSTR section)
 	animGetEx(mhud.mhud_reload_partly, "anim_reload_partly", nullptr, "anim_reload");
 	//
 	animGetEx(mhud.mhud_shutter, pSettings->line_exist(hud_sect.c_str(), "anim_shutter") ? "anim_shutter" : "anim_draw");
+	animGetEx(mhud.mhud_reload_single, pSettings->line_exist(hud_sect.c_str(), "anim_reload_single") ? "anim_reload_single" : "anim_draw");
 
 	//звуки и партиклы глушителя, еслит такой есть
 	if (m_eSilencerStatus == ALife::eAddonAttachable)
@@ -234,7 +235,7 @@ bool CWeaponMagazined::TryToGetAmmo(u32 id)
 {
 	m_pAmmo = smart_cast<CWeaponAmmo*>(m_pCurrentInventory->GetAmmo(*m_ammoTypes[id], ParentIsActor()));
 
-	return m_pAmmo != NULL;
+	return m_pAmmo != NULL && (!HasDetachableMagazine() || AmmoTypeIsMagazine(id) || !iAmmoElapsed);
 }
 
 bool CWeaponMagazined::TryReload()
@@ -361,11 +362,8 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 bool CWeaponMagazined::HasDetachableMagazine() const
 {
 	for (u32 i = 0; i < m_ammoTypes.size(); ++i)
-	{
-		if (pSettings->line_exist(m_ammoTypes[i], "ammo_in_box") && 
-			pSettings->line_exist(m_ammoTypes[i], "empty_box"))
+		if (AmmoTypeIsMagazine(i))
 			return true;
-	}
 
 	return false;
 }
@@ -1236,6 +1234,8 @@ void CWeaponMagazined::PlayAnimReload()
 	VERIFY(GetState() == eReload);
 	if (IsPartlyReloading())
 		m_pHUD->animPlay(random_anim(mhud.mhud_reload_partly), TRUE, this, GetState());
+	else if (IsSingleReloading())
+		m_pHUD->animPlay(random_anim(mhud.mhud_reload_single), TRUE, this, GetState());
 	else
 		m_pHUD->animPlay(random_anim(mhud.mhud_reload), TRUE, this, GetState());
 }
@@ -1631,4 +1631,24 @@ int CWeaponMagazined::GetMagazineCount() const
 		iMagazinesCount += (int)g_actor->inventory().GetSameItemCount(m_ammoTypes[i].c_str(), b_search_ruck);
 	}
 	return iMagazinesCount;
+}
+
+bool CWeaponMagazined::IsSingleReloading()
+{
+	if (IsPartlyReloading() || !HasDetachableMagazine() || !HasChamber())
+		return false;
+
+	bool reload_by_single_ammo = m_set_next_ammoType_on_reload == u32(-1) &&
+		TryToGetAmmo(m_ammoType) && !AmmoTypeIsMagazine(m_ammoType);
+
+	bool next_load_by_single_ammo = m_set_next_ammoType_on_reload != u32(-1) &&
+		TryToGetAmmo(m_set_next_ammoType_on_reload) && !AmmoTypeIsMagazine(m_set_next_ammoType_on_reload);
+
+	return reload_by_single_ammo || next_load_by_single_ammo;
+}
+
+bool CWeaponMagazined::AmmoTypeIsMagazine(u32 type) const
+{
+	return pSettings->line_exist(m_ammoTypes[type], "ammo_in_box") &&
+		pSettings->line_exist(m_ammoTypes[type], "empty_box");
 }
