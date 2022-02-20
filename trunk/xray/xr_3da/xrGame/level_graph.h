@@ -57,7 +57,7 @@ private:
 	u32						m_max_x;
 	u32						m_max_z;
 
-protected:
+public://protected:
 			u32		vertex						(const Fvector &position) const;
 
 public:
