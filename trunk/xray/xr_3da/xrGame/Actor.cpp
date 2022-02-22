@@ -1049,8 +1049,13 @@ void CActor::shedule_Update	(u32 DT)
 
 	//установить режим показа HUD для текущего активного слота
 	CHudItem* pHudItem = smart_cast<CHudItem*>(inventory().ActiveItem());	
-	if(pHudItem) 
+	if (pHudItem)
+	{
 		pHudItem->SetHUDmode(HUDview());
+		//прицеливание от первого лица в режиме третьего лица
+		if (psActorFlags.test(AF_PSP) && psHUD_Flags.test(HUD_FIRST_PERSON_AIM))
+			cam_Set(IsZoomAimingMode() ? eacFirstEye : eacLookAt);
+	}
 
 	//обновление инвентаря
 	UpdateInventoryOwner			(DT);
