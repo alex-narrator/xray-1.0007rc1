@@ -51,7 +51,6 @@ public:
 			//
 			void			InitStateColorize	();
 			u32             u_ColorDefault;
-			float			SmoothColorizeThreshold;
 			void			SetStateWarningColor	(EState state); //раскраска иконки положения персонажа
 			xr_vector<float>						m_Thresholds;	//Пороги изменения цвета индикатора, загружаемые из system.ltx
 };

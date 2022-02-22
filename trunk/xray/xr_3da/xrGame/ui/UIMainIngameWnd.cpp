@@ -1,4 +1,5 @@
-#include "stdafx.h"
+#include "StdAfx.h"
+#include "../pch_script.h"
 
 #include "UIMainIngameWnd.h"
 #include "UIMessagesWindow.h"
@@ -52,7 +53,7 @@
 #include "map_hint.h"
 #include "UIColorAnimatorWrapper.h"
 #include "../game_news.h"
-#include "../pch_script.h"
+#include "../xr_level_controller.h"
 
 #include "../../../build_config_defines.h"
 
@@ -561,12 +562,11 @@ void CUIMainIngameWnd::Update()
 		while (!external_icon_ctrl && i < ewiInvincible)
 		{
 			float value = 0;
+
 			switch (i)
 			{
 				//radiation
 			case ewiRadiation:
-				//удаляем иконку радиации на худе если детектора нет в слоте и/или не нажата кнопка (при выборе соотв. опции меню) -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
-				//AllowHUDElement(eDetector) ? value = m_pActor->conditions().GetRadiation() : TurnOffWarningIcon(ewiRadiation);
 				if (IsHUDElementAllowed(eDetector))
 					value = m_pActor->conditions().GetRadiation();
 				break;
@@ -574,8 +574,8 @@ void CUIMainIngameWnd::Update()
 				value = m_pActor->conditions().BleedingSpeed();
 				break;
 			case ewiWeaponJammed:
-				if (/*m_pWeapon*/IsHUDElementAllowed(eActiveItem))
-					value = 1 - /*m_pWeapon->GetConditionToShow()*/g_actor->inventory().ActiveItem()->GetConditionToShow();
+				if (IsHUDElementAllowed(eActiveItem))
+					value = 1 - g_actor->inventory().ActiveItem()->GetConditionToShow();
 				break;
 			case ewiStarvation:
 				value = 1 - m_pActor->conditions().GetSatiety();
@@ -601,26 +601,51 @@ void CUIMainIngameWnd::Update()
 				R_ASSERT(!"Unknown type of warning icon");
 			}
 
-			xr_vector<float>::reverse_iterator	rit;
-
-			// Сначала проверяем на точное соответсвие
-			rit  = std::find(m_Thresholds[i].rbegin(), m_Thresholds[i].rend(), value);
-
-			// Если его нет, то берем последнее меньшее значение ()
-			if (rit == m_Thresholds[i].rend())
-				rit = std::find_if(m_Thresholds[i].rbegin(), m_Thresholds[i].rend(), std::bind2nd(std::less<float>(), value));
-
 			// Минимальное и максимальное значения границы
 			float min = m_Thresholds[i].front();
 			float max = m_Thresholds[i].back();
 
-			if (rit != m_Thresholds[i].rend()){
-				float v = *rit;
-				SetWarningIconColor(i, color_argb(0xFF, clampr<u32>(static_cast<u32>(255 * ((v - min) / (max - min) * 2)), 0, 255), 
-					clampr<u32>(static_cast<u32>(255 * (2.0f - (v - min) / (max - min) * 2)), 0, 255),
-					0));
-			}else
-				TurnOffWarningIcon(i);
+			if (m_Thresholds[i].size() > 1)
+			{
+				xr_vector<float>::reverse_iterator	rit;
+
+				// Сначала проверяем на точное соответсвие
+				rit = std::find(m_Thresholds[i].rbegin(), m_Thresholds[i].rend(), value);
+
+				// Если его нет, то берем последнее меньшее значение ()
+				if (rit == m_Thresholds[i].rend())
+					rit = std::find_if(m_Thresholds[i].rbegin(), m_Thresholds[i].rend(), std::bind2nd(std::less<float>(), value));
+
+				if (rit != m_Thresholds[i].rend())
+				{
+					float v = *rit;
+					SetWarningIconColor(i, color_argb(0xFF, clampr<u32>(static_cast<u32>(255 * ((v - min) / (max - min) * 2)), 0, 255),
+						clampr<u32>(static_cast<u32>(255 * (2.0f - (v - min) / (max - min) * 2)), 0, 255),
+						0));
+				}
+				else
+					TurnOffWarningIcon(i);
+			}
+			else
+			{
+				float val = 1 - value;
+				float treshold = 1 - min;
+				clamp<float>(treshold, 0.01, 1.f);
+
+				if (val <= treshold)
+				{
+					float v = val / treshold;
+					clamp<float>(v, 0.f, 1.f);
+					SetWarningIconColor(i, color_argb(
+						0xFF,
+						255,
+						clampr<u32>(static_cast<u32>(255 * v), 0, 255),
+						0
+						));
+				}
+				else
+					TurnOffWarningIcon(i);
+			}
 
 			i = (EWarningIcons)(i + 1);
 		}

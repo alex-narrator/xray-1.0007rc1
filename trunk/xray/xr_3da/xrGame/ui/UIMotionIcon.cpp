@@ -1,4 +1,5 @@
-#include "stdafx.h"
+#include "StdAfx.h"
+#include "../pch_script.h"
 #include "UIMainIngameWnd.h"
 #include "UIMotionIcon.h"
 #include "UIXmlInit.h"
@@ -90,10 +91,9 @@ void CUIMotionIcon::Init()
 
 void CUIMotionIcon::InitStateColorize()
 {
-	u_ColorDefault			= pSettings->r_color("motion_icon_indicator_thresholds", "color_default");
-	SmoothColorizeThreshold = READ_IF_EXISTS(pSettings, r_float, "motion_icon_indicator_thresholds", "health_to_colorize", 0.f);
+	u_ColorDefault = READ_IF_EXISTS(pSettings, r_color, "main_ingame_indicators_thresholds", "motion_icon_color_default", 0xff31c2b5);
 	// Читаем данные порогов для индикатора
-	shared_str cfgRecord = pSettings->r_string("motion_icon_indicator_thresholds", "health");
+	shared_str cfgRecord = pSettings->r_string("main_ingame_indicators_thresholds", "motion_icon_health");
 	u32 count = _GetItemCount(*cfgRecord);
 
 	char	singleThreshold[8];
@@ -150,13 +150,15 @@ void CUIMotionIcon::SetStateWarningColor(EState state)
 
 	CActor*	m_pActor = smart_cast<CActor*>(Level().CurrentViewEntity());
 
-	float actor_health = m_pActor ? m_pActor->conditions().GetHealth() : 0;
+	float value = m_pActor ? 1 - m_pActor->conditions().GetHealth() : 0;
 	
-	if (fis_zero(SmoothColorizeThreshold))
+	// Минимальное и максимальное значения границы
+	float min = m_Thresholds.front();
+	float max = m_Thresholds.back();
+
+	if (m_Thresholds.size() > 1)
 	{
 		xr_vector<float>::reverse_iterator	rit;
-
-		float value = m_pActor ? 1 - actor_health : 0;
 
 		// Сначала проверяем на точное соответсвие
 		rit = std::find(m_Thresholds.rbegin(), m_Thresholds.rend(), value);
@@ -165,9 +167,6 @@ void CUIMotionIcon::SetStateWarningColor(EState state)
 		if (rit == m_Thresholds.rend())
 			rit = std::find_if(m_Thresholds.rbegin(), m_Thresholds.rend(), std::bind2nd(std::less<float>(), value));
 
-		// Минимальное и максимальное значения границы
-		float min = m_Thresholds.front();
-		float max = m_Thresholds.back();
 		if (rit != m_Thresholds.rend())
 		{
 			float v = *rit;
@@ -183,14 +182,18 @@ void CUIMotionIcon::SetStateWarningColor(EState state)
 	}
 	else
 	{
-		if (actor_health <= SmoothColorizeThreshold)
+		float val = 1 - value;
+		float treshold = 1 - min;
+		clamp<float>(treshold, 0.01, 1.f);
+
+		if (val <= treshold)
 		{
-			float health_k = actor_health / SmoothColorizeThreshold;
-			clamp<float>(health_k, 0.f, 1.f);
+			float v = val / treshold;
+			clamp<float>(v, 0.f, 1.f);
 			m_states[state].SetColor(color_argb(
 				0xFF,
 				255,
-				clampr<u32>(static_cast<u32>(255 * health_k), 0, 255),
+				clampr<u32>(static_cast<u32>(255 * v), 0, 255),
 				0
 				));
 		}
