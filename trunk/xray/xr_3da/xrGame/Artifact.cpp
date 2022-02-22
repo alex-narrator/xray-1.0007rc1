@@ -78,6 +78,8 @@ CArtefact::CArtefact(void)
 	m_ArtefactHitImmunities.resize(ALife::eHitTypeMax);
 	for (int i = 0; i<ALife::eHitTypeMax; i++)
 		m_ArtefactHitImmunities[i] = 0.0f;
+
+	m_bPending = false;
 }
 
 
@@ -249,6 +251,23 @@ void CArtefact::OnH_B_Independent(bool just_before_destroy)
 		dir.set(0,1,0);
 		CParticlesPlayer::StartParticles(m_sParticlesName,dir,ID(),-1, false);
 	}
+}
+
+void CArtefact::OnActiveItem()
+{
+	inherited::OnActiveItem();
+	//если мы занружаемся и артефакт был в руках
+	SetState(eIdle);
+	SetNextState(eIdle);
+	if (m_pHUD) m_pHUD->Show();
+}
+
+void CArtefact::OnHiddenItem()
+{
+	inherited::OnHiddenItem();
+	if (m_pHUD)	m_pHUD->Hide();
+	SetState(eHidden);
+	SetNextState(eHidden);
 }
 
 // called only in "fast-mode"
@@ -480,6 +499,7 @@ void CArtefact::OnAnimationEnd		(u32 state)
 	{
 	case eHiding:
 		{
+			m_bPending = false;
 			SwitchState(eHidden);
 //.			if(m_pCurrentInventory->GetNextActiveSlot()!=NO_ACTIVE_SLOT)
 //.				m_pCurrentInventory->Activate(m_pCurrentInventory->GetPrevActiveSlot());

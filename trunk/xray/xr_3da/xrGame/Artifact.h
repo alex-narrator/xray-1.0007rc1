@@ -117,6 +117,8 @@ public:
 	virtual void					OnAnimationEnd		(u32 state);
 	virtual bool					IsHidden			()	const	{return GetState()==eHidden;}
 	virtual u16						bone_count_to_synchronize	() const;
+	virtual void					OnActiveItem();
+	virtual void					OnHiddenItem();
 
 	// optimization FAST/SLOW mode
 public:						

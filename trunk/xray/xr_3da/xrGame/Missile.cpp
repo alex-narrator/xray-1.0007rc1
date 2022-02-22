@@ -50,6 +50,7 @@ void create_force_progress()
 
 CMissile::CMissile(void) 
 {
+	m_bPending = false;
 }
 
 CMissile::~CMissile(void) 
@@ -346,6 +347,7 @@ void CMissile::OnAnimationEnd(u32 state)
 	{
 	case MS_HIDING:
 		{
+			m_bPending = false;
 			setVisible(FALSE);
 			OnStateSwitch(MS_HIDDEN);
 		} break;
