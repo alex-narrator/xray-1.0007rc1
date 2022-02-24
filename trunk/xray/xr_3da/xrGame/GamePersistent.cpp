@@ -81,7 +81,6 @@ CGamePersistent::CGamePersistent(void)
 	CWeaponHUD::CreateSharedContainer();
 
 	eQuickLoad					= Engine.Event.Handler_Attach("Game:QuickLoad",this);
-
 }
 
 CGamePersistent::~CGamePersistent(void)
@@ -172,7 +171,6 @@ void CGamePersistent::OnGameStart()
 	__super::OnGameStart		();
 	
 	UpdateGameType				();
-
 }
 
 void CGamePersistent::UpdateGameType			()
@@ -304,7 +302,7 @@ void CGamePersistent::start_game_intro		()
 		return;
 	}
 #endif
-	if (g_pGameLevel && g_pGameLevel->bReady && Device.dwPrecacheFrame<=2){
+	if (g_pGameLevel && g_pGameLevel->bReady && Device.dwPrecacheFrame <= 2){
 		m_intro_event.bind		(this,&CGamePersistent::update_game_intro);
 		if (0==stricmp(m_game_params.m_new_or_load,"new")){
 			VERIFY				(NULL==m_intro);
@@ -348,9 +346,10 @@ void CGamePersistent::OnFrame	()
 	if(!g_pGameLevel->bReady)	return;
 
 	//пауза после загрузки сохранения
-	if (CanBePaused() && Device.dwPrecacheFrame == 3 && psActorFlags.test(AF_PAUSE_AFTER_LOADING))
+	if (psActorFlags.is(AF_PAUSE_AFTER_LOADING) && !b_GamePausedOnLoad &&  CanBePaused() && Device.dwPrecacheFrame == 3)
 	{
-		Device.Pause(!Device.Paused(), TRUE, TRUE, "pause_after_loadind");
+		Device.Pause(TRUE, TRUE, TRUE, "pause_after_loadind");
+		b_GamePausedOnLoad = true;
 	}
 
 	if(Device.Paused()){

@@ -692,6 +692,8 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 	};
 
 	pApp->LoadEnd();
+
+	g_pGamePersistent->b_GamePausedOnLoad = false;
 	return					TRUE;
 }
 

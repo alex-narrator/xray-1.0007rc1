@@ -109,6 +109,8 @@ public:
 #endif
 	virtual	void					LoadTitle			(LPCSTR str){}
 	virtual bool					CanBePaused			()		{ return true;}
+
+	bool							b_GamePausedOnLoad;
 };
 
 class IMainMenu

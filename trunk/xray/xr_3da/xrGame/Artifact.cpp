@@ -165,6 +165,7 @@ BOOL CArtefact::net_Spawn(CSE_Abstract* DC)
 	o_fastmode					= FALSE	;		// start initially with fast-mode enabled
 	o_render_frame				= 0		;
 	SetState					(eHidden);
+	SetNextState				(eHidden);
 	//
 	if (auto se_artefact = smart_cast<CSE_ALifeItemArtefact*>(DC))
 		if (se_artefact->m_fRandomK != 1.f/*NULL*/)
