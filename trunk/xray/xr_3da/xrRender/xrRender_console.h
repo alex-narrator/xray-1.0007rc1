@@ -145,4 +145,8 @@ enum
 	RFLAG_ACTOR_SHADOW					= (1<<1),
 };
 
+//shadow map quality
+extern ECORE_API 	u32 		ps_r_smapsize;
+extern ECORE_API 	xr_token 	qsmapsize_token[];
+
 #endif

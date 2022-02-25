@@ -64,7 +64,16 @@ void					CRender::create					()
 	m_skinning			= -1;
 
 	// hardware
-	o.smapsize			= 2048;
+	o.smapsize			= ps_r_smapsize;//2048;
+	// KD: additional smap resolutions
+	D3DCAPS9 caps;
+	CHK_DX(HW.pDevice->GetDeviceCaps(&caps));
+	u32 video_mem = HW.pDevice->GetAvailableTextureMem();
+	if ((caps.MaxTextureHeight >= 6144) && (video_mem > 512) && (ps_r_smapsize == 6144))
+		o.smapsize = 6144;
+	if ((caps.MaxTextureHeight >= 8192) && (video_mem > 512) && (ps_r_smapsize == 8192))
+		o.smapsize = 8192;
+
 	o.mrt				= (HW.Caps.raster.dwMRT_count >= 3);
 	o.mrtmixdepth		= (HW.Caps.raster.b_MRT_mixdepth);
 
@@ -176,19 +185,19 @@ void					CRender::create					()
 	if (o.nvdbt)		Msg	("* NV-DBT supported and used");
 
 	// options (smap-pool-size)
-	if (strstr(Core.Params,"-smap1536"))	o.smapsize	= 1536;
+/*	if (strstr(Core.Params,"-smap1536"))	o.smapsize	= 1536;
 	if (strstr(Core.Params,"-smap2048"))	o.smapsize	= 2048;
 	if (strstr(Core.Params,"-smap2560"))	o.smapsize	= 2560;
 	if (strstr(Core.Params,"-smap3072"))	o.smapsize	= 3072;
-	if (strstr(Core.Params,"-smap4096"))	o.smapsize	= 4096;
+	if (strstr(Core.Params,"-smap4096"))	o.smapsize	= 4096;*/
 	// KD: additional smap resolutions
-	D3DCAPS9 caps;
+/*	D3DCAPS9 caps;
 	CHK_DX(HW.pDevice->GetDeviceCaps(&caps));
 	u32 video_mem = HW.pDevice->GetAvailableTextureMem();
 	if ((caps.MaxTextureHeight >= 6144) && (video_mem > 512) && strstr(Core.Params,"-smap6144"))
 		o.smapsize	= 6144;
 	if ((caps.MaxTextureHeight >= 8192) && (video_mem > 512) && strstr(Core.Params,"-smap8192"))
-		o.smapsize	= 8192;
+		o.smapsize	= 8192;*/
 
 	// gloss
 	char*	g			= strstr(Core.Params,"-gloss ");

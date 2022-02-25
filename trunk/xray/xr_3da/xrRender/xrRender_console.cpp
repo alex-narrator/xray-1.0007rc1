@@ -140,6 +140,19 @@ xr_token							ext_quality_token							[ ]={
 
 // KD end
 
+//shadow map quality
+u32 ps_r_smapsize = 2048;
+xr_token 							qsmapsize_token[] = {
+	{ "smap_1536", 1536 },
+	{ "smap_2048", 2048 },
+	{ "smap_2560", 2560 },
+	{ "smap_3072", 3072 },
+	{ "smap_4096", 4096 },
+	{ "smap_6144", 6144 },
+	{ "smap_8192", 8192 },
+	{ 0, 0 }
+};
+
 //- Mad Max
 float		ps_r2_gloss_factor			= 1.0f;
 //- Mad Max
@@ -454,6 +467,8 @@ void		xrRender_initconsole	()
 #endif
 	CMD4(CCC_Float,			"r__detail_height",		&ps_current_detail_height,		1, 3 );
 	CMD3(CCC_Mask,			"r__actor_shadow",		&ps_common_flags,			RFLAG_ACTOR_SHADOW	);
+	//shadow map quality
+	CMD3(CCC_Token,			"r2_smap",				&ps_r_smapsize,				qsmapsize_token);
 }
 
 void	xrRender_apply_tf		()

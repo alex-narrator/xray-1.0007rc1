@@ -305,6 +305,19 @@
 			<list_font	 r="216" g="186" b="140" font="letterica16"/>
 		</list_parallax>
 		
+		<cap_smap x="20" y="0" width="143" height="21">
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_smap</text>
+		</cap_smap>
+		<list_smap x="194" y="0" width="245" height="21" always_show_scroll="1" list_length="5">
+			<options_item entry="r2_smap" group="mm_opt_video_adv"/>
+			<text_color>
+				<e r="216" g="186" b="140"/>
+				<d r="227" g="199" b="178"/>
+			</text_color>
+			<list_font_s r="240" g="217" b="182"/>
+			<list_font	 r="216" g="186" b="140" font="letterica16"/>
+		</list_smap>
+		
 		<cap_true_sun_shadows x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_r2_true_sun_shadows</text>
 		</cap_true_sun_shadows>

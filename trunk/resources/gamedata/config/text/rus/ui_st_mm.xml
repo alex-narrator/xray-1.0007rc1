@@ -463,4 +463,29 @@
 		<text>максимальное</text>
 	</string>	
 	
+	<string id="ui_mm_smap">
+		<text>–азрешение карты теней</text>
+	</string>
+	<string id="smap_1536">
+		<text>1536</text>
+	</string>	
+	<string id="smap_2048">
+		<text>2048</text>
+	</string>	
+	<string id="smap_2560">
+		<text>2560</text>
+	</string>	
+	<string id="smap_3072">
+		<text>3072</text>
+	</string>	
+	<string id="smap_4096">
+		<text>4096</text>
+	</string>
+	<string id="smap_6144">
+		<text>6144</text>
+	</string>	
+	<string id="smap_8192">
+		<text>8192</text>
+	</string>
+	
 </string_table>
