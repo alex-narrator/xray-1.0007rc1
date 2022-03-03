@@ -7,6 +7,10 @@
 #include "rain.h"
 #include "resourcemanager.h"
 
+#define READ_IF_EXISTS(ltx,method,section,name,default_value)\
+	((ltx->line_exist(section,name)) ? (ltx->method(section,name)) : (default_value))
+#define DEF_TREE_AMPLITUDE_INTENSITY 0.01f
+
 //-----------------------------------------------------------------------------
 // Environment modifier
 //-----------------------------------------------------------------------------
@@ -114,6 +118,8 @@ CEnvDescriptor::CEnvDescriptor()
 
     wind_velocity		= 0.0f;
     wind_direction		= 0.0f;
+
+	m_fTreeAmplitudeIntensity = DEF_TREE_AMPLITUDE_INTENSITY;
     
 	ambient.set			(0,0,0);
 	hemi_color.set		(1,1,1,1);
@@ -166,6 +172,10 @@ void CEnvDescriptor::load	(LPCSTR exec_tm, LPCSTR S, CEnvironment* parent)
 	bolt_period				= (tb_id>=0)?pSettings->r_float	(S,"bolt_period"):0.f;
 	bolt_duration			= (tb_id>=0)?pSettings->r_float	(S,"bolt_duration"):0.f;
 	env_ambient				= pSettings->line_exist(S,"env_ambient")?parent->AppendEnvAmb	(pSettings->r_string(S,"env_ambient")):0;
+
+	const float def_min_TAI = 0.01f, def_max_TAI = 0.07f;
+	const float def_TAI = def_min_TAI + (rain_density * (def_max_TAI - def_min_TAI)); //Если не прописано, дефолт будет рассчитываться от силы дождя.
+	m_fTreeAmplitudeIntensity = READ_IF_EXISTS(pSettings, r_float, S, "tree_amplitude_intensity", def_TAI);
 
 	C_CHECK					(clouds_color);
 	C_CHECK					(sky_color	);
@@ -260,6 +270,8 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	// wind
 	wind_velocity			=	fi*A.wind_velocity + f*B.wind_velocity;
 	wind_direction			=	fi*A.wind_direction + f*B.wind_direction;
+
+	m_fTreeAmplitudeIntensity = fi * A.m_fTreeAmplitudeIntensity + f * B.m_fTreeAmplitudeIntensity;
 
 	// colors
 	sky_color.lerp			(A.sky_color,B.sky_color,f).add(M.sky_color).mul(_power);
