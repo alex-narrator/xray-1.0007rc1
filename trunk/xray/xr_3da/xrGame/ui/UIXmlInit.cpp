@@ -25,6 +25,7 @@
 #include "UIListBox.h" //#include "UIScrollView.h"
 #include "UIComboBox.h"
 #include "UITrackBar.h"
+#include "../../GameFont.h"
 #include "../game_base_space.h"
 
 #include "UITextureMaster.h"

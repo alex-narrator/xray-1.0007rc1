@@ -561,8 +561,9 @@ void CUIInventoryWnd::UpdateCustomDraw()
 	if (!pActor) return;
 
 	u32 belt_width = pActor->inventory().BeltWidth();
+	u32 belt_height = pActor->inventory().BeltHeight();
 
-	Ivector2 belt_array = { belt_width , 1 };
+	Ivector2 belt_array = { belt_width, belt_height };
 
 	m_pUIBeltList->SetCellsCapacity(belt_array);
 }

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "../smart_cast.h"
 #include "UIInventoryWnd.h"
 #include "UISleepWnd.h"
 #include "../level.h"

@@ -41,7 +41,9 @@ protected:
 	SBoneProtections*				m_boneProtection;	
 protected:
 	u32								m_ef_equipment_type;
-	u32								m_iMaxBelt;
+	//u32								m_iMaxBelt;
+	u32								m_iMaxBeltWidth;
+	u32								m_iMaxBeltHeight;
 public:
 	float							m_additional_weight;
 	float							m_additional_weight2;
@@ -49,7 +51,8 @@ public:
 	virtual u32						ef_equipment_type		() const;
 	virtual	BOOL					BonePassBullet			(int boneID);
 	const shared_str&				GetFullIconName			() const	{return m_full_icon_name;};
-	u32								GetBeltWidth			() const	{ return m_iMaxBelt; }
+	u32								GetBeltWidth			() const	{ return m_iMaxBeltWidth; }
+	u32								GetBeltHeight			() const	{ return m_iMaxBeltHeight; }
 
 	virtual void			net_Export			(NET_Packet& P);
 	virtual void			net_Import			(NET_Packet& P);

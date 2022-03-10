@@ -142,6 +142,7 @@ public:
 	void				SetMaxWeight				(float weight)			{m_fMaxWeight = weight;}
 
 	u32					BeltWidth					() const;
+	u32					BeltHeight					() const;
 
 	inline	CInventoryOwner*GetOwner				() const				{ return m_pOwner; }
 	

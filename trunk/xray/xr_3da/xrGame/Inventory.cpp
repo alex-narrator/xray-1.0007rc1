@@ -1343,9 +1343,10 @@ bool CInventory::CanPutInBelt(PIItem pIItem)
 	if(InBelt(pIItem))					return false;
 	if(!m_bBeltUseful)					return false;
 	if(!pIItem || !pIItem->Belt())		return false;
-	if(m_belt.size() == BeltWidth())	return false;
+	if (m_belt.size() == BeltWidth()*BeltHeight())	
+		return false;
 
-	return FreeRoom_inBelt(m_belt, pIItem, BeltWidth(), 1);
+	return FreeRoom_inBelt(m_belt, pIItem, BeltWidth(), BeltHeight());
 }
 //проверяет можем ли поместить вещь в рюкзак,
 //при этом реально ничего не меняется
@@ -1424,7 +1425,21 @@ u32  CInventory::BeltWidth() const
 			return outfit->GetBeltWidth();
 		}
 	}
-	return 0; //m_iMaxBelt;
+	return 0; //m_iMaxBeltWidth;
+}
+
+u32  CInventory::BeltHeight() const
+{
+	CActor* pActor = smart_cast<CActor*>(m_pOwner);
+	if (pActor)
+	{
+		CCustomOutfit* outfit = pActor->GetOutfit();
+		if (outfit)
+		{
+			return outfit->GetBeltHeight();
+		}
+	}
+	return 0; //m_iMaxBeltHeight;
 }
 
 void  CInventory::AddAvailableItems(TIItemContainer& items_container, bool for_trade) const
