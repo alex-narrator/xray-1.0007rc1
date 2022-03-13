@@ -560,8 +560,7 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 		case iwBag:
 		{
 #ifdef INV_NEW_SLOTS_SYSTEM
-			// Пытаемся найти свободный слот из списка разрешенных.
-			// Если его нету, то принудительно займет первый слот, указанный в списке.
+			// Пытаемся найти свободный слот из списка разрешенных.			
 			auto slots = __item->GetSlots();
 			#if !defined(INV_MOVE_ITM_INTO_QUICK_SLOTS)
 			bool is_eat = __item->cast_eatable_item() != NULL;
@@ -569,10 +568,10 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 			for (u8 i = 0; i < (u8)slots.size(); ++i)
 			{
 				#if !defined(INV_MOVE_ITM_INTO_QUICK_SLOTS)
-				if (!is_eat || is_quick_slot(slots[i], __item, m_pInv) )
+				if ((!is_eat || is_quick_slot(slots[i], __item, m_pInv)))
 				{
 					__item->SetSlot(slots[i]);
-					if (ToSlot(itm, false) )
+					if (GetInventory()->CanPutInSlot(__item) && ToSlot(itm, false))
 						return true;
 				}
 				#else
@@ -580,8 +579,9 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 					if (ToSlot(itm, false) )
 						return true;		
 				#endif
-			}			
-			__item->SetSlot(slots.size()? slots[0]: NO_ACTIVE_SLOT);
+			}	
+			// Если его нету, то принудительно займет первый слот, указанный в списке.
+			//__item->SetSlot(slots.size()? slots[0]: NO_ACTIVE_SLOT);
 #endif
 			if(!ToSlot(itm, false))
 			{

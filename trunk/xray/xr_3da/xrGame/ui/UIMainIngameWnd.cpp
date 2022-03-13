@@ -1843,7 +1843,7 @@ void CUIQuickSlotPanel::Update()
         {
 			sprintf_s	(str, "%s",*CStringTable().translate("ui_quick_slot_use_str_0"));
             m_UseQuickSlot_0_Text->SetText(str);
-			m_UseQuickSlot_0_Text->Show(/*true*/!!itm->cast_eatable_item());
+			m_UseQuickSlot_0_Text->Show(/*true*/!itm->cast_weapon_ammo());
 
 			itm_name = itm->object().cNameSect();
 			count = pActor->inventory().GetSameItemCount(itm_name.c_str(), SearchRuck);
@@ -1865,7 +1865,7 @@ void CUIQuickSlotPanel::Update()
         {
             sprintf_s	(str, "%s",*CStringTable().translate("ui_quick_slot_use_str_1"));
             m_UseQuickSlot_1_Text->SetText(str);
-			m_UseQuickSlot_1_Text->Show(/*true*/!!itm->cast_eatable_item());
+			m_UseQuickSlot_1_Text->Show(/*true*/!itm->cast_weapon_ammo());
 
 			itm_name = itm->object().cNameSect();
 			count = pActor->inventory().GetSameItemCount(itm_name.c_str(), SearchRuck);
@@ -1887,7 +1887,7 @@ void CUIQuickSlotPanel::Update()
         {
             sprintf_s	(str, "%s",*CStringTable().translate("ui_quick_slot_use_str_2"));
             m_UseQuickSlot_2_Text->SetText(str);
-			m_UseQuickSlot_2_Text->Show(/*true*/!!itm->cast_eatable_item());
+			m_UseQuickSlot_2_Text->Show(/*true*/!itm->cast_weapon_ammo());
 
 			itm_name = itm->object().cNameSect();
 			count = pActor->inventory().GetSameItemCount(itm_name.c_str(), SearchRuck);
@@ -1909,7 +1909,7 @@ void CUIQuickSlotPanel::Update()
         {
             sprintf_s	(str, "%s",*CStringTable().translate("ui_quick_slot_use_str_3"));
             m_UseQuickSlot_3_Text->SetText(str);
-			m_UseQuickSlot_3_Text->Show(/*true*/!!itm->cast_eatable_item());
+			m_UseQuickSlot_3_Text->Show(/*true*/!itm->cast_weapon_ammo());
 
 			itm_name = itm->object().cNameSect();
 			count = pActor->inventory().GetSameItemCount(itm_name.c_str(), SearchRuck);
