@@ -261,6 +261,12 @@ void CUIInventoryWnd::Init()
 	m_slots_array[ARTEFACT_SLOT] = NULL;
 #endif
 
+	m_pUIWarBeltList = xr_new<CUIDragDropListEx>(); AttachChild(m_pUIWarBeltList); m_pUIWarBeltList->SetAutoDelete(true);
+	xml_init.InitDragDropListEx(uiXml, "dragdrop_slot_warbelt", 0, m_pUIWarBeltList);
+	BindDragDropListEnents(m_pUIWarBeltList);
+
+	m_slots_array[WARBELT_SLOT] = m_pUIWarBeltList;
+
 	//pop-up menu
 	AttachChild							(&UIPropertiesBox);
 	UIPropertiesBox.Init				(0,0,300,300);

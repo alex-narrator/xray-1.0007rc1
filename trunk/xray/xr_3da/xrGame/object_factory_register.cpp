@@ -114,6 +114,8 @@
 #	include "MilitaryOutfit.h"
 #	include "ExoOutfit.h"
 
+#	include "WarBelt.h"
+
 #	include "f1.h"
 #	include "rgd5.h"
 
@@ -328,6 +330,8 @@ void CObjectFactory::register_classes	()
 	//-----------------------------------------------------------------------------------------------------------------
 	ADD(CMPPlayersBag			,CSE_ALifeItem					,CLSID_OBJECT_PLAYERS_BAG		,"mp_players_bag");
 	//-----------------------------------------------------------------------------------------------------------------
+
+	ADD(CWarBelt				,CSE_ALifeItem					,CLSID_WARBELT					,"obj_warbelt");
 
 	// Zones
 	ADD(CCustomZone				,CSE_ALifeCustomZone			,CLSID_ZONE						,"zone");

@@ -22,6 +22,7 @@
 #include "SleepEffector.h"
 #include "character_info.h"
 #include "CustomOutfit.h"
+#include "WarBelt.h"
 #include "actorcondition.h"
 #include "UIGameCustom.h"
 #include "game_cl_base_weapon_usage_statistic.h"
@@ -1890,6 +1891,11 @@ CCustomOutfit* CActor::GetOutfit() const
 	return _of?smart_cast<CCustomOutfit*>(_of):NULL;
 }
 
+CWarBelt* CActor::GetWarBelt() const
+{
+	PIItem _wb = inventory().m_slots[WARBELT_SLOT].m_pIItem;
+	return _wb ? smart_cast<CWarBelt*>(_wb) : NULL;
+}
 
 void CActor::block_action(EGameActions cmd)
 {

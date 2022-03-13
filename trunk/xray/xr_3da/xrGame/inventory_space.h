@@ -23,7 +23,8 @@
 	#define SLOT_QUICK_ACCESS_1 13
 	#define SLOT_QUICK_ACCESS_2 14
 	#define SLOT_QUICK_ACCESS_3 15
-	#define SLOTS_TOTAL			16
+	#define WARBELT_SLOT		16
+	#define SLOTS_TOTAL			17
     // alpet: ограничение по вхождению предмета
 	#define SLOT_QUICK_CELLS_X	1
 	#define SLOT_QUICK_CELLS_Y	1

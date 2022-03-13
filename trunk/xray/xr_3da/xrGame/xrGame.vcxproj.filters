@@ -6571,8 +6571,9 @@
     <ClInclude Include="derived_client_classes.h">
       <Filter>AI\AScript\ScriptClasses\DerivedClientClasses</Filter>
     </ClInclude>
-    <ClInclude Include="script_vars_storage.h">
-      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
+    <ClInclude Include="script_vars_storage.h" />
+    <ClInclude Include="WarBelt.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -9736,8 +9737,9 @@
     <ClCompile Include="derived_client_classes.cpp">
       <Filter>AI\AScript\ScriptClasses\DerivedClientClasses</Filter>
     </ClCompile>
-    <ClCompile Include="script_vars_storage.cpp">
-      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
+    <ClCompile Include="script_vars_storage.cpp" />
+    <ClCompile Include="WarBelt.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

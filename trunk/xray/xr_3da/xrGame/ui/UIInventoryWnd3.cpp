@@ -389,7 +389,7 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 	{
 		auto num = UIPropertiesBox.GetClickedItem()->GetTAG();
 #ifdef INV_NEW_SLOTS_SYSTEM
-		if (num >= INVENTORY_TO_SLOT0_ACTION && num <= INVENTORY_TO_SLOT15_ACTION)
+		if (num >= INVENTORY_TO_SLOT0_ACTION && num <= INVENTORY_TO_SLOT16_ACTION)
 		{
 			switch(num)
 			{
@@ -440,6 +440,9 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 				break;
 			case INVENTORY_TO_SLOT15_ACTION:
 				CurrentIItem()->SetSlot(SLOT_QUICK_ACCESS_3);
+				break;
+			case INVENTORY_TO_SLOT16_ACTION:
+				CurrentIItem()->SetSlot(WARBELT_SLOT);
 				break;
 			}
 			ToSlot(CurrentItem(), true);
@@ -530,7 +533,7 @@ bool CUIInventoryWnd::TryUseItem(PIItem itm)
 	CAntirad*			pAntirad			= smart_cast<CAntirad*>			(itm);
 	CEatableItem*		pEatableItem		= smart_cast<CEatableItem*>		(itm);
 	//
-	if (!itm->IsPlaceable(SLOT_QUICK_ACCESS_0, SLOT_QUICK_ACCESS_3)) //съедаем предмет только если его нельзя поместить в быстрые слоты
+	if (!itm->IsPlaceable(SLOT_QUICK_ACCESS_0, SLOT_QUICK_ACCESS_3) && !itm->Belt()) //съедаем предмет только если его нельзя поместить в быстрые слоты/пояс
 	//
 	if(pMedkit || pAntirad || pEatableItem || pBottleItem)
 	{

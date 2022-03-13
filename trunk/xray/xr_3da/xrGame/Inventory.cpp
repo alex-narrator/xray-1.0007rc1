@@ -9,6 +9,10 @@
 #include "eatable_item.h"
 #include "script_engine.h"
 #include "xrmessages.h"
+
+#include "CustomOutfit.h"
+#include "WarBelt.h"
+
 //#include "game_cl_base.h"
 #include "xr_level_controller.h"
 #include "level.h"
@@ -983,30 +987,35 @@ void CInventory::TryAmmoToBelt(CInventoryItem *pIItem)
 
 	if (psActorFlags.test(AF_AMMO_FROM_BELT) && pWeapon->IsAmmoWasSpawned() && !m_bRuckAmmoPlacement) //если включены патроны с пояса, то для боеприпасов актора, которые спавнятся при разрядке
 	{
-			if (CanPutInBelt(pAmmo)) //попробуем положить патроны в пояс
-			{
-				Msg("ammo [%s] with ID [%d] was placed to belt", pIItem->object().cNameSect().c_str(), pIItem->object().ID());
-				pAmmo->m_eItemPlace = eItemPlaceBelt;
-			}
-			else //попробуем определить свободный слот и положить в него
-			{
-				auto slots = pAmmo->GetSlots();
-				for (u8 i = 0; i < (u8)slots.size(); ++i)
-				{
-					pAmmo->SetSlot(slots[i]);
+		auto pWarbelt = pActor->GetWarBelt();
+		bool b_has_drop_pouch = pWarbelt && pWarbelt->HasDropPouch();
 
-					if (CanPutInSlot(pAmmo))
-					{
-						Msg("ammo [%s] with ID [%d] was placed to slot [%d]", pIItem->object().cNameSect().c_str(), pIItem->object().ID(), pIItem->GetSlot());
-						pAmmo->m_eItemPlace = eItemPlaceSlot;
-						break;
-					}
+		if (pAmmo->IsBoxReloadableEmpty() && b_has_drop_pouch) //якщо пустий магазин та є сумка для скидання - кладемо до рюкзаку
+			return;
+
+		if (CanPutInBelt(pAmmo)) //попробуем положить патроны в пояс
+		{
+			Msg("ammo [%s] with ID [%d] was placed to belt", pIItem->object().cNameSect().c_str(), pIItem->object().ID());
+			pAmmo->m_eItemPlace = eItemPlaceBelt;
+		}
+		else //попробуем определить свободный слот и положить в него
+		{
+			auto slots = pAmmo->GetSlots();
+			for (u8 i = 0; i < (u8)slots.size(); ++i)
+			{
+				pAmmo->SetSlot(slots[i]);
+
+				if (CanPutInSlot(pAmmo))
+				{
+					Msg("ammo [%s] with ID [%d] was placed to slot [%d]", pIItem->object().cNameSect().c_str(), pIItem->object().ID(), pIItem->GetSlot());
+					pAmmo->m_eItemPlace = eItemPlaceSlot;
+					break;
 				}
 			}
+		}
 
-			if (!CanPutInBelt(pAmmo) && !CanPutInSlot(pAmmo)) //никуда не поместились - роняем на землю
-				pAmmo->SetDropManual(TRUE);
-
+		if (!CanPutInBelt(pAmmo) && !CanPutInSlot(pAmmo) && !b_has_drop_pouch) //нікуди не вміщається та немає сумки для скидання - кидаємо на землю
+			pAmmo->SetDropManual(TRUE);
 	}
 	pWeapon->SetAmmoWasSpawned(false);	//сбрасываем флажок спавна патронов
 }
@@ -1413,16 +1422,15 @@ bool CInventory::CanTakeItem(CInventoryItem *inventory_item) const
 	return	true;
 }
 
-#include "CustomOutfit.h"
 u32  CInventory::BeltWidth() const
 {
 	CActor* pActor = smart_cast<CActor*>(m_pOwner);
 	if (pActor)
 	{
-		CCustomOutfit* outfit = pActor->GetOutfit();
-		if (outfit)
+		CWarBelt* warbelt = pActor->GetWarBelt();
+		if (warbelt)
 		{
-			return outfit->GetBeltWidth();
+			return warbelt->GetBeltWidth();
 		}
 	}
 	return 0; //m_iMaxBeltWidth;
@@ -1433,10 +1441,10 @@ u32  CInventory::BeltHeight() const
 	CActor* pActor = smart_cast<CActor*>(m_pOwner);
 	if (pActor)
 	{
-		CCustomOutfit* outfit = pActor->GetOutfit();
-		if (outfit)
+		CWarBelt* warbelt = pActor->GetWarBelt();
+		if (warbelt)
 		{
-			return outfit->GetBeltHeight();
+			return warbelt->GetBeltHeight();
 		}
 	}
 	return 0; //m_iMaxBeltHeight;
@@ -1552,11 +1560,11 @@ void CInventory::UpdateItemsPlace(PIItem check_item, bool b_check_for_immediate_
 	auto pActor = smart_cast<CActor*>(m_pOwner);
 	if (!pActor) return;
 
-	auto pOutfit = smart_cast<CCustomOutfit*>(check_item);
+	auto pWarBelt = smart_cast<CWarBelt*>(check_item);
 
-	bool b_drop_to_ruck = pOutfit && (pOutfit == ItemFromSlot(OUTFIT_SLOT) || b_check_for_immediate_dressing && CanPutInSlot(pOutfit));
+	bool b_drop_belt_to_ruck = pWarBelt && (pWarBelt == ItemFromSlot(WARBELT_SLOT) || b_check_for_immediate_dressing && CanPutInSlot(pWarBelt));
 
-	if (b_drop_to_ruck)
+	if (b_drop_belt_to_ruck)
 	{
 		TIItemContainer::iterator it = m_all.begin();
 		TIItemContainer::iterator it_e = m_all.end();

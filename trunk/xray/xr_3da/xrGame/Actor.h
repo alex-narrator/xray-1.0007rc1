@@ -22,6 +22,7 @@ class CInfoPortion;
 struct GAME_NEWS_DATA;
 class CActorCondition;
 class CCustomOutfit;
+class CWarBelt;
 class CKnownContactsRegistryWrapper;
 class CEncyclopediaRegistryWrapper;
 class CGameTaskRegistryWrapper;
@@ -718,6 +719,7 @@ protected:
 public:
 		void							SetWeaponHideState				(u32 State, bool bSet);
 		virtual CCustomOutfit*			GetOutfit() const;
+		virtual CWarBelt*				GetWarBelt() const;
 private:
 	CActorCondition				*m_entity_condition;
 
