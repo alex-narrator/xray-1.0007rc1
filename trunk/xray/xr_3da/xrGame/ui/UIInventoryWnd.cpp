@@ -267,6 +267,12 @@ void CUIInventoryWnd::Init()
 
 	m_slots_array[WARBELT_SLOT] = m_pUIWarBeltList;
 
+	m_pUIBackPackList = xr_new<CUIDragDropListEx>(); AttachChild(m_pUIBackPackList); m_pUIBackPackList->SetAutoDelete(true);
+	xml_init.InitDragDropListEx(uiXml, "dragdrop_slot_backpack", 0, m_pUIBackPackList);
+	BindDragDropListEnents(m_pUIBackPackList);
+
+	m_slots_array[BACKPACK_SLOT] = m_pUIBackPackList;
+
 	//pop-up menu
 	AttachChild							(&UIPropertiesBox);
 	UIPropertiesBox.Init				(0,0,300,300);

@@ -21,8 +21,11 @@
 #include "EffectorZoomInertion.h"
 #include "SleepEffector.h"
 #include "character_info.h"
+
 #include "CustomOutfit.h"
 #include "WarBelt.h"
+#include "BackPack.h"
+
 #include "actorcondition.h"
 #include "UIGameCustom.h"
 #include "game_cl_base_weapon_usage_statistic.h"
@@ -446,17 +449,18 @@ if(!g_dedicated_server)
 	m_sCharacterUseAction           = "character_use";
 	m_sDeadCharacterUseAction       = "dead_character_use";
 	m_sDeadCharacterUseOrDragAction = "dead_character_use_or_drag";
-	m_sDeadMonsterUseOrDragAction   = "dead_monster_use_or_drag";      //отрезать и тащить
-	m_sDeadMonsterUseNotDragAction  = "dead_monster_use_not_drag";     //отрезать/руки заняты
-	m_sDeadMonsterDragNotUseAction  = "dead_monster_drag_not_use";     //нужен нож/тащить
-	m_sDeadMonsterNotDragNotUse     = "dead_monster_not_drag_not_use"; //нужен нож/руки заняты
-	m_sDeadMonsterUseAction         = "dead_monster_use";              //отрезать
-	m_sDeadMonsterNotUse            = "dead_monster_not_use";          //нужен нож
-	m_sNoAnyAction                  = "no_any_action";                 //руки заняты
+	m_sDeadMonsterUseOrDragAction   = "dead_monster_use_or_drag";		//отрезать и тащить
+	m_sDeadMonsterUseNotDragAction  = "dead_monster_use_not_drag";		//отрезать/руки заняты
+	m_sDeadMonsterDragNotUseAction  = "dead_monster_drag_not_use";		//нужен нож/тащить
+	m_sDeadMonsterNotDragNotUse     = "dead_monster_not_drag_not_use";	//нужен нож/руки заняты
+	m_sDeadMonsterUseAction         = "dead_monster_use";				//отрезать
+	m_sDeadMonsterNotUse            = "dead_monster_not_use";			//нужен нож
+	m_sNoAnyAction                  = "no_any_action";					//руки заняты
+	m_sNoPlaceAvailable				= "no_place_available";				//нет места
 	m_sCarCharacterUseAction        = "car_character_use";
 	m_sInventoryItemUseAction       = "inventory_item_use";
-	m_sGameObjectDragAction         = "game_object_drag";              //Тащить предмет
-	m_sGameObjectThrowDropAction	= "game_object_throw_drop";        //Отбросить/отпустить предмет
+	m_sGameObjectDragAction         = "game_object_drag";				//Тащить предмет
+	m_sGameObjectThrowDropAction	= "game_object_throw_drop";			//Отбросить/отпустить предмет
 	m_sInventoryBoxUseAction        = "inventory_box_use";
 //---------------------------------------------------------------------
 	m_sHeadShotParticle	= READ_IF_EXISTS(pSettings,r_string,section,"HeadShotParticle",0);
@@ -630,7 +634,15 @@ void	CActor::Hit							(SHit* pHDS)
 				//
 				HDS.power = hit_power;
 				inherited::Hit(&HDS);
-				Msg("actor take hit [%f], hit type [%d]", HDS.damage(), HDS.hit_type);
+				Msg("actor take hit [%f], hit type [%d], hitted bone [%s], ", HDS.damage(), HDS.hit_type, smart_cast<CKinematics*>(Visual())->LL_BoneName_dbg(HDS.boneID));
+
+				if (HDS.bone() == m_spine || HDS.bone() == m_spine1 || HDS.bone() == m_spine2)
+				{
+					auto pBackPack = GetBackPack();
+					if (pBackPack) 
+						pBackPack->Hit(HDS.power, HDS.hit_type);
+					Msg("SPINE HITTED");
+				}
 			};
 		}
 		break;
@@ -1303,7 +1315,12 @@ void CActor::shedule_Update	(u32 DT)
 				m_sDefaultObjAction = inventory().IsFreeHands() ? m_sCarCharacterUseAction : m_sNoAnyAction;
 
 			else if (inventory().m_pTarget && inventory().m_pTarget->CanTake()) //подобрать предмет
-				m_sDefaultObjAction = inventory().IsFreeHands() ? m_sInventoryItemUseAction : m_sNoAnyAction;
+			{
+				if (inventory().CanTakeItem(inventory().m_pTarget))
+					m_sDefaultObjAction = inventory().IsFreeHands() ? m_sInventoryItemUseAction : m_sNoAnyAction;
+				else
+					m_sDefaultObjAction = m_sNoPlaceAvailable;
+			}
 
 			else if (b_allow_drag)
 				m_sDefaultObjAction = inventory().IsFreeHands() ? m_sGameObjectDragAction : m_sNoAnyAction;
@@ -1895,6 +1912,12 @@ CWarBelt* CActor::GetWarBelt() const
 {
 	PIItem _wb = inventory().m_slots[WARBELT_SLOT].m_pIItem;
 	return _wb ? smart_cast<CWarBelt*>(_wb) : NULL;
+}
+
+CBackPack* CActor::GetBackPack() const
+{
+	PIItem _bp = inventory().m_slots[BACKPACK_SLOT].m_pIItem;
+	return _bp ? smart_cast<CBackPack*>(_bp) : NULL;
 }
 
 void CActor::block_action(EGameActions cmd)

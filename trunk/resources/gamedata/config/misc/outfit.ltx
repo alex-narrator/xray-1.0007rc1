@@ -1080,3 +1080,27 @@ inv_grid_x			= 9
 inv_grid_y			= 14
 cost				= 500	;30
 default_to_ruck		= false
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;BACKPACK;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[backpack]:identity_immunities
+GroupControlSection	= spawn_group
+discovery_dependency =
+class				= II_BPACK
+cform				= skeleton
+visual				= equipments\item_rukzak.ogf
+description			= backpack_descr
+slot				= 17
+
+additional_inventory_weight		= 40		; +max_walk_weight
+additional_inventory_weight2	= 40		;	+40 kg
+
+inv_name			= Backpack
+inv_name_short		= Backpack
+inv_weight			= 0.5
+
+inv_grid_width		= 1
+inv_grid_height		= 1
+inv_grid_x			= 9
+inv_grid_y			= 14
+cost				= 500	;30
+default_to_ruck		= false

@@ -1429,6 +1429,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"g_quick_slot_from_belt",		&psActorFlags,	AF_QUICK_FROM_BELT				);	//наполнение быстрых слотов с пояса
 	CMD3(CCC_Mask,				"g_artefacts_from_all",			&psActorFlags,	AF_ARTEFACTS_FROM_ALL			);	//артефакты работают из всего инвентаря
 	CMD3(CCC_Mask,				"g_artefact_detector_check",	&psActorFlags,	AF_ARTEFACT_DETECTOR_CHECK		);	//свойства артефактов отображаются после проверки детектором
+	CMD3(CCC_Mask,				"g_inventory_volume",			&psActorFlags,	AF_INVENTORY_VOLUME				);	//лімітований за ємністю інвентар
 	//оружие
 	CMD3(CCC_Mask,				"g_no_auto_reload",				&psActorFlags,	AF_NO_AUTO_RELOAD				);	//запрет автоперезарядки оружия
 	CMD3(CCC_Mask,				"g_bullet_from_barrel",			&psActorFlags,	AF_BULLET_FROM_BARREL			);	//пули летят из ствола

@@ -28,6 +28,7 @@
 #include "alife_object_registry.h"
 
 #include "CustomOutfit.h"
+#include "BackPack.h"
 
 CInventoryOwner::CInventoryOwner			()
 {
@@ -328,6 +329,10 @@ float  CInventoryOwner::MaxCarryWeight () const
 	const CCustomOutfit* outfit	= GetOutfit();
 	if(outfit)
 		ret += outfit->m_additional_weight2;
+
+	CBackPack* backpack = GetBackPack();
+	if (backpack)
+		ret += backpack->GetAdditionalMaxWeight();
 
 	return ret;
 }

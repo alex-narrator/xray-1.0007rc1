@@ -119,6 +119,7 @@ protected:
 	CUIDragDropListEx*			m_pUIGrenadeList;
 //#endif
 	CUIDragDropListEx*			m_pUIWarBeltList;
+	CUIDragDropListEx*			m_pUIBackPackList;
 
 	CUIDragDropListEx*			m_slots_array [SLOTS_TOTAL];  // alpet: для индексированного доступа
 

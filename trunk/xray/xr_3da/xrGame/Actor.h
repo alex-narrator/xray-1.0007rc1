@@ -23,6 +23,7 @@ struct GAME_NEWS_DATA;
 class CActorCondition;
 class CCustomOutfit;
 class CWarBelt;
+class CBackPack;
 class CKnownContactsRegistryWrapper;
 class CEncyclopediaRegistryWrapper;
 class CGameTaskRegistryWrapper;
@@ -435,6 +436,7 @@ protected:
 	shared_str              m_sDeadMonsterUseAction;        //отрезать
 	shared_str              m_sDeadMonsterNotUse;           //нужен острый нож
 	shared_str              m_sNoAnyAction;                 //руки заняты
+	shared_str              m_sNoPlaceAvailable;            //нет места
 	shared_str				m_sCarCharacterUseAction;
 	shared_str				m_sInventoryItemUseAction;
 	shared_str				m_sGameObjectDragAction;        //Тащить предмет
@@ -718,8 +720,9 @@ protected:
 		void							SelectBestWeapon				(CObject* O);
 public:
 		void							SetWeaponHideState				(u32 State, bool bSet);
-		virtual CCustomOutfit*			GetOutfit() const;
-		virtual CWarBelt*				GetWarBelt() const;
+		virtual CCustomOutfit*			GetOutfit	() const;
+		virtual CWarBelt*				GetWarBelt	() const;
+		virtual CBackPack*				GetBackPack	() const;
 private:
 	CActorCondition				*m_entity_condition;
 

@@ -170,6 +170,13 @@ void CUIInventoryWnd::InitInventory()
 				m_pUIWarBeltList->SetItem(itm);
 			}
 
+			_itm = m_pInv->m_slots[BACKPACK_SLOT].m_pIItem;
+			if (_itm)
+			{
+				CUICellItem* itm = create_cell_item(_itm);
+				m_pUIBackPackList->SetItem(itm);
+			}
+
 	PIItem _outfit						= m_pInv->m_slots[OUTFIT_SLOT].m_pIItem;
 	CUICellItem* outfit					= (_outfit)?create_cell_item(_outfit):NULL;
 #if defined(INV_OUTFIT_FULL_ICON_HIDE)
@@ -213,6 +220,8 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 
 	CActor *pActor			= smart_cast<CActor*>(Level().CurrentEntity());
 	if(!pActor)				return;
+
+	GetInventory()->UpdateItemsPlace(CurrentIItem()); //проверим не надо ли сбросить предметы в рюкзак
 
 	if(!b_all && CurrentIItem() && !CurrentIItem()->IsQuestItem())
 	{
@@ -644,4 +653,5 @@ if (IsGameTypeSingle()) {
 #endif
 
 	m_pUIWarBeltList->ClearAll				(true);
+	m_pUIBackPackList->ClearAll				(true);
 }

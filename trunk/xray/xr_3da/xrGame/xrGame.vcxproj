@@ -1110,6 +1110,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BackPack.h" />
     <ClInclude Include="derived_client_classes.h" />
     <ClInclude Include="script_vars_storage.h" />
     <ClInclude Include="script_actor.h" />
@@ -2550,6 +2551,9 @@
     <ClInclude Include="ui\UIGameTutorial.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BackPack.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release_Priquel|Win32'">/LTCG %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="damage_manager.cpp" />
     <ClCompile Include="action_base_script.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug_Priquel|Win32'">pch_script.h</PrecompiledHeaderFile>

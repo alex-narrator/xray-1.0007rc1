@@ -389,7 +389,7 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 	{
 		auto num = UIPropertiesBox.GetClickedItem()->GetTAG();
 #ifdef INV_NEW_SLOTS_SYSTEM
-		if (num >= INVENTORY_TO_SLOT0_ACTION && num <= INVENTORY_TO_SLOT16_ACTION)
+		if (num >= INVENTORY_TO_SLOT0_ACTION && num <= INVENTORY_TO_SLOT17_ACTION)
 		{
 			switch(num)
 			{
@@ -443,6 +443,9 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 				break;
 			case INVENTORY_TO_SLOT16_ACTION:
 				CurrentIItem()->SetSlot(WARBELT_SLOT);
+				break;
+			case INVENTORY_TO_SLOT17_ACTION:
+				CurrentIItem()->SetSlot(BACKPACK_SLOT);
 				break;
 			}
 			ToSlot(CurrentItem(), true);

@@ -3,7 +3,7 @@
 class CWarBelt :
 	public CInventoryItemObject
 {
-//private:
+private:
 	typedef	CInventoryItemObject inherited;
 public:
 								CWarBelt();

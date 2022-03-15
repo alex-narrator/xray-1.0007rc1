@@ -36,6 +36,9 @@
 	<string id="no_any_action">
 		<text>Руки заняты</text>
 	</string>
+	<string id="no_place_available">
+		<text>Нет места</text>
+	</string>
     <string id="game_object_drag">
 	    <text>Тащить предмет [SHIFT+$$ACTION_USE$$]</text>
     </string>

@@ -214,7 +214,8 @@ void	CActor::PickupModeUpdate_COD	()
 	if (pNearestItem && m_bPickupMode && b_pickup_allowed)
 	{
 		//подбирание объекта
-		Game().SendPickUpEvent(ID(), pNearestItem->object().ID());
+		u16 item_id = psActorFlags.test(AF_PICKUP_TARGET_ONLY) ? inventory().m_pTarget->object().ID() : pNearestItem->object().ID();
+		Game().SendPickUpEvent(ID(), item_id);
 		//если не хардкорный режим подбора, то пусть подбирается всё в радиусе
 		if (psActorFlags.test(AF_PICKUP_TARGET_ONLY)) 
 			PickupModeOff();

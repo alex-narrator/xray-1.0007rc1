@@ -115,6 +115,7 @@
 #	include "ExoOutfit.h"
 
 #	include "WarBelt.h"
+#	include "BackPack.h"
 
 #	include "f1.h"
 #	include "rgd5.h"
@@ -332,6 +333,7 @@ void CObjectFactory::register_classes	()
 	//-----------------------------------------------------------------------------------------------------------------
 
 	ADD(CWarBelt				,CSE_ALifeItem					,CLSID_WARBELT					,"obj_warbelt");
+	ADD(CBackPack				,CSE_ALifeItem					,CLSID_BACKPACK					,"obj_backpack");
 
 	// Zones
 	ADD(CCustomZone				,CSE_ALifeCustomZone			,CLSID_ZONE						,"zone");

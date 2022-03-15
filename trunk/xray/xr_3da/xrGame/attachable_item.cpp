@@ -121,10 +121,14 @@ void CAttachableItem::afterAttach		()
 {
 	VERIFY							(m_valid);
 	object().processing_activate	();
+
+	Msg("item [%s] attached", object().cNameSect().c_str());
 }
 
 void CAttachableItem::afterDetach		()
 {
 	VERIFY							(m_valid);
 	object().processing_deactivate	();
+
+	Msg("item [%s] detached", object().cNameSect().c_str());
 }

@@ -583,7 +583,7 @@ void CActor::ActorUse()
 		}
 	}
 
-		PickupModeOn();
+	PickupModeOn();
 }
 //
 void CActor::ActorThrow()

@@ -12,6 +12,7 @@
 
 #include "CustomOutfit.h"
 #include "WarBelt.h"
+#include "BackPack.h"
 
 //#include "game_cl_base.h"
 #include "xr_level_controller.h"
@@ -255,6 +256,8 @@ bool CInventory::DropItem(CGameObject *pObj)
 
 	if(pIItem->m_pCurrentInventory!=this)
 	{
+		if(psActorFlags.is(AF_INVENTORY_VOLUME)) return false;
+
 		Msg("ahtung !!! [%d]", Device.dwFrame);
 		Msg("CInventory::DropItem pIItem->m_pCurrentInventory!=this");
 		Msg("this = [%d]", GetOwner()->object_id());
@@ -1416,7 +1419,7 @@ bool CInventory::CanTakeItem(CInventoryItem *inventory_item) const
 
 	CActor* pActor = smart_cast<CActor*>(m_pOwner);
 	//актер всегда может взять вещь
-	if(!pActor && (TotalWeight() + inventory_item->Weight() > m_pOwner->MaxCarryWeight()))
+	if((!pActor || psActorFlags.is(AF_INVENTORY_VOLUME)) && (TotalWeight() + inventory_item->Weight() > m_pOwner->MaxCarryWeight()))
 		return	false;
 
 	return	true;
@@ -1561,20 +1564,26 @@ void CInventory::UpdateItemsPlace(PIItem check_item, bool b_check_for_immediate_
 	if (!pActor) return;
 
 	auto pWarBelt = smart_cast<CWarBelt*>(check_item);
+	auto pBackPack = smart_cast<CBackPack*>(check_item);
 
-	bool b_drop_belt_to_ruck = pWarBelt && (pWarBelt == ItemFromSlot(WARBELT_SLOT) || b_check_for_immediate_dressing && CanPutInSlot(pWarBelt));
+	bool b_drop_belt_to_ruck	= pWarBelt && (pWarBelt == ItemFromSlot(WARBELT_SLOT) || b_check_for_immediate_dressing && CanPutInSlot(pWarBelt));
 
-	if (b_drop_belt_to_ruck)
+	bool b_drop_out_from_ruck	= pBackPack && (pBackPack == ItemFromSlot(BACKPACK_SLOT) || b_check_for_immediate_dressing && CanPutInSlot(pBackPack));
+
+	TIItemContainer::iterator it = m_all.begin();
+	TIItemContainer::iterator it_e = m_all.end();
+
+	for (; it != it_e; ++it)
 	{
-		TIItemContainer::iterator it = m_all.begin();
-		TIItemContainer::iterator it_e = m_all.end();
+		PIItem pIItem = *it;
 
-		for (; it != it_e; ++it)
-		{
-			PIItem pIItem = *it;
-			if (InBelt(pIItem)) Ruck(pIItem);
-		}
+		if (b_drop_belt_to_ruck && InBelt(pIItem)) 
+			Ruck(pIItem);
 
-		Msg("UpdateItemsPlace for item [%s]", check_item->Name());
+		if (psActorFlags.is(AF_INVENTORY_VOLUME) && 
+			b_drop_out_from_ruck && InRuck(pIItem) && pIItem != pBackPack)
+			pIItem->SetDropManual(TRUE);
+
+			Msg("UpdateItemsPlace for item [%s]", check_item->Name());
 	}
 }

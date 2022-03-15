@@ -406,6 +406,7 @@ bool CActorCondition::IsCantWalk() const
 }
 
 #include "CustomOutfit.h"
+#include "BackPack.h"
 
 bool CActorCondition::IsCantWalkWeight()
 {
@@ -416,6 +417,10 @@ bool CActorCondition::IsCantWalkWeight()
 		CCustomOutfit* outfit	= m_object->GetOutfit();
 		if(outfit)
 			max_w += outfit->m_additional_weight;
+
+		CBackPack* backpack = m_object->GetBackPack();
+		if (backpack)
+			max_w += backpack->GetAdditionalMaxWalkWeight();
 
 		if(object().GetCarryWeight() > max_w)
 		{

@@ -203,6 +203,7 @@
 #define CLSID_EQUIPMENT_EXO			MK_CLSID('E','Q','U','_','E','X','O',' ')
 
 #define CLSID_WARBELT				MK_CLSID('I','I','_','W','R','B','L','T')
+#define CLSID_BACKPACK				MK_CLSID('I','I','_','B','P','A','C','K')
 
 // Game types
 #define CLSID_SV_GAME_SINGLE			MK_CLSID('S','V','_','S','I','N','G','L')

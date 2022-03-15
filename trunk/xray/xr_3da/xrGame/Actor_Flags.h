@@ -20,6 +20,7 @@ enum{
 		AF_PAUSE_AFTER_LOADING       =(1<<16), //пауза после загрузки сохранения
 		AF_BULLET_FROM_BARREL	     =(1<<17), //пули летят из ствола
 		AF_HOLD_TO_AIM				 =(1<<18), //удерживать клавишу для зума
+		AF_INVENTORY_VOLUME			 =(1<<19), //лімітований за ємністю інвентар
 };
 
 extern Flags32 psActorFlags;
