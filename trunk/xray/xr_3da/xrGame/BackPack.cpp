@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "BackPack.h"
 
+#include "Inventory.h"
+#include "Actor.h"
 
 CBackPack::CBackPack()
 {
@@ -37,4 +39,33 @@ float CBackPack::GetAdditionalMaxWalkWeight()
 float CBackPack::GetAdditionalMaxWeight()
 {
 	return m_additional_weight2 * GetCondition();
+}
+
+void CBackPack::OnMoveToSlot(EItemPlace previous_place)
+{
+	if (m_pCurrentInventory)
+	{
+		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
+		if (pActor && pActor->bAllItemsLoaded)
+		{
+			m_pCurrentInventory->DropRuckOut();
+		}
+	}
+}
+
+void CBackPack::OnMoveToRuck(EItemPlace previous_place)
+{
+	if (m_pCurrentInventory && previous_place == eItemPlaceSlot)
+	{
+		auto* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
+		if (pActor && pActor->bAllItemsLoaded)
+		{
+			m_pCurrentInventory->DropRuckOut();
+		}
+	}
+}
+
+void CBackPack::OnMoveOut(EItemPlace previous_place)
+{
+	OnMoveToRuck(previous_place);
 }

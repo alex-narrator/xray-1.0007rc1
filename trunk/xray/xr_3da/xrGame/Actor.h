@@ -723,6 +723,7 @@ public:
 		virtual CCustomOutfit*			GetOutfit	() const;
 		virtual CWarBelt*				GetWarBelt	() const;
 		virtual CBackPack*				GetBackPack	() const;
+		bool							bAllItemsLoaded;
 private:
 	CActorCondition				*m_entity_condition;
 

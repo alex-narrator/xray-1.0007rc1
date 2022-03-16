@@ -29,8 +29,9 @@ public:
 	float							GetPowerLoss		();
 
 
-	virtual void					OnMoveToSlot		();
-	virtual void					OnMoveToRuck		();
+	virtual void					OnMoveToSlot		(EItemPlace previous_place);
+	virtual void					OnMoveToRuck		(EItemPlace previous_place);
+	virtual void					OnMoveOut			(EItemPlace previous_place);
 
 protected:
 	HitImmunity::HitTypeSVec		m_HitTypeProtection;

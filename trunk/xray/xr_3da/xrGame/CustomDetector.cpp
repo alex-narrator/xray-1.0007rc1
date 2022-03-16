@@ -217,21 +217,21 @@ u32	CCustomDetector::ef_detector_type	() const
 	return	(m_ef_detector_type);
 }
 
-void CCustomDetector::OnMoveToRuck()
+void CCustomDetector::OnMoveToRuck(EItemPlace previous_place)
 {
-	inherited::OnMoveToRuck();
+	inherited::OnMoveToRuck(previous_place);
 	TurnOff();
 }
 
-void CCustomDetector::OnMoveToSlot()
+void CCustomDetector::OnMoveToSlot(EItemPlace previous_place)
 {
-	inherited::OnMoveToSlot	();
+	inherited::OnMoveToSlot	(previous_place);
 	TurnOn					();
 }
 
-void CCustomDetector::OnMoveToBelt		()
+void CCustomDetector::OnMoveToBelt(EItemPlace previous_place)
 {
-	inherited::OnMoveToBelt	();
+	inherited::OnMoveToBelt	(previous_place);
 	TurnOn					();
 }
 

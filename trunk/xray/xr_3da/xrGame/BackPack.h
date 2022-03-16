@@ -20,5 +20,9 @@ protected:
 public:
 	float						GetAdditionalMaxWalkWeight	();
 	float						GetAdditionalMaxWeight		();
+
+	virtual void				OnMoveToSlot				(EItemPlace previous_place);
+	virtual void				OnMoveToRuck				(EItemPlace previous_place);
+	virtual void				OnMoveOut					(EItemPlace previous_place);
 };
 

@@ -474,8 +474,6 @@ void CUICarBodyWnd::TakeAll()
 		{
 			PIItem _itm		= (PIItem)(ci->Child(j)->m_pData);
 
-			m_pOurObject->inventory().UpdateItemsPlace(_itm, true); //проверим не надо ли сбросить предметы в рюкзак
-
 			if(m_pOthersObject)
 				TransferItem	(_itm, m_pOthersObject, m_pOurObject, false);
 			else{
@@ -485,8 +483,6 @@ void CUICarBodyWnd::TakeAll()
 		
 		}
 		PIItem itm		= (PIItem)(ci->m_pData);
-
-		m_pOurObject->inventory().UpdateItemsPlace(itm, true); //проверим не надо ли сбросить предметы в рюкзак
 
 		if(m_pOthersObject)
 			TransferItem	(itm, m_pOthersObject, m_pOurObject, false);
@@ -500,6 +496,7 @@ void CUICarBodyWnd::TakeAll()
 
 void SendEvent_Item_Drop(PIItem	pItem, u16 owner_id)
 {
+	pItem->OnMoveOut(pItem->m_eItemPlace);
 	pItem->SetDropManual(TRUE);
 
 	//if (OnClient())
@@ -545,16 +542,12 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 			CUICellItem*	itm = ci->PopChild();
 			PIItem			iitm = (PIItem)itm->m_pData;
 
-			if (owner_list == m_pUIOurBagList)
-				m_pOurObject->inventory().UpdateItemsPlace(iitm); //проверим не надо ли сбросить предметы в рюкзак
-
 			SendEvent_Item_Drop(iitm, owner_id);
 		}
 	}
 
 	PIItem	iitm = (PIItem)ci->m_pData;
-	if (owner_list == m_pUIOurBagList)
-		m_pOurObject->inventory().UpdateItemsPlace(iitm); //проверим не надо ли сбросить предметы в рюкзак
+
 	//SendEvent_Item_Drop(CurrentIItem());
 	SendEvent_Item_Drop(iitm, owner_id);
 
@@ -627,9 +620,6 @@ bool CUICarBodyWnd::MoveOneFromCell(CUICellItem* itm)
 	CUIDragDropListEx*	old_owner = itm->OwnerList();
 	CUIDragDropListEx*	new_owner = (old_owner == m_pUIOthersBagList) ? m_pUIOurBagList : m_pUIOthersBagList;
 
-	PIItem	iitm = (PIItem)itm->m_pData;
-	m_pOurObject->inventory().UpdateItemsPlace(iitm, new_owner == m_pUIOurBagList); //проверим не надо ли сбросить предметы в рюкзак
-
 	if (m_pOthersObject)
 	{
 		if (TransferItem(CurrentIItem(),
@@ -673,8 +663,6 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 		{
 			PIItem _itm = (PIItem)(ci->Child(j)->m_pData);
 
-			m_pOurObject->inventory().UpdateItemsPlace(_itm, true); //проверим не надо ли сбросить предметы в рюкзак
-
 			if (m_pOthersObject)
 				TransferItem(_itm, m_pOurObject, m_pOthersObject, false);
 			else
@@ -685,8 +673,6 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 			}
 		}
 		PIItem itm = (PIItem)(ci->m_pData);
-
-		m_pOurObject->inventory().UpdateItemsPlace(itm, true); //проверим не надо ли сбросить предметы в рюкзак
 
 		if (m_pOthersObject)
 			TransferItem(itm, m_pOurObject, m_pOthersObject, false);
@@ -704,8 +690,6 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 		{
 			PIItem _itm = (PIItem)(ci->Child(j)->m_pData);
 
-			m_pOurObject->inventory().UpdateItemsPlace(_itm); //проверим не надо ли сбросить предметы в рюкзак
-
 			if (m_pOthersObject)
 				TransferItem(_itm, m_pOthersObject, m_pOurObject, false);
 			else
@@ -716,8 +700,6 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 			}
 		}
 		PIItem itm = (PIItem)(ci->m_pData);
-
-		m_pOurObject->inventory().UpdateItemsPlace(itm); //проверим не надо ли сбросить предметы в рюкзак
 
 		if (m_pOthersObject)
 			TransferItem(itm, m_pOthersObject, m_pOurObject, false);
@@ -1024,6 +1006,9 @@ bool CUICarBodyWnd::TransferItem(PIItem itm, CInventoryOwner* owner_from, CInven
 		}
 	}
 	//
+	if (owner_from == m_pOurObject)
+		itm->OnMoveOut(itm->m_eItemPlace);
+
 	move_item(go_from->ID(), go_to->ID(), itm->object().ID());
 
 	return true;

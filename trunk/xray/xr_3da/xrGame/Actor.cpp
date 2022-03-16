@@ -208,6 +208,8 @@ CActor::CActor() : CEntityAlive(), current_ik_cam_shift(0)
 	// Alex ADD: for smooth crouch fix
 	CurrentHeight			= 0.f;
 
+	bAllItemsLoaded			= false;
+
 	m_location_manager		= xr_new<CLocationManager>(this);
 	#ifdef LUAICP_COMPAT
 		LogXrayOffset("CActor.physics_support", this, &this->m_pPhysics_support);
@@ -262,6 +264,8 @@ void CActor::reinit	()
 	
 	set_input_external_handler					(0);
 	m_time_lock_accel							= 0;
+
+	bAllItemsLoaded								= false;
 }
 
 void CActor::reload	(LPCSTR section)

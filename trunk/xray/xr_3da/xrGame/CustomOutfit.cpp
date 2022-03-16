@@ -112,7 +112,7 @@ BOOL	CCustomOutfit::BonePassBullet					(int boneID)
 };
 
 #include "torch.h"
-void	CCustomOutfit::OnMoveToSlot		()
+void	CCustomOutfit::OnMoveToSlot(EItemPlace previous_place)
 {
 	if (m_pCurrentInventory)
 	{
@@ -149,18 +149,13 @@ void	CCustomOutfit::OnMoveToSlot		()
 	}
 };
 
-void	CCustomOutfit::OnMoveToRuck		()
+void	CCustomOutfit::OnMoveToRuck(EItemPlace previous_place)
 {
-	if (m_pCurrentInventory)
+	if (m_pCurrentInventory && previous_place == eItemPlaceSlot)
 	{
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
-		if (pActor)
+		if (pActor && pActor->bAllItemsLoaded)
 		{
-			// т.к. родительский инвентарь у предмета меняется раньше вызова этой функции, не будем ничего ломать, а просто проверим, есть ли в слоте бронька. Если есть - уходим.
-			CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(pActor->inventory().ItemFromSlot(OUTFIT_SLOT));
-			if (pOutfit)
-			return;
-
 			CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
 			if(pTorch)
 			{
@@ -176,6 +171,11 @@ void	CCustomOutfit::OnMoveToRuck		()
 			}
 		}
 	}
+};
+
+void	CCustomOutfit::OnMoveOut(EItemPlace previous_place)
+{
+	OnMoveToRuck(previous_place);
 };
 
 u32	CCustomOutfit::ef_equipment_type	() const

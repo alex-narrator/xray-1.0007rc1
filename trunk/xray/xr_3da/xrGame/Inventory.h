@@ -94,8 +94,9 @@ public:
 	bool                    IsFreeHands			();      
 	//сокрытие/восстановлени показа оружия в режиме AF_FREE_HANDS
 	void                    TryToHideWeapon     (bool b_hide_state, bool b_save_prev_slot = true); 
-	//сброс предметов в рюкзак в зависимости от наличия экипировки
-	void					UpdateItemsPlace	(PIItem check_item, bool b_check_for_immediate_dressing = false);
+	//
+	void					DropBeltToRuck		();
+	void					DropRuckOut			();
 	//
 	PIItem					item				(CLASS_ID cls_id) const;
 	
@@ -194,6 +195,9 @@ protected:
 	bool				m_drop_last_frame;
 
 	void				SendActionEvent		(s32 cmd, u32 flags);
+
+private:
+	u32					UpdatesCount{};
 };
 
 #if defined(INV_NO_ACTIVATE_APPARATUS_SLOT)

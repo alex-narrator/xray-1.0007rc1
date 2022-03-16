@@ -593,7 +593,7 @@ void CUITradeWnd::TransferItems(CUIDragDropListEx* pSellList,
 	{
 		CUICellItem* itm	=	pSellList->RemoveItem(pSellList->GetItemIdx(0),false);
 		PIItem	iitm		= (PIItem)itm->m_pData;
-		m_pInvOwner->inventory().UpdateItemsPlace(iitm, bBuying); //проверим не надо ли сбросить предметы в рюкзак
+		if (!bBuying)		iitm->OnMoveOut(iitm->m_eItemPlace);
 		pTrade->TransferItem	(iitm, bBuying);
 		pBuyList->SetItem		(itm);
 	}

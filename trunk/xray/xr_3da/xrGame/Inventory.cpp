@@ -317,6 +317,8 @@ bool CInventory::DropItem(CGameObject *pObj)
 	else
 		Msg						("! CInventory::Drop item not found in inventory!!!");
 
+	pIItem->OnMoveOut(pIItem->m_eItemPlace);
+
 	pIItem->m_pCurrentInventory = NULL;
 
 	m_pOwner->OnItemDrop			(smart_cast<CInventoryItem*>(pObj));
@@ -385,10 +387,11 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate)
 		#endif
 			Activate				(pIItem->GetSlot());
 
-	
+	EItemPlace p = pIItem->m_eItemPlace;
+
 	m_pOwner->OnItemSlot		(pIItem, pIItem->m_eItemPlace);
 	pIItem->m_eItemPlace		= eItemPlaceSlot;
-	pIItem->OnMoveToSlot		();
+	pIItem->OnMoveToSlot		(p);
 	
 	pIItem->object().processing_activate();
 
@@ -421,7 +424,7 @@ bool CInventory::Belt(PIItem pIItem)
 	EItemPlace p = pIItem->m_eItemPlace;
 	pIItem->m_eItemPlace = eItemPlaceBelt;
 	m_pOwner->OnItemBelt(pIItem, p);
-	pIItem->OnMoveToBelt();
+	pIItem->OnMoveToBelt(p);
 
 	if(in_slot)
 		pIItem->object().processing_deactivate();
@@ -460,12 +463,14 @@ bool CInventory::Ruck(PIItem pIItem)
 	CalcTotalWeight									();
 	InvalidateState									();
 
+	EItemPlace p									= pIItem->m_eItemPlace;
+
 	m_pOwner->OnItemRuck							(pIItem, pIItem->m_eItemPlace);
 	pIItem->m_eItemPlace							= eItemPlaceRuck;
 
 	
 
-	pIItem->OnMoveToRuck							();
+	pIItem->OnMoveToRuck							(p);
 
 	if(in_slot)
 		pIItem->object().processing_deactivate();
@@ -800,6 +805,12 @@ bool CInventory::Action(s32 cmd, u32 flags)
 
 void CInventory::Update() 
 {
+	//рішення від xrKrodin'a, щоб відловити той момент, коли усі предмети вже вийшли у онлайн
+	//та можна починати відстежувати переміщення предметів у слоти/до інвентарю, тощо
+	auto pActor = smart_cast<CActor*>(m_pOwner);
+	if (pActor && (++UpdatesCount == 1))
+		pActor->bAllItemsLoaded = true;
+
 	bool bActiveSlotVisible;
 	
 	if(m_iActiveSlot == NO_ACTIVE_SLOT || 
@@ -1558,17 +1569,10 @@ void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
 	}
 }
 
-void CInventory::UpdateItemsPlace(PIItem check_item, bool b_check_for_immediate_dressing)
+void CInventory::DropBeltToRuck()
 {
 	auto pActor = smart_cast<CActor*>(m_pOwner);
 	if (!pActor) return;
-
-	auto pWarBelt = smart_cast<CWarBelt*>(check_item);
-	auto pBackPack = smart_cast<CBackPack*>(check_item);
-
-	bool b_drop_belt_to_ruck	= pWarBelt && (pWarBelt == ItemFromSlot(WARBELT_SLOT) || b_check_for_immediate_dressing && CanPutInSlot(pWarBelt));
-
-	bool b_drop_out_from_ruck	= pBackPack && (pBackPack == ItemFromSlot(BACKPACK_SLOT) || b_check_for_immediate_dressing && CanPutInSlot(pBackPack));
 
 	TIItemContainer::iterator it = m_all.begin();
 	TIItemContainer::iterator it_e = m_all.end();
@@ -1577,13 +1581,27 @@ void CInventory::UpdateItemsPlace(PIItem check_item, bool b_check_for_immediate_
 	{
 		PIItem pIItem = *it;
 
-		if (b_drop_belt_to_ruck && InBelt(pIItem)) 
+		if (InBelt(pIItem))
 			Ruck(pIItem);
+	}
+}
 
-		if (psActorFlags.is(AF_INVENTORY_VOLUME) && 
-			b_drop_out_from_ruck && InRuck(pIItem) && pIItem != pBackPack)
+void CInventory::DropRuckOut()
+{
+	auto pActor = smart_cast<CActor*>(m_pOwner);
+	if (!pActor) return;
+
+	if (!psActorFlags.is(AF_INVENTORY_VOLUME))
+		return;
+
+	TIItemContainer::iterator it = m_all.begin();
+	TIItemContainer::iterator it_e = m_all.end();
+
+	for (; it != it_e; ++it)
+	{
+		PIItem pIItem = *it;
+
+		if (InRuck(pIItem))
 			pIItem->SetDropManual(TRUE);
-
-			Msg("UpdateItemsPlace for item [%s]", check_item->Name());
 	}
 }

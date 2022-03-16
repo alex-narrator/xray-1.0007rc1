@@ -58,9 +58,9 @@ public:
 			void TurnOff			();
 			bool IsWorking			() {return m_bWorking;}
 
-	virtual void OnMoveToSlot		();
-	virtual void OnMoveToRuck		();
-	virtual void OnMoveToBelt		();
+	virtual void OnMoveToSlot		(EItemPlace previous_place);
+	virtual void OnMoveToRuck		(EItemPlace previous_place);
+	virtual void OnMoveToBelt		(EItemPlace previous_place);
 
 protected:
 	void StopAllSounds				();

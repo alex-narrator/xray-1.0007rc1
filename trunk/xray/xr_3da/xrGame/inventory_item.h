@@ -142,9 +142,10 @@ public:
 	EItemPlace					m_eItemPlace;
 
 
-	virtual void				OnMoveToSlot		() {};
-	virtual void				OnMoveToBelt		() {};
-	virtual void				OnMoveToRuck		() {};
+	virtual void				OnMoveToSlot		(EItemPlace previous_place) {};
+	virtual void				OnMoveToBelt		(EItemPlace previous_place) {};
+	virtual void				OnMoveToRuck		(EItemPlace previous_place) {};
+	virtual void				OnMoveOut			(EItemPlace previous_place) {};
 					
 			int					GetGridWidth		() const ;
 			int					GetGridHeight		() const ;

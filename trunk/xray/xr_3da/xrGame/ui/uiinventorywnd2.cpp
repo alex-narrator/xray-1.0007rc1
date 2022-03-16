@@ -221,8 +221,6 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 	CActor *pActor			= smart_cast<CActor*>(Level().CurrentEntity());
 	if(!pActor)				return;
 
-	GetInventory()->UpdateItemsPlace(CurrentIItem()); //проверим не надо ли сбросить предметы в рюкзак
-
 	if(!b_all && CurrentIItem() && !CurrentIItem()->IsQuestItem())
 	{
 		SendEvent_Item_Drop		(CurrentIItem());
@@ -267,8 +265,6 @@ bool CUIInventoryWnd::ToSlot(CUICellItem* itm, bool force_place)
 			GetSlotList(_slot);  // for tracing
 			return false;
 		}
-
-		GetInventory()->UpdateItemsPlace(iitem, true); //проверим не надо ли сбросить предметы в рюкзак
 
 #ifdef DEBUG_SLOTS
 		Msg("# inventory wnd ToSlot (0x%p) from old_owner = 0x%p ", itm, old_owner);
@@ -331,8 +327,6 @@ bool CUIInventoryWnd::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 				VERIFY						(new_owner==m_pUIBagList);
 		}else
 				new_owner					= m_pUIBagList;
-
-		GetInventory()->UpdateItemsPlace(iitem); //проверим не надо ли сбросить предметы в рюкзак
 
 		bool result							= GetInventory()->Ruck(iitem);
 		VERIFY								(result);
