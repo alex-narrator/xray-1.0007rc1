@@ -72,6 +72,9 @@
 	<string id="st_move_all">
 		<text>переместить все</text>
 	</string>
+	<string id="st_move_with_content">
+		<text>переместить с содержимым</text>
+	</string>
 	<string id="st_eat">
 		<text>съесть</text>
 	</string>
@@ -85,53 +88,59 @@
 		<text>переместить в слот</text>
 	</string>
 <!-- new slot system start -->
-        <string id="st_move_to_slot0">
+    <string id="st_move_to_slot0">
 		<text>в слот оружия 1</text>
 	</string>
-        <string id="st_move_to_slot1">
+    <string id="st_move_to_slot1">
 		<text>в слот оружия 2</text>
 	</string>
-        <string id="st_move_to_slot2">
+    <string id="st_move_to_slot2">
 		<text>в слот оружия 3</text>
 	</string>
-        <string id="st_move_to_slot3">
+    <string id="st_move_to_slot3">
 		<text>в слот гранаты</text>
 	</string>
-        <string id="st_move_to_slot4">
+    <string id="st_move_to_slot4">
 		<text>в слот бинокля</text>
 	</string>
-        <string id="st_move_to_slot5">
+    <string id="st_move_to_slot5">
 		<text>в слот болта</text>
 	</string>
-        <string id="st_move_to_slot6">
+    <string id="st_move_to_slot6">
 		<text>надеть костюм</text>
 	</string>
-        <string id="st_move_to_slot7">
+    <string id="st_move_to_slot7">
 		<text>в слот ПДА</text>
 	</string>
-        <string id="st_move_to_slot8">
+    <string id="st_move_to_slot8">
 		<text>в слот детектора</text>
 	</string>
-        <string id="st_move_to_slot9">
+    <string id="st_move_to_slot9">
 		<text>в слот фонаря</text>
 	</string>
-        <string id="st_move_to_slot10">
+    <string id="st_move_to_slot10">
 		<text>в слот артефакта</text>
 	</string>
-        <string id="st_move_to_slot11">
+    <string id="st_move_to_slot11">
 		<text>надеть шлем</text>
 	</string>
-        <string id="st_move_to_slot12">
-		<text>быстрый слот 1</text>
+    <string id="st_move_to_slot12">
+		<text>в быстрый слот 1</text>
 	</string>
-        <string id="st_move_to_slot13">
-		<text>быстрый слот 2</text>
+    <string id="st_move_to_slot13">
+		<text>в быстрый слот 2</text>
 	</string>
-        <string id="st_move_to_slot14">
-		<text>быстрый слот 3</text>
+    <string id="st_move_to_slot14">
+		<text>в быстрый слот 3</text>
 	</string>
-        <string id="st_move_to_slot15">
-		<text>быстрый слот 4</text>
+    <string id="st_move_to_slot15">
+		<text>в быстрый слот 4</text>
+	</string>
+    <string id="st_move_to_slot16">
+		<text>надеть пояс</text>
+	</string>
+    <string id="st_move_to_slot17">
+		<text>надеть рюкзак</text>
 	</string>
 <!-- new slot system end   -->
 	<string id="st_sell_item">
@@ -189,7 +198,10 @@
 		<text>Выход</text>
 	</string>
 	<string id="ui_inv_repack_ammo">
-		<text>упорядочить патроны</text>
+		<text>Упорядочить патроны</text>
+	</string>
+	<string id="ui_inv_move_all_from_ruck">
+		<text>Выложить из рюкзака</text>
 	</string>
 	<string id="ui_inv_granades_rifle">
 		<text>Купить гранаты для подствольника (E)</text>

@@ -1,4 +1,5 @@
 #pragma once
+#include "stdafx.h"
 #include "UIWindow.h"
 #include "../inventory_space.h"
 
@@ -91,8 +92,7 @@ protected:
 	CUICellItem*		CurrentItem					();
 	PIItem				CurrentIItem				();
 	//
-	bool                MoveOneFromCell             (CUICellItem* itm);  //переместить один предмет
-	bool                MoveAllFromCell             (CUICellItem* itm);  //переместить стак предметов
+	bool                MoveItemsFromCell			(CUICellItem* itm, bool b_all);  //переместить предмет/стак предметов
 	//
 	bool                b_TakeAllActionKeyHolded;
 

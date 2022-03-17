@@ -50,7 +50,7 @@ void CUIInventoryWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	else
 	if (UIRepackAmmoButton == pWnd && BUTTON_CLICKED == msg)
 	{
-		g_actor->inventory().RepackAmmo();
+		GetInventory()->RepackAmmo();
 	}
 
 	CUIWindow::SendMessage(pWnd, msg, pData);

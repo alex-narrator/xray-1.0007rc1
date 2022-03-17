@@ -52,10 +52,49 @@
 		<texture>ui\ui_bottom_background</texture>
 	</bottom_background>
 
-	<take_all_btn x="830" y="725" width="157" height="48" hR="255" hB="83" hG="179" highlight_text="1">
+    <exit_button x="850" y="725" width="157" height="48" stretch="1">
+        <texture>ui_button_main02</texture>
+        <text font="graffiti19" r="238" g="153" b="26">ui_inv_exit</text>
+        <text_color>
+			<e r="240"	g="217" b="182"/>				
+			<t r="0"	g="0"	b="0"/>				
+			<d r="135"	g="123" b="116"/>
+			<h r="0"	g="0"	b="0"/>
+		</text_color>
+    </exit_button>
+
+	<take_all_btn x="693" y="725" width="157" height="48" hR="255" hB="83" hG="179" highlight_text="1">
         <texture>ui_button_main01</texture>
         <text align="c" font="graffiti22" r="238" g="153" b="26">ui_st_take_all</text>
+        <text_color>
+			<e r="240"	g="217" b="182"/>				
+			<t r="0"	g="0"	b="0"/>				
+			<d r="135"	g="123" b="116"/>
+			<h r="0"	g="0"	b="0"/>
+		</text_color>
 	</take_all_btn>
+	
+	<repack_ammo_button x="196" y="725" width="157" height="48" stretch="1">
+        <texture>ui_button_main02</texture>
+        <text font="graffiti19" r="238" g="153" b="26">ui_inv_repack_ammo</text>
+        <text_color>
+			<e r="240"	g="217" b="182"/>				
+			<t r="0"	g="0"	b="0"/>				
+			<d r="135"	g="123" b="116"/>
+			<h r="0"	g="0"	b="0"/>
+		</text_color>
+    </repack_ammo_button>
+	
+	<move_all_from_ruck_button x="39" y="725" width="157" height="48" stretch="1">
+        <texture>ui_button_main01</texture>
+        <text font="graffiti19" r="238" g="153" b="26">ui_inv_move_all_from_ruck</text>
+        <text_color>
+			<e r="240"	g="217" b="182"/>				
+			<t r="0"	g="0"	b="0"/>				
+			<d r="135"	g="123" b="116"/>
+			<h r="0"	g="0"	b="0"/>
+		</text_color>
+    </move_all_from_ruck_button>
 
 </window>
 

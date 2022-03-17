@@ -1574,15 +1574,10 @@ void CInventory::DropBeltToRuck()
 	auto pActor = smart_cast<CActor*>(m_pOwner);
 	if (!pActor) return;
 
-	TIItemContainer::iterator it = m_all.begin();
-	TIItemContainer::iterator it_e = m_all.end();
-
-	for (; it != it_e; ++it)
+	while (!m_belt.empty())
 	{
-		PIItem pIItem = *it;
-
-		if (InBelt(pIItem))
-			Ruck(pIItem);
+		PIItem pIItem = m_belt.back();
+		Ruck(pIItem);
 	}
 }
 
@@ -1594,14 +1589,9 @@ void CInventory::DropRuckOut()
 	if (!psActorFlags.is(AF_INVENTORY_VOLUME))
 		return;
 
-	TIItemContainer::iterator it = m_all.begin();
-	TIItemContainer::iterator it_e = m_all.end();
-
-	for (; it != it_e; ++it)
+	for (TIItemContainer::iterator it = m_ruck.begin(); m_ruck.end() != it; ++it)
 	{
 		PIItem pIItem = *it;
-
-		if (InRuck(pIItem))
-			pIItem->SetDropManual(TRUE);
+		pIItem->SetDropManual(true);
 	}
 }

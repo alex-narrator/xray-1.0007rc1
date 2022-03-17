@@ -249,11 +249,7 @@ void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 			{
 				void* d = m_pUIPropertiesBox->GetClickedItem()->GetData();
 				bool b_all = (d == (void*)33);
-
-				if (b_all)
-					MoveAllFromCell(itm);	//переместить стак предметов
-				else
-					MoveOneFromCell(itm);	//переместить один предмет
+				MoveItemsFromCell(itm, b_all);
 			}break;
 				//
 			case INVENTORY_DETECTOR_CHECK_ACTION:
@@ -875,40 +871,21 @@ bool CUITradeWnd::OnItemDrop(CUICellItem* itm)
 	if(old_owner==new_owner || !old_owner || !new_owner)
 					return false;
 
-	return MoveOneFromCell(itm);
+	return MoveItemsFromCell(itm, false);
 }
 
 bool CUITradeWnd::OnItemDbClick(CUICellItem* itm)
 {
 	SetCurrentItem						(itm);
-
-	return b_TakeAllActionKeyHolded ? MoveAllFromCell(itm) : MoveOneFromCell(itm);
+	return MoveItemsFromCell(itm, b_TakeAllActionKeyHolded);
 }
 
-bool CUITradeWnd::MoveOneFromCell(CUICellItem* itm)
-{
-	CUIDragDropListEx*	old_owner		= itm->OwnerList();
-
-	if(old_owner == &m_uidata->UIOurBagList)
-	ToOurTrade				();
-	else if(old_owner == &m_uidata->UIOurTradeList)
-	ToOurBag				();
-	else if(old_owner == &m_uidata->UIOthersBagList)
-	ToOthersTrade			();
-	else if(old_owner == &m_uidata->UIOthersTradeList)
-	ToOthersBag				();
-	else
-	R_ASSERT2(false, "wrong parent for cell item");
-
-	return true;
-}
-
-bool CUITradeWnd::MoveAllFromCell(CUICellItem* itm)
+bool CUITradeWnd::MoveItemsFromCell(CUICellItem* itm, bool b_all)
 {
 	CUIDragDropListEx* old_owner = itm->OwnerList();
 
 	u32 cnt = itm->ChildsCount();
-	for (u32 i = 0; i < cnt; ++i)
+	for (u32 i = 0; i < cnt && b_all; ++i)
 	{
 		if (old_owner == &m_uidata->UIOurBagList)
 			ToOurTrade();
@@ -922,8 +899,18 @@ bool CUITradeWnd::MoveAllFromCell(CUICellItem* itm)
 			R_ASSERT2(false, "wrong parent for cell item");
 	}
 	
-	return MoveOneFromCell(itm);
-	SetCurrentItem(NULL);
+	if (old_owner == &m_uidata->UIOurBagList)
+		ToOurTrade();
+	else if (old_owner == &m_uidata->UIOurTradeList)
+		ToOurBag();
+	else if (old_owner == &m_uidata->UIOthersBagList)
+		ToOthersTrade();
+	else if (old_owner == &m_uidata->UIOthersTradeList)
+		ToOthersBag();
+	else
+		R_ASSERT2(false, "wrong parent for cell item");
+
+	return true;
 }
 
 CUICellItem* CUITradeWnd::CurrentItem()

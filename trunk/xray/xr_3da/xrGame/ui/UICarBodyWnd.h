@@ -69,6 +69,10 @@ protected:
 	CUICharacterInfo*		m_pUICharacterInfoRight;
 	CUIPropertiesBox*		m_pUIPropertiesBox;
 	CUI3tButton*			m_pUITakeAll;
+	//
+	CUI3tButton*			m_pUIExitButton;
+	CUI3tButton*			m_pUIRepackAmmoButton;
+	CUI3tButton*			m_pUIMoveAllFromRuckButton;
 
 	CUICellItem*			m_pCurrentCellItem;
 
@@ -87,10 +91,11 @@ protected:
 	// Взять все
 	void					TakeAll						();
 	//
-	bool                    MoveOneFromCell             (CUICellItem* itm);  //переместить один предмет
-	bool                    MoveAllFromCell             (CUICellItem* itm);  //переместить стак предметов
+	bool                    MoveItemsFromCell           (CUICellItem* itm, bool b_all);  //переместить предмет/стак предметов
 	//
 	void					DropItemsfromCell			(bool b_all);        //выбросить предмет/стак предметов
+	//
+	void					MoveItemWithContent			(CUICellItem* itm, u32 slot);
 	//
 	bool                    b_TakeAllActionKeyHolded;
 

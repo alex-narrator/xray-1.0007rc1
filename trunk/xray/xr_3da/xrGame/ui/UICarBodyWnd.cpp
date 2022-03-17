@@ -128,7 +128,19 @@ void CUICarBodyWnd::Init()
 
 	m_pUITakeAll					= xr_new<CUI3tButton>(); m_pUITakeAll->SetAutoDelete(true);
 	AttachChild						(m_pUITakeAll);
-	xml_init.Init3tButton				(uiXml, "take_all_btn", 0, m_pUITakeAll);
+	xml_init.Init3tButton			(uiXml, "take_all_btn", 0, m_pUITakeAll);
+
+	m_pUIExitButton					= xr_new<CUI3tButton>(); m_pUIExitButton->SetAutoDelete(true);
+	AttachChild						(m_pUIExitButton);
+	xml_init.Init3tButton			(uiXml, "exit_button", 0, m_pUIExitButton);
+
+	m_pUIRepackAmmoButton			= xr_new<CUI3tButton>(); m_pUIRepackAmmoButton->SetAutoDelete(true);
+	AttachChild						(m_pUIRepackAmmoButton);
+	xml_init.Init3tButton			(uiXml, "repack_ammo_button", 0, m_pUIRepackAmmoButton);
+
+	m_pUIMoveAllFromRuckButton		= xr_new<CUI3tButton>(); m_pUIMoveAllFromRuckButton->SetAutoDelete(true);
+	AttachChild						(m_pUIMoveAllFromRuckButton);
+	xml_init.Init3tButton			(uiXml, "move_all_from_ruck_button", 0, m_pUIMoveAllFromRuckButton);
 
 	BindDragDropListEnents			(m_pUIOurBagList);
 	BindDragDropListEnents			(m_pUIOthersBagList);
@@ -286,6 +298,18 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	{
 		TakeAll					();
 	}
+	else if (BUTTON_CLICKED == msg && m_pUIExitButton == pWnd)
+	{
+		GetHolder()->StartStopMenu(this, true);
+	}
+	else if (BUTTON_CLICKED == msg && m_pUIRepackAmmoButton == pWnd)
+	{
+		m_pOurObject->inventory().RepackAmmo();
+	}
+	else if (BUTTON_CLICKED == msg && m_pUIMoveAllFromRuckButton == pWnd)
+	{
+		MoveItemWithContent(NULL, BACKPACK_SLOT);
+	}
 	else if(pWnd == m_pUIPropertiesBox &&	msg == PROPERTY_CLICKED)
 	{
 		CUICellItem *	itm		= CurrentItem();
@@ -304,13 +328,15 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 			{
 				void* d = m_pUIPropertiesBox->GetClickedItem()->GetData();
 				bool b_all = (d == (void*)33);
-
-				if (b_all)
-					MoveAllFromCell(itm);	//переместить стак предметов
-				else
-					MoveOneFromCell(itm);	//переместить один предмет
+				MoveItemsFromCell(itm, b_all);
 			}
 			break;
+			case INVENTORY_MOVE_WITH_CONTENT:
+			{
+				auto iitem = (PIItem)itm->m_pData;
+				u32 slot = iitem->GetSlot();
+				MoveItemWithContent(itm, slot);
+			}
 				//
 			case INVENTORY_DETECTOR_CHECK_ACTION:
 				m_pUIItemInfo->UIArtefactParams->Show(true);
@@ -615,43 +641,7 @@ bool CUICarBodyWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 	return true; // always returns true, because ::StopAnyMove() == true;
 }
 
-bool CUICarBodyWnd::MoveOneFromCell(CUICellItem* itm)
-{
-	CUIDragDropListEx*	old_owner = itm->OwnerList();
-	CUIDragDropListEx*	new_owner = (old_owner == m_pUIOthersBagList) ? m_pUIOurBagList : m_pUIOthersBagList;
-
-	if (m_pOthersObject)
-	{
-		if (TransferItem(CurrentIItem(),
-			(old_owner == m_pUIOthersBagList) ? m_pOthersObject : m_pOurObject,
-			(old_owner == m_pUIOurBagList) ? m_pOthersObject : m_pOurObject,
-			(old_owner == m_pUIOurBagList)
-			)
-			)
-		{
-			CUICellItem* ci = old_owner->RemoveItem(CurrentItem(), false);
-			new_owner->SetItem(ci);
-		}
-	}
-	else
-	{
-		//if (false && old_owner == m_pUIOurBagList) return true;
-		bool bMoveDirection = (old_owner == m_pUIOthersBagList);
-
-		u16 tmp_id = (smart_cast<CGameObject*>(m_pOurObject))->ID();
-		move_item(
-			bMoveDirection ? m_pInventoryBox->ID() : tmp_id,
-			bMoveDirection ? tmp_id : m_pInventoryBox->ID(),
-			CurrentIItem()->object().ID());
-		//.		Actor()->callback		(GameObject::eInvBoxItemTake)(m_pInventoryBox->lua_game_object(), CurrentIItem()->object().lua_game_object() );
-
-	}
-	SetCurrentItem(NULL);
-
-	return						true;
-}
-
-bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
+bool CUICarBodyWnd::MoveItemsFromCell(CUICellItem* itm, bool b_all)
 {
 	u16 tmp_id = 0;
 
@@ -659,7 +649,7 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 	if (owner_list != m_pUIOthersBagList)
 	{ //перемещаем в актерский инв.
 		CUICellItem* ci = CurrentItem();
-		for (u32 j = 0; j<ci->ChildsCount(); ++j)
+		for (u32 j = 0; j<ci->ChildsCount() && b_all; ++j)
 		{
 			PIItem _itm = (PIItem)(ci->Child(j)->m_pData);
 
@@ -686,7 +676,7 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 	else
 	{ // перемещаем из актерского в другой инв.
 		CUICellItem* ci = CurrentItem();
-		for (u32 j = 0; j<ci->ChildsCount(); ++j)
+		for (u32 j = 0; j<ci->ChildsCount() && b_all; ++j)
 		{
 			PIItem _itm = (PIItem)(ci->Child(j)->m_pData);
 
@@ -716,6 +706,8 @@ bool CUICarBodyWnd::MoveAllFromCell(CUICellItem* itm)
 #include "../Medkit.h"
 #include "../Antirad.h"
 #include "../Artifact.h"
+#include "../WarBelt.h"
+#include "../BackPack.h"
 #include "../weaponmagazinedwgrenade.h"
 #include "../string_table.h"
 void CUICarBodyWnd::ActivatePropertiesBox()
@@ -724,14 +716,16 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 		
 	m_pUIPropertiesBox->RemoveAll();
 
-	CWeaponMagazined*			pWeapon			= smart_cast<CWeaponMagazined*>			(CurrentIItem());
-	CWeaponMagazinedWGrenade*	pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>	(CurrentIItem());
-	CEatableItem*				pEatableItem	= smart_cast<CEatableItem*>				(CurrentIItem());
-	CMedkit*					pMedkit			= smart_cast<CMedkit*>					(CurrentIItem());
-	CAntirad*					pAntirad		= smart_cast<CAntirad*>					(CurrentIItem());
-	CBottleItem*				pBottleItem		= smart_cast<CBottleItem*>				(CurrentIItem());
-	CArtefact*					pArtefact       = smart_cast<CArtefact*>				(CurrentIItem());
-	CWeaponAmmo*				pAmmo			= smart_cast<CWeaponAmmo*>				(CurrentIItem());
+	auto pWeapon			= smart_cast<CWeaponMagazined*>			(CurrentIItem());
+	auto pWeaponMagWGren	= smart_cast<CWeaponMagazinedWGrenade*>	(CurrentIItem());
+	auto pEatableItem		= smart_cast<CEatableItem*>				(CurrentIItem());
+	auto pMedkit			= smart_cast<CMedkit*>					(CurrentIItem());
+	auto pAntirad			= smart_cast<CAntirad*>					(CurrentIItem());
+	auto pBottleItem		= smart_cast<CBottleItem*>				(CurrentIItem());
+	auto pArtefact			= smart_cast<CArtefact*>				(CurrentIItem());
+	auto pAmmo				= smart_cast<CWeaponAmmo*>				(CurrentIItem());
+	auto pWarBelt			= smart_cast<CWarBelt*>					(CurrentIItem());
+	auto pBackPack			= smart_cast<CBackPack*>				(CurrentIItem());
 
     bool						b_show			= false;
 	
@@ -745,6 +739,11 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	{
 		m_pUIPropertiesBox->AddItem("st_detector_check", NULL, INVENTORY_DETECTOR_CHECK_ACTION);
 		b_show = true;
+	}
+
+	if ((pWarBelt || pBackPack) && owner == m_pUIOurBagList && m_pOurObject->inventory().InSlot(CurrentIItem()))
+	{
+		m_pUIPropertiesBox->AddItem("st_move_with_content", NULL, INVENTORY_MOVE_WITH_CONTENT);
 	}
 
 	if (pAmmo)
@@ -930,7 +929,7 @@ bool CUICarBodyWnd::OnItemDrop(CUICellItem* itm)
 	
 	if (old_owner == new_owner || !old_owner || !new_owner)
 		return true;
-	return MoveOneFromCell(itm);
+	return MoveItemsFromCell(itm, false);
 }
 
 bool CUICarBodyWnd::OnItemStartDrag(CUICellItem* itm)
@@ -941,7 +940,7 @@ bool CUICarBodyWnd::OnItemStartDrag(CUICellItem* itm)
 #include "../xr_3da/xr_input.h"
 bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 {
-	return b_TakeAllActionKeyHolded ? MoveAllFromCell(itm) : MoveOneFromCell(itm);
+	return MoveItemsFromCell(itm, b_TakeAllActionKeyHolded);
 }
 
 bool CUICarBodyWnd::OnItemSelected(CUICellItem* itm)
@@ -1021,4 +1020,36 @@ void CUICarBodyWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemDbClick);
 	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemSelected);
 	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemRButtonClick);
+}
+
+void CUICarBodyWnd::MoveItemWithContent(CUICellItem* itm, u32 slot)
+{
+	EItemPlace move_from = eItemPlaceUndefined;
+
+	switch (slot)
+	{
+	case WARBELT_SLOT:
+		move_from = eItemPlaceBelt;
+		break;
+	case BACKPACK_SLOT:
+		move_from = eItemPlaceRuck;
+		break;
+	}
+
+	auto inv = m_pOurObject->inventory();
+
+	for (TIItemContainer::iterator it = inv.m_all.begin(); inv.m_all.end() != it; ++it)
+	{
+		PIItem iitem = *it;
+
+		if (iitem->m_eItemPlace == move_from)
+		{
+			if (m_pOthersObject)
+				TransferItem(iitem, m_pOurObject, m_pOthersObject, false);
+			else
+				move_item(0, m_pInventoryBox->ID(), iitem->object().ID());
+		}
+	}
+
+	if(itm) MoveItemsFromCell(itm, false);		
 }
