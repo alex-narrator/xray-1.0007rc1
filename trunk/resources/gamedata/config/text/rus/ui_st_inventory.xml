@@ -158,8 +158,8 @@
 	<string id="st_load_ammo_type">
 		<text>зарядить</text>
 	</string>
-	<string id="st_detector_check">
-		<text>проверить детектором</text>
+	<string id="st_af_props_unknown">
+		<text>[неизвестно]</text>
 	</string>
 	<string id="st_use">
 		<text>использовать</text>

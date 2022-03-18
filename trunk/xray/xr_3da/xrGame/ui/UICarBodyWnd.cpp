@@ -337,10 +337,6 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				u32 slot = iitem->GetSlot();
 				MoveItemWithContent(itm, slot);
 			}
-				//
-			case INVENTORY_DETECTOR_CHECK_ACTION:
-				m_pUIItemInfo->UIArtefactParams->Show(true);
-				m_pUIItemInfo->TryAddArtefactInfo(CurrentIItem()->object().cNameSect());
 			break;
 			case INVENTORY_RELOAD_MAGAZINE:
 				pWeapon->m_set_next_ammoType_on_reload = (u8)(m_pUIPropertiesBox->GetClickedItem()->GetData());
@@ -733,13 +729,6 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	string1024 temp;
 
 	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
-
-
-	if (psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK) && pArtefact && m_pOurObject->GetDetector() && !m_pUIItemInfo->UIArtefactParams->IsShown())
-	{
-		m_pUIPropertiesBox->AddItem("st_detector_check", NULL, INVENTORY_DETECTOR_CHECK_ACTION);
-		b_show = true;
-	}
 
 	if ((pWarBelt || pBackPack) && owner == m_pUIOurBagList && m_pOurObject->inventory().InSlot(CurrentIItem()))
 	{

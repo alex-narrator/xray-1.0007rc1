@@ -251,11 +251,6 @@ void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 				bool b_all = (d == (void*)33);
 				MoveItemsFromCell(itm, b_all);
 			}break;
-				//
-			case INVENTORY_DETECTOR_CHECK_ACTION:
-				m_uidata->UIItemInfo.UIArtefactParams->Show(true);
-				m_uidata->UIItemInfo.TryAddArtefactInfo(CurrentIItem()->object().cNameSect());
-				break;
 			case INVENTORY_RELOAD_MAGAZINE:
 				pWeapon->m_set_next_ammoType_on_reload = (u8)(m_pUIPropertiesBox->GetClickedItem()->GetData());
 				pWeapon->ReloadWeapon();
@@ -710,12 +705,6 @@ void CUITradeWnd::ActivatePropertiesBox()
 	string1024 temp;
 	//
 	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
-
-	if (psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK) && pArtefact && /*g_actor*/m_pInvOwner->GetDetector() && !m_uidata->UIItemInfo.UIArtefactParams->IsShown())
-	{
-		m_pUIPropertiesBox->AddItem("st_detector_check", NULL, INVENTORY_DETECTOR_CHECK_ACTION);
-		b_show = true;
-	}
 
 	if (owner == &m_uidata->UIOurBagList)
 	{

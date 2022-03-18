@@ -129,12 +129,6 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	}
 #endif
 	
-	if (psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK) && pArtefact && g_actor->GetDetector() && !UIItemInfo.UIArtefactParams->IsShown())
-	{
-		UIPropertiesBox.AddItem("st_detector_check", NULL, INVENTORY_DETECTOR_CHECK_ACTION);
-		b_show = true;
-	}
-
 	if (pAmmo)
 	{
 		LPCSTR _ammo_sect;
@@ -474,10 +468,6 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 			}break;
 		case INVENTORY_EAT_ACTION:
 			EatItem(CurrentIItem());
-			break;
-		case INVENTORY_DETECTOR_CHECK_ACTION:
-			UIItemInfo.UIArtefactParams->Show(true);
-			UIItemInfo.TryAddArtefactInfo(CurrentIItem()->object().cNameSect());
 			break;
 		case INVENTORY_ATTACH_ADDON:
 			AttachAddon((PIItem)(UIPropertiesBox.GetClickedItem()->GetData()));

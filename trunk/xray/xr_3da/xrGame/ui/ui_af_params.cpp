@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "../pch_script.h"
+#include "../smart_cast.h"
 #include "ui_af_params.h"
 #include "UIStatic.h"
 #include "../object_broker.h"
@@ -118,10 +120,13 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 	const shared_str& af_section = art->cNameSect();
 	CActor *pActor = Actor();
 	if (!pActor) return;
+	//
+	bool b_show_info = (!psActorFlags.is(AF_ARTEFACT_DETECTOR_CHECK) || pActor->GetDetector());
 
 	string128					_buff;
 	float						_h = 0.0f;
 	DetachAll					();
+
 	for(u32 i=_item_start; i<_max_item_index; ++i)
 	{
 		CUIStatic* _s			= m_info_items[i];
@@ -187,12 +192,14 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 		if(i==_item_bleeding_restore_speed || i==_item_radiation_restore_speed)
 			_color = (_val>0)?"%c[red]":"%c[green]";
 
-
-		sprintf_s					(	_buff, "%s %s %+.0f %s", 
-									CStringTable().translate(af_item_param_names[i]).c_str(), 
-									_color, 
-									_val, 
-									_sn);
+		if (b_show_info)
+			sprintf_s					(	_buff, "%s %s %+.0f %s", 
+										CStringTable().translate(af_item_param_names[i]).c_str(), 
+										_color, 
+										_val, 
+										_sn);
+		else
+			sprintf_s					(_buff, CStringTable().translate("st_af_props_unknown").c_str());
 		_s->SetText				(_buff);
 		_s->SetWndPos			(_s->GetWndPos().x, _h);
 		_h						+= _s->GetWndSize().y;

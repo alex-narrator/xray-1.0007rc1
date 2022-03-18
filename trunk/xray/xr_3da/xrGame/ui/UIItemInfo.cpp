@@ -166,10 +166,7 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		UIDesc->Clear						();
 		VERIFY								(0==UIDesc->GetSize());
 		TryAddWpnInfo						(pInvItem->object().cNameSect());
-		if (!psActorFlags.test(AF_ARTEFACT_DETECTOR_CHECK))
 		TryAddArtefactInfo					(pInvItem->object().cNameSect());
-		else
-		UIArtefactParams->Show              (false);
 		if(m_desc_info.bShowDescrText)
 		{
 			CUIStatic* pItem					= xr_new<CUIStatic>();
