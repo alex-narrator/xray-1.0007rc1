@@ -16,7 +16,7 @@ class CInventory;
 class CInventoryItem;
 class CTrade;
 class CPda;
-class CCUstomDetector;
+class CCustomDetector;
 class CGameObject;
 class CEntityAlive;
 class CCustomZone;
@@ -61,7 +61,7 @@ public:
 
 	CPda*               GetPDA		    () const;
 	//
-	CCUstomDetector*    GetDetector		() const;
+	CCustomDetector*    GetDetector		() const;
 
 
 	// инвентарь

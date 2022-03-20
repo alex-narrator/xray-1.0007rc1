@@ -223,9 +223,9 @@ CPda* CInventoryOwner::GetPDA() const
 }
 
 //получаем детектор в слоте
-CCUstomDetector* CInventoryOwner::GetDetector() const
+CCustomDetector* CInventoryOwner::GetDetector() const
 {
-	return (CCUstomDetector*)(m_inventory->m_slots[DETECTOR_SLOT].m_pIItem);
+	return (CCustomDetector*)(m_inventory->m_slots[DETECTOR_SLOT].m_pIItem);
 }
 
 CTrade* CInventoryOwner::GetTrade() 

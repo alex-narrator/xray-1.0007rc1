@@ -7,6 +7,7 @@
 #include "../Artifact.h"
 #include "../Actor.h"
 #include "../ActorCondition.h"
+#include "../CustomDetector.h"
 #include "UIXmlInit.h"
 
 CUIArtefactParams::CUIArtefactParams()
@@ -121,7 +122,9 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 	CActor *pActor = Actor();
 	if (!pActor) return;
 	//
-	bool b_show_info = (!psActorFlags.is(AF_ARTEFACT_DETECTOR_CHECK) || pActor->GetDetector());
+	auto pDetector = pActor->GetDetector();
+
+	Show(!!pDetector);
 
 	string128					_buff;
 	float						_h = 0.0f;
@@ -166,11 +169,8 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			_val = art->m_ArtefactHitImmunities.immunities()[idx]; // real absorbation values			
 #else
 			shared_str _sect	= pSettings->r_string(af_section, "hit_absorbation_sect");
-			//_val				= pSettings->r_float(_sect, af_item_sect_names[i]);
 			_val = READ_IF_EXISTS(pSettings, r_float, _sect, af_item_sect_names[i], 0.f);
 #endif
-			//if					(fsimilar(_val, 1.0f))				continue;
-			//_val				= (1.0f - _val);
 			if					(fis_zero(_val))	continue;
 			_val				*= art->GetRandomKoef();
 			_val				*= art->GetCondition();
@@ -192,7 +192,10 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 		if(i==_item_bleeding_restore_speed || i==_item_radiation_restore_speed)
 			_color = (_val>0)?"%c[red]":"%c[green]";
 
-		if (b_show_info)
+		bool show_rad = pDetector && pDetector->IsGeigerCounter() && (i == _item_radiation_restore_speed || i == _item_radiation_immunity);
+		bool show_anom = pDetector && pDetector->IsAnomDetector() && (i != _item_radiation_restore_speed && i != _item_radiation_immunity);
+
+		if (show_rad || show_anom)
 			sprintf_s					(	_buff, "%s %s %+.0f %s", 
 										CStringTable().translate(af_item_param_names[i]).c_str(), 
 										_color, 
@@ -205,5 +208,5 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 		_h						+= _s->GetWndSize().y;
 		AttachChild				(_s);
 	}
-	SetHeight					(_h);
+	SetHeight					(pDetector ? _h : 0.f);
 }

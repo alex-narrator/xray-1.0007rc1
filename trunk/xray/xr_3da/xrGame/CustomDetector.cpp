@@ -323,3 +323,31 @@ void CCustomDetector::UpdateNightVisionMode()
 		}
 	}
 }
+
+bool CCustomDetector::IsGeigerCounter()
+{
+	ZONE_TYPE_MAP_IT it;
+	for (it = m_ZoneTypeMap.begin(); m_ZoneTypeMap.end() != it; ++it)
+	{
+		CLASS_ID zone_type = (*it).first;
+
+		if (zone_type == TEXT2CLSID(pSettings->r_string("zone_radioactive", "class")))
+			return true;
+	}
+
+	return !psActorFlags.is(AF_ARTEFACT_DETECTOR_CHECK);
+}
+
+bool CCustomDetector::IsAnomDetector()
+{
+	ZONE_TYPE_MAP_IT it;
+	for (it = m_ZoneTypeMap.begin(); m_ZoneTypeMap.end() != it; ++it)
+	{
+		CLASS_ID zone_type = (*it).first;
+
+		if (zone_type != TEXT2CLSID(pSettings->r_string("zone_radioactive", "class")))
+			return true;
+	}
+
+	return !psActorFlags.is(AF_ARTEFACT_DETECTOR_CHECK);
+}
