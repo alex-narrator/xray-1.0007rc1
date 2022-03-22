@@ -111,7 +111,7 @@ protected:
 	float m_fAccelK;
 	float m_fSprintK;
 public:
-	float m_MaxWalkWeight;
+	//float m_MaxWalkWeight;
     //
 	float m_fBleedingPowerDecrease;
 	//

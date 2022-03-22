@@ -18,8 +18,9 @@ void CBackPack::Load(LPCSTR section)
 {
 	inherited::Load(section);
 
-	m_additional_weight = READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight", m_additional_weight2); //добавка к весу обездвиживания равна добавке к весу до перегруза, если не указан явно
-	m_additional_weight2 = READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight2", 0.f);
+	/*	m_additional_weight		= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight", 0.f);
+	m_additional_weight2	= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight2", m_additional_weight);*/
+	m_fAdditionalMaxWeight = READ_IF_EXISTS(pSettings, r_float, section, "additional_max_weight", 0.f);
 
 	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", TRUE));
 }
@@ -31,14 +32,14 @@ void CBackPack::Hit(float hit_power, ALife::EHitType hit_type)
 	ChangeCondition(-hit_power);
 }
 
-float CBackPack::GetAdditionalMaxWalkWeight()
+/*float CBackPack::GetAdditionalMaxWalkWeight()
 {
 	return m_additional_weight * GetCondition();
-}
+}*/
 
 float CBackPack::GetAdditionalMaxWeight()
 {
-	return m_additional_weight2 * GetCondition();
+	return /*m_additional_weight2*/m_fAdditionalMaxWeight * GetCondition();
 }
 
 void CBackPack::OnMoveToSlot(EItemPlace previous_place)

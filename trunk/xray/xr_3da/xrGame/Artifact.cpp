@@ -135,6 +135,10 @@ void CArtefact::Load(LPCSTR section)
 
 	m_fConditionDecOnEffect = READ_IF_EXISTS(pSettings, r_float, section, "condition_dec_on_effect", 0.f);
 
+/*	m_additional_weight		= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight", 0.f);
+	m_additional_weight2	= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight2", m_additional_weight);*/
+	m_fAdditionalMaxWeight	= READ_IF_EXISTS(pSettings, r_float, section, "additional_max_weight", 0.f);
+
 	animGetEx(m_anim_idle, "anim_idle");
 	animGetEx(m_anim_idle_sprint, "anim_idle_sprint");
 	animGetEx(m_anim_hide, "anim_hide");
@@ -551,6 +555,15 @@ bool CArtefact::InContainer()
 		m_pCurrentInventory->ActiveItem() != this;					//артефакт в слоте артефакта не взят в руки
 }
 
+/*float CArtefact::GetAdditionalMaxWalkWeight()
+{
+	return m_additional_weight * GetCondition() * GetRandomKoef();
+}*/
+
+float CArtefact::GetAdditionalMaxWeight()
+{
+	return /*m_additional_weight2*/m_fAdditionalMaxWeight * GetCondition() * GetRandomKoef();
+}
 
 
 //---SArtefactActivation----

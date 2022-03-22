@@ -572,14 +572,14 @@ public:
 			float				GetActorMaxWeight					() const;
 			void				SetActorMaxWeight					(float max_weight);
 			
-			float				GetActorMaxWalkWeight				() const;
-			void				SetActorMaxWalkWeight				(float max_walk_weight);
+/*			float				GetActorMaxWalkWeight				() const;
+			void				SetActorMaxWalkWeight				(float max_walk_weight);*/
 			
-			float				GetAdditionalMaxWeight				() const;
+/*			float				GetAdditionalMaxWeight				() const;
 			void				SetAdditionalMaxWeight				(float add_max_weight);
 
 			float				GetAdditionalMaxWalkWeight			() const;
-			void				SetAdditionalMaxWalkWeight			(float add_max_walk_weight);
+			void				SetAdditionalMaxWalkWeight			(float add_max_walk_weight);*/
 
 			float				GetTotalWeight						() const;
 			float				Weight								() const;

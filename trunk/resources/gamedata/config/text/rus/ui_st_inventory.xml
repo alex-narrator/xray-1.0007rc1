@@ -167,6 +167,12 @@
 	<string id="st_weight">
 		<text>вес</text>
 	</string>
+	<string id="st_kg">
+		<text>кг</text>
+	</string>
+	<string id="st_rad">
+		<text>мР/ч</text>
+	</string>
 	<string id="ui_inv_accuracy">
 		<text>Точность</text>
 	</string>

@@ -95,7 +95,7 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_SatietyPower			= pSettings->r_float(section,"satiety_power_v");
 	m_fV_SatietyHealth			= pSettings->r_float(section,"satiety_health_v");
 
-	m_MaxWalkWeight				= pSettings->r_float(section,"max_walk_weight");
+	//m_MaxWalkWeight				= pSettings->r_float(section,"max_walk_weight");
     //
 	m_fBleedingPowerDecrease		= READ_IF_EXISTS(pSettings, r_float, "actor_survival", "bleeding_power_dec",						0.f);
     //
@@ -340,8 +340,8 @@ float CActorCondition::GetSmoothOwerweightKoef()
 	{
 		float power_k		= m_fMinPowerWalkJump + (1.0f - m_fMinPowerWalkJump) * GetPower();				//коэф влияния выносливости
 
-		float overweight_k = object().GetCarryWeight() > object().inventory().GetMaxWeight() ?	//считаем коэф. только если есть перегруз
-			object().inventory().GetMaxWeight() / object().GetCarryWeight() :	//коэф влияния перегруза
+		float overweight_k = object().GetCarryWeight() > object().MaxCarryWeight() ?	//считаем коэф. только если есть перегруз
+			object().MaxCarryWeight() / object().GetCarryWeight() :	//коэф влияния перегруза
 								1.0f;
 
 		val = power_k * overweight_k;
@@ -356,8 +356,8 @@ float CActorCondition::GetStress()
 								m_fExerciseStressFactor : 
 								1.0f;
 
-	float overweight_stress = psActorFlags.test(AF_SMOOTH_OVERWEIGHT) && object().GetCarryWeight() > object().inventory().GetMaxWeight() ?
-								object().GetCarryWeight() / object().inventory().GetMaxWeight() : 
+	float overweight_stress = psActorFlags.test(AF_SMOOTH_OVERWEIGHT) && object().GetCarryWeight() > object().MaxCarryWeight() ?
+								object().GetCarryWeight() / object().MaxCarryWeight() : 
 								1.0f;
 
 	/*if (object().get_state()&mcSprint) Msg("mcSprint!");
@@ -407,22 +407,34 @@ bool CActorCondition::IsCantWalk() const
 
 #include "CustomOutfit.h"
 #include "BackPack.h"
+#include "Artifact.h"
 
 bool CActorCondition::IsCantWalkWeight()
 {
 	if (IsGameTypeSingle() && !GodMode() && !psActorFlags.test(AF_SMOOTH_OVERWEIGHT)) //обездвиживание по перегрузу только если отключена опция плавного перегруза
 	{
-		float max_w				= m_MaxWalkWeight;
+/*		float max_w				= m_MaxWalkWeight;
 
-		CCustomOutfit* outfit	= m_object->GetOutfit();
-		if(outfit)
-			max_w += outfit->m_additional_weight;
+		auto outfit	= m_object->GetOutfit();
+		if (outfit && !fis_zero(outfit->GetCondition()))
+			max_w += outfit->GetAdditionalMaxWalkWeight();//m_additional_weight;
 
-		CBackPack* backpack = m_object->GetBackPack();
-		if (backpack)
+		auto backpack = m_object->GetBackPack();
+		if (backpack && !fis_zero(backpack->GetCondition()))
 			max_w += backpack->GetAdditionalMaxWalkWeight();
 
-		if(object().GetCarryWeight() > max_w)
+		TIItemContainer &list = psActorFlags.test(AF_ARTEFACTS_FROM_ALL) ? object().inventory().m_all : object().inventory().m_belt;
+		for (TIItemContainer::iterator it = list.begin(); list.end() != it; ++it)
+		{
+			auto artefact = smart_cast<CArtefact*>(*it);
+
+			if (artefact && !artefact->InContainer() && !fis_zero(artefact->GetCondition()))
+			{
+				max_w += artefact->GetAdditionalMaxWalkWeight();
+			}
+		}*/
+
+		if(object().GetCarryWeight() > /*max_w*/object().MaxCarryWeight())
 		{
 			m_condition_flags.set			(eCantWalkWeight, TRUE);
 			return true;

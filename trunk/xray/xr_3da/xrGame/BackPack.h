@@ -14,11 +14,12 @@ public:
 	virtual void				Hit(float P, ALife::EHitType hit_type);
 
 protected:
-	float						m_additional_weight;
-	float						m_additional_weight2;
+	/*	float							m_additional_weight;
+	float							m_additional_weight2;*/
+	float							m_fAdditionalMaxWeight;
 
 public:
-	float						GetAdditionalMaxWalkWeight	();
+	//float						GetAdditionalMaxWalkWeight	();
 	float						GetAdditionalMaxWeight		();
 
 	virtual void				OnMoveToSlot				(EItemPlace previous_place);

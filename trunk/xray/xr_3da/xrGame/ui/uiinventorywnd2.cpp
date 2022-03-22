@@ -241,7 +241,7 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 
 		SendEvent_Item_Drop					(CurrentIItem());
 		SetCurrentItem						(NULL);
-		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
+		//InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		return;
 	}
 }
@@ -283,7 +283,7 @@ bool CUIInventoryWnd::ToSlot(CUICellItem* itm, bool force_place)
 
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
 		// обновляем статик веса в инвентаре
-		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
+		//InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 		m_b_need_reinit = true;
 		
@@ -334,7 +334,7 @@ bool CUIInventoryWnd::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
 		// обновляем статик веса в инвентаре
-		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
+		//InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 
 #ifdef INV_RUCK_UNLIMITED_FIX
@@ -400,7 +400,7 @@ bool CUIInventoryWnd::ToBelt(CUICellItem* itm, bool b_use_cursor_pos)
 
 		/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
 		// обновляем статик веса в инвентаре
-		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
+		//InventoryUtilities::UpdateWeight	(UIBagWnd, true);
 		/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
 
 		m_b_need_reinit = true;

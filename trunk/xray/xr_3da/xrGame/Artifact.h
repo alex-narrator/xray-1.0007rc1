@@ -89,15 +89,25 @@ public:
 	float							m_fRandomK;
 	float							GetRandomKoef						()				{ return m_fRandomK; };
 	//
+	//
 	float							m_fConditionDecOnEffect;
 	void							UpdateConditionDecOnEffect			();
 	bool							InContainer							();
+	//
+public:
+//	float							GetAdditionalMaxWalkWeight			();
+	float							GetAdditionalMaxWeight				();
 protected:
 	MotionSVec						m_anim_idle;
 	MotionSVec						m_anim_idle_sprint;
 	MotionSVec						m_anim_hide;
 	MotionSVec						m_anim_show;
 	MotionSVec						m_anim_activate;
+	//
+protected:
+/*	float							m_additional_weight;
+	float							m_additional_weight2;*/
+	float							m_fAdditionalMaxWeight;
 public:
 	enum EAFHudStates {
 		eIdle		= 0,

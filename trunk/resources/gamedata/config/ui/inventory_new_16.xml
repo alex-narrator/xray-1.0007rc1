@@ -82,15 +82,15 @@
             cell_width = "30" cell_height="30" rows_num="1" cols_num="1"
             custom_placement="0"/>
 			
-	<dragdrop_slot_artefact x="590" y="0" width="30" height="30"
+	<dragdrop_slot_artefact x="560" y="0" width="30" height="30"
             cell_width = "30" cell_height="30" rows_num="1" cols_num="1"
             custom_placement="0"/>
 			
-	<dragdrop_slot_warbelt x="630" y="0" width="30" height="30"
+	<dragdrop_slot_warbelt x="600" y="0" width="30" height="30"
             cell_width = "30" cell_height="30" rows_num="1" cols_num="1"
             custom_placement="0"/>
 			
-	<dragdrop_slot_backpack x="670" y="0" width="30" height="30"
+	<dragdrop_slot_backpack x="640" y="0" width="30" height="30"
             cell_width = "30" cell_height="30" rows_num="1" cols_num="1"
             custom_placement="0"/>
 

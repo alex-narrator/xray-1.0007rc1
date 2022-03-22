@@ -29,6 +29,7 @@
 
 #include "CustomOutfit.h"
 #include "BackPack.h"
+#include "Artifact.h"
 
 CInventoryOwner::CInventoryOwner			()
 {
@@ -326,13 +327,27 @@ float  CInventoryOwner::MaxCarryWeight () const
 {
 	float ret =  inventory().GetMaxWeight();
 
-	const CCustomOutfit* outfit	= GetOutfit();
-	if(outfit)
-		ret += outfit->m_additional_weight2;
+	/*const CCustomOutfit*/auto outfit	= GetOutfit();
+	if (outfit && !fis_zero(outfit->GetCondition()))
+		ret += outfit->GetAdditionalMaxWeight();//m_additional_weight2;
 
-	CBackPack* backpack = GetBackPack();
-	if (backpack)
+	auto backpack = GetBackPack();
+	if (backpack && !fis_zero(backpack->GetCondition()))
 		ret += backpack->GetAdditionalMaxWeight();
+
+	if (this == Actor())
+	{
+		TIItemContainer list = psActorFlags.test(AF_ARTEFACTS_FROM_ALL) ? inventory().m_all : inventory().m_belt;
+		for (TIItemContainer::iterator it = list.begin(); list.end() != it; ++it)
+		{
+			auto artefact = smart_cast<CArtefact*>(*it);
+
+			if (artefact && !artefact->InContainer() && !fis_zero(artefact->GetCondition()))
+			{
+				ret += artefact->GetAdditionalMaxWeight();
+			}
+		}
+	}
 
 	return ret;
 }

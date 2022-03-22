@@ -43,7 +43,8 @@ LPCSTR af_item_sect_names[] = {
 	"chemical_burn_immunity",
 	"explosion_immunity",
 	"fire_wound_immunity",
-
+//
+	"additional_max_weight",
 };
 
 LPCSTR af_item_param_names[] = {
@@ -65,6 +66,8 @@ LPCSTR af_item_param_names[] = {
 	"ui_inv_outfit_chemical_burn_protection",	// "(chemical_burn_imm)",
 	"ui_inv_outfit_explosion_protection",		// "(explosion_imm)",
 	"ui_inv_outfit_fire_wound_protection",		// "(fire_wound_imm)",
+//
+	"ui_inv_weight",
 };
 
 LPCSTR af_actor_param_names[]={
@@ -76,6 +79,7 @@ LPCSTR af_actor_param_names[]={
 //
 	"walk_accel",
 	"jump_speed",
+	"max_weight",
 //
 };
 
@@ -163,6 +167,14 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			_val				= (_val/_actor_val)*100.0f;
 		}
 		else
+		//
+		if (i == _item_additional_weight)
+		{
+			_val = art->GetAdditionalMaxWeight();
+			if (fis_zero(_val))				continue;
+		}
+		else
+		//
 		{
 #ifdef AF_SHOW_DYNAMIC_PARAMS			
 			u32 idx = i - _max_item_index1;  // absorbation index			 
@@ -178,10 +190,16 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 
 		}
 		LPCSTR _sn = "%";
-		if(i==_item_radiation_restore_speed || i==_item_power_restore_speed)
+		if (i == _item_radiation_restore_speed || i == _item_power_restore_speed)
 		{
 			_val				/= 100.0f;
-			_sn					= "";
+			_sn					= _item_radiation_restore_speed ? *CStringTable().translate("st_rad") : "";
+		}
+		//
+		else if (i == _item_additional_weight)
+		{
+			//_val /= 100.0f;
+			_sn = *CStringTable().translate("st_kg");
 		}
 
 		LPCSTR _color = (_val>0)?"%c[green]":"%c[red]";
@@ -196,7 +214,7 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 		bool show_anom = pDetector && pDetector->IsAnomDetector() && (i != _item_radiation_restore_speed && i != _item_radiation_immunity);
 
 		if (show_rad || show_anom)
-			sprintf_s					(	_buff, "%s %s %+.0f %s", 
+			sprintf_s					(	_buff, "%s %s %+.1f %s", 
 										CStringTable().translate(af_item_param_names[i]).c_str(), 
 										_color, 
 										_val, 

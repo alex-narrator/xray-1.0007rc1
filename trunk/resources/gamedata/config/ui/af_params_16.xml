@@ -35,6 +35,11 @@
 			<texture>ui_inv_icon_bleeding_restore_speed</texture>
 			<text font="letterica16" x="20" y="0"/>
 		</static_additional_jump_speed>
+		
+		<static_additional_max_weight width="194" height="20" complex_mode="1">
+			<texture>ui_inv_icon_bleeding_restore_speed</texture>
+			<text font="letterica16" x="20" y="0"/>
+		</static_additional_max_weight>
 <!-- добавочные параметры прыжка и скорости ходьбы - END-->
 
 		<static_burn_immunity width="194" height="20" complex_mode="1">

@@ -42,9 +42,15 @@ protected:
 	SBoneProtections*				m_boneProtection;	
 protected:
 	u32								m_ef_equipment_type;
+	/*	float							m_additional_weight;
+	float							m_additional_weight2;*/
+	float							m_fAdditionalMaxWeight;
 public:
-	float							m_additional_weight;
+/*	float							m_additional_weight;
 	float							m_additional_weight2;
+	float							GetAdditionalMaxWalkWeight();*/
+	float							GetAdditionalMaxWeight();
+
 	shared_str						m_NightVisionSect;
 	virtual u32						ef_equipment_type		() const;
 	virtual	BOOL					BonePassBullet			(int boneID);

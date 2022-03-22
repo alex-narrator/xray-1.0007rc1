@@ -435,6 +435,8 @@ void CUIInventoryWnd::Update()
 		UIOutfitInfo.Update				(outfit);	
 	}
 
+	InventoryUtilities::UpdateWeight(UIBagWnd, true);
+
 	UIStaticTimeString.SetText(*InventoryUtilities::GetGameTimeAsString(InventoryUtilities::etpTimeToMinutes));
 	CUIWindow::Update					();
 }

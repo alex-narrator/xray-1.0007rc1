@@ -37,6 +37,9 @@ protected:
 		_item_chemical_burn_immunity,
 		_item_explosion_immunit,
 		_item_fire_wound_immunity,
+		//
+		_item_additional_weight,
+		//
 
 		_max_item_index,
 
