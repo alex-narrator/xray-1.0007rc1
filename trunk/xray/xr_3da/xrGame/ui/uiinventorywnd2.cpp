@@ -565,16 +565,17 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 #ifdef INV_NEW_SLOTS_SYSTEM
 			// Пытаемся найти свободный слот из списка разрешенных.			
 			auto slots = __item->GetSlots();
-			#if !defined(INV_MOVE_ITM_INTO_QUICK_SLOTS)
-			bool is_eat = __item->cast_eatable_item() != NULL;
-			#endif
+//			#if !defined(INV_MOVE_ITM_INTO_QUICK_SLOTS)
+//			bool is_eat = __item->cast_eatable_item() != NULL;
+//			#endif
 			for (u8 i = 0; i < (u8)slots.size(); ++i)
 			{
 				#if !defined(INV_MOVE_ITM_INTO_QUICK_SLOTS)
-				if ((!is_eat || is_quick_slot(slots[i], __item, m_pInv)))
+//				if ((!is_eat || is_quick_slot(slots[i], __item, m_pInv)))
+				if (!m_pInv->m_slots[slots[i]].m_pIItem)
 				{
 					__item->SetSlot(slots[i]);
-					if (GetInventory()->CanPutInSlot(__item) && ToSlot(itm, false))
+					if (ToSlot(itm, false))
 						return true;
 				}
 				#else
@@ -588,8 +589,9 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 #endif
 			if(!ToSlot(itm, false))
 			{
-				if( !ToBelt(itm, false) )
-					ToSlot	(itm, true);
+/*				if( !ToBelt(itm, false) )
+					ToSlot	(itm, true);*/
+				ToBelt(itm, false);
 			}
 		}break;
 

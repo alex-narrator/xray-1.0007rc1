@@ -112,6 +112,12 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		}break;
 	case kSPRINT_TOGGLE:	
 		{
+			if (IsZoomAimingMode())
+			{
+				auto pWeapon = smart_cast<CWeapon*>(inventory().ActiveItem());
+				if (pWeapon) pWeapon->OnZoomOut();
+			}
+
 			if (mstate_wishful&(mcCrouch | mcAccel | mcLookout))
 				mstate_wishful &= ~(mcCrouch | mcAccel | mcLookout);
 

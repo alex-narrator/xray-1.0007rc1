@@ -564,7 +564,7 @@ void CHudItem::UpdateCL()
 
 	CActor* pActor = smart_cast<CActor*>(object().H_Parent());
 	
-	if (pActor)
+	if (pActor && m_pHUD && !m_pHUD->IsHidden())
 		pActor->TryToBlockSprint(IsPending());
 }
 

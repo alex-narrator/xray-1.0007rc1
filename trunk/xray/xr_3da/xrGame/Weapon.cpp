@@ -774,7 +774,8 @@ void CWeapon::UpdateCL()
 	//
 	if (ParentIsActor())
 	{
-		g_actor->TryToBlockSprint(!!IsWorking());
+		bool b_shoots = ((GetState() == eFire) || (GetState() == eFire2));
+		g_actor->TryToBlockSprint(b_shoots);
 
 		if(g_actor->conditions().IsCantWalk() && IsZoomed())
 			OnZoomOut();
