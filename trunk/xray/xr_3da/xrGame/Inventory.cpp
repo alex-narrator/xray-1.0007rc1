@@ -96,6 +96,7 @@ CInventory::CInventory()
 	m_fTakeDist									= pSettings->r_float	("inventory","take_dist");
 	m_fMaxWeight								= pSettings->r_float	("inventory","max_weight");
 	//m_iMaxBelt									= pSettings->r_s32		("inventory","max_belt");
+	m_fMaxVolume								= READ_IF_EXISTS(pSettings, r_float, "inventory", "max_volume", .0f);
 #ifdef LUAICP_COMPAT
 	static u32 saved = 0;
 	if (!saved++)
@@ -248,7 +249,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	VERIFY								(pIItem->m_eItemPlace != eItemPlaceUndefined);
 }
 
-bool CInventory::DropItem(CGameObject *pObj) 
+bool CInventory::DropItem(CGameObject *pObj)
 {
 	CInventoryItem *pIItem				= smart_cast<CInventoryItem*>(pObj);
 	VERIFY								(pIItem);
@@ -418,7 +419,7 @@ bool CInventory::Belt(PIItem pIItem)
 		if(m_ruck.end() != it) m_ruck.erase(it);
 	}
 
-	CalcTotalWeight();
+	CalcTotalWeight						();
 	InvalidateState						();
 
 	EItemPlace p = pIItem->m_eItemPlace;
@@ -833,6 +834,7 @@ void CInventory::Update()
 		m_iActiveSlot = m_iNextActiveSlot;
 	}
 	UpdateDropTasks	();
+	UpdateVolumeDropOut();
 }
 
 void CInventory::UpdateDropTasks()
@@ -1218,6 +1220,14 @@ float CInventory::CalcTotalWeight()
 	return m_fTotalWeight;
 }
 
+float CInventory::GetTotalVolume()
+{
+	float volume = 0.f;
+	for (TIItemContainer::const_iterator it = m_ruck.begin(); m_ruck.end() != it; ++it)
+		volume += (*it)->Volume();
+
+	return volume;
+}
 
 u32 CInventory::dwfGetSameItemCount(LPCSTR caSection, bool SearchAll)
 {
@@ -1346,15 +1356,15 @@ bool CInventory::InRuck(PIItem pIItem) const
 }
 
 
-bool CInventory::CanPutInSlot(PIItem pIItem) const
+bool CInventory::CanPutInSlot(PIItem pIItem) //const
 {
 	if(!m_bSlotsUseful) return false;
 
 	if( !GetOwner()->CanPutInSlot(pIItem, pIItem->GetSlot() ) ) return false;
 
 	if(pIItem->GetSlot() < m_slots.size() && 
-	  ( m_slots[pIItem->GetSlot()].m_pIItem == NULL || 
-	    m_slots[pIItem->GetSlot()].m_pIItem == pIItem ) ) // alpet: бывает странная ситуация, когда предмет сразу и в слоте, и в инвентаре
+	  ( m_slots[pIItem->GetSlot()].m_pIItem == NULL/* || 
+	    m_slots[pIItem->GetSlot()].m_pIItem == pIItem*/ ) ) // alpet: бывает странная ситуация, когда предмет сразу и в слоте, и в инвентаре
 		return true;
 	
 	return false;
@@ -1373,9 +1383,9 @@ bool CInventory::CanPutInBelt(PIItem pIItem)
 }
 //проверяет можем ли поместить вещь в рюкзак,
 //при этом реально ничего не меняется
-bool CInventory::CanPutInRuck(PIItem pIItem) const
+bool CInventory::CanPutInRuck(PIItem pIItem) //const
 {
-	if(InRuck(pIItem)) return false;
+	if (InRuck(pIItem)) return false;
 	return true;
 }
 
@@ -1416,7 +1426,7 @@ CInventoryItem	*CInventory::GetItemFromInventory(LPCSTR caItemName)
 }
 
 
-bool CInventory::CanTakeItem(CInventoryItem *inventory_item) const
+bool CInventory::CanTakeItem(CInventoryItem *inventory_item) //const
 {
 	if (inventory_item->object().getDestroy()) return false;
 
@@ -1430,7 +1440,12 @@ bool CInventory::CanTakeItem(CInventoryItem *inventory_item) const
 
 	CActor* pActor = smart_cast<CActor*>(m_pOwner);
 	//актер всегда может взять вещь
-	if((!pActor || psActorFlags.is(AF_INVENTORY_VOLUME)) && (TotalWeight() + inventory_item->Weight() > m_pOwner->MaxCarryWeight()))
+	if (!pActor && (TotalWeight() + inventory_item->Weight() > m_pOwner->MaxCarryWeight()))
+		return	false;
+
+	if (pActor && psActorFlags.is(AF_INVENTORY_VOLUME) && 
+		!CanPutInSlot(inventory_item) && !CanPutInBelt(inventory_item) &&
+		/*TotalVolume()*/GetTotalVolume() + inventory_item->Volume() > m_pOwner->MaxCarryVolume())
 		return	false;
 
 	return	true;
@@ -1581,7 +1596,7 @@ void CInventory::DropBeltToRuck()
 	}
 }
 
-void CInventory::DropRuckOut()
+/*void CInventory::DropRuckOut()
 {
 	auto pActor = smart_cast<CActor*>(m_pOwner);
 	if (!pActor) return;
@@ -1593,5 +1608,37 @@ void CInventory::DropRuckOut()
 	{
 		PIItem pIItem = *it;
 		pIItem->SetDropManual(true);
+	}
+}*/
+
+void CInventory::UpdateVolumeDropOut()
+{
+	auto pActor = smart_cast<CActor*>(m_pOwner);
+	if (!pActor) return;
+
+	if (!psActorFlags.is(AF_INVENTORY_VOLUME))
+		return;
+
+	if (!pActor->bAllItemsLoaded)
+		return;
+
+	float total_volume = GetTotalVolume();
+
+	if (GetTotalVolume() > m_pOwner->MaxCarryVolume())
+	{
+		for (TIItemContainer::iterator it = m_ruck.begin(); m_ruck.end() != it; ++it)
+		{
+			PIItem pIItem = *it;
+
+			if (fis_zero(pIItem->Volume()) || pIItem->IsQuestItem())
+				continue;
+
+			pIItem->SetDropManual(true);
+
+			total_volume -= pIItem->Volume();
+
+			if (total_volume <= m_pOwner->MaxCarryVolume())
+				break;
+		}
 	}
 }

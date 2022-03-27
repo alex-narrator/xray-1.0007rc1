@@ -40,6 +40,8 @@ public:
 	float 					TotalWeight			() const;
 	float 					CalcTotalWeight		();
 
+	float 					GetTotalVolume		();
+
 	void					Take				(CGameObject *pObj, bool bNotActivate, bool strict_placement);
 	bool					DropItem			(CGameObject *pObj);
 	void					Clear				();
@@ -53,11 +55,11 @@ public:
 	bool 					InBelt				(PIItem pIItem) const;
 	bool 					InRuck				(PIItem pIItem) const;
 
-	bool 					CanPutInSlot		(PIItem pIItem) const;
+	bool 					CanPutInSlot		(PIItem pIItem) /*const*/;
 	bool 					CanPutInBelt		(PIItem pIItem);
-	bool 					CanPutInRuck		(PIItem pIItem) const;
+	bool 					CanPutInRuck		(PIItem pIItem) /*const*/;
 
-	bool					CanTakeItem			(CInventoryItem *inventory_item) const;
+	bool					CanTakeItem			(CInventoryItem *inventory_item) /*const*/;
 
 
 	bool					Activate			(u32 slot, EActivationReason reason=eGeneral, bool bForce=false);
@@ -96,7 +98,8 @@ public:
 	void                    TryToHideWeapon     (bool b_hide_state, bool b_save_prev_slot = true); 
 	//
 	void					DropBeltToRuck		();
-	void					DropRuckOut			();
+//	void					DropRuckOut			();
+	void					UpdateVolumeDropOut	();
 	//
 	PIItem					item				(CLASS_ID cls_id) const;
 	
@@ -142,6 +145,8 @@ public:
 	float				GetMaxWeight				() const				{return m_fMaxWeight;}
 	void				SetMaxWeight				(float weight)			{m_fMaxWeight = weight;}
 
+	float				GetMaxVolume				() const				{return m_fMaxVolume;}
+
 	u32					BeltWidth					() const;
 	u32					BeltHeight					() const;
 
@@ -182,6 +187,9 @@ protected:
 	float				m_fMaxWeight;
 	// текущий вес в инвентаре
 	float				m_fTotalWeight;
+
+	// максимальный объём инвентаря
+	float				m_fMaxVolume;
 
 	// Максимальное кол-во объектов
 	//на поясе

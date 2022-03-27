@@ -273,7 +273,7 @@ void CWeaponKnife::FireStart()
 	if (ParentIsActor())
 	{
 		if (!g_actor->conditions().IsCantWalk())
-			g_actor->conditions().ConditionJump(this->Weight() * 0.1f);
+			g_actor->conditions().ConditionJump(Weight() * 0.1f);
 		else
 			HUD().GetUI()->AddInfoMessage("cant_walk");
 	}

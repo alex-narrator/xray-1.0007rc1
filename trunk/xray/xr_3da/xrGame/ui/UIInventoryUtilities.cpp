@@ -338,6 +338,44 @@ void InventoryUtilities::UpdateWeight(CUIStatic &wnd, bool withPrefix)
 	//	UIStaticWeight.ClipperOff();
 }
 
+void InventoryUtilities::UpdateVolume(CUIStatic &wnd, bool withPrefix)
+{
+	CInventoryOwner *pInvOwner = smart_cast<CInventoryOwner*>(Level().CurrentEntity());
+	R_ASSERT(pInvOwner);
+	string128 buf;
+	ZeroMemory(buf, sizeof(buf));
+
+	float total = pInvOwner->GetCarryVolume();
+	float max = pInvOwner->MaxCarryVolume();
+
+	string16 cl;
+	ZeroMemory(cl, sizeof(cl));
+
+	if (total > max)
+	{
+		strcpy(cl, "%c[red]");
+	}
+	else
+	{
+		strcpy(cl, "%c[UI_orange]");
+	}
+
+	string32 prefix;
+	ZeroMemory(prefix, sizeof(prefix));
+
+	if (withPrefix)
+	{
+		sprintf_s(prefix, "%%c[default]%s ", *CStringTable().translate("ui_inv_volume"));
+	}
+	else
+	{
+		strcpy(prefix, "");
+	}
+
+	sprintf_s(buf, "%s%s%3.1f %s/%5.1f", prefix, cl, total, "%c[UI_orange]", max);
+	wnd.SetText(buf);
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 void LoadStrings(CharInfoStrings *container, LPCSTR section, LPCSTR field)

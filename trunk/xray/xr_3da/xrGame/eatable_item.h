@@ -44,6 +44,8 @@ protected:
 	int						m_iPortionsNum;
 	int						m_iStartPortionsNum;
 
+	bool					m_bUsePortionVolume;
+
 	// Для поддержки серверного класса. Real Wolf. 09.09.2014.
 	virtual void			net_Export(NET_Packet&);
 	virtual void			net_Import(NET_Packet&);
@@ -52,6 +54,7 @@ public:
 #ifdef EAT_PORTIONS_INFLUENCE
 	int    GetStartPortionsNum() const { return m_iStartPortionsNum; };  // <--- // Не используется, но может пригодится. //
 	float  GetOnePortionWeight();                    // <--- //
+	float  GetOnePortionVolume();                    // <--- //
 	u32    GetOnePortionCost();                      // <--- //
 #endif
 };

@@ -60,6 +60,7 @@ protected:
 	CUIItemInfo*			m_pUIItemInfo;
 
 	CUIStatic*				m_pUIOurBagWnd;
+	CUIStatic*				m_pUIOurVolumeWnd;
 	CUIStatic*				m_pUIOthersBagWnd;
 
 	//информация о персонажах 

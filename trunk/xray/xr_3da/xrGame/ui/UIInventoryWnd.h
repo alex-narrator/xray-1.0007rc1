@@ -78,6 +78,7 @@ protected:
 	CUIStatic*					UIRank;
 
 	CUIStatic					UIBagWnd;
+	CUIStatic					UIVolumeWnd;
 	CUIStatic					UIMoneyWnd;
 	CUIStatic					UIDescrWnd;
 

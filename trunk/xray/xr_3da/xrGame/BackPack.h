@@ -17,10 +17,12 @@ protected:
 	/*	float							m_additional_weight;
 	float							m_additional_weight2;*/
 	float							m_fAdditionalMaxWeight;
+	float							m_fAdditionalMaxVolume;
 
 public:
 	//float						GetAdditionalMaxWalkWeight	();
 	float						GetAdditionalMaxWeight		();
+	float						GetAdditionalMaxVolume		();
 
 	virtual void				OnMoveToSlot				(EItemPlace previous_place);
 	virtual void				OnMoveToRuck				(EItemPlace previous_place);

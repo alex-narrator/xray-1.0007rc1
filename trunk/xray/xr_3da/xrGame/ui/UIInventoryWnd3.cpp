@@ -85,11 +85,11 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 
 			if (!m_pInv->m_slots[slots[i]].m_pIItem || m_pInv->m_slots[slots[i]].m_pIItem != CurrentIItem() )
 			{
-#ifndef INV_MOVE_ITM_INTO_QUICK_SLOTS
+/*#ifndef INV_MOVE_ITM_INTO_QUICK_SLOTS
 				CEatableItem *eat = smart_cast<CEatableItem*>(CurrentIItem() );
 				// Для еды разрешены только быстрые слоты.
 				if (!eat || is_quick_slot(u32(slots[i]), CurrentIItem(), m_pInv) )
-#endif
+#endif*/
 				{
 					sprintf_s(temp, "st_move_to_slot%d", slots[i]);
 					UIPropertiesBox.AddItem(temp,  NULL, INVENTORY_TO_SLOT0_ACTION + slots[i]);
@@ -531,6 +531,7 @@ bool CUIInventoryWnd::TryUseItem(PIItem itm)
 	if(pMedkit || pAntirad || pEatableItem || pBottleItem)
 	{
 		EatItem(itm);
+		m_b_need_reinit = true;
 		return true;
 	}
 	return false;

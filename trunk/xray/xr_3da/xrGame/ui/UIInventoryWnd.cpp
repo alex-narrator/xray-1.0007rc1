@@ -76,6 +76,9 @@ void CUIInventoryWnd::Init()
 
 	AttachChild							(&UIBagWnd);
 	xml_init.InitStatic					(uiXml, "bag_static", 0, &UIBagWnd);
+
+	AttachChild							(&UIVolumeWnd);
+	xml_init.InitStatic					(uiXml, "volume_static", 0, &UIVolumeWnd);
 	
 	AttachChild							(&UIMoneyWnd);
 	xml_init.InitStatic					(uiXml, "money_static", 0, &UIMoneyWnd);
@@ -436,6 +439,8 @@ void CUIInventoryWnd::Update()
 	}
 
 	InventoryUtilities::UpdateWeight(UIBagWnd, true);
+	UIVolumeWnd.SetVisible(!!psActorFlags.is(AF_INVENTORY_VOLUME));
+	InventoryUtilities::UpdateVolume(UIVolumeWnd, true);
 
 	UIStaticTimeString.SetText(*InventoryUtilities::GetGameTimeAsString(InventoryUtilities::etpTimeToMinutes));
 	CUIWindow::Update					();

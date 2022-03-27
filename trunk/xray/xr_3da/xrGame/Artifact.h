@@ -97,6 +97,7 @@ public:
 public:
 //	float							GetAdditionalMaxWalkWeight			();
 	float							GetAdditionalMaxWeight				();
+	float							GetAdditionalMaxVolume				();
 protected:
 	MotionSVec						m_anim_idle;
 	MotionSVec						m_anim_idle_sprint;
@@ -108,6 +109,7 @@ protected:
 /*	float							m_additional_weight;
 	float							m_additional_weight2;*/
 	float							m_fAdditionalMaxWeight;
+	float							m_fAdditionalMaxVolume;
 public:
 	enum EAFHudStates {
 		eIdle		= 0,

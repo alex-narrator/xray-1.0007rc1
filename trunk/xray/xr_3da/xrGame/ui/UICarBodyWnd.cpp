@@ -88,6 +88,9 @@ void CUICarBodyWnd::Init()
 	AttachChild						(m_pUIOurBagWnd);
 	xml_init.InitStatic				(uiXml, "our_bag_static", 0, m_pUIOurBagWnd);
 
+	m_pUIOurVolumeWnd				= xr_new<CUIStatic>(); m_pUIOurVolumeWnd->SetAutoDelete(true);
+	m_pUIOurBagWnd->AttachChild		(m_pUIOurVolumeWnd);
+	xml_init.InitStatic				(uiXml, "our_volume_static", 0, m_pUIOurVolumeWnd);
 
 	m_pUIOthersBagWnd				= xr_new<CUIStatic>(); m_pUIOthersBagWnd->SetAutoDelete(true);
 	AttachChild						(m_pUIOthersBagWnd);
@@ -288,6 +291,7 @@ void CUICarBodyWnd::UpdateLists()
 	m_pUIOthersBagList->SetScrollPos(i_pos);
 
 	InventoryUtilities::UpdateWeight				(*m_pUIOurBagWnd);
+	InventoryUtilities::UpdateVolume				(*m_pUIOurVolumeWnd);
 	m_b_need_update									= false;
 }
 
@@ -424,6 +428,7 @@ void CUICarBodyWnd::Update()
 
 		UpdateLists		();
 
+	m_pUIOurVolumeWnd->SetVisible(!!psActorFlags.is(AF_INVENTORY_VOLUME));
 	
 	if(m_pOthersObject && (smart_cast<CGameObject*>(m_pOurObject))->Position().distance_to((smart_cast<CGameObject*>(m_pOthersObject))->Position()) > 3.0f)
 	{
@@ -439,6 +444,7 @@ void CUICarBodyWnd::Show()
 	inherited::Show							();
 	SetCurrentItem							(NULL);
 	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd);
+	InventoryUtilities::UpdateVolume		(*m_pUIOurVolumeWnd);
 	//
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	CBaseMonster* Monster = smart_cast<CBaseMonster *>(m_pOthersObject);
@@ -577,6 +583,7 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 
 	SetCurrentItem(NULL);
 	InventoryUtilities::UpdateWeight(*m_pUIOurBagWnd);
+	InventoryUtilities::UpdateVolume(*m_pUIOurVolumeWnd);
 }
 
 #include "../xr_level_controller.h"
@@ -643,7 +650,7 @@ bool CUICarBodyWnd::MoveItemsFromCell(CUICellItem* itm, bool b_all)
 
 	CUIDragDropListEx* owner_list = itm->OwnerList();
 	if (owner_list != m_pUIOthersBagList)
-	{ //перемещаем в актерский инв.
+	{ //actor -> other
 		CUICellItem* ci = CurrentItem();
 		for (u32 j = 0; j<ci->ChildsCount() && b_all; ++j)
 		{
@@ -652,25 +659,17 @@ bool CUICarBodyWnd::MoveItemsFromCell(CUICellItem* itm, bool b_all)
 			if (m_pOthersObject)
 				TransferItem(_itm, m_pOurObject, m_pOthersObject, false);
 			else
-			{
 				move_item(tmp_id, m_pInventoryBox->ID(), _itm->object().ID());
-				// ЭТО ПОХОЖЕ заткнута выдача кэллбэка на взятие предмета из инв. ящика
-				//. Actor()->callback(GameObject::eInvBoxItemTake)( m_pInventoryBox->lua_game_object(), _itm->object().lua_game_object() );
-			}
 		}
 		PIItem itm = (PIItem)(ci->m_pData);
 
 		if (m_pOthersObject)
 			TransferItem(itm, m_pOurObject, m_pOthersObject, false);
 		else
-		{
 			move_item(tmp_id, m_pInventoryBox->ID(), itm->object().ID());
-			// ЭТО ПОХОЖЕ заткнута выдача кэллбэка на взятие предмета из инв. ящика
-			//. Actor()->callback(GameObject::eInvBoxItemTake)(m_pInventoryBox->lua_game_object(), itm->object().lua_game_object() );
-		}
 	}
 	else
-	{ // перемещаем из актерского в другой инв.
+	{ // other -> actor
 		CUICellItem* ci = CurrentItem();
 		for (u32 j = 0; j<ci->ChildsCount() && b_all; ++j)
 		{
@@ -679,22 +678,14 @@ bool CUICarBodyWnd::MoveItemsFromCell(CUICellItem* itm, bool b_all)
 			if (m_pOthersObject)
 				TransferItem(_itm, m_pOthersObject, m_pOurObject, false);
 			else
-			{
 				move_item(m_pInventoryBox->ID(), tmp_id, _itm->object().ID());
-				//ЭТО ПОХОЖЕ заткнута выдача кэллбэка на взятие предмета из инв. ящика
-				//. Actor()->callback(GameObject::eInvBoxItemTake)( m_pInventoryBox->lua_game_object(), _itm->object().lua_game_object() );
-			}
 		}
 		PIItem itm = (PIItem)(ci->m_pData);
 
 		if (m_pOthersObject)
 			TransferItem(itm, m_pOthersObject, m_pOurObject, false);
 		else
-		{
 			move_item(m_pInventoryBox->ID(), tmp_id, itm->object().ID());
-			// ЭТО ПОХОЖЕ заткнута выдача кэллбэка на взятие предмета из инв. ящика
-			//. Actor()->callback(GameObject::eInvBoxItemTake)(m_pInventoryBox->lua_game_object(), itm->object().lua_game_object() );
-		}
 	}
 	return				true;
 }
@@ -729,11 +720,6 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	string1024 temp;
 
 	CUIDragDropListEx*	owner = CurrentItem()->OwnerList();
-
-	if ((pWarBelt || pBackPack) && owner == m_pUIOurBagList && m_pOurObject->inventory().InSlot(CurrentIItem()))
-	{
-		m_pUIPropertiesBox->AddItem("st_move_with_content", NULL, INVENTORY_MOVE_WITH_CONTENT);
-	}
 
 	if (pAmmo)
 	{
@@ -862,9 +848,16 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	//
 	bool many_items_in_cell = CurrentItem()->ChildsCount() > 0;
 	//
-	m_pUIPropertiesBox->AddItem("st_move", NULL, INVENTORY_MOVE_ACTION); //переместить один предмет
-	if (many_items_in_cell) //предметов в ячейке больше одного
-		m_pUIPropertiesBox->AddItem("st_move_all", (void*)33, INVENTORY_MOVE_ACTION); //переместить стак предметов
+	if ((pWarBelt || pBackPack) && owner == m_pUIOurBagList && m_pOurObject->inventory().InSlot(CurrentIItem()))
+	{
+		m_pUIPropertiesBox->AddItem("st_move_with_content", NULL, INVENTORY_MOVE_WITH_CONTENT);
+	}
+	else
+	{
+		m_pUIPropertiesBox->AddItem("st_move", NULL, INVENTORY_MOVE_ACTION); //переместить один предмет
+		if (many_items_in_cell) //предметов в ячейке больше одного
+			m_pUIPropertiesBox->AddItem("st_move_all", (void*)33, INVENTORY_MOVE_ACTION); //переместить стак предметов
+	}
 	//
 	//if (!m_pInventoryBox)
 	{
@@ -909,6 +902,7 @@ void CUICarBodyWnd::EatItem()
 	P.w_u16						(CurrentIItem()->object().ID());
 	CGameObject::u_EventSend	(P);
 
+	UpdateLists_delayed			();
 }
 
 bool CUICarBodyWnd::OnItemDrop(CUICellItem* itm)

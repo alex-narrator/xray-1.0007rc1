@@ -537,6 +537,11 @@
 			<options_item entry="g_bullet_from_barrel" group="mm_opt_gameplay"/>
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_bullet_from_barrel</text>
 		</check_bullet_from_barrel>
+		
+		<check_inventory_volume x="20" y="0" width="400" height="21">
+			<options_item entry="g_inventory_volume" group="mm_opt_gameplay"/>
+			<text font="letterica16" r="215" g="195" b="170">ui_mm_inventory_volume</text>
+		</check_inventory_volume>
 <!-- END Новые опции геймплея -->>
 
 		<btn_check_updates x="342" y="330" width="111" height="29">

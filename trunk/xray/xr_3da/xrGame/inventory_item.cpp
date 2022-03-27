@@ -150,6 +150,8 @@ void CInventoryItem::Load(LPCSTR section)
 	m_weight			= pSettings->r_float(section, "inv_weight");
 	R_ASSERT			(m_weight>=0.f);
 
+	m_volume			= READ_IF_EXISTS(pSettings, r_float, section, "inv_volume", .0f);
+
 	m_cost				= pSettings->r_u32(section, "cost");
 
 #ifdef INV_NEW_SLOTS_SYSTEM
@@ -172,7 +174,7 @@ void CInventoryItem::Load(LPCSTR section)
 
 	// alpet: разрешение некоторым объектам попадать в слоты быстрого доступа независимо от настроек
 #if defined(QUICK_MEDICINE)
-	if (smart_cast<CMedkit*>(&object()) || smart_cast<CAntirad*>(&object()) &&
+	if ((smart_cast<CMedkit*>(&object()) || smart_cast<CAntirad*>(&object())) &&
 #else
 	if ( smart_cast<CEatableItem*>(&object()) &&
 #endif

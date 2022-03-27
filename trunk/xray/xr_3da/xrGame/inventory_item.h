@@ -123,8 +123,10 @@ public:
 	virtual	u32					Cost				() const	{ return m_cost; }
 	virtual	void				SetCost				(u32 cost) 	{ m_cost = cost; }
 	virtual float				Weight				() 			{ return m_weight;}		
+	virtual float				Volume				() 			{ return m_volume;}		
 #ifdef EAT_PORTIONS_INFLUENCE
 	virtual void                SetWeight(float w)   { m_weight = w; }
+	virtual void                SetVolume(float v)   { m_volume = v; }
 #endif
 public:
 	CInventory*					m_pCurrentInventory;
@@ -135,6 +137,7 @@ public:
 
 	u32							m_cost;
 	float						m_weight;
+	float						m_volume;
 	shared_str					m_Description;
 	CUIInventoryCellItem*		m_cell_item;
 

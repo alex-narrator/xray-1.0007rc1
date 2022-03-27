@@ -143,6 +143,10 @@ public:
 	//
 	virtual float GetCarryWeight			() const;
 
+	virtual float MaxCarryVolume			();
+	//
+	virtual float GetCarryVolume			();
+
 	virtual CCustomOutfit*			GetOutfit()	const {return NULL;};
 
 	virtual CBackPack*				GetBackPack()	const { return NULL; };

@@ -1091,8 +1091,8 @@ visual				= equipments\item_rukzak.ogf
 description			= backpack_descr
 slot				= 17
 
-additional_inventory_weight		= 40		; +max_walk_weight
-additional_inventory_weight2	= 40		;	+40 kg
+additional_max_weight = 20
+additional_max_volume = 20
 
 inv_name			= Backpack
 inv_name_short		= Backpack
@@ -1104,3 +1104,11 @@ inv_grid_x			= 9
 inv_grid_y			= 14
 cost				= 500	;30
 default_to_ruck		= false
+
+[backpack_small]:backpack
+additional_max_weight = 10
+additional_max_volume = 10
+
+description			= backpack_small_descr
+inv_name			= Backpack_small
+inv_name_short		= Backpack_small

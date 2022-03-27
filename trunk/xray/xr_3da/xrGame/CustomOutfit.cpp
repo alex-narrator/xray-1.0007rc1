@@ -72,6 +72,8 @@ void CCustomOutfit::Load(LPCSTR section)
 	m_additional_weight2	= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight2", m_additional_weight);*/
 	m_fAdditionalMaxWeight = READ_IF_EXISTS(pSettings, r_float, section, "additional_max_weight", 0.f);
 
+	m_fAdditionalMaxVolume = READ_IF_EXISTS(pSettings, r_float, section, "additional_max_volume", 0.f);
+
 	if (pSettings->line_exist(section, "nightvision_sect"))
 		m_NightVisionSect = pSettings->r_string(section, "nightvision_sect");
 	else
@@ -200,4 +202,9 @@ float CCustomOutfit::GetPowerLoss()
 float CCustomOutfit::GetAdditionalMaxWeight()
 {
 	return /*m_additional_weight2*/m_fAdditionalMaxWeight * GetCondition();
+}
+
+float CCustomOutfit::GetAdditionalMaxVolume()
+{
+	return m_fAdditionalMaxVolume * GetCondition();
 }

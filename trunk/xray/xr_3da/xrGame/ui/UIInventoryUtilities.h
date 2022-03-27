@@ -70,6 +70,8 @@ LPCSTR GetTimePeriodAsString	(LPSTR _buff, u32 buff_sz, ALife::_TIME_ID _from, A
 // Отобразить вес, который несет актер
 void UpdateWeight(CUIStatic &wnd, bool withPrefix = false);
 
+void UpdateVolume(CUIStatic &wnd, bool withPrefix = false);
+
 // Функции получения строки-идентификатора ранга и отношения по их числовому идентификатору
 LPCSTR	GetRankAsText				(CHARACTER_RANK_VALUE		rankID);
 LPCSTR	GetReputationAsText			(CHARACTER_REPUTATION_VALUE rankID);

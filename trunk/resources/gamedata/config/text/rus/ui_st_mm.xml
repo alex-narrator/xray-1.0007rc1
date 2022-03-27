@@ -245,6 +245,9 @@
 	<string id="ui_mm_bullet_from_barrel">
 		<text>Пули летят из ствола оружия</text>
 	</string>
+	<string id="ui_mm_inventory_volume">
+		<text>Ограничение ёмкости инвентаря</text>
+	</string>
 <!-- END Новые опции геймплея -->>
 	<string id="ui_mm_eax">
 		<text>EAX</text>

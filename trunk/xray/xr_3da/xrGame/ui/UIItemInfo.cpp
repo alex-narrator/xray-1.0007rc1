@@ -22,6 +22,7 @@ CUIItemInfo::CUIItemInfo()
 	UICondition					= NULL;
 	UICost						= NULL;
 	UIWeight					= NULL;
+	UIVolume					= NULL;
 	UIItemImage					= NULL;
 	UIDesc						= NULL;
 	UIWpnParams					= NULL;
@@ -70,6 +71,14 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 		AttachChild				(UIWeight);		
 		UIWeight->SetAutoDelete(true);
 		xml_init.InitStatic		(uiXml, "static_weight", 0,			UIWeight);
+	}
+
+	if (uiXml.NavigateToNode("static_volume", 0))
+	{
+		UIVolume = xr_new<CUIStatic>();
+		AttachChild(UIVolume);
+		UIVolume->SetAutoDelete(true);
+		xml_init.InitStatic(uiXml, "static_volume", 0, UIVolume);
 	}
 
 	if(uiXml.NavigateToNode("static_cost",0))
@@ -145,8 +154,14 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	}
 	if(UIWeight)
 	{
-		sprintf_s				(str, "%3.2f kg", pInvItem->Weight());
+		sprintf_s			(str, "%3.2f %s", pInvItem->Weight(),*CStringTable().translate("st_kg"));
 		UIWeight->SetText	(str);
+	}
+	if (UIVolume)
+	{
+		sprintf_s			(str, "%3.2f %s", pInvItem->Volume(),*CStringTable().translate("st_l"));
+		UIVolume->SetText	(str);
+		UIVolume->Show		(!!psActorFlags.is(AF_INVENTORY_VOLUME));
 	}
 	if( UICost && IsGameTypeSingle() )
 	{

@@ -45,6 +45,7 @@ LPCSTR af_item_sect_names[] = {
 	"fire_wound_immunity",
 //
 	"additional_max_weight",
+	"additional_max_volume",
 };
 
 LPCSTR af_item_param_names[] = {
@@ -68,6 +69,7 @@ LPCSTR af_item_param_names[] = {
 	"ui_inv_outfit_fire_wound_protection",		// "(fire_wound_imm)",
 //
 	"ui_inv_weight",
+	"ui_inv_volume",
 };
 
 LPCSTR af_actor_param_names[]={
@@ -80,6 +82,7 @@ LPCSTR af_actor_param_names[]={
 	"walk_accel",
 	"jump_speed",
 	"max_weight",
+	"max_volume",
 //
 };
 
@@ -168,9 +171,9 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 		}
 		else
 		//
-		if (i == _item_additional_weight)
+		if (i == _item_additional_weight || i == _item_additional_volume)
 		{
-			_val = art->GetAdditionalMaxWeight();
+			_val = _item_additional_weight ? art->GetAdditionalMaxWeight() : art->GetAdditionalMaxVolume();
 			if (fis_zero(_val))				continue;
 		}
 		else
@@ -196,10 +199,9 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			_sn					= _item_radiation_restore_speed ? *CStringTable().translate("st_rad") : "";
 		}
 		//
-		else if (i == _item_additional_weight)
+		else if (i == _item_additional_weight || i == _item_additional_volume)
 		{
-			//_val /= 100.0f;
-			_sn = *CStringTable().translate("st_kg");
+			_sn = _item_additional_weight ? *CStringTable().translate("st_kg") : *CStringTable().translate("st_l");
 		}
 
 		LPCSTR _color = (_val>0)?"%c[green]":"%c[red]";

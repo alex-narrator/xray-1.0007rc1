@@ -209,6 +209,7 @@ void CUIInventoryWnd::InitInventory()
 	}
 
 	InventoryUtilities::UpdateWeight					(UIBagWnd, true);
+	InventoryUtilities::UpdateVolume					(UIVolumeWnd, true);
 	
 	UpdateCustomDraw();
 
@@ -226,6 +227,7 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 		SendEvent_Item_Drop		(CurrentIItem());
 		SetCurrentItem			(NULL);
 		InventoryUtilities::UpdateWeight			(UIBagWnd, true);
+		InventoryUtilities::UpdateVolume			(UIVolumeWnd, true);
 		return;
 	}
 
@@ -314,7 +316,7 @@ bool CUIInventoryWnd::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 {
 	PIItem	iitem						= (PIItem)itm->m_pData;
 
-	if(GetInventory()->CanPutInRuck(iitem))
+	if (GetInventory()->CanPutInRuck(iitem) && GetInventory()->CanTakeItem(iitem))
 	{
 #ifdef DEBUG_SLOTS
 		Msg("# inventory wnd ToBag (0x%p) ", itm);
@@ -350,26 +352,28 @@ bool CUIInventoryWnd::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 			{
 				new_owner->SetItem(i);
 			}
-			SendEvent_Item2Ruck					(iitem);
+			SendEvent_Item2Ruck(iitem);
 #ifdef INV_RUCK_UNLIMITED_FIX
 		}
 		else
 		{
 			NET_Packet					P;
-			iitem->object().u_EventGen	(P, GE_OWNERSHIP_REJECT, iitem->object().H_Parent()->ID());
-			P.w_u16						(u16(iitem->object().ID()));
+			iitem->object().u_EventGen(P, GE_OWNERSHIP_REJECT, iitem->object().H_Parent()->ID());
+			P.w_u16(u16(iitem->object().ID()));
 			iitem->object().u_EventSend(P);
 		}
 
 		m_b_need_reinit = true;
-		
+
 		return result;
 #else
-		m_b_need_reinit = true;
-		
-		return true;
+			m_b_need_reinit = true;
+
+			return true;
 #endif
 	}
+		else
+			DropCurrentItem(false);
 	return false;
 }
 
@@ -570,7 +574,7 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 //			#endif
 			for (u8 i = 0; i < (u8)slots.size(); ++i)
 			{
-				#if !defined(INV_MOVE_ITM_INTO_QUICK_SLOTS)
+				#ifndef INV_MOVE_ITM_INTO_QUICK_SLOTS
 //				if ((!is_eat || is_quick_slot(slots[i], __item, m_pInv)))
 				if (!m_pInv->m_slots[slots[i]].m_pIItem)
 				{

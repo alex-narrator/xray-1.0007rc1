@@ -9,6 +9,10 @@
 		<text align="l" font="letterica16" r="135" g="128" b="122"/>
 	</static_weight>
 
+	<static_volume x="70" y="222" width="67" height="20" stretch="1">
+		<text align="l" font="letterica16" r="135" g="128" b="122"/>
+	</static_volume>
+
 	<static_cost x="215" y="188" width="83" height="30" stretch="1">
 		<text font="letterica18" r="238" g="155" b="23" align="c" vert_align="c"/>
 	</static_cost>

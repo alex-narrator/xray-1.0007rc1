@@ -21,6 +21,7 @@ void CBackPack::Load(LPCSTR section)
 	/*	m_additional_weight		= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight", 0.f);
 	m_additional_weight2	= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight2", m_additional_weight);*/
 	m_fAdditionalMaxWeight = READ_IF_EXISTS(pSettings, r_float, section, "additional_max_weight", 0.f);
+	m_fAdditionalMaxVolume = READ_IF_EXISTS(pSettings, r_float, section, "additional_max_volume", 0.f);
 
 	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", TRUE));
 }
@@ -42,6 +43,11 @@ float CBackPack::GetAdditionalMaxWeight()
 	return /*m_additional_weight2*/m_fAdditionalMaxWeight * GetCondition();
 }
 
+float CBackPack::GetAdditionalMaxVolume()
+{
+	return m_fAdditionalMaxVolume * GetCondition();
+}
+
 void CBackPack::OnMoveToSlot(EItemPlace previous_place)
 {
 	if (m_pCurrentInventory)
@@ -49,7 +55,7 @@ void CBackPack::OnMoveToSlot(EItemPlace previous_place)
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
 		if (pActor && pActor->bAllItemsLoaded)
 		{
-			m_pCurrentInventory->DropRuckOut();
+//			m_pCurrentInventory->DropRuckOut();
 		}
 	}
 }
@@ -61,7 +67,7 @@ void CBackPack::OnMoveToRuck(EItemPlace previous_place)
 		auto* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
 		if (pActor && pActor->bAllItemsLoaded)
 		{
-			m_pCurrentInventory->DropRuckOut();
+//			m_pCurrentInventory->DropRuckOut();
 		}
 	}
 }

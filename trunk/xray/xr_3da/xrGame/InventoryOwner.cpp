@@ -357,6 +357,41 @@ float CInventoryOwner::GetCarryWeight() const
 	return inventory().TotalWeight();
 }
 //
+
+float  CInventoryOwner::MaxCarryVolume()
+{
+	float vol = inventory().GetMaxVolume();
+
+	auto outfit = GetOutfit();
+	if (outfit && !fis_zero(outfit->GetCondition()))
+		vol += outfit->GetAdditionalMaxVolume();
+
+	auto backpack = GetBackPack();
+	if (backpack && !fis_zero(backpack->GetCondition()))
+		vol += backpack->GetAdditionalMaxVolume();
+
+	if (this == Actor())
+	{
+		TIItemContainer list = psActorFlags.test(AF_ARTEFACTS_FROM_ALL) ? inventory().m_all : inventory().m_belt;
+		for (TIItemContainer::iterator it = list.begin(); list.end() != it; ++it)
+		{
+			auto artefact = smart_cast<CArtefact*>(*it);
+
+			if (artefact && !artefact->InContainer() && !fis_zero(artefact->GetCondition()))
+			{
+				vol += artefact->GetAdditionalMaxVolume();
+			}
+		}
+	}
+
+	return vol;
+}
+//
+float CInventoryOwner::GetCarryVolume()
+{
+	return inventory().GetTotalVolume();
+}
+
 void CInventoryOwner::spawn_supplies		()
 {
 	CGameObject								*game_object = smart_cast<CGameObject*>(this);
