@@ -89,6 +89,10 @@ protected:
 protected:
 	u32					m_ef_detector_type;
 
+	bool				m_detect_actor_radiation;
+	u32					radiation_snd_time;
+	void				UpdateActorRadiation();
+
 public:
 	virtual u32			ef_detector_type	() const;
 	bool				IsGeigerCounter		();

@@ -11,6 +11,7 @@
 #include "../hudmanager.h"
 
 #include "../CustomOutfit.h"
+#include "../CustomDetector.h"
 
 #include "../weapon.h"
 
@@ -390,7 +391,8 @@ void CUIInventoryWnd::Update()
 
 		v = pEntityAlive->conditions().GetRadiation()*100.0f;
 		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-		if (pActor->inventory().m_slots[DETECTOR_SLOT].m_pIItem) //удаляем шкалу радиации для прогрессбара в инвентаре если не экипирован детектор -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
+		auto DetectorInSlot = pActor->GetDetector();
+		if (DetectorInSlot && DetectorInSlot->IsGeigerCounter()) //удаляем шкалу радиации для прогрессбара в инвентаре если не экипирован детектор -- NO_RAD_UI_WITHOUT_DETECTOR_IN_SLOT
 		{
 			UIProgressBackRadiation.Show(true);
 			UIProgressBarRadiation.Show(true);

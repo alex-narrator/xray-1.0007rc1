@@ -59,6 +59,7 @@ public:
 	IC		bool				actual				() const;
 	virtual	CSpaceRestrictor	*cast_restrictor	() {return this;}
 	virtual	bool				register_schedule	() const {return false;}
+	float						distance_to			(Fvector&);
 
 	IC RestrictionSpace::ERestrictorTypes restrictor_type() const; 
 

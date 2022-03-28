@@ -12,6 +12,7 @@
 #include "../actor.h"
 #include "../HUDManager.h"
 #include "../PDA.h"
+#include "../CustomDetector.h"
 #include "../WeaponHUD.h"
 #include "../character_info.h"
 #include "../inventory.h"
@@ -416,7 +417,8 @@ bool CUIMainIngameWnd::IsHUDElementAllowed(EHUDElement element)
 		}break;
 		case eDetector: //Детектор (иконка радиационного заражения)
 		{
-			if (allow_devices_hud && m_pActor->GetDetector()) result = true;
+			auto DetectorInSlot = m_pActor->GetDetector();
+			if (allow_devices_hud && DetectorInSlot && DetectorInSlot->IsGeigerCounter()) result = true;
 		}break;
 		case eActiveItem: //Информация об предмете в руках (для оружия - кол-во/тип заряженных патронов, режим огня)
 		{
@@ -428,7 +430,7 @@ bool CUIMainIngameWnd::IsHUDElementAllowed(EHUDElement element)
 		}break;
 		case eArmor: //Иконка состояния брони
 		{
-			result = g_eHudOnKey != eHudOnKeyOff && m_pActor->inventory().ItemFromSlot(OUTFIT_SLOT) && OnKeyboardHold(kCHECKGEAR);
+			result = g_eHudOnKey != eHudOnKeyOff && m_pActor->GetOutfit() && OnKeyboardHold(kCHECKGEAR);
 		}break;
 	}
 
