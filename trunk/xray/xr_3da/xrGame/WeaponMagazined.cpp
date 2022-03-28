@@ -305,7 +305,7 @@ void CWeaponMagazined::UnloadAmmo(int unload_count, bool spawn_ammo, bool detach
 	{
 		int chamber_ammo = HasChamber() ? 1 : 0;	//учтём дополнительный патрон в патроннике
 
-		if (iAmmoElapsed <= chamber_ammo && IsMagazineAttached() && spawn_ammo)	//spawn mag empty
+		if (iAmmoElapsed <= chamber_ammo && spawn_ammo)	//spawn mag empty
 		{
 			LPCSTR empty_sect = pSettings->r_string(m_ammoTypes[m_LastLoadedMagType], "empty_box");
 			SpawnAmmo(0, empty_sect);
@@ -356,7 +356,7 @@ void CWeaponMagazined::UnloadAmmo(int unload_count, bool spawn_ammo, bool detach
 void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 {
 	int chamber_ammo = HasChamber() ? 1 : 0;	//учтём дополнительный патрон в патроннике
-	UnloadAmmo(iAmmoElapsed - chamber_ammo, spawn_ammo, HasDetachableMagazine());
+	UnloadAmmo(iAmmoElapsed - chamber_ammo, spawn_ammo, HasDetachableMagazine() && IsMagazineAttached());
 }
 
 bool CWeaponMagazined::HasDetachableMagazine() const

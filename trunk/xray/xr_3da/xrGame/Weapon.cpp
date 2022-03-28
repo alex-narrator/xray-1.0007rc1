@@ -858,7 +858,7 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 		{
 			bool manually = !!psActorFlags.test(AF_NO_AUTO_RELOAD);
 
-			if (GetNextAmmoType(manually) != u32(-1))
+			if (GetNextAmmoType(manually) != u32(-1) && TryToGetAmmo(GetNextAmmoType(manually)))
 			{
 				m_set_next_ammoType_on_reload = GetNextAmmoType(manually);
 

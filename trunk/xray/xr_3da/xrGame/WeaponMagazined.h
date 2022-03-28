@@ -250,8 +250,9 @@ protected:
 	// Callback function added by Cribbledirge.
 	virtual IC void	StateSwitchCallback(GameObject::ECallbackType actor_type, GameObject::ECallbackType npc_type);
 
+public:
 	// Real Wolf.20.01.15
-	IC			bool TryToGetAmmo(u32);
+	/*IC*/virtual			bool TryToGetAmmo(u32);
 };
 
 #endif //__XR_WEAPON_MAG_H__

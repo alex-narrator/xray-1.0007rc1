@@ -206,7 +206,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			{
 				for (u8 i = 0; i < pWeaponMag->m_ammoTypes.size(); ++i)
 				{
-					if (/*Actor()->inventory().*/m_pInv->GetAmmo(pWeaponMag->m_ammoTypes[i].c_str(), true))
+					if (/*Actor()->inventory().*//*m_pInv->GetAmmo(pWeaponMag->m_ammoTypes[i].c_str(), true)*/pWeaponMag->TryToGetAmmo(i))
 					{
 						strconcat(sizeof(temp), temp, *CStringTable().translate("st_load_ammo_type"), " ", 
 							*CStringTable().translate(pSettings->r_string(pWeaponMag->m_ammoTypes[i].c_str(), "inv_name_short")));
