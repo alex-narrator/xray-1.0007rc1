@@ -49,7 +49,7 @@ void CWeaponRG6::Load(LPCSTR section)
 }
 #include "inventory.h"
 #include "inventoryOwner.h"
-void CWeaponRG6::FireStart ()
+/*void CWeaponRG6::FireStart ()
 {
 
 	if(GetState() == eIdle	&& getRocketCount() ) 
@@ -135,6 +135,103 @@ void CWeaponRG6::FireStart ()
 			u_EventSend(P);
 		}
 		dropCurrentRocket();
+	}
+}*/
+
+void CWeaponRG6::LaunchGrenade(const Fvector& p1, const Fvector& d1)
+{
+	if (getRocketCount())
+	{
+		Fvector p, d;
+		p = p1;
+		d = d1;
+
+		CEntity* E = smart_cast<CEntity*>(H_Parent());
+		if (E){
+#ifdef DEBUG
+			CInventoryOwner* io = smart_cast<CInventoryOwner*>(H_Parent());
+			if (NULL == io->inventory().ActiveItem())
+			{
+				Log("current_state", GetState());
+				Log("next_state", GetNextState());
+				Log("state_time", m_dwStateTime);
+				Log("item_sect", cNameSect().c_str());
+				Log("H_Parent", H_Parent()->cNameSect().c_str());
+			}
+#endif
+			//E->g_fireParams (this, p1,d);
+		}
+
+		Fmatrix launch_matrix;
+		launch_matrix.identity();
+		launch_matrix.k.set(d);
+		Fvector::generate_orthonormal_basis(launch_matrix.k,
+			launch_matrix.j, launch_matrix.i);
+		launch_matrix.c.set(p);
+
+		if (IsZoomed() && H_Parent()->CLS_ID == CLSID_OBJECT_ACTOR)
+		{
+			H_Parent()->setEnabled(FALSE);
+			setEnabled(FALSE);
+
+			collide::rq_result RQ;
+			BOOL HasPick = Level().ObjectSpace.RayPick(p, d, 300.0f, collide::rqtStatic, RQ, this);
+
+			setEnabled(TRUE);
+			H_Parent()->setEnabled(TRUE);
+
+			if (HasPick)
+			{
+				//			collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+				Fvector Transference;
+				//Transference.add(p1, Fvector().mul(d, RQ.range));				
+				Transference.mul(d, RQ.range);
+				Fvector res[2];
+#ifdef		DEBUG
+				DBG_OpenCashedDraw();
+				DBG_DrawLine(p1, Fvector().add(p1, d), D3DCOLOR_XRGB(255, 0, 0));
+#endif
+				u8 canfire0 = TransferenceAndThrowVelToThrowDir(Transference, CRocketLauncher::m_fLaunchSpeed, EffectiveGravity(), res);
+#ifdef DEBUG
+				if (canfire0>0)DBG_DrawLine(p1, Fvector().add(p1, res[0]), D3DCOLOR_XRGB(0, 255, 0));
+				if (canfire0>1)DBG_DrawLine(p1, Fvector().add(p1, res[1]), D3DCOLOR_XRGB(0, 0, 255));
+				DBG_ClosedCashedDraw(30000);
+#endif
+				if (canfire0 != 0)
+				{
+					//					Msg ("d[%f,%f,%f] - res [%f,%f,%f]", d.x, d.y, d.z, res[0].x, res[0].y, res[0].z);
+					d = res[0];
+				};
+			}
+		};
+
+		d.normalize();
+		d.mul(m_fLaunchSpeed);
+		VERIFY2(_valid(launch_matrix), "CWeaponRG6::LaunchGrenade. Invalid launch_matrix");
+		CRocketLauncher::LaunchRocket(launch_matrix, d, zero_vel);
+
+		CExplosiveRocket* pGrenade = smart_cast<CExplosiveRocket*>(getCurrentRocket());
+		VERIFY(pGrenade);
+		pGrenade->SetInitiator(H_Parent()->ID());
+		pGrenade->SetRealGrenadeName(m_ammoTypes[m_ammoType]);
+
+		if (OnServer())
+		{
+			NET_Packet P;
+			u_EventGen(P, GE_LAUNCH_ROCKET, ID());
+			P.w_u16(u16(getCurrentRocket()->ID()));
+			u_EventSend(P);
+		}
+		dropCurrentRocket();
+	}
+}
+
+void CWeaponRG6::FireTrace(const Fvector& P, const Fvector& D)
+{
+	inheritedSG::FireTrace(P, D);
+	if (!IsMisfire())
+	{
+		LaunchGrenade(P, D);
 	}
 }
 
