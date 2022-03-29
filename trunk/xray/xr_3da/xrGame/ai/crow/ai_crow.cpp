@@ -12,6 +12,7 @@
 #include "../../hudmanager.h"
 #include "../../level.h"
 #include "../../../skeletonanimated.h"
+#include "../../Actor.h"
 
 void CAI_Crow::SAnim::Load	(CKinematicsAnimated* visual, LPCSTR prefix)
 {
@@ -139,6 +140,12 @@ BOOL CAI_Crow::net_Spawn		(CSE_Abstract* DC)
 
 	// disable UpdateCL, enable only on HIT
 	processing_deactivate		();
+
+	auto tmp = Actor()->Position();
+	tmp.x = tmp.x + ::Random.randF(-50.0f, 50.0f);
+	tmp.y = tmp.y + ::Random.randF(20.0f, 50.0f);
+	tmp.z = tmp.z + ::Random.randF(-50.0f, 50.0f);
+	Position().set(tmp);
 
 	return		R;
 }
