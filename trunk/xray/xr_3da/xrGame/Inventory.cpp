@@ -1444,8 +1444,9 @@ bool CInventory::CanTakeItem(CInventoryItem *inventory_item) //const
 		return	false;
 
 	if (pActor && psActorFlags.is(AF_INVENTORY_VOLUME) && 
-		!CanPutInSlot(inventory_item) && !CanPutInBelt(inventory_item) &&
-		/*TotalVolume()*/GetTotalVolume() + inventory_item->Volume() > m_pOwner->MaxCarryVolume())
+		!CanPutInSlot(inventory_item) && !CanPutInBelt(inventory_item) && 
+		!fis_zero(inventory_item->Volume()) && !inventory_item->IsQuestItem() &&
+		GetTotalVolume() + inventory_item->Volume() > m_pOwner->MaxCarryVolume())
 		return	false;
 
 	return	true;

@@ -226,8 +226,8 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 	{
 		SendEvent_Item_Drop		(CurrentIItem());
 		SetCurrentItem			(NULL);
-		InventoryUtilities::UpdateWeight			(UIBagWnd, true);
-		InventoryUtilities::UpdateVolume			(UIVolumeWnd, true);
+		//InventoryUtilities::UpdateWeight			(UIBagWnd, true);
+		//InventoryUtilities::UpdateVolume			(UIVolumeWnd, true);
 		return;
 	}
 
@@ -373,7 +373,8 @@ bool CUIInventoryWnd::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 #endif
 	}
 		else
-			DropCurrentItem(false);
+			//DropCurrentItem(false);
+			SendEvent_Item_Drop(iitem);
 	return false;
 }
 

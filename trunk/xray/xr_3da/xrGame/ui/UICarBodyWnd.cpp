@@ -290,8 +290,8 @@ void CUICarBodyWnd::UpdateLists()
 	
 	m_pUIOthersBagList->SetScrollPos(i_pos);
 
-	InventoryUtilities::UpdateWeight				(*m_pUIOurBagWnd);
-	InventoryUtilities::UpdateVolume				(*m_pUIOurVolumeWnd);
+	InventoryUtilities::UpdateWeight				(*m_pUIOurBagWnd, true);
+	InventoryUtilities::UpdateVolume				(*m_pUIOurVolumeWnd, true);
 	m_b_need_update									= false;
 }
 
@@ -443,8 +443,8 @@ void CUICarBodyWnd::Show()
 	InventoryUtilities::SendInfoToActor		("ui_car_body");
 	inherited::Show							();
 	SetCurrentItem							(NULL);
-	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd);
-	InventoryUtilities::UpdateVolume		(*m_pUIOurVolumeWnd);
+	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd, true);
+	InventoryUtilities::UpdateVolume		(*m_pUIOurVolumeWnd, true);
 	//
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	CBaseMonster* Monster = smart_cast<CBaseMonster *>(m_pOthersObject);
@@ -582,8 +582,8 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 	owner_list->RemoveItem(ci, b_all);
 
 	SetCurrentItem(NULL);
-	InventoryUtilities::UpdateWeight(*m_pUIOurBagWnd);
-	InventoryUtilities::UpdateVolume(*m_pUIOurVolumeWnd);
+	InventoryUtilities::UpdateWeight(*m_pUIOurBagWnd, true);
+	InventoryUtilities::UpdateVolume(*m_pUIOurVolumeWnd, true);
 }
 
 #include "../xr_level_controller.h"
