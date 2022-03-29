@@ -370,7 +370,7 @@ void R_dsgraph_structure::r_dsgraph_render_hud_emissive	()
 	Fmatrix FTold				= Device.mFullTransform;
 	Device.mProject.build_projection(
 		deg2rad(psHUD_FOV*Device.fFOV /* *Device.fASPECT*/ ), 
-		Device.fASPECT, VIEWPORT_NEAR, 
+		Device.fASPECT, 0.05f,//VIEWPORT_NEAR, 
 		g_pGamePersistent->Environment().CurrentEnv.far_plane);
 
 	Device.mFullTransform.mul	(Device.mProject, Device.mView);
@@ -401,7 +401,7 @@ void R_dsgraph_structure::r_dsgraph_render_hud_sorted	()
 	Fmatrix FTold				= Device.mFullTransform;
 	Device.mProject.build_projection(
 		deg2rad(psHUD_FOV*Device.fFOV /* *Device.fASPECT*/ ), 
-		Device.fASPECT, VIEWPORT_NEAR, 
+		Device.fASPECT, 0.05f,//VIEWPORT_NEAR, 
 		g_pGamePersistent->Environment().CurrentEnv.far_plane);
 
 	Device.mFullTransform.mul	(Device.mProject, Device.mView);
@@ -431,7 +431,7 @@ void R_dsgraph_structure::r_dsgraph_render_hud	()
 	Fmatrix FTold				= Device.mFullTransform;
 	Device.mProject.build_projection(
 		deg2rad(psHUD_FOV*Device.fFOV /* *Device.fASPECT*/ ), 
-		Device.fASPECT, VIEWPORT_NEAR, 
+		Device.fASPECT, 0.05f,//VIEWPORT_NEAR, 
 		g_pGamePersistent->Environment().CurrentEnv.far_plane);
 
 	Device.mFullTransform.mul	(Device.mProject, Device.mView);
