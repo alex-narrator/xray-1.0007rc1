@@ -1,7 +1,7 @@
 #pragma once
 #include "UICellItem.h"
 #include "../Weapon.h"
-
+#include "../Artifact.h"
 
 class CUIInventoryCellItem :public CUICellItem
 {
@@ -67,6 +67,15 @@ public:
 	Fvector2					get_addon_offset			(u32 idx)				{ return m_addon_offset[idx]; }
 	
 	virtual		Ivector2		GetGridSize					(bool);
+};
+
+class CUIArtefactCellItem :public CUIInventoryCellItem
+{
+	typedef  CUIInventoryCellItem	inherited;
+public:
+	CUIArtefactCellItem(CArtefact* itm);
+	virtual		bool			EqualTo(CUICellItem* itm);
+	CArtefact*	object() { return (CArtefact*)m_pData; }
 };
 
 class CBuyItemCustomDrawCell :public ICustomDrawCell

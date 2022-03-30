@@ -54,17 +54,10 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	if (fl1.test(CInventoryItem::FIUngroupable) || fl2.test(CInventoryItem::FIUngroupable))
 		return false;
 
-	//
-	CArtefact* artefact_1 = smart_cast<CArtefact*>(object());
-	CArtefact* artefact_2 = smart_cast<CArtefact*>(ci->object());
-
-	float random_k1 = artefact_1 ? artefact_1->GetRandomKoef() : 0.0f;
-	float random_k2 = artefact_2 ? artefact_2->GetRandomKoef() : 0.0f;
-
 	return					(
 								fsimilar(object()->GetCondition(), ci->object()->GetCondition(), 0.01f) &&
 								fsimilar(object()->Weight(), ci->object()->Weight(), 0.01f) &&
-								fsimilar(random_k1, random_k2, 0.01f) &&
+								fsimilar(object()->Volume(), ci->object()->Volume(), 0.01f) &&
 								object()->object().cNameSect() == ci->object()->object().cNameSect() && 
 								object()->m_eItemPlace == ci->object()->m_eItemPlace &&
 								object()->Cost() == ci->object()->Cost()
@@ -154,6 +147,20 @@ CUIDragItem* CUIInventoryCellItem::CreateDragItem()
 	i->wnd()->SetTextAlignment	(GetTextAlignment());
 	i->wnd()->SetTextColor		(GetTextColor());
 	return	i;
+}
+
+CUIArtefactCellItem::CUIArtefactCellItem(CArtefact* itm)
+	:inherited(itm)
+{}
+
+bool CUIArtefactCellItem::EqualTo(CUICellItem* itm)
+{
+	if (!inherited::EqualTo(itm))	return false;
+
+	CUIArtefactCellItem* ci = smart_cast<CUIArtefactCellItem*>(itm);
+	if (!ci)							return false;
+
+	return					((object()->GetRandomKoef() == ci->object()->GetRandomKoef()));
 }
 
 CUIAmmoCellItem::CUIAmmoCellItem(CWeaponAmmo* itm)
