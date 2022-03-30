@@ -55,6 +55,7 @@ public:
 	IC			int			GetAccelerator			()		const			{return m_accelerator;};
 
 	virtual		CUIDragItem* CreateDragItem			();
+	static		CUICellItem* m_mouse_selected_item;
 
 	CUIDragDropListEx*		OwnerList				()						{return m_pParentList;}
 				void		SetOwnerList			(CUIDragDropListEx* p);
