@@ -30,6 +30,7 @@ protected:
 	ref_light		light_omni;
 	ref_glow		glow_render;
 	Fvector			m_focus;
+	Fcolor			m_color;
 private:
 	inline	bool	can_use_dynamic_lights	();
 
@@ -52,6 +53,7 @@ public:
 			void	Switch				(bool light_on);
 
 	virtual bool	can_be_attached		() const;
+			void	calc_m_delta_h		(float);
  
 public:
 			void	SwitchNightVision		  ();
