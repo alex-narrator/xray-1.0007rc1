@@ -272,6 +272,7 @@ bool CUISkinSelectorWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 		case DIK_SPACE: // do autoselect
 			m_iActiveIndex = -1;
 		case DIK_RETURN:	
+		case DIK_NUMPADENTER:
 			OnBtnOK();
 			return true;
 		case DIK_LEFT:

@@ -361,6 +361,23 @@ void CConsole::OnPressKey(int dik, BOOL bHold)
 		if (bShift) strcpy_s(append,")");
 		else		strcpy_s(append,"0");
 		break;
+	//numeric keyboard
+	case DIK_NUMPAD1: strcat(editor, "1"); break;
+	case DIK_NUMPAD2: strcat(editor, "2"); break;
+	case DIK_NUMPAD3: strcat(editor, "3"); break;
+	case DIK_NUMPAD4: strcat(editor, "4"); break;
+	case DIK_NUMPAD5: strcat(editor, "5"); break;
+	case DIK_NUMPAD6: strcat(editor, "6"); break;
+	case DIK_NUMPAD7: strcat(editor, "7"); break;
+	case DIK_NUMPAD8: strcat(editor, "8"); break;
+	case DIK_NUMPAD9: strcat(editor, "9"); break;
+	case DIK_NUMPAD0: strcat(editor, "0"); break;
+	case DIK_SUBTRACT:	strcat(editor, "-"); break;
+	case DIK_ADD:		strcat(editor, "+"); break;
+	case DIK_DECIMAL:	strcat(editor, "."); break;
+	case DIK_DIVIDE:	strcat(editor, "/"); break;
+	case DIK_MULTIPLY:	strcat(editor, "*"); break;
+	//
 	case DIK_A:	strcpy_s(append, "a");	break;
 	case DIK_B:	strcpy_s(append, "b");	break;
 	case DIK_C:	strcpy_s(append, "c");	break;
@@ -421,15 +438,16 @@ void CConsole::OnPressKey(int dik, BOOL bHold)
 		if (bShift) strcpy_s(append,"_");
 		else		strcpy_s(append,"-");
 		break;
-	case 0x27:
+	case DIK_SEMICOLON:
 		if (bShift) strcpy_s(append,":");
 		else		strcpy_s(append,";");
 		break;
-	case 0x35:
+	case DIK_SLASH:
 		if (bShift) strcpy_s(append,"?");
 		else		strcpy_s(append,"/");
 		break;
 	case DIK_RETURN:
+	case DIK_NUMPADENTER:
 		ExecuteCommand();
 		break;
 	case DIK_INSERT:
