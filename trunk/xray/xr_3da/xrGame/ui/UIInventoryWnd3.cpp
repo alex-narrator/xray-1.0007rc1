@@ -257,7 +257,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			b_show			= true;
 		 }
 	#else
-		for(u8 i = 0; i < OUTFIT_SLOT; ++i) 
+		for (u8 i = 0; i < SLOTS_TOTAL; ++i)
 		{
 			 if(m_pInv->m_slots[i].m_pIItem && m_pInv->m_slots[i].m_pIItem->CanAttach(pScope) )
 			 {
@@ -289,7 +289,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			b_show			= true;
 		 }
 	#else
-		for(u8 i = 0; i < OUTFIT_SLOT; ++i) 
+		for (u8 i = 0; i < SLOTS_TOTAL; ++i)
 		{
 			 if(m_pInv->m_slots[i].m_pIItem != NULL && m_pInv->m_slots[i].m_pIItem->CanAttach(pSilencer))
 			 {
@@ -315,19 +315,19 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			b_show			= true;
 		 }
 	#else
-	for(u8 i = 0; i < OUTFIT_SLOT; ++i) 
-	{
-		 if(m_pInv->m_slots[i].m_pIItem && m_pInv->m_slots[i].m_pIItem->CanAttach(pGrenadeLauncher))
-		 {
-			PIItem tgt = m_pInv->m_slots[i].m_pIItem;
-			//sprintf_s(temp, "st_attach_gl_to_%d", i);
+		for (u8 i = 0; i < SLOTS_TOTAL; ++i)
+		{
+			if(m_pInv->m_slots[i].m_pIItem && m_pInv->m_slots[i].m_pIItem->CanAttach(pGrenadeLauncher))
+			{
+				PIItem tgt = m_pInv->m_slots[i].m_pIItem;
+				//sprintf_s(temp, "st_attach_gl_to_%d", i);
+				//
+				strconcat(sizeof(temp), temp, /*CurrentIItem()->Name(), " ",*/ *CStringTable().translate("st_attach_addon"), " ", tgt->Name());
 			//
-			strconcat(sizeof(temp), temp, /*CurrentIItem()->Name(), " ",*/ *CStringTable().translate("st_attach_addon"), " ", tgt->Name());
-			//
-			UIPropertiesBox.AddItem(temp,  (void*)tgt, INVENTORY_ATTACH_ADDON);
-			b_show			= true;
-		 }
-	};		
+				UIPropertiesBox.AddItem(temp,  (void*)tgt, INVENTORY_ATTACH_ADDON);
+				b_show			= true;
+			}
+		};		
 	#endif
 	}
 	LPCSTR _action = NULL;

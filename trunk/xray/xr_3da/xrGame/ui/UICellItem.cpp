@@ -153,7 +153,13 @@ void CUICellItem::SetOwnerList(CUIDragDropListEx* p)
 
 void CUICellItem::UpdateConditionProgressBar()
 {
-    if(m_pParentList && m_pParentList->GetConditionProgBarVisibility())
+	if (!m_pData)
+	{
+		m_pConditionState->Show(false);
+		return;
+	}
+
+	if(m_pParentList && m_pParentList->GetConditionProgBarVisibility())
     {
         PIItem itm = (PIItem)m_pData;
         CWeapon* pWeapon = smart_cast<CWeapon*>(itm);
@@ -177,7 +183,7 @@ void CUICellItem::UpdateConditionProgressBar()
             return;
         }
     }
-    m_pConditionState->Show(false);
+//    m_pConditionState->Show(false);
 }
 
 

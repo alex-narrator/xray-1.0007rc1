@@ -277,7 +277,7 @@ bool CUIInventoryWnd::ToSlot(CUICellItem* itm, bool force_place)
 		SendEvent_Item2Slot(iitem);
 
 #if defined(INV_NO_ACTIVATE_APPARATUS_SLOT)
-		if (activate_slot(_slot))
+		if (activate_slot(_slot) || smart_cast<CWeapon*>(iitem))
 			SendEvent_ActivateSlot(iitem);
 #else
 		SendEvent_ActivateSlot(iitem);
