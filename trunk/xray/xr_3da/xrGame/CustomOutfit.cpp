@@ -74,10 +74,10 @@ void CCustomOutfit::Load(LPCSTR section)
 
 	m_fAdditionalMaxVolume = READ_IF_EXISTS(pSettings, r_float, section, "additional_max_volume", 0.f);
 
-	if (pSettings->line_exist(section, "nightvision_sect"))
+/*	if (pSettings->line_exist(section, "nightvision_sect"))
 		m_NightVisionSect = pSettings->r_string(section, "nightvision_sect");
 	else
-		m_NightVisionSect = NULL;
+		m_NightVisionSect = NULL;*/
 
 	m_full_icon_name								= pSettings->r_string(section,"full_icon_name");
 }
@@ -158,11 +158,11 @@ void	CCustomOutfit::OnMoveToRuck(EItemPlace previous_place)
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
 		if (pActor && pActor->bAllItemsLoaded)
 		{
-			CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
+/*			CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
 			if(pTorch)
 			{
 				pTorch->SwitchNightVision(false);
-			}
+			}*/
 			if (m_ActorVisual.size())
 			{
 				shared_str DefVisual = pActor->GetDefaultVisualOutfit();

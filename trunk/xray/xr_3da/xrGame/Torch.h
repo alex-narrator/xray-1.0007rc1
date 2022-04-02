@@ -60,6 +60,8 @@ public:
 			void	SwitchNightVision		  (bool light_on);
 			void	UpdateSwitchNightVision   ();
 			float	NightVisionBattery		  ();
+
+			shared_str	m_NightVisionSect;
 protected:
 	bool					m_bNightVisionEnabled;
 public:
