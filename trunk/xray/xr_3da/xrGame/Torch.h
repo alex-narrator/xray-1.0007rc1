@@ -7,10 +7,11 @@
 
 class CLAItem;
 class CMonsterEffector;
+class CUIStaticItem;
 
 class CTorch : public CInventoryItemObject {
 private:
-    typedef	CInventoryItemObject	inherited;
+	typedef	CInventoryItemObject	inherited;
 
 protected:
 	float			fBrightness;
@@ -62,8 +63,10 @@ public:
 			float	NightVisionBattery		  ();
 
 			shared_str	m_NightVisionSect;
+			shared_str	m_NightVisionTexture;
 protected:
 	bool					m_bNightVisionEnabled;
+	CUIStaticItem*			m_UINightVision;
 public:
 	bool					m_bNightVisionOn;
 protected:
@@ -93,8 +96,10 @@ public:
 	virtual void	activate_physic_shell	();
 	virtual void	setup_physic_shell		();
 
+	virtual void	afterAttach				();
 	virtual void	afterDetach				();
 	virtual void	renderable_Render		();
+	virtual void	OnDrawUI				();
 
 	// alpet: управление светом фонаря
 	IRender_Light  *GetLight(int target = 0);

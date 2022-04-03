@@ -57,6 +57,7 @@ CTorch::CTorch(void)
 	m_delta_h					= 0;
 	SetSlot						(TORCH_SLOT);
 	need_slot					= true;
+	m_UINightVision				= NULL;
 }
 
 CTorch::~CTorch(void) 
@@ -68,6 +69,7 @@ CTorch::~CTorch(void)
 	HUD_SOUND::DestroySound	(m_NightVisionOffSnd);
 	HUD_SOUND::DestroySound	(m_NightVisionIdleSnd);
 	HUD_SOUND::DestroySound	(m_NightVisionBrokenSnd);
+	xr_delete				(m_UINightVision);
 }
 
 inline bool CTorch::can_use_dynamic_lights	()
@@ -102,7 +104,8 @@ void CTorch::Load(LPCSTR section)
 		m_NightVisionDischargeTime		= pSettings->r_float(section,"night_vision_discharge_time");
 		m_NightVisionChargeTime			= m_NightVisionRechargeTime;*/
 
-		m_NightVisionSect = READ_IF_EXISTS(pSettings, r_string, section, "nightvision_sect", NULL);;
+		m_NightVisionSect				= READ_IF_EXISTS(pSettings, r_string, section, "night_vision_effector", NULL);
+		m_NightVisionTexture			= READ_IF_EXISTS(pSettings, r_string, section, "night_vision_texture",	NULL);
 	}
 }
 
@@ -149,7 +152,7 @@ void CTorch::SwitchNightVision(bool vision_on)
 	}
 
 //	CCustomOutfit* pCO=pA->GetOutfit();
-	if(/*pCO&&pCO->*/m_NightVisionSect.size()&&!b_allow){
+	if(/*pCO&&pCO->*/!!m_NightVisionSect/*.size()*/&&!b_allow){
 		HUD_SOUND::PlaySound(m_NightVisionBrokenSnd, pA->Position(), pA, bPlaySoundFirstPerson);
 		return;
 	}
@@ -157,7 +160,7 @@ void CTorch::SwitchNightVision(bool vision_on)
 	if(m_bNightVisionOn){
 		CEffectorPP* pp = pA->Cameras().GetPPEffector((EEffectorPPType)effNightvision);
 		if(!pp){
-			if (/*pCO&&pCO->*/m_NightVisionSect.size())
+			if (/*pCO&&pCO->*/!!m_NightVisionSect/*.size()*/)
 			{
 				AddEffector(pA,effNightvision, /*pCO->*/m_NightVisionSect);
 				HUD_SOUND::PlaySound(m_NightVisionOnSnd, pA->Position(), pA, bPlaySoundFirstPerson);
@@ -179,7 +182,6 @@ void CTorch::UpdateSwitchNightVision   ()
 {
 	if(!m_bNightVisionEnabled) return;
 	if (OnClient()) return;
-
 
 	/*if(m_bNightVisionOn)
 	{
@@ -539,11 +541,26 @@ bool  CTorch::can_be_attached		() const
 	}
 	return true;
 }
+void CTorch::afterAttach			()
+{
+	inherited::afterAttach	();
+
+	if (m_UINightVision) 
+		xr_delete(m_UINightVision);
+	if (m_bNightVisionEnabled && !!m_NightVisionTexture)
+	{
+		m_UINightVision = xr_new<CUIStaticItem>();
+		m_UINightVision->Init(m_NightVisionTexture.c_str(), "hud\\scopes", 0, 0, alNone);	// KD: special shader that account screen resolution
+	}
+}
 void CTorch::afterDetach			()
 {
 	inherited::afterDetach	();
 	Switch					(false);
+
 	SwitchNightVision		(false);
+	if (m_UINightVision) 
+		xr_delete(m_UINightVision);
 }
 void CTorch::renderable_Render()
 {
@@ -553,4 +570,14 @@ void CTorch::renderable_Render()
 void CTorch::calc_m_delta_h(float range) 
 {
 	m_delta_h = PI_DIV_2 - atan((range * 0.5f) / _abs(TORCH_OFFSET.x));
+}
+
+void CTorch::OnDrawUI()
+{
+	if (m_bNightVisionEnabled && m_bNightVisionOn && !!m_NightVisionTexture)
+	{
+		m_UINightVision->SetPos(0, 0);
+		m_UINightVision->SetRect(0, 0, UI_BASE_WIDTH, UI_BASE_HEIGHT);
+		m_UINightVision->Render();
+	}
 }

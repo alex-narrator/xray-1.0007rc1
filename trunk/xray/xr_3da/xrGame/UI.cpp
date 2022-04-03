@@ -75,6 +75,7 @@ void CUI::UIOnFrame()
 //--------------------------------------------------------------------
 #include "inventory.h"
 #include "huditem.h"
+#include "Torch.h"
 bool CUI::Render()
 {
 	if( GameIndicatorsShown() )
@@ -89,9 +90,15 @@ bool CUI::Render()
 		CActor* pActor			=	smart_cast<CActor*>(pEntity);
 		if(pActor)
 		{
-			PIItem item		=  pActor->inventory().ActiveItem();
-			if(item && pActor->HUDview() && smart_cast<CHudItem*>(item))
-				(smart_cast<CHudItem*>(item))->OnDrawUI();
+			auto active_item	= pActor->inventory().ActiveItem();
+			auto pHudItem		= smart_cast<CHudItem*>(active_item);
+			if (active_item && pActor->HUDview() && pHudItem)
+				pHudItem->OnDrawUI();
+
+			auto torch_item		= pActor->inventory().ItemFromSlot(TORCH_SLOT);
+			auto pTorch			= smart_cast<CTorch*>(torch_item);
+			if (torch_item && pActor->HUDview() && pTorch)
+				pTorch->OnDrawUI();
 		}
 
 		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) )
