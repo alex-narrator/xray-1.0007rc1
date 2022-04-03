@@ -65,6 +65,7 @@ public:
 			shared_str	m_NightVisionSect;
 			shared_str	m_NightVisionTexture;
 protected:
+	bool					m_bTorchLightEnabled;
 	bool					m_bNightVisionEnabled;
 	CUIStaticItem*			m_UINightVision;
 public:

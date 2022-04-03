@@ -87,7 +87,10 @@ inline bool CTorch::can_use_dynamic_lights	()
 void CTorch::Load(LPCSTR section) 
 {
 	inherited::Load			(section);
-	light_trace_bone		= pSettings->r_string(section,"light_trace_bone");
+
+	m_bTorchLightEnabled = !!READ_IF_EXISTS(pSettings, r_bool, section, "torch_light", TRUE);
+	if (m_bTorchLightEnabled)
+		light_trace_bone		= pSettings->r_string(section,"light_trace_bone");
 
 
 	m_bNightVisionEnabled = !!pSettings->r_bool(section,"night_vision");
@@ -204,13 +207,15 @@ void CTorch::UpdateSwitchNightVision   ()
 
 void CTorch::Switch()
 {
-	if (OnClient()) return;
+	if (OnClient() || !m_bTorchLightEnabled) return;
 	bool bActive			= !m_switched_on;
 	Switch					(bActive);
 }
 
 void CTorch::Switch	(bool light_on)
 {
+	if (!m_bTorchLightEnabled) return;
+
 	m_switched_on			= light_on;
 	if (can_use_dynamic_lights())
 	{
@@ -270,7 +275,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	guid_bone				= K->LL_BoneID	(pUserData->r_string("torch_definition","guide_bone"));	VERIFY(guid_bone!=BI_NONE);
 
 //	Fcolor clr				= pUserData->r_fcolor				("torch_definition",(b_r2)?"color_r2":"color");
-	m_color					= pUserData->r_fcolor( "torch_definition", b_r2 ? "color_r2" : "color" );
+	m_color					= pUserData->r_fcolor				( "torch_definition", b_r2 ? "color_r2" : "color" );
 	fBrightness				= m_color.intensity();
 	float range				= pUserData->r_float				("torch_definition",(b_r2)?"range_r2":"range");
 	light_render->set_color	(m_color);
@@ -289,8 +294,11 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	glow_render->set_radius	(pUserData->r_float					("torch_definition","glow_radius"));
 
 	//включить/выключить фонарик
-	Switch					(torch->m_active);
-	VERIFY					(!torch->m_active || (torch->ID_Parent != 0xffff));
+	if (m_bTorchLightEnabled)
+	{
+		Switch(torch->m_active);
+		VERIFY(!torch->m_active || (torch->ID_Parent != 0xffff));
+	}
 	
 //	SwitchNightVision		(false);
 	if (m_bNightVisionEnabled)
@@ -337,7 +345,7 @@ void CTorch::UpdateCL()
 	
 	UpdateSwitchNightVision		();
 
-	if (!m_switched_on)			return;
+	if (!m_switched_on || !m_bTorchLightEnabled)			return;
 
 	CBoneInstance			&BI = smart_cast<CKinematics*>(Visual())->LL_GetBoneInstance(guid_bone);
 	Fmatrix					M;
