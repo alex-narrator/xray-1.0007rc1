@@ -44,15 +44,16 @@ void CEatableItem::Load(LPCSTR section)
 {
 	inherited::Load(section);
 
-	m_fHealthInfluence			= pSettings->r_float(section, "eat_health");
-	m_fPowerInfluence			= pSettings->r_float(section, "eat_power");
-	m_fSatietyInfluence			= pSettings->r_float(section, "eat_satiety");
-	m_fRadiationInfluence		= pSettings->r_float(section, "eat_radiation");
-	m_fWoundsHealPerc			= pSettings->r_float(section, "wounds_heal_perc");
+	m_fHealthInfluence			= READ_IF_EXISTS	(pSettings,r_float,section,"eat_health",		0.0f);//pSettings->r_float(section, "eat_health");
+	m_fPowerInfluence			= READ_IF_EXISTS	(pSettings,r_float,section,"eat_power",			0.0f);//pSettings->r_float(section, "eat_power");
+	m_fSatietyInfluence			= READ_IF_EXISTS	(pSettings,r_float,section,"eat_satiety",		0.0f);//pSettings->r_float(section, "eat_satiety");
+	m_fRadiationInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_radiation",		0.0f);//pSettings->r_float(section, "eat_radiation");
+	m_fPsyHealthInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_psyhealth",		0.0f);
+	m_fWoundsHealPerc			= READ_IF_EXISTS	(pSettings,r_float,section,"wounds_heal_perc",	0.0f);//pSettings->r_float(section, "wounds_heal_perc");
 	clamp						(m_fWoundsHealPerc, 0.f, 1.f);
 	
-	m_iStartPortionsNum			= pSettings->r_s32	(section, "eat_portions_num");
-	m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);
+	m_iStartPortionsNum			= READ_IF_EXISTS	(pSettings,r_s32,section,"eat_max_power",		1);//pSettings->r_s32	(section, "eat_portions_num");
+	m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",		0.0f);
 	VERIFY						(m_iPortionsNum<10000);
 
 	m_bUsePortionVolume			= !!READ_IF_EXISTS(pSettings, r_bool, section, "use_portion_volume", false);
@@ -134,6 +135,7 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 	entity_alive->conditions().ChangePower		(m_fPowerInfluence);
 	entity_alive->conditions().ChangeSatiety	(m_fSatietyInfluence * radiation_k);
 	entity_alive->conditions().ChangeRadiation	(m_fRadiationInfluence);
+	entity_alive->conditions().ChangePsyHealth	(m_fPsyHealthInfluence);
 	entity_alive->conditions().ChangeBleeding	(m_fWoundsHealPerc);
 	
 	entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
