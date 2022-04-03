@@ -20,14 +20,15 @@
 
 CEatableItem::CEatableItem()
 {
-	m_fHealthInfluence = 0;
-	m_fPowerInfluence = 0;
-	m_fSatietyInfluence = 0;
-	m_fRadiationInfluence = 0;
+	m_fHealthInfluence		= 0;
+	m_fPowerInfluence		= 0;
+	m_fSatietyInfluence		= 0;
+	m_fRadiationInfluence	= 0;
+	m_fPsyHealthInfluence	= 0;
 
-	m_iPortionsNum = -1;
+	m_iPortionsNum			= -1;
 
-	m_physic_item	= 0;
+	m_physic_item			= 0;
 }
 
 CEatableItem::~CEatableItem()
