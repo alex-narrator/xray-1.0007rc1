@@ -37,7 +37,7 @@ LPCSTR CMapSpot::GetHint()
 void CMapSpot::Update()
 {
 	inherited::Update();
-	if(m_bCursorOverWindow){
+	if (m_bCursorOverWindow && xr_strlen(GetHint())){
 		VERIFY(m_dwFocusReceiveTime>=0);
 		if( Device.dwTimeGlobal>(m_dwFocusReceiveTime+500) ){
 			GetMessageTarget()->SendMessage(this, MAP_SHOW_HINT, NULL);
@@ -64,11 +64,16 @@ bool CMapSpot::OnMouseDown		(int mouse_btn)
 	{
 		g_actor->callback(GameObject::eUIMapSpotClick)(
 			m_map_location->ObjectID(), 
-			m_map_location->m_type.c_str(),
+			m_map_location->GetType(),//m_type.c_str(),
 			m_map_location->GetHint()
 		);
 		return true;
 	}
+	else if (mouse_btn == MOUSE_2) {
+		GetMessageTarget()->SendMessage(this, MAP_SELECT_SPOT2);
+		return true;
+	}
+	else
 	return false;
 }
 
@@ -76,6 +81,7 @@ bool CMapSpot::OnMouseDown		(int mouse_btn)
 void CMapSpot::OnFocusLost		()
 {
 	inherited::OnFocusLost		();
+	if (xr_strlen(GetHint()))
 	GetMessageTarget()->SendMessage(this, MAP_HIDE_HINT, NULL);
 }
 

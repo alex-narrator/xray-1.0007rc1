@@ -55,12 +55,13 @@ void CUICustomMap::Init	(shared_str name, CInifile& gameLtx, LPCSTR sh_name)
 	ClipperOn			();
 }
 
-void rotation_(float x, float y, const float angle, float& x_, float& y_)
+void rotation_(float x, float y, const float angle, float& x_, float& y_, float _kx)
 {
 	float _sc = _cos(angle);
 	float _sn = _sin(angle);
 	x_= x*_sc+y*_sn;
 	y_= y*_sc-x*_sn;
+	x_ *= _kx;
 }
 
 Fvector2 CUICustomMap::ConvertLocalToReal(const Fvector2& src)
@@ -72,7 +73,7 @@ Fvector2 CUICustomMap::ConvertLocalToReal(const Fvector2& src)
 	return res;
 }
 
-Fvector2 CUICustomMap::ConvertRealToLocal  (const Fvector2& src)// meters->pixels (relatively own left-top pos)
+Fvector2 CUICustomMap::ConvertRealToLocal  (const Fvector2& src, bool for_drawing)// meters->pixels (relatively own left-top pos)
 {
 	Fvector2 res;
 	if( !Heading() ){
@@ -82,7 +83,7 @@ Fvector2 CUICustomMap::ConvertRealToLocal  (const Fvector2& src)// meters->pixel
 	
 		res = ConvertRealToLocalNoTransform(src);
 		res.sub(heading_pivot);
-		rotation_(res.x, res.y, GetHeading(), res.x, res.y);
+		rotation_(res.x, res.y, GetHeading(), res.x, res.y, for_drawing ? UI()->get_current_kx() : 1.0f);
 		res.add(heading_pivot);
 		return res;
 	};
@@ -274,7 +275,7 @@ void CUIGlobalMap::ClipByVisRect()
 	SetWndPos				(r.x1,r.y1);
 }
 
-Fvector2 CUIGlobalMap::ConvertRealToLocal(const Fvector2& src)// pixels->pixels (relatively own left-top pos)
+Fvector2 CUIGlobalMap::ConvertRealToLocal(const Fvector2& src, bool for_drawing)// pixels->pixels (relatively own left-top pos)
 {
 	Fvector2 res;
 	res.x = (src.x-m_BoundRect.lt.x) * GetCurrentZoom();
@@ -421,8 +422,8 @@ Frect CUILevelMap::CalcWndRectOnGlobal	()
 	Frect res;
 	CUIGlobalMap* globalMap			= MapWnd()->GlobalMap();
 
-	res.lt							= globalMap->ConvertRealToLocal(GlobalRect().lt);
-	res.rb							= globalMap->ConvertRealToLocal(GlobalRect().rb);
+	res.lt							= globalMap->ConvertRealToLocal(GlobalRect().lt, false);
+	res.rb							= globalMap->ConvertRealToLocal(GlobalRect().rb, false);
 	res.add							(globalMap->GetWndPos().x, globalMap->GetWndPos().y);
 
 	return res;
@@ -434,9 +435,9 @@ void CUILevelMap::Update()
 	Frect			rect;
 	Fvector2		tmp;
 
-	tmp								= w->ConvertRealToLocal(GlobalRect().lt);
+	tmp								= w->ConvertRealToLocal(GlobalRect().lt, false);
 	rect.lt							= tmp;
-	tmp								= w->ConvertRealToLocal(GlobalRect().rb);
+	tmp								= w->ConvertRealToLocal(GlobalRect().rb, false);
 	rect.rb							= tmp;
 
 	SetWndRect						(rect);
@@ -463,25 +464,31 @@ void CUILevelMap::Update()
 #include "../script_game_object.h"
 #include "../Actor.h"
 #include "../UICursor.h"
+#include "../UIGameSP.h"
+#include "../HUDManager.h"
+#include "UiPdaWnd.h"
 
 bool CUILevelMap::OnMouse	(float x, float y, EUIMessages mouse_action)
 {
 	if (inherited::OnMouse(x,y,mouse_action))	return true;
 	if (MapWnd()->GlobalMap()->Locked())		return true;
-/*
-	if (MapWnd()->m_flags.is_any(CUIMapWnd::lmZoomIn+CUIMapWnd::lmZoomOut))	return false;
 
-	if (mouse_action == WINDOW_LBUTTON_DOWN)
-	{
-		if (MapWnd()->m_flags.test(CUIMapWnd::lmUserSpotAdd) )
-			MapWnd()->AddUserSpot(this);
-		else
-		if(fsimilar(MapWnd()->GlobalMap()->GetCurrentZoom(), MapWnd()->GlobalMap()->GetMinZoom(),EPS_L) )
-			MapWnd()->SetTargetMap( this, true );
-		return true;
-	};
-*/
-	// Real Wolf: Колбек с позицией и названием карты при клике по самой карте. 03.08.2014.
+	if (mouse_action == WINDOW_LBUTTON_DB_CLICK) {
+		auto ui_game_sp = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+		if (ui_game_sp->PdaMenu->m_pActiveSection == EPdaTabs::eptMap) {
+			Fvector RealPosition;
+			if (MapWnd()->ConvertCursorPosToMap(&RealPosition, this))
+			{
+				CMapLocation* _mapLoc = MapWnd()->UnderSpot(RealPosition, this);
+				if (!_mapLoc)
+				{
+					MapWnd()->CreateSpotWindow(RealPosition, MapName());
+					return true;
+				}
+			}
+		}
+	}
+	else	
 	if (mouse_action == WINDOW_LBUTTON_DOWN)
 	{
 		Fvector2 cursor_pos =			GetUICursor()->GetCursorPosition();
@@ -492,12 +499,12 @@ bool CUILevelMap::OnMouse	(float x, float y, EUIMessages mouse_action)
 		Fvector pos;
 		pos.set							(p.x, 0.0f, p.y);
 
-		g_actor->callback(GameObject::eUIMapClick)(pos, MapName().c_str() );
+		g_actor->callback(GameObject::eUIMapClick)(pos, MapName().c_str() ); // Real Wolf: Колбек с позицией и названием карты при клике по самой карте. 03.08.2014.
 	}
-
-	if(mouse_action==WINDOW_MOUSE_MOVE && (FALSE==pInput->iGetAsyncBtnState(0)) )
+	else 
+	if (mouse_action == WINDOW_MOUSE_MOVE) 
 	{
-		if( MapWnd() )
+		if (MapWnd() && !pInput->iGetAsyncBtnState(0))
 		{
 			MapWnd()->Hint	(MapName());
 			return			true;
@@ -511,20 +518,24 @@ void	CUILevelMap::SendMessage			(CUIWindow* pWnd, s16 msg, void* pData)
 {
 	inherited::SendMessage(pWnd, msg, pData);
 
-	if(msg==MAP_SHOW_HINT){
-		CMapSpot* sp =smart_cast<CMapSpot*>(pWnd);VERIFY(sp);
+	switch (msg)
+	{
+	case MAP_SELECT_SPOT2:
+	{
+		auto* ui_game_sp = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+		if (ui_game_sp->PdaMenu->m_pActiveSection == EPdaTabs::eptMap) //правильнее было бы проверять там, откуда вызвали, но надо кучу инклудов... да ну нахер возиться.
+			MapWnd()->ActivatePropertiesBox(pWnd);
+	} break;
+	case MAP_SHOW_HINT:
+	{
+		CMapSpot* sp = smart_cast<CMapSpot*>(pWnd); VERIFY(sp);
 		MapWnd()->ShowHint(pWnd, sp->GetHint());
-	}else
-	if(msg==MAP_HIDE_HINT){
+	} break;
+	case MAP_HIDE_HINT:
 		MapWnd()->HideHint(pWnd);
+		break;
+	default: break;
 	}
-	/*
-	else
-	if(msg==MAP_SELECT_SPOT){
-		CMapSpot* sp =smart_cast<CMapSpot*>(pWnd);VERIFY(sp);
-		MapWnd()->Select(sp->MapLocation());
-	}	
-*/
 }
 
 void CUILevelMap::OnFocusLost			()

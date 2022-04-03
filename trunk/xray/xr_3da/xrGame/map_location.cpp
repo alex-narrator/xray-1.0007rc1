@@ -25,7 +25,7 @@
 #include "visual_memory_manager.h"
 #include "location_manager.h"
 
-CMapLocation::CMapLocation(LPCSTR type, u16 object_id)
+CMapLocation::CMapLocation(LPCSTR type, u16 object_id, bool is_user_loc)
 {
 	m_flags.zero			();
 	m_level_spot			= NULL;
@@ -36,8 +36,13 @@ CMapLocation::CMapLocation(LPCSTR type, u16 object_id)
 	m_level_map_spot_border	= NULL;
 	m_mini_map_spot_border	= NULL;
 
+	if (is_user_loc)
+		m_flags.set(eUserDefined, TRUE);
+
 	m_objectID				= object_id;
 	m_actual_time			= 0;
+
+	m_owner_se_object = (ai().get_alife() && !IsUserDefined()) ? ai().alife().objects().object(m_objectID, true) : nullptr;
 
 	LoadSpot				(type, false);
 	m_refCount				= 1;
@@ -46,6 +51,7 @@ CMapLocation::CMapLocation(LPCSTR type, u16 object_id)
 
 	EnableSpot				();
 	m_cached.m_updatedFrame = u32(-1);
+	m_cached.m_graphID = GameGraph::_GRAPH_ID(-1);
 }
 
 CMapLocation::~CMapLocation()
@@ -76,7 +82,7 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 //	strconcat(path_base,"map_spots:",type);
 	strcpy_s		(path_base,type);
 	R_ASSERT3		(g_uiSpotXml->NavigateToNode(path_base,0), "XML node not found in file map_spots.xml", path_base);
-	LPCSTR s		= g_uiSpotXml->ReadAttrib(path_base, 0, "hint", "no hint");
+	LPCSTR s		= g_uiSpotXml->ReadAttrib(path_base, 0, "hint", "");
 	SetHint			(s);
 	
 	// Real Wolf. 03.08.2014.
@@ -155,8 +161,21 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 		DisableSpot	();
 }
 
+void CMapLocation::InitUserSpot(const shared_str& level_name, const Fvector& pos)
+{
+	m_cached.m_LevelName = level_name;
+	m_position_global = pos;
+	m_position_on_map.set(pos.x, pos.z);
+	m_cached.m_graphID = GameGraph::_GRAPH_ID(-1); //Насколько я вижу в коде, таким меткам геймвертекс вообще не нужен. Он нужен только тем меткам, на которые может указывать стрелка, т.е. квестовым.
+	m_cached.m_Position.set(pos.x, pos.z);
+	m_cached.m_Direction.set(0.f, 0.f);
+}
+
 Fvector2 CMapLocation::Position()
 {
+	if (IsUserDefined())
+		return m_cached.m_Position;
+
 	if(m_cached.m_updatedFrame==Device.dwFrame) 
 		return m_cached.m_Position;
 
@@ -174,9 +193,11 @@ Fvector2 CMapLocation::Position()
 	if(!pObject){
 		if(ai().get_alife())		
 		{
-			CSE_ALifeDynamicObject* O = ai().alife().objects().object(m_objectID,true);
+/*			CSE_ALifeDynamicObject* O = ai().alife().objects().object(m_objectID,true);
 			if(O){
-				m_position_global = O->draw_level_position();
+				m_position_global = O->draw_level_position();*/
+					if (m_owner_se_object){
+						m_position_global = m_owner_se_object->draw_level_position();
 				pos.set(m_position_global.x, m_position_global.z);
 			}
 		}
@@ -193,7 +214,7 @@ Fvector2 CMapLocation::Position()
 
 Fvector2 CMapLocation::Direction()
 {
-	if(m_cached.m_updatedFrame==Device.dwFrame) 
+	if (IsUserDefined() || m_cached.m_updatedFrame == Device.dwFrame)
 		return m_cached.m_Direction;
 
 	Fvector2 res;
@@ -229,7 +250,7 @@ Fvector2 CMapLocation::Direction()
 
 shared_str CMapLocation::LevelName()
 {
-	if(m_cached.m_updatedFrame==Device.dwFrame) 
+/*	if(m_cached.m_updatedFrame==Device.dwFrame) 
 		return m_cached.m_LevelName;
 
 	if(ai().get_alife() && ai().get_game_graph())		
@@ -251,7 +272,27 @@ shared_str CMapLocation::LevelName()
 	}else{
 		m_cached.m_LevelName = Level().name();
 		return m_cached.m_LevelName;
+	}*/
+	if (IsUserDefined())
+		return m_cached.m_LevelName;
+
+	if (m_owner_se_object && ai().get_game_graph())
+	{
+		if (m_cached.m_graphID != m_owner_se_object->m_tGraphID)
+		{
+			m_cached.m_LevelName = ai().game_graph()
+				.header()
+				.level(ai().game_graph().vertex(m_owner_se_object->m_tGraphID)->level_id())
+				.name();
+			m_cached.m_graphID = m_owner_se_object->m_tGraphID;
+		}
 	}
+	else
+	{
+		m_cached.m_LevelName = Level().name();
+	}
+
+	return  m_cached.m_LevelName;
 }
 
 bool CMapLocation::Update() //returns actual
@@ -280,7 +321,7 @@ bool CMapLocation::Update() //returns actual
 	}
 	
 	//single
-	if(pObject){
+/*	if(pObject){
 			m_cached.m_Actuality		= true;
 			Position					();
 			Direction					();
@@ -303,7 +344,20 @@ bool CMapLocation::Update() //returns actual
 
 	m_cached.m_Actuality				= false;
 	m_cached.m_updatedFrame				= Device.dwFrame;
-	return								m_cached.m_Actuality;
+	return								m_cached.m_Actuality;*/
+	if (m_owner_se_object) {
+		m_cached.m_Actuality = true;
+		Position();
+		Direction();
+		LevelName();
+	}
+	else if (IsUserDefined())
+		m_cached.m_Actuality = true;
+	else
+		m_cached.m_Actuality = false;
+
+	m_cached.m_updatedFrame = Device.dwFrame;
+	return m_cached.m_Actuality;
 }
 
 extern xr_vector<CLevelChanger*>	g_lchangers;
@@ -337,7 +391,7 @@ void CMapLocation::UpdateSpot(CUICustomMap* map, CMapSpot* sp )
 		//update spot position
 		Fvector2 position = Position();
 
-		m_position_on_map =	map->ConvertRealToLocal(position);
+		m_position_on_map = map->ConvertRealToLocal(position, true);
 
 		sp->SetWndPos(m_position_on_map);
 		Frect wnd_rect = sp->GetWndRect();
@@ -345,7 +399,7 @@ void CMapLocation::UpdateSpot(CUICustomMap* map, CMapSpot* sp )
 		if( map->IsRectVisible(wnd_rect) ) {
 
 			//update heading if needed
-			if( sp->Heading() ){
+			if (!IsUserDefined() && sp->Heading()){
 				Fvector2 dir_global = Direction();
 				float h = dir_global.getH();
 				float h_ = map->GetHeading()+h;
@@ -377,9 +431,10 @@ void CMapLocation::UpdateSpot(CUICustomMap* map, CMapSpot* sp )
 			R_ASSERT(obj);
 			dest_graph_id		= obj->m_tGraphID;
 		}else{
-			CUserDefinedMapLocation	*temp = smart_cast<CUserDefinedMapLocation*>(this);
+/*			CUserDefinedMapLocation	*temp = smart_cast<CUserDefinedMapLocation*>(this);
 			VERIFY					(temp);
-			dest_graph_id			= temp->m_graph_id;
+			dest_graph_id			= temp->m_graph_id;*/
+			dest_graph_id = m_cached.m_graphID;
 		}
 
 		map_point_path.clear();
@@ -435,7 +490,7 @@ void CMapLocation::UpdateSpot(CUICustomMap* map, CMapSpot* sp )
 			if(bDone){
 				Fvector2 position;
 				position.set			((*lit)->Position().x, (*lit)->Position().z);
-				m_position_on_map		= map->ConvertRealToLocal(position);
+				m_position_on_map		= map->ConvertRealToLocal(position, false);
 				UpdateSpotPointer		(map, GetSpotPointer(sp));
 			}
 		}
@@ -493,11 +548,32 @@ u16	CMapLocation::AddRef()
 	return m_refCount;
 };
 
+void CMapLocation::HighlightSpot(bool state, const Fcolor& color)
+{
+	CUIStatic* st = smart_cast<CUIStatic*>(m_level_spot);
+	if (state)
+	{
+		u32 clr = color_rgba((u32)color.r, (u32)color.g, (u32)color.b, (u32)color.a);
+		st->SetTextureColor(clr);
+	}
+	else
+	{
+		if (st->GetTextureColor() != 0xffffffff)
+			st->SetTextureColor(0xffffffff);
+	}
+}
+
 void CMapLocation::save(IWriter &stream)
 {
 	stream.w_u16	(RefCount());
 	stream.w_stringZ(m_hint);
 	stream.w_u32	(m_flags.flags);
+
+	if (IsUserDefined())
+	{
+		save_data(m_cached.m_LevelName, stream);
+		save_data(m_cached.m_Position, stream);
+	}
 }
 
 void CMapLocation::load(IReader &stream)
@@ -508,6 +584,14 @@ void CMapLocation::load(IReader &stream)
 	SetHint			(hint.c_str());
 	SetRefCount		(c);
 	m_flags.flags	= stream.r_u32	();
+
+	if (IsUserDefined())
+	{
+		load_data(m_cached.m_LevelName, stream);
+		load_data(m_cached.m_Position, stream);
+		m_position_on_map = m_cached.m_Position;
+		m_position_global.set(m_position_on_map.x, 0.f, m_position_on_map.y);
+	}
 }
 
 void CMapLocation::SetHint	(const shared_str& hint)		
@@ -520,6 +604,11 @@ LPCSTR CMapLocation::GetHint	()
 	CStringTable	stbl;
 	return *stbl.translate(m_hint);
 };
+
+Fvector2 CMapLocation::SpotSize()
+{
+	return m_level_spot->GetWndSize();
+}
 
 CMapSpotPointer* CMapLocation::GetSpotPointer(CMapSpot* sp)
 {
@@ -655,7 +744,7 @@ void CRelationMapLocation::Dump							()
 	Msg("--CRelationMapLocation m_curr_spot_name=[%s]",*m_curr_spot_name);
 }
 #endif
-
+/*
 CUserDefinedMapLocation::CUserDefinedMapLocation		(LPCSTR type, u16 object_id)
 :inherited(type, object_id)
 {
@@ -740,3 +829,4 @@ void CUserDefinedMapLocation::Dump							()
 	Msg("--CUserDefinedMapLocation");
 }
 #endif
+*/

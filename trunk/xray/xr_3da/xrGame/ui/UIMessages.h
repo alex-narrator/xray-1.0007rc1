@@ -145,7 +145,11 @@ enum EUIMessages
 	EDIT_TEXT_COMMIT,
 	MAP_SHOW_HINT,
 	MAP_HIDE_HINT,
-	MAP_SELECT_SPOT,
+//	MAP_SELECT_SPOT,
+	MAP_SELECT_SPOT2,
+	MAP_REMOVE_SPOT_ACT,
+	MAP_CHANGE_SPOT_HINT_ACT,
+
 #if defined(INV_NEW_SLOTS_SYSTEM) || defined(INV_DOUBLE_WPN_SLOTS)
 	// Для контекстного меню равнозначных слотов оружия. Real Wolf.
 	INVENTORY_TO_SLOT0_ACTION,

@@ -16,6 +16,9 @@ class CUI3tButton;
 class CUILevelMap;
 class CUIMapHint;
 class CMapLocation;
+class CUIPropertiesBox;
+class CUIPdaSpot;
+class CUILevelMap;
 
 DEFINE_MAP(shared_str,CUICustomMap*,GameMaps,GameMapsPairIt);
 
@@ -75,6 +78,13 @@ private:
 
 
 public:
+	// qweasdd: from lost alpha
+	bool						ConvertCursorPosToMap(Fvector*, CUICustomMap*);
+	void						CreateSpotWindow(Fvector, shared_str);
+	CMapLocation*				UnderSpot(Fvector RealPosition, CUICustomMap*);
+	//-qweasdd
+	void 						ActivatePropertiesBox(CUIWindow* w);
+
 	CUICustomMap*				m_tgtMap;
 	Fvector2					m_tgtCenter;
 public:
@@ -104,6 +114,11 @@ public:
 	void						SetTargetMap			(const shared_str& name, bool bZoomIn = false);
 //.	void						AddUserSpot				(CUILevelMap*);
 //.	void						Select					(CMapLocation* ml);
+
+	CUIPropertiesBox*			m_UIPropertiesBox;
+	CUIPdaSpot*					m_UserSpotWnd;
+	CMapLocation*				m_cur_location;
+	void						ShowSettingsWindow		(u16 id, Fvector position, shared_str levelName);
 
 	Frect						ActiveMapRect			()		{Frect r; m_UILevelFrame->GetAbsoluteRect(r); return r;};
 	void						AddMapToRender			(CUICustomMap*);
