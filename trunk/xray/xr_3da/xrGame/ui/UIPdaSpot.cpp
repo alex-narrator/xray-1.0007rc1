@@ -14,7 +14,7 @@
 CUIPdaSpot::CUIPdaSpot()
 {
 	m_mainWnd = false;
-	m_levelName = nullptr;
+	m_levelName = NULL;
 	m_position = Fvector();
 
 	m_spotID = u16(-1);
@@ -134,10 +134,11 @@ bool CUIPdaSpot::OnKeyboard(int dik, EUIMessages keyboard_action)
 	switch (dik)
 	{
 	case DIK_RETURN:
+	case DIK_NUMPADENTER:
 	{
 		if (IsShown())
 		{
-			OnApply(nullptr, nullptr);
+			OnApply(NULL, NULL);
 			return true;
 		}
 	}break;

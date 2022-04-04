@@ -43,8 +43,8 @@ CUIMapWnd::CUIMapWnd()
 //.	m_selected_location		= NULL;
 	m_text_hint				= NULL;
 
-	m_UserSpotWnd			= nullptr;
-	m_cur_location			= nullptr;
+	m_UserSpotWnd			= NULL;
+	m_cur_location			= NULL;
 }
 
 CUIMapWnd::~CUIMapWnd()
