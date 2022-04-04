@@ -647,8 +647,6 @@ bool CUIMapWnd::ConvertCursorPosToMap(Fvector* return_position, CUICustomMap* cu
 		return false;
 	cursor_pos.sub(box_rect.lt);
 	Frect bound_rect = curr_map->BoundRect();
-/*	bound_rect.lt.x /= UI()->get_current_kx();
-	bound_rect.rb.x /= UI()->get_current_kx();*/ //у мене цей код призводить до упливання міток у сторони. без нього - все ставиться там де треба
 	return_position->x = bound_rect.lt.x + cursor_pos.x / (box_rect.width() / bound_rect.width());
 	return_position->y = 0.f;
 	return_position->z = bound_rect.height() + bound_rect.lt.y - cursor_pos.y / (box_rect.height() / bound_rect.height());
@@ -667,14 +665,14 @@ CMapLocation* CUIMapWnd::UnderSpot(Fvector RealPosition, CUICustomMap* curr_map)
 	RealPositionXZ.set(RealPosition.x, RealPosition.z);
 	Locations Spots = Level().MapManager().Locations();
 	Fvector2 m_position_on_map;
-	Fvector2 m_position_mouse = curr_map->ConvertRealToLocal(RealPositionXZ, false);
+	Fvector2 m_position_mouse = curr_map->ConvertRealToLocal(RealPositionXZ);
 	float TargetLocationDistance = 100.0f;
 	CMapLocation* ml = nullptr;
 	for (auto it = Spots.begin(); it != Spots.end(); ++it)
 	{
 		if ((*it).location->IsUserDefined())
 		{
-			m_position_on_map = curr_map->ConvertRealToLocal((*it).location->Position(), false);
+			m_position_on_map = curr_map->ConvertRealToLocal((*it).location->Position());
 			float distance = m_position_on_map.distance_to(m_position_mouse);
 			Fvector2 FvectorSize = (*it).location->SpotSize();
 			float size = (FvectorSize.x + FvectorSize.y) / 2;

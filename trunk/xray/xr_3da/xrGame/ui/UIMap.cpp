@@ -55,13 +55,12 @@ void CUICustomMap::Init	(shared_str name, CInifile& gameLtx, LPCSTR sh_name)
 	ClipperOn			();
 }
 
-void rotation_(float x, float y, const float angle, float& x_, float& y_, float _kx)
+void rotation_(float x, float y, const float angle, float& x_, float& y_)
 {
 	float _sc = _cos(angle);
 	float _sn = _sin(angle);
 	x_= x*_sc+y*_sn;
 	y_= y*_sc-x*_sn;
-	x_ *= _kx;
 }
 
 Fvector2 CUICustomMap::ConvertLocalToReal(const Fvector2& src)
@@ -73,7 +72,7 @@ Fvector2 CUICustomMap::ConvertLocalToReal(const Fvector2& src)
 	return res;
 }
 
-Fvector2 CUICustomMap::ConvertRealToLocal  (const Fvector2& src, bool for_drawing)// meters->pixels (relatively own left-top pos)
+Fvector2 CUICustomMap::ConvertRealToLocal  (const Fvector2& src)// meters->pixels (relatively own left-top pos)
 {
 	Fvector2 res;
 	if( !Heading() ){
@@ -83,7 +82,7 @@ Fvector2 CUICustomMap::ConvertRealToLocal  (const Fvector2& src, bool for_drawin
 	
 		res = ConvertRealToLocalNoTransform(src);
 		res.sub(heading_pivot);
-		rotation_(res.x, res.y, GetHeading(), res.x, res.y, for_drawing ? UI()->get_current_kx() : 1.0f);
+		rotation_(res.x, res.y, GetHeading(), res.x, res.y);
 		res.add(heading_pivot);
 		return res;
 	};
@@ -275,7 +274,7 @@ void CUIGlobalMap::ClipByVisRect()
 	SetWndPos				(r.x1,r.y1);
 }
 
-Fvector2 CUIGlobalMap::ConvertRealToLocal(const Fvector2& src, bool for_drawing)// pixels->pixels (relatively own left-top pos)
+Fvector2 CUIGlobalMap::ConvertRealToLocal(const Fvector2& src)// pixels->pixels (relatively own left-top pos)
 {
 	Fvector2 res;
 	res.x = (src.x-m_BoundRect.lt.x) * GetCurrentZoom();
@@ -422,8 +421,8 @@ Frect CUILevelMap::CalcWndRectOnGlobal	()
 	Frect res;
 	CUIGlobalMap* globalMap			= MapWnd()->GlobalMap();
 
-	res.lt							= globalMap->ConvertRealToLocal(GlobalRect().lt, false);
-	res.rb							= globalMap->ConvertRealToLocal(GlobalRect().rb, false);
+	res.lt							= globalMap->ConvertRealToLocal(GlobalRect().lt);
+	res.rb							= globalMap->ConvertRealToLocal(GlobalRect().rb);
 	res.add							(globalMap->GetWndPos().x, globalMap->GetWndPos().y);
 
 	return res;
@@ -435,9 +434,9 @@ void CUILevelMap::Update()
 	Frect			rect;
 	Fvector2		tmp;
 
-	tmp								= w->ConvertRealToLocal(GlobalRect().lt, false);
+	tmp								= w->ConvertRealToLocal(GlobalRect().lt);
 	rect.lt							= tmp;
-	tmp								= w->ConvertRealToLocal(GlobalRect().rb, false);
+	tmp								= w->ConvertRealToLocal(GlobalRect().rb);
 	rect.rb							= tmp;
 
 	SetWndRect						(rect);

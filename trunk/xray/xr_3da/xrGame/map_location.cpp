@@ -391,7 +391,7 @@ void CMapLocation::UpdateSpot(CUICustomMap* map, CMapSpot* sp )
 		//update spot position
 		Fvector2 position = Position();
 
-		m_position_on_map = map->ConvertRealToLocal(position, true);
+		m_position_on_map = map->ConvertRealToLocal(position);
 
 		sp->SetWndPos(m_position_on_map);
 		Frect wnd_rect = sp->GetWndRect();
@@ -490,7 +490,7 @@ void CMapLocation::UpdateSpot(CUICustomMap* map, CMapSpot* sp )
 			if(bDone){
 				Fvector2 position;
 				position.set			((*lit)->Position().x, (*lit)->Position().z);
-				m_position_on_map		= map->ConvertRealToLocal(position, false);
+				m_position_on_map		= map->ConvertRealToLocal(position);
 				UpdateSpotPointer		(map, GetSpotPointer(sp));
 			}
 		}
