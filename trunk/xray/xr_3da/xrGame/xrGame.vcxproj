@@ -568,7 +568,7 @@
       </MapFileName>
       <SubSystem>NotSet</SubSystem>
       <LargeAddressAware>true</LargeAddressAware>
-      <OptimizeReferences>true</OptimizeReferences>
+      <OptimizeReferences>false</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <ImportLibrary>$(SolutionDir)\libraries\$(ProjectName).lib</ImportLibrary>
