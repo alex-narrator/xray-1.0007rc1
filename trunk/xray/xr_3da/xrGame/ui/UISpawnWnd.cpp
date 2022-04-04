@@ -83,9 +83,9 @@ void CUISpawnWnd::InitTeamLogo(){
 #pragma todo("Satan -> Satan : adopt to fixed texture size")
 
 	m_pImage1->InitTexture(pSettings->r_string("team_logo", "team1"));
-	m_pImage1->RescaleRelative2Rect(m_pImage1->GetStaticItem()->GetOriginalRect());
+//	m_pImage1->RescaleRelative2Rect(m_pImage1->GetStaticItem()->GetOriginalRect());
 	m_pImage2->InitTexture(pSettings->r_string("team_logo", "team2"));
-	m_pImage2->RescaleRelative2Rect(m_pImage2->GetStaticItem()->GetOriginalRect());
+//	m_pImage2->RescaleRelative2Rect(m_pImage2->GetStaticItem()->GetOriginalRect());
 }
 
 void CUISpawnWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
