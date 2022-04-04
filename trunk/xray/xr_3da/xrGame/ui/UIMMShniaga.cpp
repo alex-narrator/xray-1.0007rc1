@@ -121,6 +121,8 @@ void CUIMMShniaga::OnDeviceReset()
 		m_anims[0]->SetWndSize(m_wheel_size[0]);
 		m_anims[1]->SetWndSize(m_wheel_size[0]);
 	}
+
+	m_sound->music_Play();
 }
 
 extern CActor*		g_actor;
