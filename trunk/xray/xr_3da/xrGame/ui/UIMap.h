@@ -4,6 +4,7 @@
 
 class CUIGlobalMapSpot;
 class CUIMapWnd;
+class CInifile;
 
 class CUICustomMap : public CUIStatic, public CUIWndCallback
 {

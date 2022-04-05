@@ -42,11 +42,13 @@ protected:
 
 	// Текущий активный диалог
 	CUIWindow*				m_pActiveDialog;
-	EPdaTabs				m_pActiveSection;
+//	EPdaTabs				m_pActiveSection;
 	xr_vector<Fvector2>		m_sign_places_main;
 
 public:
 	// Поддиалоги PDA
+	EPdaTabs				m_pActiveSection;
+
 	CUIMapWnd*				UIMapWnd;
 	CUIPdaContactsWnd*		UIPdaContactsWnd;
 	CUIEncyclopediaWnd*		UIEncyclopediaWnd;
@@ -70,7 +72,7 @@ public:
 	virtual bool			OnMouse				(float x, float y, EUIMessages mouse_action) {CUIDialogWnd::OnMouse(x,y,mouse_action);return true;} //always true because StopAnyMove() == false
 	
 	void					SetActiveSubdialog	(EPdaTabs section);
-	virtual bool			StopAnyMove			(){return false;}
+	virtual bool			StopAnyMove			();//{return false;}
 
 			void			PdaContentsChanged	(pda_section::part type);
 };

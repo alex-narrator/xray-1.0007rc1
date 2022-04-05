@@ -6578,6 +6578,9 @@
     <ClInclude Include="BackPack.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UIPdaSpot.h">
+      <Filter>AI\AScript\ScriptClasses\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9746,6 +9749,9 @@
     </ClCompile>
     <ClCompile Include="BackPack.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIPdaSpot.cpp">
+      <Filter>AI\AScript\ScriptClasses\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

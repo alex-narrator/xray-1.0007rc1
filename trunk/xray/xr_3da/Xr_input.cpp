@@ -166,12 +166,17 @@ void CInput::KeyUpdate	( )
 
 	for (u32 i = 0; i < dwElements; i++)
 	{
-		key					= od[i].dwOfs;
-		KBState[key]		= od[i].dwData & 0x80;
-		if ( KBState[key])	
-			cbStack.back()->IR_OnKeyboardPress	( key );
-		if (!KBState[key])	
-			cbStack.back()->IR_OnKeyboardRelease	( key );
+		key = od[i].dwOfs;
+		KBState[key] = od[i].dwData & 0x80;
+		if (KBState[key]) {
+			if (DISCL_EXCLUSIVE && (key == DIK_LSHIFT || key == DIK_RSHIFT) && (this->iGetAsyncKeyState(DIK_LMENU) || this->iGetAsyncKeyState(DIK_RMENU)))
+				PostMessage(gGameWindow, WM_INPUTLANGCHANGEREQUEST, 2, 0); //Переключили язык. В эксклюзивном режиме это обязательно для правильной работы функции DikToChar
+
+			cbStack.back()->IR_OnKeyboardPress(key);
+		}
+		else {
+			cbStack.back()->IR_OnKeyboardRelease(key);
+		}
 	}
 	for ( i = 0; i < COUNT_KB_BUTTONS; i++ )
 		if (KBState[i]) 

@@ -34,6 +34,7 @@ CUILines::CUILines()
 	m_pFont = UI()->Font()->pFontLetterica16Russian;
 	m_cursor_pos.set(0,0);
 	m_iCursorPos = 0;
+	m_bDrawCursor = false;
 }
 
 CUILines::~CUILines(){
@@ -192,7 +193,7 @@ void CUILines::ParseText(){
 			xr_free( line );
 			line=ptmp_line;
 		} else
-			line->ProcessNewLines(); // process "\n"
+			line->ProcessNewLines(m_iCursorPos); // process "\n"
 
 	if ( m_pFont->IsMultibyte() ) {
 		#define UBUFFER_SIZE 100
@@ -248,7 +249,7 @@ void CUILines::ParseText(){
 		string4096								buff;
 		float curr_width						= 0.0f;
 		bool bnew_line							= false;
-		float __eps								= get_str_width(m_pFont,'o');//hack -(
+		float __eps								= get_str_width(m_pFont,'w');//hack -(
 		for(u32 sbl_idx=0; sbl_idx<sbl_cnt; ++sbl_idx)
 		{
 			bool b_last_subl					= (sbl_idx==sbl_cnt-1);
@@ -341,7 +342,14 @@ void CUILines::Draw(float x, float y){
 	static string256 passText;
 
 	if (m_text.empty())
+	{
+		if (m_bDrawCursor)
+		{
+			DrawCursor(x + GetIndentByAlign(), y + GetVIndentByAlign());
+		}
+
 		return;
+	}
 
 	R_ASSERT(m_pFont);
 	m_pFont->SetColor(m_dwTextColor);
@@ -392,7 +400,36 @@ void CUILines::Draw(float x, float y){
 
 	}
 
+	if (m_bDrawCursor)
+	{
+		UpdateCursor();
+
+		DrawCursor(x + GetIndentByAlign(), y + GetVIndentByAlign());
+	}
+
 	m_pFont->OnRender();
+}
+
+void CUILines::DrawCursor(float x, float y) {
+	Fvector2							outXY;
+
+	outXY.x = 0.0f;
+	float _h = m_pFont->CurrentHeight_();
+	UI()->ClientToScreenScaledHeight(_h);
+	outXY.y = y + (_h + m_interval) * m_cursor_pos.y;
+
+	float								_w_tmp;
+	int i = m_cursor_pos.x;
+	string256							buff;
+	strncpy(buff, m_text.c_str(), i);
+	buff[i] = 0;
+	_w_tmp = m_pFont->SizeOf_(buff);
+	UI()->ClientToScreenScaledWidth(_w_tmp);
+	outXY.x = x + _w_tmp;
+
+	UI()->ClientToScreenScaled(outXY);
+
+	m_pFont->Out(outXY.x, outXY.y, "_");
 }
 
 void CUILines::Draw(){

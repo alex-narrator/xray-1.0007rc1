@@ -29,6 +29,9 @@ private:
 	lanim_cont				m_lanim_xform;
 	void					EnableHeading_int		(bool b)				{m_bHeading = b;}
 
+	bool					m_lanim_clr_completed;
+	bool					m_lanim_xform_completed;
+
 	// Real Wolf. 25.07.2014.
 	shared_str				m_texture;
 	shared_str				m_shader;
@@ -47,7 +50,7 @@ public:
 	virtual void	Draw					();
 	virtual void	Update					();
 	//
-			void	RescaleRelative2Rect(const Frect& r);	//need to save proportions of texture			
+//			void	RescaleRelative2Rect(const Frect& r);	//need to save proportions of texture			
 
 	// IUISingleTextureOwner--------------------------------------------------------------------------------
 	virtual void		CreateShader				(const char* tex, const char* sh = "hud\\default");
@@ -211,7 +214,11 @@ protected:
 	Frect	m_ClipRect;
 
 private:
-	Frect	m_xxxRect; // need by RescaleRelative2Rect(Frect& r). it is initializes only once in Init(x,y,width,height)
+//	Frect	m_xxxRect; // need by RescaleRelative2Rect(Frect& r). it is initializes only once in Init(x,y,width,height)
+	Frect	m_originalSizeRect; // need by RescaleRelative2Rect(Frect& r). it is initializes only once in Init(x,y,width,height)
+
+	u32 m_originalColor;
+	u32 m_originalTextColor;
 
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION

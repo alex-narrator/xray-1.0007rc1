@@ -25,11 +25,13 @@ enum ELocationFlags
 };
 
 protected:
+	LPCSTR					m_type;
 	flags32					m_flags;
 	shared_str				m_hint;
 
 
 	u16						m_objectID;
+	CSE_ALifeDynamicObject* m_owner_se_object;
 	u16						m_refCount;
 	int						m_ttl;
 	u32						m_actual_time;
@@ -38,6 +40,7 @@ protected:
 
 	struct SCachedValues{
 		u32					m_updatedFrame;
+		GameGraph::_GRAPH_ID m_graphID;
 		Fvector2			m_Position;
 		Fvector2			m_Direction;
 		shared_str			m_LevelName;
@@ -54,7 +57,7 @@ protected :
 	CMapSpotPointer*		GetSpotPointer					(CMapSpot* sp);
 	CMapSpot*				GetSpotBorder					(CMapSpot* sp);
 public:
-							CMapLocation					(LPCSTR type, u16 object_id);
+							CMapLocation					(LPCSTR type, u16 object_id, bool is_user_loc = false);
 	virtual					~CMapLocation					();
 	virtual void			destroy							();
 			LPCSTR			GetHint							();
@@ -63,10 +66,17 @@ public:
 	void					EnablePointer					()					{m_flags.set(ePointerEnabled,TRUE);};
 	void					DisablePointer					()					{m_flags.set(ePointerEnabled,FALSE);};
 
+	LPCSTR GetType() const { return m_type; };
+	Fvector2 SpotSize();
+	IC bool IsUserDefined() const { return !!m_flags.test(eUserDefined); }
+	IC void SetUserDefinedFlag(BOOL state) { m_flags.set(eUserDefined, state); }
+	void InitUserSpot(const shared_str& level_name, const Fvector& pos);
+	void HighlightSpot(bool state, const Fcolor& color);
+
 	bool					SpotEnabled						()					{return !!m_flags.test(eSpotEnabled);};
 	void					EnableSpot						()					{m_flags.set(eSpotEnabled,TRUE);};
 	void					DisableSpot						()					{m_flags.set(eSpotEnabled,FALSE);};
-	bool					IsUserDefined					() const			{return !!m_flags.test(eUserDefined);}
+//	bool					IsUserDefined					() const			{return !!m_flags.test(eUserDefined);}
 	virtual void			UpdateMiniMap					(CUICustomMap* map);
 	virtual void			UpdateLevelMap					(CUICustomMap* map);
 
@@ -89,7 +99,7 @@ public:
 	virtual bool			CanBeUserRemoved				()						{return false;}
 
 	// Real Wolf: Для использования типа в дальнейшем. 03.08.2014.
-	shared_str				m_type;
+//	shared_str				m_type;
 
 	CMapSpot*				m_level_spot;
 	CMapSpotPointer*		m_level_spot_pointer;
@@ -127,7 +137,7 @@ public:
 	virtual void			Dump							();
 #endif
 };
-
+/*
 class CUserDefinedMapLocation :public CMapLocation
 {
 	typedef CMapLocation inherited;
@@ -152,3 +162,4 @@ public:
 	virtual void			Dump							();
 #endif
 };
+*/

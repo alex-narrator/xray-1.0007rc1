@@ -26,6 +26,9 @@ void CMapSpot::Load(CUIXml* xml, LPCSTR path)
 	int i = xml->ReadAttribInt(path, 0, "scale", 0);
 	m_bScale			= (i==1);
 
+	SetWidth(GetWidth() * UI()->get_current_kx());
+	SetStretchTexture(true);
+
 	m_originSize		= GetWndSize();
 }
 
@@ -37,7 +40,8 @@ LPCSTR CMapSpot::GetHint()
 void CMapSpot::Update()
 {
 	inherited::Update();
-	if(m_bCursorOverWindow){
+	LPCSTR h = GetHint();
+	if (m_bCursorOverWindow && h && xr_strlen(h)){
 		VERIFY(m_dwFocusReceiveTime>=0);
 		if( Device.dwTimeGlobal>(m_dwFocusReceiveTime+500) ){
 			GetMessageTarget()->SendMessage(this, MAP_SHOW_HINT, NULL);
@@ -64,11 +68,16 @@ bool CMapSpot::OnMouseDown		(int mouse_btn)
 	{
 		g_actor->callback(GameObject::eUIMapSpotClick)(
 			m_map_location->ObjectID(), 
-			m_map_location->m_type.c_str(),
+			m_map_location->GetType(),//m_type.c_str(),
 			m_map_location->GetHint()
 		);
 		return true;
 	}
+	else if (mouse_btn == MOUSE_2) {
+		GetMessageTarget()->SendMessage(this, MAP_SELECT_SPOT2);
+		return true;
+	}
+	else
 	return false;
 }
 
@@ -76,6 +85,8 @@ bool CMapSpot::OnMouseDown		(int mouse_btn)
 void CMapSpot::OnFocusLost		()
 {
 	inherited::OnFocusLost		();
+	LPCSTR h = GetHint();
+	if (h && xr_strlen(h))
 	GetMessageTarget()->SendMessage(this, MAP_HIDE_HINT, NULL);
 }
 

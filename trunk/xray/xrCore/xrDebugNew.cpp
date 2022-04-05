@@ -11,7 +11,7 @@
 #include <direct.h>
 #pragma warning(pop)
 
-
+XRCORE_API HWND gGameWindow = nullptr;
 
 
 

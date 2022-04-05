@@ -1,4 +1,4 @@
-#include "pch_script.h"
+﻿#include "pch_script.h"
 #include "map_manager.h"
 #include "alife_registry_wrappers.h"
 #include "inventoryowner.h"
@@ -43,8 +43,8 @@ void SLocationKey::save(IWriter &stream)
 	stream.w		(&object_id,sizeof(object_id));
 
 	stream.w_stringZ(spot_type);
-//.	stream.w_u8		(location->IsUserDefined()?1:0);
-	stream.w_u8		(0);
+	stream.w_u8		(location->IsUserDefined()?1:0);
+//	stream.w_u8		(0);
 	location->save	(stream);
 }
 	
@@ -53,7 +53,7 @@ void SLocationKey::load(IReader &stream)
 	stream.r		(&object_id,sizeof(object_id));
 
 	stream.r_stringZ(spot_type);
-	stream.r_u8		();
+//	stream.r_u8		();
 /*
 	u8	bUserDefined = stream.r_u8	();
 	if(bUserDefined){
@@ -61,13 +61,27 @@ void SLocationKey::load(IReader &stream)
 		location  = xr_new<CUserDefinedMapLocation>(*spot_type, object_id);
 	}else
 */
-	location  = xr_new<CMapLocation>(*spot_type, object_id);
+/*	location  = xr_new<CMapLocation>(*spot_type, object_id);
 
-	location->load	(stream);
+	location->load	(stream);*/
+	u8 bUserDefined = stream.r_u8();
+	if (bUserDefined)
+	{
+		Level().Server->PerformIDgen(object_id);
+		location = xr_new<CMapLocation>(*spot_type, object_id, true);
+	}
+	else
+	{
+		location = xr_new<CMapLocation>(*spot_type, object_id);
+	}
+	location->load(stream);
 }
 
 void SLocationKey::destroy()
 {
+	if (location && location->IsUserDefined())
+		Level().Server->FreeID(object_id, 0);
+
 	delete_data(location);
 }
 
@@ -154,16 +168,17 @@ CMapLocation* CMapManager::AddRelationLocation(CInventoryOwner* pInvOwner)
 	return (*it).location;
 }
 
-/*	
+	
 CMapLocation* CMapManager::AddUserLocation(const shared_str& spot_type, const shared_str& level_name, Fvector position)
 {
-	u16 _id	= Level().Server->PerformIDgen(0xffff);
-	CUserDefinedMapLocation* l = xr_new<CUserDefinedMapLocation>(*spot_type, _id);
-	l->InitExternal	(level_name, position);
-	Locations().push_back( SLocationKey(spot_type, _id) );
+	u16 _id = Level().Server->PerformIDgen(0xffff);
+	CMapLocation* l = xr_new<CMapLocation>(spot_type.c_str(), _id, true);
+	l->InitUserSpot(level_name, position);
+#pragma todo("KRodin: на данный момент юзерские метки используют дефицитные ID объектов. ¬ конструктор класса CMapLocation можно смело отправл¤ть u16(-1), а вот хранилище Locations() ¤ бы трогать побо¤лс¤, т.к. не уверен, что из него не достают ID и что-то там с ним делают. ¬ идеале конечно надо это всЄ перепилить.")
+	Locations().emplace_back(SLocationKey(spot_type, _id));
 	Locations().back().location = l;
 	return l;
-}*/
+}
 
 
 void CMapManager::RemoveMapLocation(const shared_str& spot_type, u16 id)
