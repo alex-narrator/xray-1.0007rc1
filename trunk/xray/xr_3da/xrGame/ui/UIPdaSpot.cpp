@@ -5,7 +5,7 @@
 #include "../Level.h"
 #include "../map_manager.h"
 #include "../map_location.h"
-#include "UIEditBox.h"
+#include "UIEditBoxEx.h"
 #include "UIStatic.h"
 #include "UIXmlInit.h"
 #include "UI3tButton.h"
@@ -54,10 +54,10 @@ void CUIPdaSpot::InitControls()
 	m_background->SetAutoDelete(true);
 	xml_init.InitStatic(uiXml, "background", 0, m_background);
 
-	m_editBox = xr_new<CUIEditBox>();
+	m_editBox = xr_new<CUIEditBoxEx>();
 	AttachChild(m_editBox);
 	m_editBox->SetAutoDelete(true);
-	xml_init.InitEditBox(uiXml, "spot_name_edit", 0, m_editBox);
+	xml_init.InitEditBoxEx(uiXml, "spot_name_edit", 0, m_editBox);
 	m_editBox->CaptureFocus(true);
 
 	m_btn_ok = xr_new<CUI3tButton>();
