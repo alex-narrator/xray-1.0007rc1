@@ -9,6 +9,7 @@ class CUIFrameWindow;
 class CLAItem;
 class CUIXml;
 class CUILines;
+class CGameFont;
 
 struct lanim_cont{
 	CLAItem*				m_lanim;
@@ -216,9 +217,6 @@ protected:
 private:
 //	Frect	m_xxxRect; // need by RescaleRelative2Rect(Frect& r). it is initializes only once in Init(x,y,width,height)
 	Frect	m_originalSizeRect; // need by RescaleRelative2Rect(Frect& r). it is initializes only once in Init(x,y,width,height)
-
-	u32 m_originalColor;
-	u32 m_originalTextColor;
 
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION
