@@ -222,6 +222,9 @@
 	<string id="ui_inv_bleeding">
 		<text>Кровотечение</text>
 	</string>
+	<string id="ui_inv_psy_health">
+		<text>Пси-здоровье</text>
+	</string>
 <!-- статики характеристик добавочного прыжка и скорости ходьбы BEGIN -->
 	<string id="ui_inv_jump_speed">
 		<text>Прыжок</text>

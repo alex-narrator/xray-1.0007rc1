@@ -103,15 +103,15 @@ void CArtefact::Load(LPCSTR section)
 
 
 	{
-		m_fHealthRestoreSpeed = pSettings->r_float		(section,"health_restore_speed"		);
+		m_fHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",		0.f);
 #ifndef OBJECTS_RADIOACTIVE
-		m_fRadiationRestoreSpeed = pSettings->r_float	(section,"radiation_restore_speed"	);
+		m_fRadiationRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",	0.f);
 #endif
-		m_fSatietyRestoreSpeed = pSettings->r_float		(section,"satiety_restore_speed"	);
-		m_fPowerRestoreSpeed = pSettings->r_float		(section,"power_restore_speed"		);
-		m_fBleedingRestoreSpeed = pSettings->r_float	(section,"bleeding_restore_speed"	);
-		//if (pSettings->section_exist(/**cNameSect(), */pSettings->r_string(section, "hit_absorbation_sect")))
-			//m_ArtefactHitImmunities.LoadImmunities(pSettings->r_string(section,"hit_absorbation_sect"),pSettings);
+		m_fSatietyRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",		0.f);
+		m_fPowerRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",		0.f);
+		m_fBleedingRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",		0.f);
+		m_fPsyHealthRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed",	0.f);
+
 		LPCSTR hit_sect = pSettings->r_string(section, "hit_absorbation_sect");
 		if (pSettings->section_exist(hit_sect))
 		{
@@ -556,19 +556,34 @@ bool CArtefact::InContainer()
 		m_pCurrentInventory->ActiveItem() != this;					//артефакт в слоте артефакта не взят в руки
 }
 
-/*float CArtefact::GetAdditionalMaxWalkWeight()
+bool CArtefact::CanAffect()
 {
-	return m_additional_weight * GetCondition() * GetRandomKoef();
-}*/
+	return !fis_zero(GetCondition()) && !InContainer();
+}
+
+float CArtefact::GetAdditionalWalkAccel()
+{
+	return m_fAdditionalWalkAccel * GetCondition() * GetRandomKoef();
+}
+
+float CArtefact::GetAdditionalJumpSpeed()
+{
+	return m_fAdditionalJumpSpeed * GetCondition() * GetRandomKoef();
+}
 
 float CArtefact::GetAdditionalMaxWeight()
 {
-	return /*m_additional_weight2*/m_fAdditionalMaxWeight * GetCondition() * GetRandomKoef();
+	return m_fAdditionalMaxWeight * GetCondition() * GetRandomKoef();
 }
 
 float CArtefact::GetAdditionalMaxVolume()
 {
 	return m_fAdditionalMaxVolume * GetCondition() * GetRandomKoef();
+}
+
+float	CArtefact::GetHitImmunities(ALife::EHitType hit_type)
+{
+	return m_ArtefactHitImmunities[hit_type] * GetCondition() * GetRandomKoef();
 }
 
 //---SArtefactActivation----

@@ -78,7 +78,7 @@ public:
 	float 							m_fSatietyRestoreSpeed;
 	float							m_fPowerRestoreSpeed;
 	float							m_fBleedingRestoreSpeed;
-	//CHitImmunity 					m_ArtefactHitImmunities;
+	float							m_fPsyHealthRestoreSpeed;
 	HitImmunity::HitTypeSVec		m_ArtefactHitImmunities;
 
 	float                           m_fAdditionalWalkAccel;
@@ -93,11 +93,14 @@ public:
 	float							m_fConditionDecOnEffect;
 	void							UpdateConditionDecOnEffect			();
 	bool							InContainer							();
+	bool							CanAffect							();
 	//
 public:
-//	float							GetAdditionalMaxWalkWeight			();
+	float							GetAdditionalWalkAccel				();
+	float							GetAdditionalJumpSpeed				();
 	float							GetAdditionalMaxWeight				();
 	float							GetAdditionalMaxVolume				();
+	float							GetHitImmunities					(ALife::EHitType hit_type);
 protected:
 	MotionSVec						m_anim_idle;
 	MotionSVec						m_anim_idle_sprint;
@@ -106,8 +109,6 @@ protected:
 	MotionSVec						m_anim_activate;
 	//
 protected:
-/*	float							m_additional_weight;
-	float							m_additional_weight2;*/
 	float							m_fAdditionalMaxWeight;
 	float							m_fAdditionalMaxVolume;
 public:

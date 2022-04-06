@@ -30,6 +30,7 @@ LPCSTR af_item_sect_names[] = {
 	"satiety_restore_speed",
 	"power_restore_speed",
 	"bleeding_restore_speed",
+	"psy_health_restore_speed",
 //
 	"additional_walk_accel",
 	"additional_jump_speed",
@@ -54,6 +55,7 @@ LPCSTR af_item_param_names[] = {
 	"ui_inv_satiety",
 	"ui_inv_power",
 	"ui_inv_bleeding",
+	"ui_inv_psy_health",
 //
 	"ui_inv_walk_accel",
 	"ui_inv_jump_speed",
@@ -78,6 +80,7 @@ LPCSTR af_actor_param_names[]={
 	"satiety_v",
 	"satiety_power_v",
 	"wound_incarnation_v",
+	"psy_health_v",
 //
 	"walk_accel",
 	"jump_speed",
@@ -145,11 +148,9 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 //
 		if (i == _item_additional_walk_accel || i == _item_additional_jump_speed)
 		{
-			_val = READ_IF_EXISTS(pSettings, r_float, af_section, af_item_sect_names[i], 0.f);
+			_val = i == _item_additional_walk_accel ? art->GetAdditionalWalkAccel () : art->GetAdditionalJumpSpeed();
 			float _actor_val = pSettings->r_float("actor", af_actor_param_names[i]);
 			if (fis_zero(_val))				continue;
-			_val *= art->GetRandomKoef();
-			_val *= art->GetCondition();
 			_val *= 100.0f;
 		}
 		else
@@ -173,7 +174,7 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 		//
 		if (i == _item_additional_weight || i == _item_additional_volume)
 		{
-			_val = _item_additional_weight ? art->GetAdditionalMaxWeight() : art->GetAdditionalMaxVolume();
+			_val = i == _item_additional_weight ? art->GetAdditionalMaxWeight() : art->GetAdditionalMaxVolume();
 			if (fis_zero(_val))				continue;
 		}
 		else
@@ -183,12 +184,10 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			u32 idx = i - _max_item_index1;  // absorbation index			 
 			_val = art->m_ArtefactHitImmunities.immunities()[idx]; // real absorbation values			
 #else
-			shared_str _sect	= pSettings->r_string(af_section, "hit_absorbation_sect");
-			_val = READ_IF_EXISTS(pSettings, r_float, _sect, af_item_sect_names[i], 0.f);
+			u32 idx = i - _max_item_index1;						// absorbation index		
+			_val = art->GetHitImmunities(ALife::EHitType(idx)); // real absorbation values
 #endif
 			if					(fis_zero(_val))	continue;
-			_val				*= art->GetRandomKoef();
-			_val				*= art->GetCondition();
 			_val				*= 100.0f;
 
 		}

@@ -1671,7 +1671,7 @@ void CActor::UpdateArtefactsOnBelt()
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		//
-		if (artefact && !artefact->InContainer() && !fis_zero(artefact->GetCondition()))
+		if (artefact && artefact->CanAffect())
 		{
 			float random_k = artefact->GetRandomKoef();
 			float condition = artefact->GetCondition();
@@ -1683,6 +1683,7 @@ void CActor::UpdateArtefactsOnBelt()
 #ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
 			conditions().ChangeRadiation(artefact->m_fRadiationRestoreSpeed * f_update_time * random_k * condition);
 #endif
+			conditions().ChangePsyHealth(artefact->m_fPsyHealthRestoreSpeed * f_update_time * random_k * condition);
 			//
 			artefact->UpdateConditionDecOnEffect();
 		}
@@ -1708,18 +1709,14 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		//
-		if (artefact && artefact->m_ArtefactHitImmunities[hit_type] && !artefact->InContainer() && !fis_zero(artefact->GetCondition()))
+		if (artefact && artefact->m_ArtefactHitImmunities[hit_type] && artefact->CanAffect())
 		{
-			float random_k = artefact->GetRandomKoef();
-			float condition = artefact->GetCondition();
-			//
-			//res_hit_power_k += artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
-			res_hit_power_k += 1.0f - artefact->m_ArtefactHitImmunities[hit_type] * random_k * condition;
+			res_hit_power_k += 1.0f - artefact->GetHitImmunities(hit_type);
 			_af_count += 1.0f;
 		}
 	}
 
-#if defined(INV_NEW_SLOTS_SYSTEM)/* && !defined(ARTEFACTS_FROM_RUCK)*/
+#if defined(INV_NEW_SLOTS_SYSTEM)
 	if (!psActorFlags.test(AF_ARTEFACTS_FROM_ALL))
 	{
 		PIItem helmet = inventory().m_slots[HELMET_SLOT].m_pIItem;
@@ -1727,7 +1724,6 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 			CArtefact* helmet_artefact = smart_cast<CArtefact*>(helmet);
 			if (helmet_artefact && helmet_artefact->m_ArtefactHitImmunities[hit_type])
 			{
-				//res_hit_power_k += helmet_artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
 				res_hit_power_k += 1.0f - helmet_artefact->m_ArtefactHitImmunities[hit_type];
 				_af_count += 1.0f;
 			}

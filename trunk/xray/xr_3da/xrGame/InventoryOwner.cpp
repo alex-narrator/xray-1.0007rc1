@@ -377,10 +377,8 @@ float  CInventoryOwner::MaxCarryVolume()
 		{
 			auto artefact = smart_cast<CArtefact*>(*it);
 
-			if (artefact && !artefact->InContainer() && !fis_zero(artefact->GetCondition()))
-			{
+			if (artefact && artefact->CanAffect())
 				vol += artefact->GetAdditionalMaxVolume();
-			}
 		}
 	}
 

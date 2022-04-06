@@ -213,10 +213,8 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			{
 				CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 				//
-				if (artefact && !artefact->InContainer() && !fis_zero(artefact->GetCondition()))
-				{
-					jump_speed += m_fJumpSpeed * artefact->m_fAdditionalJumpSpeed * artefact->GetRandomKoef() * artefact->GetCondition();
-				}
+				if (artefact && artefact->CanAffect())
+					jump_speed += m_fJumpSpeed * artefact->GetAdditionalJumpSpeed();
 			}
 			//Msg("additional jump_speed = %.2f", jump_speed);
 			jump_speed *= conditions().GetSmoothOwerweightKoef();
@@ -339,10 +337,8 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 				{
 					CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 					//
-					if (artefact && !artefact->InContainer() && !fis_zero(artefact->GetCondition()))
-					{
-						walk_accel += m_fWalkAccel * artefact->m_fAdditionalWalkAccel * artefact->GetRandomKoef() * artefact->GetCondition();
-					}
+					if (artefact && artefact->CanAffect())
+						walk_accel += m_fWalkAccel * artefact->GetAdditionalWalkAccel();
 				}
 				//Msg("additional walk_accel = %.2f", walk_accel);
 				walk_accel *= conditions().GetSmoothOwerweightKoef();
