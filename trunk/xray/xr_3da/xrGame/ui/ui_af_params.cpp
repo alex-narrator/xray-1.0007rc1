@@ -5,6 +5,7 @@
 #include "UIStatic.h"
 #include "../object_broker.h"
 #include "../Artifact.h"
+#include "../CustomOutfit.h"
 #include "../Actor.h"
 #include "../ActorCondition.h"
 #include "../CustomDetector.h"
@@ -119,16 +120,19 @@ void CUIArtefactParams::InitFromXml(CUIXml& xml_doc)
 	}
 }
 
-bool CUIArtefactParams::Check(const shared_str& af_section)
+bool CUIArtefactParams::Check(CGameObject *obj/*const shared_str& af_section*/)
 {
-	return !!pSettings->line_exist(af_section, "af_actor_properties");
+	//return !!pSettings->line_exist(af_section, "af_actor_properties");
+	return (smart_cast<CArtefact*>(obj) || smart_cast<CCustomOutfit*>(obj));
 }
 #include "../string_table.h"
 void CUIArtefactParams::SetInfo(CGameObject *obj)
 {	
-	CArtefact *art = smart_cast<CArtefact*> (obj);
-	R_ASSERT2(art, "object is not CArtefact");
-	const shared_str& af_section = art->cNameSect();
+	auto artefact	= smart_cast<CArtefact*>		(obj);
+	auto outfit		= smart_cast<CCustomOutfit*>	(obj);
+
+//	R_ASSERT2(art, "object is not CArtefact");
+	const shared_str& item_section = obj->cNameSect();
 	CActor *pActor = Actor();
 	if (!pActor) return;
 	//
@@ -145,10 +149,17 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 		CUIStatic* _s			= m_info_items[i];
 
 		float					_val;
+
+		if (artefact)
+		{
+			if (pDetector && !pDetector->IsGeigerCounter() && (i == _item_radiation_restore_speed || i == _item_radiation_immunity)) continue;
+			if (pDetector && !pDetector->IsAnomDetector() && (i != _item_radiation_restore_speed && i != _item_radiation_immunity)) continue;
+		}
 //
 		if (i == _item_additional_walk_accel || i == _item_additional_jump_speed)
 		{
-			_val = i == _item_additional_walk_accel ? art->GetAdditionalWalkAccel () : art->GetAdditionalJumpSpeed();
+			if (!artefact)					continue;
+			_val = i == _item_additional_walk_accel ? artefact->GetAdditionalWalkAccel() : artefact->GetAdditionalJumpSpeed();
 			float _actor_val = pSettings->r_float("actor", af_actor_param_names[i]);
 			if (fis_zero(_val))				continue;
 			_val *= 100.0f;
@@ -162,19 +173,21 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			float CArtefact::* pRestoreSpeed = af_prop_offsets[i];
 			_val = (art->*pRestoreSpeed); // alpet: используется указатель на данные класса
 #else
-			_val = READ_IF_EXISTS(pSettings, r_float, af_section, af_item_sect_names[i], 0.f);
+			_val = READ_IF_EXISTS(pSettings, r_float, item_section, af_item_sect_names[i], 0.f);
 			float _actor_val	= pSettings->r_float	("actor_condition", af_actor_param_names[i]);
 #endif
 			if					(fis_zero(_val))				continue;
-			_val				*= art->GetRandomKoef();
-			_val				*= art->GetCondition();
+			if (artefact) _val	*= artefact->GetRandomKoef();
+			_val				*= obj->cast_inventory_item()->GetCondition();
 			_val				= (_val/_actor_val)*100.0f;
 		}
 		else
 		//
 		if (i == _item_additional_weight || i == _item_additional_volume)
 		{
-			_val = i == _item_additional_weight ? art->GetAdditionalMaxWeight() : art->GetAdditionalMaxVolume();
+			_val = i == _item_additional_weight ? 
+				(artefact ? artefact->GetAdditionalMaxWeight() : outfit->GetAdditionalMaxWeight()) :
+				(artefact ? artefact->GetAdditionalMaxVolume() : outfit->GetAdditionalMaxVolume());
 			if (fis_zero(_val))				continue;
 		}
 		else
@@ -185,7 +198,7 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			_val = art->m_ArtefactHitImmunities.immunities()[idx]; // real absorbation values			
 #else
 			u32 idx = i - _max_item_index1;						// absorbation index		
-			_val = art->GetHitImmunities(ALife::EHitType(idx)); // real absorbation values
+			_val = artefact ? artefact->GetHitImmunities(ALife::EHitType(idx)) : outfit->GetDefHitTypeProtection(ALife::EHitType(idx)); // real absorbation values
 #endif
 			if					(fis_zero(_val))	continue;
 			_val				*= 100.0f;
@@ -211,17 +224,13 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 		if(i==_item_bleeding_restore_speed || i==_item_radiation_restore_speed)
 			_color = (_val>0)?"%c[red]":"%c[green]";
 
-		bool show_rad = pDetector && pDetector->IsGeigerCounter() && (i == _item_radiation_restore_speed || i == _item_radiation_immunity);
-		bool show_anom = pDetector && pDetector->IsAnomDetector() && (i != _item_radiation_restore_speed && i != _item_radiation_immunity);
 
-		if (show_rad || show_anom)
-			sprintf_s					(	_buff, "%s %s %+.1f %s", 
-										CStringTable().translate(af_item_param_names[i]).c_str(), 
-										_color, 
-										_val, 
-										_sn);
-		else
-			sprintf_s					(_buff, CStringTable().translate("st_af_props_unknown").c_str());
+
+		sprintf_s				(_buff, "%s %s %+.1f %s", 
+									CStringTable().translate(af_item_param_names[i]).c_str(), 
+									_color, 
+									_val, 
+									_sn);
 		_s->SetText				(_buff);
 		_s->SetWndPos			(_s->GetWndPos().x, _h);
 		_h						+= _s->GetWndSize().y;

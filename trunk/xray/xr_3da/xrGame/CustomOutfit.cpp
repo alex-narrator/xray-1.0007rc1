@@ -8,6 +8,7 @@
 #include "game_cl_base.h"
 #include "Level.h"
 #include "BoneProtections.h"
+#include "../../build_config_defines.h"
 
 
 CCustomOutfit::CCustomOutfit()
@@ -44,6 +45,15 @@ void CCustomOutfit::net_Import(NET_Packet& P)
 void CCustomOutfit::Load(LPCSTR section) 
 {
 	inherited::Load(section);
+
+	m_fHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",		0.f);
+#ifndef OBJECTS_RADIOACTIVE
+	m_fRadiationRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",	0.f);
+#endif
+	m_fSatietyRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",		0.f);
+	m_fPowerRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",		0.f);
+	m_fBleedingRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",		0.f);
+	m_fPsyHealthRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed",	0.f);
 
 	m_HitTypeProtection[ALife::eHitTypeBurn]			= READ_IF_EXISTS(pSettings, r_float, section, "burn_protection",			0.0f);
 	m_HitTypeProtection[ALife::eHitTypeStrike]			= READ_IF_EXISTS(pSettings, r_float, section, "strike_protection",			0.0f);
@@ -88,7 +98,7 @@ void CCustomOutfit::Hit(float hit_power, ALife::EHitType hit_type)
 
 float CCustomOutfit::GetDefHitTypeProtection(ALife::EHitType hit_type)
 {
-	return 1.0f - m_HitTypeProtection[hit_type]*GetCondition();
+	return /*1.0f -*/ m_HitTypeProtection[hit_type]*GetCondition();
 }
 
 float CCustomOutfit::GetHitTypeProtection(ALife::EHitType hit_type, s16 element)

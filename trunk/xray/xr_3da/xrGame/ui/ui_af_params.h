@@ -11,7 +11,7 @@ public:
 								CUIArtefactParams		();
 	virtual						~CUIArtefactParams		();
 	void 						InitFromXml				(CUIXml& xml_doc);
-	bool 						Check					(const shared_str& af_section);
+	bool 						Check					(CGameObject *obj/*const shared_str& af_section*/);
 	void 						SetInfo					(CGameObject *obj);
 
 protected:

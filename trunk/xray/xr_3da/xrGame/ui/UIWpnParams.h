@@ -17,7 +17,7 @@ public:
 
 	void 						InitFromXml				(CUIXml& xml_doc);
 	void 						SetInfo					(CGameObject *wpn);
-	bool 						Check					(const shared_str& wpn_section);
+	bool 						Check					(CGameObject *wpn/*const shared_str& wpn_section*/);
 
 protected:
 	CUIProgressBar				m_progressAccuracy;

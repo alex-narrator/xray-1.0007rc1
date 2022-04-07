@@ -1687,7 +1687,6 @@ void CActor::UpdateArtefactsOnBelt()
 			//
 			artefact->UpdateConditionDecOnEffect();
 		}
-
 	} // for belt items
 #ifdef OBJECTS_RADIOACTIVE
 	for (TIItemContainer::iterator it = inventory().m_all.begin(); inventory().m_all.end() != it; ++it)
@@ -1697,6 +1696,22 @@ void CActor::UpdateArtefactsOnBelt()
 	}
 #endif
 
+	auto outfit = GetOutfit();
+	if (outfit)
+	{
+		float condition = outfit->GetCondition();
+		if (!fis_zero(condition))
+		{
+			conditions().ChangeBleeding	(outfit->m_fBleedingRestoreSpeed	* f_update_time * condition);
+			conditions().ChangeHealth	(outfit->m_fHealthRestoreSpeed		* f_update_time * condition);
+			conditions().ChangePower	(outfit->m_fPowerRestoreSpeed		* f_update_time * condition);
+			conditions().ChangeSatiety	(outfit->m_fSatietyRestoreSpeed		* f_update_time * condition);
+#ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
+			conditions().ChangeRadiation(outfit->m_fRadiationRestoreSpeed	* f_update_time * condition);
+#endif
+			conditions().ChangePsyHealth(outfit->m_fPsyHealthRestoreSpeed	* f_update_time * condition);
+		}
+	}
 }
 
 float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)

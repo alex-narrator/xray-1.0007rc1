@@ -180,8 +180,8 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	{
 		UIDesc->Clear						();
 		VERIFY								(0==UIDesc->GetSize());
-		TryAddWpnInfo						(pInvItem->object().cNameSect());
-		TryAddArtefactInfo					(pInvItem->object().cNameSect());
+		TryAddWpnInfo						(pInvItem->cast_game_object()/*pInvItem->object().cNameSect()*/);
+		TryAddArtefactInfo					(pInvItem->cast_game_object()/*pInvItem->object().cNameSect()*/);
 		if(m_desc_info.bShowDescrText)
 		{
 			CUIStatic* pItem					= xr_new<CUIStatic>();
@@ -223,19 +223,21 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	}
 }
 
-void CUIItemInfo::TryAddWpnInfo (const shared_str& wpn_section){
-	if (UIWpnParams->Check(wpn_section))
+void CUIItemInfo::TryAddWpnInfo(CGameObject *obj/*const shared_str& wpn_section*/)
+{
+	if (UIWpnParams->Check(obj/*wpn_section*/))
 	{
-		UIWpnParams->SetInfo(&m_pInvItem->object());
+		UIWpnParams->SetInfo(/*&m_pInvItem->object()*/obj);
 		UIDesc->AddWindow(UIWpnParams,false);
 	}
 }
 
-void CUIItemInfo::TryAddArtefactInfo	(const shared_str& af_section)
+#include "../CustomOutfit.h"
+void CUIItemInfo::TryAddArtefactInfo(CGameObject *obj/*const shared_str& af_section*/)
 {
-	if (UIArtefactParams->Check(af_section))
+	if (UIArtefactParams->Check(/*af_section*/obj))
 	{
-		UIArtefactParams->SetInfo(&m_pInvItem->object());
+		UIArtefactParams->SetInfo(obj/*&m_pInvItem->object()*/);
 		UIDesc->AddWindow(UIArtefactParams, false);
 	}
 }

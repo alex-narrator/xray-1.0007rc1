@@ -177,7 +177,7 @@ float CScriptGameObject::GetCurrentOutfitProtection(int hit_type)
 	CCustomOutfit* o = smart_cast<CCustomOutfit*>(current_equipment);
 	if(!o)				return 0.0f;
 
-	return		1.0f - o->GetDefHitTypeProtection(ALife::EHitType(hit_type));
+	return		/*1.0f - */o->GetDefHitTypeProtection(ALife::EHitType(hit_type));
 }
 
 CScriptGameObject *CScriptGameObject::GetFood() const

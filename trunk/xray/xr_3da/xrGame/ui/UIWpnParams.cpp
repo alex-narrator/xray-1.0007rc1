@@ -7,6 +7,7 @@
 #include "../ai_space.h"
 #include "../script_engine.h"
 #include "../script_game_object.h"
+#include "../clsid_game.h"
 //
 #include "../smart_cast.h"
 #include "../string_table.h"
@@ -130,8 +131,10 @@ void CUIWpnParams::SetInfo(CGameObject *wpn)
 	m_textMagSizeFiremode.SetText(text_to_show);
 }
 
-bool CUIWpnParams::Check(const shared_str& wpn_section){
-	if (pSettings->line_exist(wpn_section, "fire_dispersion_base"))
+bool CUIWpnParams::Check(CGameObject *wpn/*const shared_str& wpn_section*/){
+	
+
+	if (pSettings->line_exist(wpn->cNameSect(), "fire_dispersion_base"))
 	{
         /*if (0==xr_strcmp(wpn_section, "wpn_addon_silencer"))
             return false;
@@ -141,7 +144,7 @@ bool CUIWpnParams::Check(const shared_str& wpn_section){
             return false;
 		if (0==xr_strcmp(wpn_section, "wpn_knife"))
 			return false;*/
-		const char* wpn_clsid_str = pSettings->r_string(wpn_section, "class");
+		const char* wpn_clsid_str = pSettings->r_string(wpn->cNameSect(), "class");
 		if (strstr(wpn_clsid_str, "KNIFE")
 			|| strstr(wpn_clsid_str, "SILENC")
 			|| strstr(wpn_clsid_str, "BINOC")
@@ -149,7 +152,6 @@ bool CUIWpnParams::Check(const shared_str& wpn_section){
 		{
 			return false;
 		}
-
         return true;		
 	}
 	else

@@ -92,9 +92,11 @@ void CUIOutfitInfo::SetItem(u32 hitType, bool force_add)
 
 	CUIStatic* _s		= m_items[hitType];
 
-	_val_outfit			= m_outfit ? m_outfit->GetDefHitTypeProtection(ALife::EHitType(hitType)) : 1.0f;
-	_val_outfit			= 1.0f - _val_outfit;
+//	_val_outfit			= m_outfit ? m_outfit->GetDefHitTypeProtection(ALife::EHitType(hitType)) : 1.0f;
+//	_val_outfit			= 1.0f - _val_outfit;
 
+	if (m_outfit)
+		_val_outfit = m_outfit->GetDefHitTypeProtection(ALife::EHitType(hitType));
 
 	_val_af				= Actor()->HitArtefactsOnBelt(1.0f,ALife::EHitType(hitType));
 	_val_af				= 1.0f - _val_af;

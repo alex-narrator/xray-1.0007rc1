@@ -1,6 +1,7 @@
 #pragma once
 
 #include "inventory_item_object.h"
+#include "../../build_config_defines.h"
 
 struct SBoneProtections;
 
@@ -47,6 +48,15 @@ protected:
 public:
 	float							GetAdditionalMaxWeight();
 	float							GetAdditionalMaxVolume();
+	//
+	float							m_fHealthRestoreSpeed;
+#ifndef OBJECTS_RADIOACTIVE
+	float 							m_fRadiationRestoreSpeed;
+#endif
+	float 							m_fSatietyRestoreSpeed;
+	float							m_fPowerRestoreSpeed;
+	float							m_fBleedingRestoreSpeed;
+	float							m_fPsyHealthRestoreSpeed;
 
 //	shared_str						m_NightVisionSect;
 	virtual u32						ef_equipment_type		() const;
