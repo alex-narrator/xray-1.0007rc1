@@ -34,8 +34,8 @@ protected:
 		_max_item_index1,
 
 		_item_burn_immunity				= _max_item_index1,
-		_item_strike_immunity,
 		_item_shock_immunity,
+		_item_strike_immunity,
 		_item_wound_immunity,		
 		_item_radiation_immunity,
 		_item_telepatic_immunity,
