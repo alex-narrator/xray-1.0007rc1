@@ -67,7 +67,7 @@ public:
 protected:
 	bool					m_bTorchLightEnabled;
 	bool					m_bNightVisionEnabled;
-	CUIStaticItem*			m_UINightVision;
+	CUIStaticItem*			m_UINightVisionMask;
 public:
 	bool					m_bNightVisionOn;
 protected:

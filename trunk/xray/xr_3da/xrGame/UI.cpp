@@ -76,6 +76,7 @@ void CUI::UIOnFrame()
 #include "inventory.h"
 #include "huditem.h"
 #include "Torch.h"
+#include "CustomOutfit.h"
 bool CUI::Render()
 {
 	if( GameIndicatorsShown() )
@@ -99,6 +100,10 @@ bool CUI::Render()
 			auto pTorch			= smart_cast<CTorch*>(torch_item);
 			if (torch_item && pActor->HUDview() && pTorch)
 				pTorch->OnDrawUI();
+
+			auto pOutfit = pActor->GetOutfit();
+			if (pOutfit && pActor->HUDview())
+				pOutfit->OnDrawUI();
 		}
 
 		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) )

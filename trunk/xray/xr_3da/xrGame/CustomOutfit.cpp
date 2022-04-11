@@ -8,6 +8,7 @@
 #include "game_cl_base.h"
 #include "Level.h"
 #include "BoneProtections.h"
+#include "UIStaticItem.h"
 #include "../../build_config_defines.h"
 
 
@@ -23,11 +24,14 @@ CCustomOutfit::CCustomOutfit()
 
 	m_boneProtection = xr_new<SBoneProtections>();
 	m_bAlwaysProcessing = TRUE;
+
+	m_UIOutfitMask		= NULL;
 }
 
 CCustomOutfit::~CCustomOutfit() 
 {
 	xr_delete(m_boneProtection);
+	xr_delete(m_UIOutfitMask);
 }
 
 void CCustomOutfit::net_Export(NET_Packet& P)
@@ -89,6 +93,8 @@ void CCustomOutfit::Load(LPCSTR section)
 		m_NightVisionSect = pSettings->r_string(section, "nightvision_sect");
 	else
 		m_NightVisionSect = NULL;*/
+
+	m_OutfitMaskTexture = READ_IF_EXISTS(pSettings, r_string, section, "mask_texture", NULL);
 
 	m_full_icon_name								= pSettings->r_string(section,"full_icon_name");
 }
@@ -154,6 +160,15 @@ void	CCustomOutfit::OnMoveToSlot(EItemPlace previous_place)
 
 				pActor->ChangeVisual(NewVisual);
 			}
+
+			if (m_UIOutfitMask)
+				xr_delete(m_UIOutfitMask);
+			if (!!m_OutfitMaskTexture)
+			{
+				m_UIOutfitMask = xr_new<CUIStaticItem>();
+				m_UIOutfitMask->Init(m_OutfitMaskTexture.c_str(), "hud\\scopes", 0, 0, alNone);	// KD: special shader that account screen resolution
+			}
+
 			if(pSettings->line_exist(cNameSect(),"bones_koeff_protection")){
 				m_boneProtection->reload( pSettings->r_string(cNameSect(),"bones_koeff_protection"), smart_cast<CKinematics*>(pActor->Visual()) );
 
@@ -167,13 +182,16 @@ void	CCustomOutfit::OnMoveToRuck(EItemPlace previous_place)
 	if (m_pCurrentInventory && previous_place == eItemPlaceSlot)
 	{
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
-		if (pActor && pActor->bAllItemsLoaded)
+		if (pActor/* && pActor->bAllItemsLoaded*/)
 		{
 /*			CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
 			if(pTorch)
 			{
 				pTorch->SwitchNightVision(false);
 			}*/
+			if (m_UIOutfitMask)
+				xr_delete(m_UIOutfitMask);
+
 			if (m_ActorVisual.size())
 			{
 				shared_str DefVisual = pActor->GetDefaultVisualOutfit();
@@ -223,4 +241,14 @@ float CCustomOutfit::GetAdditionalWalkAccel()
 float CCustomOutfit::GetAdditionalJumpSpeed()
 {
 	return m_fAdditionalJumpSpeed * GetCondition();
+}
+
+void CCustomOutfit::OnDrawUI()
+{
+	if (!!m_OutfitMaskTexture)
+	{
+		m_UIOutfitMask->SetPos(0, 0);
+		m_UIOutfitMask->SetRect(0, 0, UI_BASE_WIDTH, UI_BASE_HEIGHT);
+		m_UIOutfitMask->Render();
+	}
 }
