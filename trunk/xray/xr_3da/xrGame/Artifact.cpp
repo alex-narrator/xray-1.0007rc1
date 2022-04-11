@@ -111,6 +111,7 @@ void CArtefact::Load(LPCSTR section)
 		m_fPowerRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",		0.f);
 		m_fBleedingRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",		0.f);
 		m_fPsyHealthRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed",	0.f);
+		m_fAlcoholRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "alcohol_restore_speed",		0.f);
 
 		LPCSTR hit_sect = pSettings->r_string(section, "hit_absorbation_sect");
 		if (pSettings->section_exist(hit_sect))

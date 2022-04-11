@@ -6,6 +6,7 @@
 #include "../object_broker.h"
 #include "../Artifact.h"
 #include "../CustomOutfit.h"
+#include "../BackPack.h"
 #include "../Actor.h"
 #include "../ActorCondition.h"
 #include "../CustomDetector.h"
@@ -32,22 +33,23 @@ LPCSTR af_item_sect_names[] = {
 	"power_restore_speed",
 	"bleeding_restore_speed",
 	"psy_health_restore_speed",
+	"alcohol_restore_speed",
 //
 	"additional_walk_accel",
 	"additional_jump_speed",
 //
+	"additional_max_weight",
+	"additional_max_volume",
+//
 	"burn_immunity",
-	"strike_immunity",
 	"shock_immunity",
+	"strike_immunity",
 	"wound_immunity",		
 	"radiation_immunity",
 	"telepatic_immunity",
 	"chemical_burn_immunity",
 	"explosion_immunity",
 	"fire_wound_immunity",
-//
-	"additional_max_weight",
-	"additional_max_volume",
 };
 
 LPCSTR af_item_param_names[] = {
@@ -57,22 +59,23 @@ LPCSTR af_item_param_names[] = {
 	"ui_inv_power",
 	"ui_inv_bleeding",
 	"ui_inv_psy_health",
+	"ui_inv_alcohol",
 //
 	"ui_inv_walk_accel",
 	"ui_inv_jump_speed",
 //
+	"ui_inv_weight",
+	"ui_inv_volume",
+//
 	"ui_inv_outfit_burn_protection",			// "(burn_imm)",
-	"ui_inv_outfit_strike_protection",			// "(strike_imm)",
 	"ui_inv_outfit_shock_protection",			// "(shock_imm)",
+	"ui_inv_outfit_strike_protection",			// "(strike_imm)",
 	"ui_inv_outfit_wound_protection",			// "(wound_imm)",
 	"ui_inv_outfit_radiation_protection",		// "(radiation_imm)",
 	"ui_inv_outfit_telepatic_protection",		// "(telepatic_imm)",
 	"ui_inv_outfit_chemical_burn_protection",	// "(chemical_burn_imm)",
 	"ui_inv_outfit_explosion_protection",		// "(explosion_imm)",
 	"ui_inv_outfit_fire_wound_protection",		// "(fire_wound_imm)",
-//
-	"ui_inv_weight",
-	"ui_inv_volume",
 };
 
 LPCSTR af_actor_param_names[]={
@@ -82,6 +85,7 @@ LPCSTR af_actor_param_names[]={
 	"satiety_power_v",
 	"wound_incarnation_v",
 	"psy_health_v",
+	"alcohol_v",
 //
 	"walk_accel",
 	"jump_speed",
@@ -123,13 +127,14 @@ void CUIArtefactParams::InitFromXml(CUIXml& xml_doc)
 bool CUIArtefactParams::Check(CGameObject *obj/*const shared_str& af_section*/)
 {
 	//return !!pSettings->line_exist(af_section, "af_actor_properties");
-	return (smart_cast<CArtefact*>(obj) || smart_cast<CCustomOutfit*>(obj));
+	return (smart_cast<CArtefact*>(obj) || smart_cast<CCustomOutfit*>(obj) || smart_cast<CBackPack*>(obj));
 }
 #include "../string_table.h"
 void CUIArtefactParams::SetInfo(CGameObject *obj)
 {	
 	auto artefact	= smart_cast<CArtefact*>		(obj);
 	auto outfit		= smart_cast<CCustomOutfit*>	(obj);
+	auto backpack	= smart_cast<CBackPack*>		(obj);
 
 //	R_ASSERT2(art, "object is not CArtefact");
 	const shared_str& item_section = obj->cNameSect();
@@ -148,7 +153,7 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 	{
 		CUIStatic* _s			= m_info_items[i];
 
-		float					_val;
+		float					_val = 0.f;
 
 		if (artefact)
 		{
@@ -156,72 +161,83 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			if (pDetector && !pDetector->IsAnomDetector() && (i != _item_radiation_restore_speed && i != _item_radiation_immunity)) continue;
 		}
 //
-		if (i == _item_additional_walk_accel || i == _item_additional_jump_speed)
-		{
-			if (!artefact)					continue;
-			_val = i == _item_additional_walk_accel ? artefact->GetAdditionalWalkAccel() : artefact->GetAdditionalJumpSpeed();
-			float _actor_val = pSettings->r_float("actor", af_actor_param_names[i]);
-			if (fis_zero(_val))				continue;
-			_val *= 100.0f;
-		}
-		else
-//
 		if(i<_max_item_index1)
 		{
+			if (i == _item_additional_walk_accel)
+			{
+				if (artefact)		_val = artefact->GetAdditionalWalkAccel();
+				else if (outfit)	_val = outfit->GetAdditionalWalkAccel();
+				else if (backpack)	_val = backpack->GetAdditionalWalkAccel();
+			}
+			else if (i == _item_additional_jump_speed)
+			{
+				if (artefact)		_val = artefact->GetAdditionalJumpSpeed();
+				else if (outfit)	_val = outfit->GetAdditionalJumpSpeed();
+				else if (backpack)	_val = backpack->GetAdditionalJumpSpeed();
+			}
+			else if (i == _item_additional_weight)
+			{
+				if (artefact)		_val = artefact->GetAdditionalMaxWeight();
+				else if (outfit)	_val = outfit->GetAdditionalMaxWeight();
+				else if (backpack)	_val = backpack->GetAdditionalMaxWeight();
+			}
+			else if (i == _item_additional_volume)
+			{
+				if (artefact)		_val = artefact->GetAdditionalMaxVolume();
+				else if (outfit)	_val = outfit->GetAdditionalMaxVolume();
+				else if (backpack)	_val = backpack->GetAdditionalMaxVolume();
+			}
+			else
+			//
+			{// *_restore_speed
 #ifdef AF_SHOW_DYNAMIC_PARAMS
-			float _actor_val	= pActor->conditions().GetParamByName(af_actor_param_names[i]);			
-			float CArtefact::* pRestoreSpeed = af_prop_offsets[i];
-			_val = (art->*pRestoreSpeed); // alpet: используется указатель на данные класса
+				float _actor_val = pActor->conditions().GetParamByName(af_actor_param_names[i]);
+				float CArtefact::* pRestoreSpeed = af_prop_offsets[i];
+				_val = (art->*pRestoreSpeed); // alpet: используется указатель на данные класса
 #else
-			_val = READ_IF_EXISTS(pSettings, r_float, item_section, af_item_sect_names[i], 0.f);
-			float _actor_val	= pSettings->r_float	("actor_condition", af_actor_param_names[i]);
+				_val = READ_IF_EXISTS(pSettings, r_float, item_section, af_item_sect_names[i], 0.f);
 #endif
-			if					(fis_zero(_val))				continue;
-			if (artefact) _val	*= artefact->GetRandomKoef();
-			_val				*= obj->cast_inventory_item()->GetCondition();
-			_val				= (_val/_actor_val)*100.0f;
+				if (artefact) _val *= artefact->GetRandomKoef();
+				_val *= obj->cast_inventory_item()->GetCondition();
+			}
 		}
 		else
-		//
-		if (i == _item_additional_weight || i == _item_additional_volume)
-		{
-			_val = i == _item_additional_weight ? 
-				(artefact ? artefact->GetAdditionalMaxWeight() : outfit->GetAdditionalMaxWeight()) :
-				(artefact ? artefact->GetAdditionalMaxVolume() : outfit->GetAdditionalMaxVolume());
-			if (fis_zero(_val))				continue;
-		}
-		else
-		//
 		{
 #ifdef AF_SHOW_DYNAMIC_PARAMS			
 			u32 idx = i - _max_item_index1;  // absorbation index			 
 			_val = art->m_ArtefactHitImmunities.immunities()[idx]; // real absorbation values			
 #else
 			u32 idx = i - _max_item_index1;						// absorbation index		
-			_val = artefact ? artefact->GetHitImmunities(ALife::EHitType(idx)) : outfit->GetDefHitTypeProtection(ALife::EHitType(idx)); // real absorbation values
+			//_val = artefact ? artefact->GetHitImmunities(ALife::EHitType(idx)) : outfit->GetDefHitTypeProtection(ALife::EHitType(idx)); // real absorbation values
+			if (artefact)		_val = artefact->GetHitImmunities(ALife::EHitType(idx));
+			else if (outfit)	_val = outfit->GetDefHitTypeProtection(ALife::EHitType(idx));
+			else if (backpack)	_val = backpack->GetHitImmunities(ALife::EHitType(idx));
 #endif
-			if					(fis_zero(_val))	continue;
-			_val				*= 100.0f;
-
 		}
+
+		if (fis_zero(_val))				continue;
+		if (i != _item_additional_weight && i != _item_additional_volume)
+			_val *= 100.0f;
+
 		LPCSTR _sn = "%";
-		if (i == _item_radiation_restore_speed || i == _item_power_restore_speed)
+
+		if (i == _item_radiation_restore_speed)
 		{
-			_val				/= 100.0f;
-			_sn					= _item_radiation_restore_speed ? *CStringTable().translate("st_rad") : "";
+			_val /= 100.0f;
+			_sn = *CStringTable().translate("st_rad");
 		}
 		//
 		else if (i == _item_additional_weight || i == _item_additional_volume)
 		{
-			_sn = _item_additional_weight ? *CStringTable().translate("st_kg") : *CStringTable().translate("st_l");
+			_sn = i == _item_additional_weight ? *CStringTable().translate("st_kg") : *CStringTable().translate("st_l");
 		}
 
 		LPCSTR _color = (_val>0)?"%c[green]":"%c[red]";
 		
-		if(i==_item_bleeding_restore_speed)
+		if (i == _item_bleeding_restore_speed || i == _item_alcohol_restore_speed)
 			_val		*=	-1.0f;
 
-		if(i==_item_bleeding_restore_speed || i==_item_radiation_restore_speed)
+		if (i == _item_bleeding_restore_speed || i == _item_radiation_restore_speed || i == _item_alcohol_restore_speed)
 			_color = (_val>0)?"%c[red]":"%c[green]";
 
 

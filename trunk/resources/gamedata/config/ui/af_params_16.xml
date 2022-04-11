@@ -29,6 +29,11 @@
 			<texture>ui_inv_icon_bleeding_restore_speed</texture>
 			<text font="letterica16" x="20" y="0"/>
 		</static_psy_health_restore_speed>
+		
+		<static_alcohol_restore_speed width="194" height="20" complex_mode="1">
+			<texture>ui_inv_icon_bleeding_restore_speed</texture>
+			<text font="letterica16" x="20" y="0"/>
+		</static_alcohol_restore_speed>
 
 <!-- добавочные параметры прыжка и скорости ходьбы - BEGIN -->
 		<static_additional_walk_accel width="194" height="20" complex_mode="1">

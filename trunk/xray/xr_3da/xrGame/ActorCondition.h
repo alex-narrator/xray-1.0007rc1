@@ -111,8 +111,6 @@ protected:
 	float m_fAccelK;
 	float m_fSprintK;
 public:
-	//float m_MaxWalkWeight;
-    //
 	float m_fBleedingPowerDecrease;
 	//
 	float m_fMinPowerWalkJump;
@@ -126,6 +124,14 @@ public:
 	//
 	float m_fZoomEffectorK;
 	float m_fV_HardHoldPower;
+
+	float GetWoundIncarnation	();
+	float GetHealthRestore		();
+	float GetRadiationRestore	();
+	float GetPsyHealthRestore	();
+	float GetPowerRestore		();
+	float GetSatietyRestore		();
+	float GetAlcoholRestore		();
 protected:
 	mutable bool m_bLimping;
 	mutable bool m_bCantWalk;

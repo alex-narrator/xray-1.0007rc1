@@ -45,9 +45,13 @@ protected:
 	u32								m_ef_equipment_type;
 	float							m_fAdditionalMaxWeight;
 	float							m_fAdditionalMaxVolume;
+	float                           m_fAdditionalWalkAccel;
+	float                           m_fAdditionalJumpSpeed;
 public:
 	float							GetAdditionalMaxWeight();
 	float							GetAdditionalMaxVolume();
+	float							GetAdditionalWalkAccel();
+	float							GetAdditionalJumpSpeed();
 	//
 	float							m_fHealthRestoreSpeed;
 #ifndef OBJECTS_RADIOACTIVE
@@ -57,6 +61,7 @@ public:
 	float							m_fPowerRestoreSpeed;
 	float							m_fBleedingRestoreSpeed;
 	float							m_fPsyHealthRestoreSpeed;
+	float							m_fAlcoholRestoreSpeed;
 
 //	shared_str						m_NightVisionSect;
 	virtual u32						ef_equipment_type		() const;

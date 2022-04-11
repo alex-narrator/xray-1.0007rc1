@@ -236,11 +236,11 @@ void CActorCondition::UpdatePower()
 
 void CActorCondition::UpdatePsyHealth()
 {
-	/*if (m_fPsyHealth>0)
+	if (m_fPsyHealth>0)
 	{
-		m_fDeltaPsyHealth += m_change_v.m_fV_PsyHealth*m_fDeltaTime;
-	}*/
-	inherited::UpdatePsyHealth();
+		m_fDeltaPsyHealth += m_change_v.m_fV_PsyHealth*m_fDeltaTime * GetRegenKoef();
+	}
+	//inherited::UpdatePsyHealth();
 
 	if (IsGameTypeSingle())
 	{
@@ -283,7 +283,7 @@ void CActorCondition::UpdateRadiation()
 
 void CActorCondition::UpdateAlcohol()
 {
-	m_fAlcohol += m_fV_Alcohol*m_fDeltaTime;
+	m_fAlcohol += m_fV_Alcohol*m_fDeltaTime*GetStress();
 	clamp(m_fAlcohol, 0.0f, 1.0f);
 
 	bool flag_state = !!psActorFlags.test(AF_SURVIVAL);
@@ -393,7 +393,7 @@ void CActorCondition::ConditionStand(float weight)
 {	
 	float power = m_fStandPower * GetRegenKoef();
 	power *= m_fDeltaTime;
-	m_fPower -= power;
+	m_fPower += power;
 }
 
 bool CActorCondition::IsCantWalk() const
@@ -568,4 +568,39 @@ void CActorCondition::UpdateTutorialThresholds()
 		R_ASSERT							(ai().script_engine().functor<LPCSTR>(cb_name,fl));
 		fl									();
 	}
+}
+
+float CActorCondition::GetWoundIncarnation()	
+{ 
+	return m_change_v.m_fV_WoundIncarnation * GetRegenKoef();
+}
+
+float CActorCondition::GetHealthRestore()	
+{ 
+	return m_change_v.m_fV_HealthRestore * GetRegenKoef();
+}
+
+float CActorCondition::GetRadiationRestore()	
+{ 
+	return m_change_v.m_fV_Radiation; 
+}
+
+float CActorCondition::GetPsyHealthRestore()	
+{ 
+	return m_change_v.m_fV_PsyHealth * GetRegenKoef();
+}
+
+float CActorCondition::GetPowerRestore()	
+{ 
+	return (m_fStandPower + m_fV_SatietyPower) * GetRegenKoef();
+}
+
+float CActorCondition::GetSatietyRestore()	
+{ 
+	return m_fV_Satiety * GetStress();
+}
+
+float CActorCondition::GetAlcoholRestore()	
+{ 
+	return m_fV_Alcohol * GetStress();
 }

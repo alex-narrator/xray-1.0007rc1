@@ -219,6 +219,8 @@ void CInventoryItem::Load(LPCSTR section)
 	eHandDependence = EHandDependence(READ_IF_EXISTS(pSettings, r_u32, section, "hand_dependence", hdNone));
 	m_bIsSingleHanded = !!READ_IF_EXISTS(pSettings, r_bool, section, "single_handed", TRUE);
 	//
+	if (pSettings->line_exist(section, "use_condition"))
+		m_flags.set(FUsingCondition, pSettings->r_bool(section, "use_condition"));
 }
 
 

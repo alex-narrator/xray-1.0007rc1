@@ -211,7 +211,7 @@
 		<text>Здоровье</text>
 	</string>
 	<string id="ui_inv_radiation">
-		<text>Радиация</text>
+		<text>Рад. излучение</text>
 	</string>
 	<string id="ui_inv_satiety">
 		<text>Сытость</text>
@@ -224,6 +224,9 @@
 	</string>
 	<string id="ui_inv_psy_health">
 		<text>Пси-здоровье</text>
+	</string>
+	<string id="ui_inv_alcohol">
+		<text>Опьянение</text>
 	</string>
 <!-- статики характеристик добавочного прыжка и скорости ходьбы BEGIN -->
 	<string id="ui_inv_jump_speed">

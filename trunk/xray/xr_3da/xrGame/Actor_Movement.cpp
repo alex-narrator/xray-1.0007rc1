@@ -11,6 +11,8 @@
 
 #include "actorcondition.h"
 #include "Artifact.h"
+#include "CustomOutfit.h"
+#include "BackPack.h"
 
 #include "level.h"
 #include "HUDManager.h"
@@ -216,6 +218,15 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 				if (artefact && artefact->CanAffect())
 					jump_speed += m_fJumpSpeed * artefact->GetAdditionalJumpSpeed();
 			}
+
+			auto outfit = GetOutfit();
+			if (outfit && !fis_zero(outfit->GetCondition()))
+				jump_speed += outfit->GetAdditionalJumpSpeed();
+
+			auto backpack = GetBackPack();
+			if (backpack && !fis_zero(backpack->GetCondition()))
+				jump_speed += backpack->GetAdditionalJumpSpeed();
+
 			//Msg("additional jump_speed = %.2f", jump_speed);
 			jump_speed *= conditions().GetSmoothOwerweightKoef();
 			character_physics_support()->movement()->SetJumpUpVelocity(jump_speed);
@@ -340,6 +351,15 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 					if (artefact && artefact->CanAffect())
 						walk_accel += m_fWalkAccel * artefact->GetAdditionalWalkAccel();
 				}
+
+				auto outfit = GetOutfit();
+				if (outfit && !fis_zero(outfit->GetCondition()))
+					walk_accel += outfit->GetAdditionalWalkAccel();
+
+				auto backpack = GetBackPack();
+				if (backpack && !fis_zero(backpack->GetCondition()))
+					walk_accel += backpack->GetAdditionalWalkAccel();
+
 				//Msg("additional walk_accel = %.2f", walk_accel);
 				walk_accel *= conditions().GetSmoothOwerweightKoef();
 				clamp(walk_accel, 0.0f, walk_accel);

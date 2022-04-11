@@ -633,20 +633,16 @@ void	CActor::Hit							(SHit* pHDS)
 				{
 					hit_power -= HDS.power * conditions().GetAlcohol(); //уменьшаем телепатический хит если актор пьян
 					//Msg("telepatic hit power = %.6f, HDS.power = %.6f, alcohol = %.6f", hit_power, HDS.power, conditions().GetAlcohol());
-				}
-				//if (HDS.hit_type == ALife::eHitTypeRadiation) Msg("Radiation hit power = %.6f, HDS.power = %.6f", hit_power, HDS.power);
+				}				
 				//
 				HDS.power = hit_power;
 				inherited::Hit(&HDS);
 				Msg("actor take hit [%f], hit type [%d], hitted bone [%s], ", HDS.damage(), HDS.hit_type, smart_cast<CKinematics*>(Visual())->LL_BoneName_dbg(HDS.boneID));
 
-				if (HDS.bone() == m_spine || HDS.bone() == m_spine1 || HDS.bone() == m_spine2)
-				{
-					auto pBackPack = GetBackPack();
-					if (pBackPack) 
-						pBackPack->Hit(HDS.power, HDS.hit_type);
-					Msg("SPINE HITTED");
-				}
+				auto pBackPack = GetBackPack();
+				if (pBackPack && IsHitToBackPack(HDS.bone(), HDS.type(), HDS.direction())) 
+					pBackPack->Hit(&HDS);
+
 			};
 		}
 		break;
@@ -1676,14 +1672,15 @@ void CActor::UpdateArtefactsOnBelt()
 			float random_k = artefact->GetRandomKoef();
 			float condition = artefact->GetCondition();
 			//
-			conditions().ChangeBleeding	(artefact->m_fBleedingRestoreSpeed	* f_update_time * random_k * condition);
-			conditions().ChangeHealth	(artefact->m_fHealthRestoreSpeed	* f_update_time * random_k * condition);
-			conditions().ChangePower	(artefact->m_fPowerRestoreSpeed		* f_update_time * random_k * condition);
-			conditions().ChangeSatiety	(artefact->m_fSatietyRestoreSpeed	* f_update_time * random_k * condition);
+			conditions().ChangeBleeding	(conditions().GetWoundIncarnation	() * artefact->m_fBleedingRestoreSpeed	* f_update_time * random_k * condition);
+			conditions().ChangeHealth	(conditions().GetHealthRestore		() * artefact->m_fHealthRestoreSpeed	* f_update_time * random_k * condition);
+			conditions().ChangePower	(conditions().GetPowerRestore		() * artefact->m_fPowerRestoreSpeed		* f_update_time * random_k * condition);
+			conditions().ChangeSatiety	(conditions().GetSatietyRestore		() * artefact->m_fSatietyRestoreSpeed	* f_update_time * random_k * condition);
 #ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
-			conditions().ChangeRadiation(artefact->m_fRadiationRestoreSpeed * f_update_time * random_k * condition);
+			conditions().ChangeRadiation(conditions().GetRadiationRestore	() * artefact->m_fRadiationRestoreSpeed * f_update_time * random_k * condition);
 #endif
-			conditions().ChangePsyHealth(artefact->m_fPsyHealthRestoreSpeed * f_update_time * random_k * condition);
+			conditions().ChangePsyHealth(conditions().GetPsyHealthRestore	() * artefact->m_fPsyHealthRestoreSpeed * f_update_time * random_k * condition);
+			conditions().ChangeAlcohol	(conditions().GetAlcoholRestore		() * artefact->m_fAlcoholRestoreSpeed	* f_update_time * random_k * condition);
 			//
 			artefact->UpdateConditionDecOnEffect();
 		}
@@ -1702,14 +1699,33 @@ void CActor::UpdateArtefactsOnBelt()
 		float condition = outfit->GetCondition();
 		if (!fis_zero(condition))
 		{
-			conditions().ChangeBleeding	(outfit->m_fBleedingRestoreSpeed	* f_update_time * condition);
-			conditions().ChangeHealth	(outfit->m_fHealthRestoreSpeed		* f_update_time * condition);
-			conditions().ChangePower	(outfit->m_fPowerRestoreSpeed		* f_update_time * condition);
-			conditions().ChangeSatiety	(outfit->m_fSatietyRestoreSpeed		* f_update_time * condition);
+			conditions().ChangeBleeding	(conditions().GetWoundIncarnation	() * outfit->m_fBleedingRestoreSpeed	* f_update_time * condition);
+			conditions().ChangeHealth	(conditions().GetHealthRestore		() * outfit->m_fHealthRestoreSpeed		* f_update_time * condition);
+			conditions().ChangePower	(conditions().GetPowerRestore		() * outfit->m_fPowerRestoreSpeed		* f_update_time * condition);
+			conditions().ChangeSatiety	(conditions().GetSatietyRestore		() * outfit->m_fSatietyRestoreSpeed		* f_update_time * condition);
 #ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
-			conditions().ChangeRadiation(outfit->m_fRadiationRestoreSpeed	* f_update_time * condition);
+			conditions().ChangeRadiation(conditions().GetRadiationRestore	() * outfit->m_fRadiationRestoreSpeed	* f_update_time * condition);
 #endif
-			conditions().ChangePsyHealth(outfit->m_fPsyHealthRestoreSpeed	* f_update_time * condition);
+			conditions().ChangePsyHealth(conditions().GetPsyHealthRestore	() * outfit->m_fPsyHealthRestoreSpeed	* f_update_time * condition);
+			conditions().ChangeAlcohol	(conditions().GetAlcoholRestore		() * outfit->m_fAlcoholRestoreSpeed		* f_update_time * condition);
+		}
+	}
+
+	auto backpack = GetBackPack();
+	if (backpack)
+	{
+		float condition = backpack->GetCondition();
+		if (!fis_zero(condition))
+		{
+			conditions().ChangeBleeding	(conditions().GetWoundIncarnation	() * backpack->m_fBleedingRestoreSpeed	* f_update_time * condition);
+			conditions().ChangeHealth	(conditions().GetHealthRestore		() * backpack->m_fHealthRestoreSpeed	* f_update_time * condition);
+			conditions().ChangePower	(conditions().GetPowerRestore		() * backpack->m_fPowerRestoreSpeed		* f_update_time * condition);
+			conditions().ChangeSatiety	(conditions().GetSatietyRestore		() * backpack->m_fSatietyRestoreSpeed	* f_update_time * condition);
+#ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
+			conditions().ChangeRadiation(conditions().GetRadiationRestore	() * backpack->m_fRadiationRestoreSpeed	* f_update_time * condition);
+#endif
+			conditions().ChangePsyHealth(conditions().GetPsyHealthRestore	() * backpack->m_fPsyHealthRestoreSpeed	* f_update_time * condition);
+			conditions().ChangeAlcohol	(conditions().GetAlcoholRestore		() * backpack->m_fAlcoholRestoreSpeed	* f_update_time * condition);
 		}
 	}
 }
@@ -2052,4 +2068,35 @@ void CActor::TryToBlockSprint(bool bReason)
 {
 	if (psActorFlags.is(AF_WPN_ACTIONS_RESET_SPRINT) && bReason && mstate_wishful & mcSprint)
 		mstate_wishful &= ~mcSprint;
+}
+
+bool CActor::IsHitToBackPack(u16 element, ALife::EHitType hit_type, Fvector direction)
+{
+	bool result = false;
+
+	bool calculate_direction = true;
+	//якщо хіт вогнепальний або поріз то має значення кістка попадання
+	if (hit_type == ALife::eHitTypeFireWound || hit_type == ALife::eHitTypeWound || hit_type == ALife::eHitTypeWound_2)
+		calculate_direction = (element == m_spine || element == m_spine1 || element == m_spine2);
+
+	if (calculate_direction)
+	{
+		// convert impulse into local coordinate system
+		Fmatrix					mInvXForm;
+		mInvXForm.invert(XFORM());
+		Fvector					vLocalDir;
+		mInvXForm.transform_dir(vLocalDir, direction);
+		vLocalDir.invert();
+
+		Fvector a = { 0, 0, 1 };
+		float res = a.dotproduct(vLocalDir);
+
+		if (res < -0.707)	//якщо хіт був завданий сзаду
+			result = true; 
+
+		if (result) Msg("! BACK HITTED FOR BACKPACK, res [%.3f]", res);
+		Msg("res [%.3f]", res);
+	}
+
+	return result;
 }

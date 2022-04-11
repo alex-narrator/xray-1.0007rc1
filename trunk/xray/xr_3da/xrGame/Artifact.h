@@ -79,6 +79,7 @@ public:
 	float							m_fPowerRestoreSpeed;
 	float							m_fBleedingRestoreSpeed;
 	float							m_fPsyHealthRestoreSpeed;
+	float							m_fAlcoholRestoreSpeed;
 	HitImmunity::HitTypeSVec		m_ArtefactHitImmunities;
 
 	float                           m_fAdditionalWalkAccel;

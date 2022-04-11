@@ -163,32 +163,12 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kCAM_3:{	cam_Set(eacFreeLook	); psActorFlags.set(AF_PSP, FALSE);				}break;
 	case kNIGHT_VISION:
 		{
-/*			const xr_vector<CAttachableItem*>& all = CAttachmentOwner::attached_objects();
-			xr_vector<CAttachableItem*>::const_iterator it = all.begin();
-			xr_vector<CAttachableItem*>::const_iterator it_e = all.end();
-			for(;it!=it_e;++it){
-				CTorch* torch = smart_cast<CTorch*>(*it);
-				if (torch){		
-					torch->SwitchNightVision();
-					break;
-				}
-			}*/
 			CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
 			if (pTorch) {
 				pTorch->SwitchNightVision();
 			}
 		}break;
 	case kTORCH:{ 
-/*		const xr_vector<CAttachableItem*>& all = CAttachmentOwner::attached_objects();
-		xr_vector<CAttachableItem*>::const_iterator it = all.begin();
-		xr_vector<CAttachableItem*>::const_iterator it_e = all.end();
-		for(;it!=it_e;++it){
-				CTorch* torch = smart_cast<CTorch*>(*it);
-				if (torch){		
-					torch->Switch();
-					break;
-				}
-		}*/
 		CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
 		if (pTorch) {
 			pTorch->Switch();

@@ -442,6 +442,9 @@ inv_grid_y			= 13
 full_icon_name		= npc_icon_scientific_outfit
 nightvision_sect	= effector_nightvision_good
 
+health_restore_speed = 1
+satiety_restore_speed = 0.1
+
 cost				= 30000
 full_scale_icon		= 12,11			;иконка сталкера в костюме в полный рост
 
@@ -1091,8 +1094,14 @@ visual				= equipments\item_rukzak.ogf
 description			= backpack_descr
 slot				= 17
 
-additional_max_weight = 20
-additional_max_volume = 20
+additional_max_weight 	= 20
+additional_max_volume 	= 20
+power_restore_speed 	= 1
+shock_protection 		= 0.1
+burn_protection 		= 0.5
+strike_protection 		= 0.5
+
+immunities_sect			= sect_backpack_immunities
 
 inv_name			= Backpack
 inv_name_short		= Backpack
@@ -1109,6 +1118,17 @@ position				= 0.35,0.25,0.0
 attach_angle_offset		= 0, -3.14, 1.6
 attach_position_offset	= 0.115, 0.00, 0.07
 attach_bone_name		= bip01_spine
+
+[sect_backpack_immunities]
+burn_immunity				= 0.03			;коэффициенты иммунитета самого костюма
+strike_immunity				= 0.01
+shock_immunity				= 0.03
+wound_immunity				= 0.015
+radiation_immunity			= 0.00
+telepatic_immunity			= 0.00
+chemical_burn_immunity		= 0.03
+explosion_immunity			= 0.03
+fire_wound_immunity			= 0.01
 
 [backpack_small]:backpack
 additional_max_weight = 10

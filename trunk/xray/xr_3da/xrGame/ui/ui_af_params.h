@@ -23,9 +23,13 @@ protected:
 		_item_power_restore_speed,
 		_item_bleeding_restore_speed,
 		_item_psy_health_restore_speed,
+		_item_alcohol_restore_speed,
 //
 		_item_additional_walk_accel,
 		_item_additional_jump_speed,
+//
+		_item_additional_weight,
+		_item_additional_volume,
 //
 		_max_item_index1,
 
@@ -38,10 +42,6 @@ protected:
 		_item_chemical_burn_immunity,
 		_item_explosion_immunit,
 		_item_fire_wound_immunity,
-		//
-		_item_additional_weight,
-		_item_additional_volume,
-		//
 
 		_max_item_index,
 

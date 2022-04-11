@@ -11,18 +11,34 @@ public:
 
 	virtual void				Load(LPCSTR section);
 
-	virtual void				Hit(float P, ALife::EHitType hit_type);
+	virtual void				Hit(SHit* pHDS);
 
 protected:
-	/*	float							m_additional_weight;
-	float							m_additional_weight2;*/
-	float							m_fAdditionalMaxWeight;
-	float							m_fAdditionalMaxVolume;
+	float						m_fAdditionalMaxWeight;
+	float						m_fAdditionalMaxVolume;
+	float                       m_fAdditionalWalkAccel;
+	float                       m_fAdditionalJumpSpeed;
 
 public:
-	//float						GetAdditionalMaxWalkWeight	();
-	float						GetAdditionalMaxWeight		();
-	float						GetAdditionalMaxVolume		();
+	float						GetAdditionalMaxWeight	();
+	float						GetAdditionalMaxVolume	();
+	float						GetAdditionalWalkAccel	();
+	float						GetAdditionalJumpSpeed	();
+	float						GetHitImmunities		(ALife::EHitType hit_type);
+	//
+	float						m_fHealthRestoreSpeed;
+#ifndef OBJECTS_RADIOACTIVE
+	float 						m_fRadiationRestoreSpeed;
+#endif
+	float 						m_fSatietyRestoreSpeed;
+	float						m_fPowerRestoreSpeed;
+	float						m_fBleedingRestoreSpeed;
+	float						m_fPsyHealthRestoreSpeed;
+	float						m_fAlcoholRestoreSpeed;
+
+	HitImmunity::HitTypeSVec	m_BackPackHitImmunities;
+
+	void						HitItemsInBackPack			(SHit* pHDS, bool hit_random_item);
 
 	virtual void				OnMoveToSlot				(EItemPlace previous_place);
 	virtual void				OnMoveToRuck				(EItemPlace previous_place);

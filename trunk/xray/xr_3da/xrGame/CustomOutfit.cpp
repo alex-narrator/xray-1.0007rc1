@@ -54,6 +54,7 @@ void CCustomOutfit::Load(LPCSTR section)
 	m_fPowerRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",		0.f);
 	m_fBleedingRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",		0.f);
 	m_fPsyHealthRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed",	0.f);
+	m_fAlcoholRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "alcohol_restore_speed",		0.f);
 
 	m_HitTypeProtection[ALife::eHitTypeBurn]			= READ_IF_EXISTS(pSettings, r_float, section, "burn_protection",			0.0f);
 	m_HitTypeProtection[ALife::eHitTypeStrike]			= READ_IF_EXISTS(pSettings, r_float, section, "strike_protection",			0.0f);
@@ -79,8 +80,10 @@ void CCustomOutfit::Load(LPCSTR section)
 		m_fPowerLoss = 1.0f;	
 
 	m_fAdditionalMaxWeight = READ_IF_EXISTS(pSettings, r_float, section, "additional_max_weight", 0.f);
-
 	m_fAdditionalMaxVolume = READ_IF_EXISTS(pSettings, r_float, section, "additional_max_volume", 0.f);
+	//
+	m_fAdditionalWalkAccel = READ_IF_EXISTS(pSettings, r_float, section, "additional_walk_accel", 0.f);
+	m_fAdditionalJumpSpeed = READ_IF_EXISTS(pSettings, r_float, section, "additional_jump_speed", 0.f);
 
 /*	if (pSettings->line_exist(section, "nightvision_sect"))
 		m_NightVisionSect = pSettings->r_string(section, "nightvision_sect");
@@ -210,4 +213,14 @@ float CCustomOutfit::GetAdditionalMaxWeight()
 float CCustomOutfit::GetAdditionalMaxVolume()
 {
 	return m_fAdditionalMaxVolume * GetCondition();
+}
+
+float CCustomOutfit::GetAdditionalWalkAccel()
+{
+	return m_fAdditionalWalkAccel * GetCondition();
+}
+
+float CCustomOutfit::GetAdditionalJumpSpeed()
+{
+	return m_fAdditionalJumpSpeed * GetCondition();
 }

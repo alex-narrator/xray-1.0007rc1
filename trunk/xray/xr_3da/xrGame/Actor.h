@@ -845,7 +845,9 @@ public:
 			bool is_actor_climbing();
 			bool is_actor_moving();
 			//
-			void TryToBlockSprint(bool bReason);
+			void TryToBlockSprint	(bool bReason);
+			//визначаємо чи треба передати хіт до рюкзака та його вмісту
+			bool IsHitToBackPack	(u16 element, ALife::EHitType hit_type, Fvector direction);
 };
 
 extern bool		isActorAccelerated			(u32 mstate, bool ZoomMode);
