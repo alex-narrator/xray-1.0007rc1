@@ -177,6 +177,8 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 	m_pOldCrashHandler = NULL;
 	m_we_used_old_crach_handler	= false;
 
+	m_is_removing_objects = false;
+
 //	if ( !strstr( Core.Params, "-tdemo " ) && !strstr(Core.Params,"-tdemof "))
 //	{
 //		Demo_PrepareToStore();

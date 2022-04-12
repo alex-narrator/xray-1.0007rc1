@@ -26,6 +26,7 @@ public:
 	virtual BOOL 							net_Spawn				(CSE_Abstract* DC);
 	virtual void 							Load					(LPCSTR section);
 	virtual void 							net_Destroy				();
+	virtual void							net_Relcase				(CObject* O);
 
 	virtual void 							OnH_A_Chield			();
 	virtual void 							OnH_B_Independent		(bool just_before_destroy);
@@ -42,8 +43,8 @@ public:
 	virtual CObject*						GetOwnerObject			();
 
 
-			void							TurnOn					() {m_bTurnedOff = false;}
-			void							TurnOff					() {m_bTurnedOff = true;}
+			void							TurnOn					();// {m_bTurnedOff = false;}
+			void							TurnOff					();// {m_bTurnedOff = true;}
 	
 			bool 							IsActive				() {return IsOn();}
 			bool 							IsOn					() {return !m_bTurnedOff;}
@@ -66,9 +67,10 @@ protected:
 
 	xr_vector<CObject*>						m_active_contacts;
 	float									m_fRadius;
+	bool									m_changed;
 
 	u16										m_idOriginalOwner;
-	shared_str					m_SpecificChracterOwner;
+	shared_str								m_SpecificChracterOwner;
 	xr_string								m_sFullName;
 
 	bool									m_bTurnedOff;

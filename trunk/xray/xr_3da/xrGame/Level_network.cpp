@@ -24,6 +24,7 @@ extern bool	g_b_ClearGameCaptions;
 void CLevel::remove_objects	()
 {
 	if (!IsGameTypeSingle()) Msg("CLevel::remove_objects - Start");
+	m_is_removing_objects		= true;
 	BOOL						b_stored = psDeviceFlags.test(rsDisableObjectsAsCrows);
 
 	Game().reset_ui				();
@@ -90,6 +91,7 @@ void CLevel::remove_objects	()
 //.	xr_delete									(m_seniority_hierarchy_holder);
 //.	m_seniority_hierarchy_holder				= xr_new<CSeniorityHierarchyHolder>();
 	if (!IsGameTypeSingle()) Msg("CLevel::remove_objects - End");
+	m_is_removing_objects = false;
 }
 
 #ifdef DEBUG

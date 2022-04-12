@@ -347,6 +347,11 @@ public:
 			void			remove_objects				();
 	virtual void			OnSessionTerminate			(LPCSTR reason);
 
+private:
+		bool m_is_removing_objects;
+public:
+		bool is_removing_objects() { return m_is_removing_objects; }
+
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list(CLevel)
