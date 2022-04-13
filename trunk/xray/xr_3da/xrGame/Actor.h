@@ -847,7 +847,7 @@ public:
 			//
 			void TryToBlockSprint	(bool bReason);
 			//визначаємо чи треба передати хіт до рюкзака та його вмісту
-			bool IsHitToBackPack	(u16 element, ALife::EHitType hit_type, Fvector direction);
+			bool IsHitToBackPack	(SHit* pHDS);
 };
 
 extern bool		isActorAccelerated			(u32 mstate, bool ZoomMode);

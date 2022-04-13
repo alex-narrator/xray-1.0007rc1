@@ -640,9 +640,8 @@ void	CActor::Hit							(SHit* pHDS)
 				Msg("actor take hit [%f], hit type [%d], hitted bone [%s], ", HDS.damage(), HDS.hit_type, smart_cast<CKinematics*>(Visual())->LL_BoneName_dbg(HDS.boneID));
 
 				auto pBackPack = GetBackPack();
-				if (pBackPack && IsHitToBackPack(HDS.bone(), HDS.type(), HDS.direction())) 
+				if (pBackPack && IsHitToBackPack(&HDS))
 					pBackPack->Hit(&HDS);
-
 			};
 		}
 		break;
@@ -2070,17 +2069,17 @@ void CActor::TryToBlockSprint(bool bReason)
 		mstate_wishful &= ~mcSprint;
 }
 
-bool CActor::IsHitToBackPack(u16 element, ALife::EHitType hit_type, Fvector direction)
+bool CActor::IsHitToBackPack(SHit* pHDS)
 {
-	if (hit_type == ALife::eHitTypeRadiation)
+	if (pHDS->type() == ALife::eHitTypeRadiation)
 		return true;
 
 	bool result = false;
 
 	bool calculate_direction = true;
 	//якщо хіт вогнепальний або поріз то має значення кістка попадання
-	if (hit_type == ALife::eHitTypeFireWound || hit_type == ALife::eHitTypeWound || hit_type == ALife::eHitTypeWound_2)
-		calculate_direction = (element == m_spine || element == m_spine1 || element == m_spine2);
+	if (pHDS->type() == ALife::eHitTypeFireWound || pHDS->type() == ALife::eHitTypeWound || pHDS->type() == ALife::eHitTypeWound_2)
+		calculate_direction = (pHDS->bone() == m_spine || pHDS->bone() == m_spine1 || pHDS->bone() == m_spine2);
 
 	if (calculate_direction)
 	{
@@ -2088,7 +2087,7 @@ bool CActor::IsHitToBackPack(u16 element, ALife::EHitType hit_type, Fvector dire
 		Fmatrix					mInvXForm;
 		mInvXForm.invert(XFORM());
 		Fvector					vLocalDir;
-		mInvXForm.transform_dir(vLocalDir, direction);
+		mInvXForm.transform_dir(vLocalDir, pHDS->direction());
 		vLocalDir.invert();
 
 		Fvector a = { 0, 0, 1 };
