@@ -9,6 +9,7 @@
 
 template <typename _return_type>
 class CScriptCallbackEx;
+class CWound;
 
 
 class CActor;

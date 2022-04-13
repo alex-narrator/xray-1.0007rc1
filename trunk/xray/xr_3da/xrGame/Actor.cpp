@@ -639,9 +639,9 @@ void	CActor::Hit							(SHit* pHDS)
 				inherited::Hit(&HDS);
 				Msg("actor take hit [%f], hit type [%d], hitted bone [%s], ", HDS.damage(), HDS.hit_type, smart_cast<CKinematics*>(Visual())->LL_BoneName_dbg(HDS.boneID));
 
-				auto pBackPack = GetBackPack();
+/*				auto pBackPack = GetBackPack();
 				if (pBackPack && IsHitToBackPack(&HDS))
-					pBackPack->Hit(&HDS);
+					pBackPack->Hit(&HDS);*/
 			};
 		}
 		break;

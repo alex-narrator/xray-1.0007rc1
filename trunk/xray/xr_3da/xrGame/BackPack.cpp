@@ -94,7 +94,7 @@ void CBackPack::HitItemsInBackPack(SHit* pHDS, bool hit_random_item)
 	if (m_pCurrentInventory)
 	{
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
-		if (pActor && pActor->GetBackPack()==this)
+		if (pActor && pActor->GetBackPack() == this && pActor->IsHitToBackPack(pHDS))
 		{
 			Msg("pHDS power: [%.2f]", pHDS->power);
 			pHDS->power *= (1.0f - GetHitTypeProtection(pHDS->type()));
