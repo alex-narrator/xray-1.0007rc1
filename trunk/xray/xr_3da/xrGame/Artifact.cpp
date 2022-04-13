@@ -75,9 +75,10 @@ CArtefact::CArtefact(void)
 	//
 	m_fRandomK					= 1.f;
 	//
+	m_HitTypeProtection.clear();
 	m_HitTypeProtection.resize(ALife::eHitTypeMax);
-	for (int i = 0; i<ALife::eHitTypeMax; i++)
-		m_HitTypeProtection[i] = 0.0f;
+/*	for (int i = 0; i<ALife::eHitTypeMax; i++)
+		m_HitTypeProtection[i] = 0.0f;*/
 
 	m_bPending = false;
 }

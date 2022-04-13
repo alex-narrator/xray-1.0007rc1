@@ -18,9 +18,10 @@ CCustomOutfit::CCustomOutfit()
 
 	m_flags.set(FUsingCondition, TRUE);
 
+	m_HitTypeProtection.clear();
 	m_HitTypeProtection.resize(ALife::eHitTypeMax);
-	for(int i=0; i<ALife::eHitTypeMax; i++)
-		m_HitTypeProtection[i] = 0.0f;
+/*	for(int i=0; i<ALife::eHitTypeMax; i++)
+		m_HitTypeProtection[i] = 0.0f;*/
 
 	m_boneProtection = xr_new<SBoneProtections>();
 	m_bAlwaysProcessing = TRUE;

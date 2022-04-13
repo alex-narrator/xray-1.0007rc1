@@ -9,9 +9,10 @@ CBackPack::CBackPack()
 	SetSlot(BACKPACK_SLOT);
 	m_flags.set(FUsingCondition, TRUE);
 
+	m_HitTypeProtection.clear();
 	m_HitTypeProtection.resize(ALife::eHitTypeMax);
-	for (int i = 0; i<ALife::eHitTypeMax; i++)
-		m_HitTypeProtection[i] = 0.0f;
+/*	for (int i = 0; i<ALife::eHitTypeMax; i++)
+		m_HitTypeProtection[i] = 0.0f;*/
 }
 
 

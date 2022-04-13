@@ -629,19 +629,15 @@ void	CActor::Hit							(SHit* pHDS)
 			{
 				//inherited::Hit		(hit_power,dir,who,element,position_in_bone_space, impulse, hit_type);
 				//
-				if (HDS.hit_type == ALife::eHitTypeTelepatic && psActorFlags.test(AF_SURVIVAL)) //если хит телепатический и включена соотв. опция
-				{
-					hit_power -= HDS.power * conditions().GetAlcohol(); //уменьшаем телепатический хит если актор пьян
-					//Msg("telepatic hit power = %.6f, HDS.power = %.6f, alcohol = %.6f", hit_power, HDS.power, conditions().GetAlcohol());
-				}				
+//				if (HDS.hit_type == ALife::eHitTypeTelepatic && psActorFlags.test(AF_SURVIVAL)) //если хит телепатический и включена соотв. опция
+//				{
+//					hit_power -= HDS.power * conditions().GetAlcohol(); //уменьшаем телепатический хит если актор пьян
+//					//Msg("telepatic hit power = %.6f, HDS.power = %.6f, alcohol = %.6f", hit_power, HDS.power, conditions().GetAlcohol());
+//				}				
 				//
 				HDS.power = hit_power;
 				inherited::Hit(&HDS);
 				Msg("actor take hit [%f], hit type [%d], hitted bone [%s], ", HDS.damage(), HDS.hit_type, smart_cast<CKinematics*>(Visual())->LL_BoneName_dbg(HDS.boneID));
-
-/*				auto pBackPack = GetBackPack();
-				if (pBackPack && IsHitToBackPack(&HDS))
-					pBackPack->Hit(&HDS);*/
 			};
 		}
 		break;
