@@ -195,7 +195,8 @@ void			CAI_Stalker::Hit					(SHit* pHDS)
 	//хит может меняться в зависимости от ранга (новички получают больше хита, чем ветераны)
 	SHit							HDS = *pHDS;
 	HDS.power						*= m_fRankImmunity;
-	if (m_boneHitProtection && HDS.hit_type == ALife::eHitTypeFireWound){
+	if (m_boneHitProtection && HDS.hit_type == ALife::eHitTypeFireWound)
+	{
 		float						BoneArmour = m_boneHitProtection->getBoneArmour(HDS.bone()) * (1 - pHDS->ap); //учёт влияния параметра k_ap в патронах
 		float						NewHitPower = HDS.damage() - BoneArmour;
 		if (NewHitPower < HDS.power*m_boneHitProtection->m_fHitFrac) HDS.power = HDS.power*m_boneHitProtection->m_fHitFrac;

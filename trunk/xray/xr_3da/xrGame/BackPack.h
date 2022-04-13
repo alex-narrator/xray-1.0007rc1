@@ -24,7 +24,7 @@ public:
 	float						GetAdditionalMaxVolume	();
 	float						GetAdditionalWalkAccel	();
 	float						GetAdditionalJumpSpeed	();
-	float						GetHitImmunities		(ALife::EHitType hit_type);
+	float						GetHitTypeProtection	(ALife::EHitType hit_type);
 	//
 	float						m_fHealthRestoreSpeed;
 #ifndef OBJECTS_RADIOACTIVE
@@ -36,7 +36,7 @@ public:
 	float						m_fPsyHealthRestoreSpeed;
 	float						m_fAlcoholRestoreSpeed;
 
-	HitImmunity::HitTypeSVec	m_BackPackHitImmunities;
+	HitImmunity::HitTypeSVec	m_HitTypeProtection;
 
 	void						HitItemsInBackPack			(SHit* pHDS, bool hit_random_item);
 

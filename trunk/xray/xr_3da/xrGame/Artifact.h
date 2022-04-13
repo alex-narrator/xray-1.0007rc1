@@ -80,7 +80,7 @@ public:
 	float							m_fBleedingRestoreSpeed;
 	float							m_fPsyHealthRestoreSpeed;
 	float							m_fAlcoholRestoreSpeed;
-	HitImmunity::HitTypeSVec		m_ArtefactHitImmunities;
+	HitImmunity::HitTypeSVec		m_HitTypeProtection;
 
 	float                           m_fAdditionalWalkAccel;
 	float                           m_fAdditionalJumpSpeed;
@@ -101,7 +101,7 @@ public:
 	float							GetAdditionalJumpSpeed				();
 	float							GetAdditionalMaxWeight				();
 	float							GetAdditionalMaxVolume				();
-	float							GetHitImmunities					(ALife::EHitType hit_type);
+	float							GetHitTypeProtection				(ALife::EHitType hit_type);
 protected:
 	MotionSVec						m_anim_idle;
 	MotionSVec						m_anim_idle_sprint;

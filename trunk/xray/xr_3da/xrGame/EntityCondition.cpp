@@ -293,23 +293,25 @@ void CEntityCondition::UpdateCondition()
 
 
 
-float CEntityCondition::HitOutfitEffect(float hit_power, ALife::EHitType hit_type, s16 element, float AP)
+float CEntityCondition::HitOutfitEffect(SHit* pHDS)
 {
     CInventoryOwner* pInvOwner		= smart_cast<CInventoryOwner*>(m_object);
-	if(!pInvOwner)					return hit_power;
+	if(!pInvOwner)					return pHDS->damage();
 
-	CCustomOutfit* pOutfit			= (CCustomOutfit*)pInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem;
-	if(!pOutfit)					return hit_power;
+	auto pOutfit					= pInvOwner->GetOutfit();
+	if(!pOutfit)					return pHDS->damage();
 
-	float new_hit_power				= hit_power;
+	float new_hit_power				= pHDS->damage();
 
-	if (hit_type == ALife::eHitTypeFireWound)
-		new_hit_power				= pOutfit->HitThruArmour(hit_power, element, AP);
+	if (pHDS->hit_type == ALife::eHitTypeFireWound)
+		new_hit_power				= pOutfit->HitThruArmour(pHDS/*pHDS->damage(), pHDS->bone(), pHDS->ap*/);
 	else
-		new_hit_power				*= pOutfit->GetHitTypeProtection(hit_type,element);
+		new_hit_power				*= pOutfit->GetHitTypeProtection(pHDS->type()/*, pHDS->bone()*/);
+
+	Msg("new_hit_power [%.3f]", new_hit_power);
 	
 	//увеличить изношенность костюма
-	pOutfit->Hit					(hit_power, hit_type);
+	pOutfit->Hit					(pHDS);
 
 	return							new_hit_power;
 }
@@ -319,7 +321,7 @@ float CEntityCondition::HitPowerEffect(float power_loss)
 	CInventoryOwner* pInvOwner		 = smart_cast<CInventoryOwner*>(m_object);
 	if(!pInvOwner)					 return power_loss;
 
-	CCustomOutfit* pOutfit			= (CCustomOutfit*)pInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem;
+	auto pOutfit					= pInvOwner->GetOutfit();
 	if(!pOutfit)					return power_loss;
 
 	float new_power_loss			= power_loss*pOutfit->GetPowerLoss();
@@ -368,7 +370,7 @@ CWound* CEntityCondition::ConditionHit(SHit* pHDS)
 	Msg("[%s] get hit [%f], hit type [%d]", m_object->Name(), pHDS->damage(), pHDS->hit_type);
 	float hit_power_org = pHDS->damage();
 	float hit_power = hit_power_org;
-	hit_power = HitOutfitEffect(hit_power, pHDS->hit_type, pHDS->boneID, pHDS->ap);
+	hit_power = HitOutfitEffect(pHDS);
 
 	bool bAddWound = true;
 	switch(pHDS->hit_type)

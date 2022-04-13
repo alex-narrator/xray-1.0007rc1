@@ -69,10 +69,8 @@ void CUIOutfitInfo::InitFromXml(CUIXml& xml_doc)
 
 }
 
-void CUIOutfitInfo::Update(CCustomOutfit* outfit)
+void CUIOutfitInfo::Update()
 {
-	m_outfit				= outfit;
-
     SetItem(ALife::eHitTypeBurn,		false);
 	SetItem(ALife::eHitTypeShock,		false);
 	SetItem(ALife::eHitTypeStrike,		false);
@@ -92,11 +90,9 @@ void CUIOutfitInfo::SetItem(u32 hitType, bool force_add)
 
 	CUIStatic* _s		= m_items[hitType];
 
-//	_val_outfit			= m_outfit ? m_outfit->GetDefHitTypeProtection(ALife::EHitType(hitType)) : 1.0f;
-//	_val_outfit			= 1.0f - _val_outfit;
-
-	if (m_outfit)
-		_val_outfit = m_outfit->GetDefHitTypeProtection(ALife::EHitType(hitType));
+	auto outfit = Actor()->GetOutfit();
+	if (outfit)
+		_val_outfit = outfit->GetHitTypeProtection(ALife::EHitType(hitType));
 
 	_val_af				= Actor()->HitArtefactsOnBelt(1.0f,ALife::EHitType(hitType));
 	_val_af				= 1.0f - _val_af;
@@ -112,7 +108,6 @@ void CUIOutfitInfo::SetItem(u32 hitType, bool force_add)
 		return;
 	}
 
-//	LPCSTR			_clr_outfit, _clr_af;
 	LPCSTR			_imm_name	= *CStringTable().translate(_imm_st_names[hitType]);
 
 	int _sz			= sprintf_s	(_buff,sizeof(_buff),"%s ", _imm_name);

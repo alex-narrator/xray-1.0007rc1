@@ -9,9 +9,9 @@ CBackPack::CBackPack()
 	SetSlot(BACKPACK_SLOT);
 	m_flags.set(FUsingCondition, TRUE);
 
-	m_BackPackHitImmunities.resize(ALife::eHitTypeMax);
+	m_HitTypeProtection.resize(ALife::eHitTypeMax);
 	for (int i = 0; i<ALife::eHitTypeMax; i++)
-		m_BackPackHitImmunities[i] = 0.0f;
+		m_HitTypeProtection[i] = 0.0f;
 }
 
 
@@ -23,35 +23,33 @@ void CBackPack::Load(LPCSTR section)
 {
 	inherited::Load(section);
 
-	m_fAdditionalMaxWeight		= READ_IF_EXISTS(pSettings, r_float, section, "additional_max_weight",		0.f);
-	m_fAdditionalMaxVolume		= READ_IF_EXISTS(pSettings, r_float, section, "additional_max_volume",		0.f);
-	//
-	m_fAdditionalWalkAccel		= READ_IF_EXISTS(pSettings, r_float, section, "additional_walk_accel",		0.f);
-	m_fAdditionalJumpSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "additional_jump_speed",		0.f);
-
-	m_fHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",		0.f);
+	//*_restore_speed
+	m_fHealthRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",		0.f);
 #ifndef OBJECTS_RADIOACTIVE
-	m_fRadiationRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",	0.f);
+	m_fRadiationRestoreSpeed							= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",	0.f);
 #endif
-	m_fSatietyRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",		0.f);
-	m_fPowerRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",		0.f);
-	m_fBleedingRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",		0.f);
-	m_fPsyHealthRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed",	0.f);
-	m_fAlcoholRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "alcohol_restore_speed",		0.f);
-
-	m_BackPackHitImmunities[ALife::eHitTypeBurn]			= READ_IF_EXISTS(pSettings, r_float, section, "burn_protection",			0.0f);
-	m_BackPackHitImmunities[ALife::eHitTypeStrike]			= READ_IF_EXISTS(pSettings, r_float, section, "strike_protection",			0.0f);
-	m_BackPackHitImmunities[ALife::eHitTypeShock]			= READ_IF_EXISTS(pSettings, r_float, section, "shock_protection",			0.0f);
-	m_BackPackHitImmunities[ALife::eHitTypeWound]			= READ_IF_EXISTS(pSettings, r_float, section, "wound_protection",			0.0f);
-	m_BackPackHitImmunities[ALife::eHitTypeRadiation]		= READ_IF_EXISTS(pSettings, r_float, section, "radiation_protection",		0.0f);
-	m_BackPackHitImmunities[ALife::eHitTypeTelepatic]		= READ_IF_EXISTS(pSettings, r_float, section, "telepatic_protection",		0.0f);
-	m_BackPackHitImmunities[ALife::eHitTypeChemicalBurn]	= READ_IF_EXISTS(pSettings, r_float, section, "chemical_burn_protection",	0.0f);
-	m_BackPackHitImmunities[ALife::eHitTypeExplosion]		= READ_IF_EXISTS(pSettings, r_float, section, "explosion_protection",		0.0f);
-	m_BackPackHitImmunities[ALife::eHitTypeFireWound]		= READ_IF_EXISTS(pSettings, r_float, section, "fire_wound_protection",		0.0f);
-	m_BackPackHitImmunities[ALife::eHitTypeWound_2]			= READ_IF_EXISTS(pSettings, r_float, section, "wound_2_protection",			0.0f);
-	m_BackPackHitImmunities[ALife::eHitTypePhysicStrike]	= READ_IF_EXISTS(pSettings, r_float, section, "physic_strike_protection",	0.0f);
-
-//	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", TRUE));
+	m_fSatietyRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",		0.f);
+	m_fPowerRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",		0.f);
+	m_fBleedingRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",		0.f);
+	m_fPsyHealthRestoreSpeed							= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed",	0.f);
+	m_fAlcoholRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "alcohol_restore_speed",		0.f);
+	//addition
+	m_fAdditionalMaxWeight								= READ_IF_EXISTS(pSettings, r_float, section, "additional_max_weight",		0.f);
+	m_fAdditionalMaxVolume								= READ_IF_EXISTS(pSettings, r_float, section, "additional_max_volume",		0.f);
+	m_fAdditionalWalkAccel								= READ_IF_EXISTS(pSettings, r_float, section, "additional_walk_accel",		0.f);
+	m_fAdditionalJumpSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "additional_jump_speed",		0.f);
+	//protection
+	m_HitTypeProtection[ALife::eHitTypeBurn]			= READ_IF_EXISTS(pSettings, r_float, section, "burn_protection",			0.f);
+	m_HitTypeProtection[ALife::eHitTypeStrike]			= READ_IF_EXISTS(pSettings, r_float, section, "strike_protection",			0.f);
+	m_HitTypeProtection[ALife::eHitTypeShock]			= READ_IF_EXISTS(pSettings, r_float, section, "shock_protection",			0.f);
+	m_HitTypeProtection[ALife::eHitTypeWound]			= READ_IF_EXISTS(pSettings, r_float, section, "wound_protection",			0.f);
+	m_HitTypeProtection[ALife::eHitTypeRadiation]		= READ_IF_EXISTS(pSettings, r_float, section, "radiation_protection",		0.f);
+	m_HitTypeProtection[ALife::eHitTypeTelepatic]		= READ_IF_EXISTS(pSettings, r_float, section, "telepatic_protection",		0.f);
+	m_HitTypeProtection[ALife::eHitTypeChemicalBurn]	= READ_IF_EXISTS(pSettings, r_float, section, "chemical_burn_protection",	0.f);
+	m_HitTypeProtection[ALife::eHitTypeExplosion]		= READ_IF_EXISTS(pSettings, r_float, section, "explosion_protection",		0.f);
+	m_HitTypeProtection[ALife::eHitTypeFireWound]		= READ_IF_EXISTS(pSettings, r_float, section, "fire_wound_protection",		0.f);
+	m_HitTypeProtection[ALife::eHitTypeWound_2]			= READ_IF_EXISTS(pSettings, r_float, section, "wound_2_protection",			0.f);
+	m_HitTypeProtection[ALife::eHitTypePhysicStrike]	= READ_IF_EXISTS(pSettings, r_float, section, "physic_strike_protection",	0.f);
 }
 
 void CBackPack::Hit(SHit* pHDS)
@@ -86,9 +84,9 @@ float CBackPack::GetAdditionalJumpSpeed()
 	return m_fAdditionalJumpSpeed * GetCondition();
 }
 
-float CBackPack::GetHitImmunities(ALife::EHitType hit_type)
+float CBackPack::GetHitTypeProtection(ALife::EHitType hit_type)
 {
-	return m_BackPackHitImmunities[hit_type] * GetCondition();
+	return m_HitTypeProtection[hit_type] * GetCondition();
 }
 
 void CBackPack::HitItemsInBackPack(SHit* pHDS, bool hit_random_item)
@@ -99,7 +97,7 @@ void CBackPack::HitItemsInBackPack(SHit* pHDS, bool hit_random_item)
 		if (pActor && pActor->GetBackPack()==this)
 		{
 			Msg("pHDS power: [%.2f]", pHDS->power);
-			pHDS->power *= (1.0f - GetHitImmunities(pHDS->type()));
+			pHDS->power *= (1.0f - GetHitTypeProtection(pHDS->type()));
 			Msg("new_hit power: [%.2f]", pHDS->power);
 
 			auto ruck = m_pCurrentInventory->m_ruck;

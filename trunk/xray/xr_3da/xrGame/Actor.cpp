@@ -1740,9 +1740,9 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		//
-		if (artefact && artefact->m_ArtefactHitImmunities[hit_type] && artefact->CanAffect())
+		if (artefact && !fis_zero(artefact->GetHitTypeProtection(hit_type)) && artefact->CanAffect())
 		{
-			res_hit_power_k += 1.0f - artefact->GetHitImmunities(hit_type);
+			res_hit_power_k += 1.0f - artefact->GetHitTypeProtection(hit_type);
 			_af_count += 1.0f;
 		}
 	}
@@ -1753,9 +1753,9 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 		PIItem helmet = inventory().m_slots[HELMET_SLOT].m_pIItem;
 		if (helmet){
 			CArtefact* helmet_artefact = smart_cast<CArtefact*>(helmet);
-			if (helmet_artefact && helmet_artefact->m_ArtefactHitImmunities[hit_type])
+			if (helmet_artefact && !fis_zero(helmet_artefact->GetHitTypeProtection(hit_type)))
 			{
-				res_hit_power_k += 1.0f - helmet_artefact->m_ArtefactHitImmunities[hit_type];
+				res_hit_power_k += 1.0f - helmet_artefact->GetHitTypeProtection(hit_type);
 				_af_count += 1.0f;
 			}
 		}
@@ -2072,6 +2072,9 @@ void CActor::TryToBlockSprint(bool bReason)
 
 bool CActor::IsHitToBackPack(u16 element, ALife::EHitType hit_type, Fvector direction)
 {
+	if (hit_type == ALife::eHitTypeRadiation)
+		return true;
+
 	bool result = false;
 
 	bool calculate_direction = true;

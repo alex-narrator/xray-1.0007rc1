@@ -73,11 +73,11 @@ CArtefact::CArtefact(void)
 	SetSlot (ARTEFACT_SLOT);
 #endif
 	//
-	m_fRandomK					= 1.f; //NULL;
+	m_fRandomK					= 1.f;
 	//
-	m_ArtefactHitImmunities.resize(ALife::eHitTypeMax);
+	m_HitTypeProtection.resize(ALife::eHitTypeMax);
 	for (int i = 0; i<ALife::eHitTypeMax; i++)
-		m_ArtefactHitImmunities[i] = 0.0f;
+		m_HitTypeProtection[i] = 0.0f;
 
 	m_bPending = false;
 }
@@ -95,51 +95,44 @@ void CArtefact::Load(LPCSTR section)
 		m_sParticlesName	= pSettings->r_string(section, "particles");
 
 	m_bLightsEnabled		= !!pSettings->r_bool(section, "lights_enabled");
-	if(m_bLightsEnabled){
+	if(m_bLightsEnabled)
+	{
 		sscanf(pSettings->r_string(section,"trail_light_color"), "%f,%f,%f", 
 			&m_TrailLightColor.r, &m_TrailLightColor.g, &m_TrailLightColor.b);
 		m_fTrailLightRange	= pSettings->r_float(section,"trail_light_range");
 	}
 
-
-	{
-		m_fHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",		0.f);
+	//*_restore_speed
+	m_fHealthRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",		0.f);
 #ifndef OBJECTS_RADIOACTIVE
-		m_fRadiationRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",	0.f);
+	m_fRadiationRestoreSpeed							= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",	0.f);
 #endif
-		m_fSatietyRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",		0.f);
-		m_fPowerRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",		0.f);
-		m_fBleedingRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",		0.f);
-		m_fPsyHealthRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed",	0.f);
-		m_fAlcoholRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "alcohol_restore_speed",		0.f);
+	m_fSatietyRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",		0.f);
+	m_fPowerRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",		0.f);
+	m_fBleedingRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",		0.f);
+	m_fPsyHealthRestoreSpeed							= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed",	0.f);
+	m_fAlcoholRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "alcohol_restore_speed",		0.f);
+	//addition
+	m_fAdditionalMaxWeight								= READ_IF_EXISTS(pSettings, r_float, section, "additional_max_weight",		0.f);
+	m_fAdditionalMaxVolume								= READ_IF_EXISTS(pSettings, r_float, section, "additional_max_volume",		0.f);
+	m_fAdditionalWalkAccel								= READ_IF_EXISTS(pSettings, r_float, section, "additional_walk_accel",		0.f);
+	m_fAdditionalJumpSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "additional_jump_speed",		0.f);
+	//protection
+	m_HitTypeProtection[ALife::eHitTypeBurn]			= READ_IF_EXISTS(pSettings, r_float, section, "burn_protection",			0.f);
+	m_HitTypeProtection[ALife::eHitTypeStrike]			= READ_IF_EXISTS(pSettings, r_float, section, "strike_protection",			0.f);
+	m_HitTypeProtection[ALife::eHitTypeShock]			= READ_IF_EXISTS(pSettings, r_float, section, "shock_protection",			0.f);
+	m_HitTypeProtection[ALife::eHitTypeWound]			= READ_IF_EXISTS(pSettings, r_float, section, "wound_protection",			0.f);
+	m_HitTypeProtection[ALife::eHitTypeRadiation]		= READ_IF_EXISTS(pSettings, r_float, section, "radiation_protection",		0.f);
+	m_HitTypeProtection[ALife::eHitTypeTelepatic]		= READ_IF_EXISTS(pSettings, r_float, section, "telepatic_protection",		0.f);
+	m_HitTypeProtection[ALife::eHitTypeChemicalBurn]	= READ_IF_EXISTS(pSettings, r_float, section, "chemical_burn_protection",	0.f);
+	m_HitTypeProtection[ALife::eHitTypeExplosion]		= READ_IF_EXISTS(pSettings, r_float, section, "explosion_protection",		0.f);
+	m_HitTypeProtection[ALife::eHitTypeFireWound]		= READ_IF_EXISTS(pSettings, r_float, section, "fire_wound_protection",		0.f);
+	m_HitTypeProtection[ALife::eHitTypeWound_2]			= READ_IF_EXISTS(pSettings, r_float, section, "wound_2_protection",			0.f);
+	m_HitTypeProtection[ALife::eHitTypePhysicStrike]	= READ_IF_EXISTS(pSettings, r_float, section, "physic_strike_protection",	0.f);
 
-		LPCSTR hit_sect = pSettings->r_string(section, "hit_absorbation_sect");
-		if (pSettings->section_exist(hit_sect))
-		{
-			m_ArtefactHitImmunities[ALife::eHitTypeBurn]			= READ_IF_EXISTS(pSettings, r_float, hit_sect, "burn_immunity",					0.0f);
-			m_ArtefactHitImmunities[ALife::eHitTypeStrike]			= READ_IF_EXISTS(pSettings, r_float, hit_sect, "strike_immunity",				0.0f);
-			m_ArtefactHitImmunities[ALife::eHitTypeShock]			= READ_IF_EXISTS(pSettings, r_float, hit_sect, "shock_immunity",				0.0f);
-			m_ArtefactHitImmunities[ALife::eHitTypeWound]			= READ_IF_EXISTS(pSettings, r_float, hit_sect, "wound_immunity",				0.0f);
-			m_ArtefactHitImmunities[ALife::eHitTypeRadiation]		= READ_IF_EXISTS(pSettings, r_float, hit_sect, "radiation_immunity",			0.0f);
-			m_ArtefactHitImmunities[ALife::eHitTypeTelepatic]		= READ_IF_EXISTS(pSettings, r_float, hit_sect, "telepatic_immunity",			0.0f);
-			m_ArtefactHitImmunities[ALife::eHitTypeChemicalBurn]	= READ_IF_EXISTS(pSettings, r_float, hit_sect, "chemical_burn_immunity",		0.0f);
-			m_ArtefactHitImmunities[ALife::eHitTypeExplosion]		= READ_IF_EXISTS(pSettings, r_float, hit_sect, "explosion_immunity",			0.0f);
-			m_ArtefactHitImmunities[ALife::eHitTypeFireWound]		= READ_IF_EXISTS(pSettings, r_float, hit_sect, "fire_wound_immunity",			0.0f);
-			m_ArtefactHitImmunities[ALife::eHitTypeWound_2]			= READ_IF_EXISTS(pSettings, r_float, hit_sect, "wound_2_immunity",				0.0f);
-			m_ArtefactHitImmunities[ALife::eHitTypePhysicStrike]	= READ_IF_EXISTS(pSettings, r_float, hit_sect, "physic_strike_wound_immunity",	0.0f);
-		}
-		//
-		m_fAdditionalWalkAccel = READ_IF_EXISTS(pSettings, r_float, section, "additional_walk_accel", 0.f);
-		m_fAdditionalJumpSpeed = READ_IF_EXISTS(pSettings, r_float, section, "additional_jump_speed", 0.f);
-	}
 	m_bCanSpawnZone = !!pSettings->line_exist("artefact_spawn_zones", section);
 
 	m_fConditionDecOnEffect = READ_IF_EXISTS(pSettings, r_float, section, "condition_dec_on_effect", 0.f);
-
-/*	m_additional_weight		= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight", 0.f);
-	m_additional_weight2	= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight2", m_additional_weight);*/
-	m_fAdditionalMaxWeight	= READ_IF_EXISTS(pSettings, r_float, section, "additional_max_weight", 0.f);
-	m_fAdditionalMaxVolume	= READ_IF_EXISTS(pSettings, r_float, section, "additional_max_volume", 0.f);
 
 	animGetEx(m_anim_idle, "anim_idle");
 	animGetEx(m_anim_idle_sprint, "anim_idle_sprint");
@@ -582,9 +575,9 @@ float CArtefact::GetAdditionalMaxVolume()
 	return m_fAdditionalMaxVolume * GetCondition() * GetRandomKoef();
 }
 
-float	CArtefact::GetHitImmunities(ALife::EHitType hit_type)
+float	CArtefact::GetHitTypeProtection(ALife::EHitType hit_type)
 {
-	return m_ArtefactHitImmunities[hit_type] * GetCondition() * GetRandomKoef();
+	return m_HitTypeProtection[hit_type] * GetCondition() * GetRandomKoef();
 }
 
 //---SArtefactActivation----

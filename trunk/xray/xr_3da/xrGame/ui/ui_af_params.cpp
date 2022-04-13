@@ -165,25 +165,25 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 		{
 			if (i == _item_additional_walk_accel)
 			{
-				if (artefact)		_val = artefact->GetAdditionalWalkAccel();
+				if		(artefact)	_val = artefact->GetAdditionalWalkAccel();
 				else if (outfit)	_val = outfit->GetAdditionalWalkAccel();
 				else if (backpack)	_val = backpack->GetAdditionalWalkAccel();
 			}
 			else if (i == _item_additional_jump_speed)
 			{
-				if (artefact)		_val = artefact->GetAdditionalJumpSpeed();
+				if		(artefact)	_val = artefact->GetAdditionalJumpSpeed();
 				else if (outfit)	_val = outfit->GetAdditionalJumpSpeed();
 				else if (backpack)	_val = backpack->GetAdditionalJumpSpeed();
 			}
 			else if (i == _item_additional_weight)
 			{
-				if (artefact)		_val = artefact->GetAdditionalMaxWeight();
+				if		(artefact)	_val = artefact->GetAdditionalMaxWeight();
 				else if (outfit)	_val = outfit->GetAdditionalMaxWeight();
 				else if (backpack)	_val = backpack->GetAdditionalMaxWeight();
 			}
 			else if (i == _item_additional_volume)
 			{
-				if (artefact)		_val = artefact->GetAdditionalMaxVolume();
+				if		(artefact)	_val = artefact->GetAdditionalMaxVolume();
 				else if (outfit)	_val = outfit->GetAdditionalMaxVolume();
 				else if (backpack)	_val = backpack->GetAdditionalMaxVolume();
 			}
@@ -209,9 +209,9 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 #else
 			u32 idx = i - _max_item_index1;						// absorbation index		
 			//_val = artefact ? artefact->GetHitImmunities(ALife::EHitType(idx)) : outfit->GetDefHitTypeProtection(ALife::EHitType(idx)); // real absorbation values
-			if (artefact)		_val = artefact->GetHitImmunities(ALife::EHitType(idx));
-			else if (outfit)	_val = outfit->GetDefHitTypeProtection(ALife::EHitType(idx));
-			else if (backpack)	_val = backpack->GetHitImmunities(ALife::EHitType(idx));
+			if		(artefact)	_val = artefact->GetHitTypeProtection	(ALife::EHitType(idx));
+			else if (outfit)	_val = outfit->GetHitTypeProtection		(ALife::EHitType(idx));
+			else if (backpack)	_val = backpack->GetHitTypeProtection	(ALife::EHitType(idx));
 #endif
 		}
 

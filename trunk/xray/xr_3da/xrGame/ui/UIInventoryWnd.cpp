@@ -436,8 +436,10 @@ void CUIInventoryWnd::Update()
 			UIMoneyWnd.SetText              (*CStringTable().translate("ui_st_pda_account_unavailable"));
 
 		// update outfit parameters
-		CCustomOutfit* outfit			= smart_cast<CCustomOutfit*>(pOurInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem);		
-		UIOutfitInfo.Update				(outfit);	
+/*		CCustomOutfit* outfit			= smart_cast<CCustomOutfit*>(pOurInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem);		
+		UIOutfitInfo.Update				(outfit);	*/
+		UIOutfitInfo.Update();
+
 	}
 
 	InventoryUtilities::UpdateWeight(UIBagWnd, true);
