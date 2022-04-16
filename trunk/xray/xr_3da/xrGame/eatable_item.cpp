@@ -58,6 +58,8 @@ void CEatableItem::Load(LPCSTR section)
 	VERIFY						(m_iPortionsNum<10000);
 
 	m_bUsePortionVolume			= !!READ_IF_EXISTS(pSettings, r_bool, section, "use_portion_volume", false);
+
+	m_fSelfRadiationInfluence	= READ_IF_EXISTS(pSettings, r_float, section, "eat_radiation_self", 0.1f);
 }
 
 BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
@@ -117,29 +119,24 @@ void CEatableItem::OnH_B_Independent(bool just_before_destroy)
 #include "InventoryOwner.h"
 #include "Inventory.h"
 #include "ui/UIInventoryUtilities.h"
-#include "Actor.h"
+
 void CEatableItem::UseBy (CEntityAlive* entity_alive)
 {
 	CInventoryOwner* IO	= smart_cast<CInventoryOwner*>(entity_alive);
 	R_ASSERT		(IO);
 	R_ASSERT		(m_pCurrentInventory==IO->m_inventory);
 	R_ASSERT		(object().H_Parent()->ID()==entity_alive->ID());
-	//влияние поглощённой дозы радиации на насыщение едой
-	CActor* pActor = smart_cast<CActor*>(IO);
-	float radiation_k = pActor && m_fSatietyInfluence > 0 && psActorFlags.test(AF_SURVIVAL) ?
-						(1.0f - entity_alive->conditions().GetRadiation()) :
-						 1.0f;
-	Msg("eatable item [%s] used by [%s], radiation_k = %.2f, satiety changed on %.2f", 
-		object().cName().c_str(), entity_alive->cName().c_str(), radiation_k, m_fSatietyInfluence * radiation_k);
-	//
-	entity_alive->conditions().ChangeHealth		(m_fHealthInfluence);
-	entity_alive->conditions().ChangePower		(m_fPowerInfluence);
-	entity_alive->conditions().ChangeSatiety	(m_fSatietyInfluence * radiation_k);
-	entity_alive->conditions().ChangeRadiation	(m_fRadiationInfluence);
-	entity_alive->conditions().ChangePsyHealth	(m_fPsyHealthInfluence);
-	entity_alive->conditions().ChangeBleeding	(m_fWoundsHealPerc);
+
+	auto econd = &entity_alive->conditions();
+
+	econd->ChangeHealth		(m_fHealthInfluence		* GetCondition());
+	econd->ChangePower		(m_fPowerInfluence		* GetCondition());
+	econd->ChangeSatiety	(m_fSatietyInfluence	* GetCondition());
+	econd->ChangeRadiation	((m_fRadiationInfluence + m_fRadiationRestoreSpeed*m_fSelfRadiationInfluence)	* GetCondition());
+	econd->ChangePsyHealth	(m_fPsyHealthInfluence	* GetCondition());
+	econd->ChangeBleeding	(m_fWoundsHealPerc		* GetCondition());
 	
-	entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
+	econd->SetMaxPower		(econd->GetMaxPower() + (m_fMaxPowerUpInfluence * GetCondition()));
 	
 	//уменьшить количество порций
 	if(m_iPortionsNum > 0)

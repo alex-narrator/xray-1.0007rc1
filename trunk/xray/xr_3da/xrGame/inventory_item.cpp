@@ -100,6 +100,10 @@ CInventoryItem::CInventoryItem()
 
 	/*eHandDependence     = hdNone;
 	m_bIsSingleHanded   = true;*/
+
+	m_fRadiationRestoreSpeed	= 0.f;
+	m_fRadiationAccumFactor		= 0.f;
+	m_fRadiationAccumLimit		= 0.f;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -173,7 +177,7 @@ void CInventoryItem::Load(LPCSTR section)
 	}	
 
 	// alpet: разрешение некоторым объектам попадать в слоты быстрого доступа независимо от настроек
-#if defined(QUICK_MEDICINE)
+/*#if defined(QUICK_MEDICINE)
 	if ((smart_cast<CMedkit*>(&object()) || smart_cast<CAntirad*>(&object())) &&
 #else
 	if ( smart_cast<CEatableItem*>(&object()) &&
@@ -185,7 +189,7 @@ void CInventoryItem::Load(LPCSTR section)
 		m_slots.push_back(SLOT_QUICK_ACCESS_1);
 		m_slots.push_back(SLOT_QUICK_ACCESS_2);
 		m_slots.push_back(SLOT_QUICK_ACCESS_3);
-	}
+	}*/
 
 #else
 	m_slot				= READ_IF_EXISTS(pSettings,r_u32,section,"slot", NO_ACTIVE_SLOT);
@@ -221,6 +225,11 @@ void CInventoryItem::Load(LPCSTR section)
 	//
 	if (pSettings->line_exist(section, "use_condition"))
 		m_flags.set(FUsingCondition, pSettings->r_bool(section, "use_condition"));
+
+	//радіація
+	m_fRadiationRestoreSpeed	=	READ_IF_EXISTS ( pSettings, r_float, section,	"radiation_restore_speed", 0.f );
+	m_fRadiationAccumFactor		=	READ_IF_EXISTS ( pSettings, r_float, section,	"radiation_accum_factor",  0.f );	
+	m_fRadiationAccumLimit		=	READ_IF_EXISTS ( pSettings, r_float, section,	"radiation_accum_limit",   0.f );	
 }
 
 
@@ -292,12 +301,20 @@ bool	CInventoryItem::IsPlaceable(SLOT_ID min_slot, SLOT_ID max_slot)
 
 void	CInventoryItem::Hit					(SHit* pHDS)
 {
-	if( !m_flags.test(FUsingCondition) ) return;
+//	if( !m_flags.test(FUsingCondition) ) return;
 
 	float hit_power = pHDS->damage();
 	hit_power *= m_HitTypeK[pHDS->hit_type];
 
-	ChangeCondition(-hit_power);
+	if (pHDS->type() == ALife::eHitTypeRadiation)
+	{
+		m_fRadiationRestoreSpeed += m_fRadiationAccumFactor * pHDS->damage();
+		clamp<float>(m_fRadiationRestoreSpeed, -m_fRadiationAccumLimit, m_fRadiationAccumLimit);
+		//Msg("! item [%s] current m_fRadiationRestoreSpeed [%.3f]", object().cName().c_str(), m_fRadiationRestoreSpeed);
+	}
+
+	if (m_flags.test(FUsingCondition))
+		ChangeCondition(-hit_power);
 }
 
 const char* CInventoryItem::Name() 
@@ -480,11 +497,20 @@ BOOL CInventoryItem::net_Spawn			(CSE_Abstract* DC)
 		m_flags.set(Fuseful_for_NPC, alife_object->m_flags.test(CSE_ALifeObject::flUsefulForAI));
 	}
 
+	CSE_ALifeInventoryItem *itm = smart_cast<CSE_ALifeInventoryItem*>(DC);
+	if (itm) 
+	{
+		m_fCondition = itm->m_fCondition;
+		if (!fis_zero(m_fRadiationRestoreSpeed))
+		m_fRadiationRestoreSpeed = itm->m_fRadiationRestoreSpeed;
+	}
+
 	CSE_ALifeInventoryItem			*pSE_InventoryItem = smart_cast<CSE_ALifeInventoryItem*>(e);
 	if (!pSE_InventoryItem)			return TRUE;
 
+
 	//!!!
-	m_fCondition = pSE_InventoryItem->m_fCondition;
+//	m_fCondition = pSE_InventoryItem->m_fCondition;
 	if (GameID() != GAME_SINGLE)
 		object().processing_activate();
 
@@ -503,6 +529,7 @@ void CInventoryItem::save(NET_Packet &packet)
 {
 	packet.w_u8				((u8)m_eItemPlace);
 	packet.w_float			(m_fCondition);
+	packet.w_float			(m_fRadiationRestoreSpeed);
 #pragma message("alpet: здесь можно сохранять все слоты, но это будет несовместимо по формату сейвов")
 	packet.w_u8				((u8)GetSlot());
 
@@ -665,11 +692,13 @@ void CInventoryItem::load(IReader &packet)
 {
 	m_eItemPlace			= (EItemPlace)packet.r_u8();
 	m_fCondition			= packet.r_float();
+	m_fRadiationRestoreSpeed = packet.r_float();
 	SetSlot (packet.r_u8());
 	if (GetSlot() == 255)
 		SetSlot (NO_ACTIVE_SLOT);
 
 	u8						tmp = packet.r_u8();
+
 	
 	if (!tmp)
 		return;

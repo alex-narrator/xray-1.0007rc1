@@ -73,7 +73,7 @@ public:
 	bool							m_bCanSpawnZone;
 	float							m_fHealthRestoreSpeed;
 #ifndef OBJECTS_RADIOACTIVE
-	float 							m_fRadiationRestoreSpeed;
+//	float 							m_fRadiationRestoreSpeed;
 #endif
 	float 							m_fSatietyRestoreSpeed;
 	float							m_fPowerRestoreSpeed;

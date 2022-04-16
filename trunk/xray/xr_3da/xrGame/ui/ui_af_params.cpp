@@ -4,6 +4,7 @@
 #include "ui_af_params.h"
 #include "UIStatic.h"
 #include "../object_broker.h"
+#include "../inventory_item.h"
 #include "../Artifact.h"
 #include "../CustomOutfit.h"
 #include "../BackPack.h"
@@ -127,11 +128,12 @@ void CUIArtefactParams::InitFromXml(CUIXml& xml_doc)
 bool CUIArtefactParams::Check(CGameObject *obj/*const shared_str& af_section*/)
 {
 	//return !!pSettings->line_exist(af_section, "af_actor_properties");
-	return (smart_cast<CArtefact*>(obj) || smart_cast<CCustomOutfit*>(obj) || smart_cast<CBackPack*>(obj));
+	return (smart_cast<CInventoryItem*>(obj) || smart_cast<CArtefact*>(obj) || smart_cast<CCustomOutfit*>(obj) || smart_cast<CBackPack*>(obj));
 }
 #include "../string_table.h"
 void CUIArtefactParams::SetInfo(CGameObject *obj)
 {	
+	auto iitem		= smart_cast<CInventoryItem*>	(obj);
 	auto artefact	= smart_cast<CArtefact*>		(obj);
 	auto outfit		= smart_cast<CCustomOutfit*>	(obj);
 	auto backpack	= smart_cast<CBackPack*>		(obj);
@@ -143,7 +145,9 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 	//
 	auto pDetector = pActor->GetDetector();
 
-	Show(!!pDetector);
+	bool show_window = !!pDetector || outfit || backpack;
+
+	Show(show_window);
 
 	string128					_buff;
 	float						_h = 0.0f;
@@ -168,24 +172,35 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 				if		(artefact)	_val = artefact->GetAdditionalWalkAccel();
 				else if (outfit)	_val = outfit->GetAdditionalWalkAccel();
 				else if (backpack)	_val = backpack->GetAdditionalWalkAccel();
+				else continue;
 			}
 			else if (i == _item_additional_jump_speed)
 			{
 				if		(artefact)	_val = artefact->GetAdditionalJumpSpeed();
 				else if (outfit)	_val = outfit->GetAdditionalJumpSpeed();
 				else if (backpack)	_val = backpack->GetAdditionalJumpSpeed();
+				else continue;
 			}
 			else if (i == _item_additional_weight)
 			{
 				if		(artefact)	_val = artefact->GetAdditionalMaxWeight();
 				else if (outfit)	_val = outfit->GetAdditionalMaxWeight();
 				else if (backpack)	_val = backpack->GetAdditionalMaxWeight();
+				else continue;
 			}
 			else if (i == _item_additional_volume)
 			{
 				if		(artefact)	_val = artefact->GetAdditionalMaxVolume();
 				else if (outfit)	_val = outfit->GetAdditionalMaxVolume();
 				else if (backpack)	_val = backpack->GetAdditionalMaxVolume();
+				else continue;
+			}
+			else if (i == _item_radiation_restore_speed)
+			{
+				if (!pDetector || pDetector && !pDetector->IsGeigerCounter()) continue;
+				_val				= iitem->m_fRadiationRestoreSpeed;
+				if (artefact) _val	*= artefact->GetRandomKoef();
+				_val				*= iitem->GetCondition();
 			}
 			else
 			//
@@ -198,7 +213,7 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 				_val = READ_IF_EXISTS(pSettings, r_float, item_section, af_item_sect_names[i], 0.f);
 #endif
 				if (artefact) _val *= artefact->GetRandomKoef();
-				_val *= obj->cast_inventory_item()->GetCondition();
+				_val *= iitem->GetCondition();
 			}
 		}
 		else
@@ -212,6 +227,7 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			if		(artefact)	_val = artefact->GetHitTypeProtection	(ALife::EHitType(idx));
 			else if (outfit)	_val = outfit->GetHitTypeProtection		(ALife::EHitType(idx));
 			else if (backpack)	_val = backpack->GetHitTypeProtection	(ALife::EHitType(idx));
+			else continue;
 #endif
 		}
 
@@ -252,5 +268,5 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 		_h						+= _s->GetWndSize().y;
 		AttachChild				(_s);
 	}
-	SetHeight					(pDetector ? _h : 0.f);
+	SetHeight					(show_window ? _h : 0.f);
 }

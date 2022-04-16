@@ -59,6 +59,8 @@ CSE_ALifeInventoryItem::CSE_ALifeInventoryItem(LPCSTR caSection)
 
 	State.angular_vel.set		(0.f,0.f,0.f);
 	State.linear_vel.set		(0.f,0.f,0.f);
+
+	m_fRadiationRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, caSection, "radiation_restore_speed", 0.f);
 }
 
 CSE_Abstract *CSE_ALifeInventoryItem::init	()
@@ -77,10 +79,15 @@ CSE_ALifeInventoryItem::~CSE_ALifeInventoryItem	()
 #include "inventory_item.h"
 void CSE_ALifeInventoryItem::STATE_Write	(NET_Packet &tNetPacket)
 {
-	if (auto item = smart_cast<CInventoryItem*>(Level().Objects.net_Find(base()->ID) ) )
+	if (auto item = smart_cast<CInventoryItem*>(Level().Objects.net_Find(base()->ID)))
+	{
 		m_fCondition = item->GetCondition();
+		m_fRadiationRestoreSpeed = item->m_fRadiationRestoreSpeed;
+	}
+
 
 	tNetPacket.w_float			(m_fCondition);
+	tNetPacket.w_float			(m_fRadiationRestoreSpeed);
 	State.position				= base()->o_Position;
 }
 
@@ -89,6 +96,8 @@ void CSE_ALifeInventoryItem::STATE_Read		(NET_Packet &tNetPacket, u16 size)
 	u16 m_wVersion = base()->m_wVersion;
 	if (m_wVersion > 52)
 		tNetPacket.r_float		(m_fCondition);
+
+	tNetPacket.r_float			(m_fRadiationRestoreSpeed);
 
 	State.position				= base()->o_Position;
 }

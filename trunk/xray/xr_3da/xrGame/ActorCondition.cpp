@@ -438,12 +438,12 @@ bool CActorCondition::IsCantWalkWeight()
 
 		if(object().GetCarryWeight() > /*max_w*/object().MaxCarryWeight())
 		{
-			m_condition_flags.set			(eCantWalkWeight, TRUE);
+//			m_condition_flags.set			(eCantWalkWeight, TRUE);
 			return true;
 		}
 
 	}
-	m_condition_flags.set					(eCantWalkWeight, FALSE);
+//	m_condition_flags.set					(eCantWalkWeight, FALSE);
 	return false;
 }
 
@@ -496,6 +496,11 @@ void CActorCondition::ChangeAlcohol	(float value)
 
 void CActorCondition::ChangeSatiety(float value)
 {
+	//влияние поглощённой дозы радиации на насыщение едой
+	float radiation_k = value > 0 && psActorFlags.test(AF_SURVIVAL) ?
+		(1.0f - GetRadiation()) : 1.0f;
+	value *= radiation_k;
+
 	m_fSatiety += value;
 	clamp		(m_fSatiety, 0.0f, 1.0f);
 }
@@ -550,7 +555,7 @@ void CActorCondition::UpdateTutorialThresholds()
 		strcpy_s(cb_name,"_G.on_actor_psy");
 	}
 
-	if(b && !m_condition_flags.test(eCantWalkWeight)){
+	if (b && !m_condition_flags.test(eCantWalkWeight) && IsCantWalkWeight()){
 		m_condition_flags.set			(eCantWalkWeight, TRUE);
 		b=false;
 		strcpy_s(cb_name,"_G.on_actor_cant_walk_weight");

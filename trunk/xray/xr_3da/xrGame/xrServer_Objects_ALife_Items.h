@@ -64,6 +64,8 @@ public:
 	}
 	virtual bool					bfUseful();
 
+	float 							m_fRadiationRestoreSpeed;
+
 	/////////// network ///////////////
 	u8								m_u8NumItems;
 	SPHNetState						State;

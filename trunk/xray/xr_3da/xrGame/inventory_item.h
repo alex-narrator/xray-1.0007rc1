@@ -124,6 +124,10 @@ public:
 	virtual	void				SetCost				(u32 cost) 	{ m_cost = cost; }
 	virtual float				Weight				() 			{ return m_weight;}		
 	virtual float				Volume				() 			{ return m_volume;}		
+
+	float 						m_fRadiationRestoreSpeed;
+	float 						m_fRadiationAccumFactor;          // alpet: скорость появления вторичной радиактивности
+	float 						m_fRadiationAccumLimit;			  // alpet: предел вторичной радиоактивности 
 #ifdef EAT_PORTIONS_INFLUENCE
 	virtual void                SetWeight(float w)   { m_weight = w; }
 	virtual void                SetVolume(float v)   { m_volume = v; }

@@ -56,7 +56,7 @@ void CRadioactiveZone::Affect(SZoneObjectInfo* O)
 		{
 //.			m_dwDeltaTime = 0;
 			position_in_bone_space.set(0.f,0.f,0.f);
-
+			Msg("RadZone Affect obj [%s]", GO->cNameSect().c_str());
 			CreateHit(GO->ID(),ID(),dir,power,BI_NONE,position_in_bone_space,impulse,ALife::eHitTypeRadiation);
 		}
 	}
@@ -74,7 +74,7 @@ void CRadioactiveZone::feel_touch_new					(CObject* O	)
 	};
 };
 
-#include "actor.h"
+/*#include "actor.h"
 BOOL CRadioactiveZone::feel_touch_contact(CObject* O)
 {
 
@@ -85,7 +85,7 @@ BOOL CRadioactiveZone::feel_touch_contact(CObject* O)
 		return										A->feel_touch_on_contact(this);
 	}else
 		return										FALSE;
-}
+}*/
 
 void CRadioactiveZone::UpdateWorkload					(u32	dt)
 {

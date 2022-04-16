@@ -106,7 +106,7 @@ void CArtefact::Load(LPCSTR section)
 	//*_restore_speed
 	m_fHealthRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",		0.f);
 #ifndef OBJECTS_RADIOACTIVE
-	m_fRadiationRestoreSpeed							= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",	0.f);
+//	m_fRadiationRestoreSpeed							= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",	0.f);
 #endif
 	m_fSatietyRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",		0.f);
 	m_fPowerRestoreSpeed								= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",		0.f);

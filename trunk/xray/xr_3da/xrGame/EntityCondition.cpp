@@ -299,20 +299,22 @@ float CEntityCondition::HitOutfitEffect(SHit* pHDS)
     CInventoryOwner* pInvOwner		= smart_cast<CInventoryOwner*>(m_object);
 	if(!pInvOwner)					return pHDS->damage();
 
-	auto pOutfit					= pInvOwner->GetOutfit();
-	if(!pOutfit)					return pHDS->damage();
+/*	auto pOutfit					= pInvOwner->GetOutfit();
+	if(!pOutfit)					return pHDS->damage();*/
 
 	float new_hit_power				= pHDS->damage();
 
-	if (pHDS->hit_type == ALife::eHitTypeFireWound)
-		new_hit_power				= pOutfit->HitThruArmour(pHDS);
-	else
-		new_hit_power				*= (1.0f - pOutfit->GetHitTypeProtection(pHDS->type()));
+	auto pOutfit					= pInvOwner->GetOutfit();
+	if (pOutfit)
+	{
+		if (pHDS->hit_type == ALife::eHitTypeFireWound)
+			new_hit_power = pOutfit->HitThruArmour(pHDS);
+		else
+			new_hit_power *= (1.0f - pOutfit->GetHitTypeProtection(pHDS->type()));
 
-	Msg("new_hit_power [%.3f]", new_hit_power);
-	
-	//увеличить изношенность костюма
-	pOutfit->Hit					(pHDS);
+		//увеличить изношенность костюма
+		pOutfit->Hit(pHDS);
+	}
 
 	auto pBackPack = pInvOwner->GetBackPack();
 	if (pBackPack) pBackPack->Hit(pHDS);
