@@ -64,8 +64,26 @@ void CBaseMonster::Load(LPCSTR section)
 	m_melee_rotation_factor			= READ_IF_EXISTS(pSettings,r_float,section,"Melee_Rotation_Factor", 1.5f);
 	berserk_always					= READ_IF_EXISTS(!!pSettings,r_bool,section,"berserk_always", false);
 
-	m_fRequiredBladeSharpness		= READ_IF_EXISTS(pSettings, r_float, section, "required_blade_sharpness", 0.f);   //condition ножа при котором все еще доступен обыск трупа монстра
-	m_uStabsToCutOff				= READ_IF_EXISTS(pSettings, r_u32, section, "stabs_to_cut_off", 0);	//кол-во ударов ножом для срезания части монстра (на неё умножим износ ножа за удар)
+	m_fRequiredBladeSharpness		= READ_IF_EXISTS(pSettings, r_float, section, "required_blade_sharpness", 0.f);//condition ножа при котором все еще доступен обыск трупа монстра
+	m_uStabsToCutOff				= READ_IF_EXISTS(pSettings, r_u32, section, "stabs_to_cut_off",	0);	//кол-во ударов ножом для срезания части монстра (на неё умножим износ ножа за удар)
+	//
+	m_bAffectDead					= READ_IF_EXISTS(!!pSettings, r_bool, section, "affect_dead", false);
+	m_fAffectDistance				= READ_IF_EXISTS(pSettings, r_float, section, "affect_distance", 0.f); 
+	//*_restore_speed
+	m_fAffectHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "affect_health_restore_speed", 0.f);
+	m_fAffectSatietyRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "affect_satiety_restore_speed", 0.f);
+	m_fAffectPowerRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "affect_power_restore_speed", 0.f);
+	m_fAffectBleedingRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "affect_bleeding_restore_speed", 0.f);
+	m_fAffectPsyHealthRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "affect_psy_health_restore_speed", 0.f);
+	m_fAffectAlcoholRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "affect_alcohol_restore_speed", 0.f);
+	//
+	if (pSettings->line_exist(section, "affect_hit_type"))
+		m_eAffectHitType	= ALife::g_tfString2HitType(pSettings->r_string(section, "affect_hit_type"));
+	m_uAffectHitPeriod		= READ_IF_EXISTS(pSettings, r_u32, section, "affect_hit_period", 0);
+	m_fAffectHitImpulse		= READ_IF_EXISTS(pSettings, r_float, section, "affect_hit_impulse", 0.f);
+	m_fAffectHitPower		= READ_IF_EXISTS(pSettings, r_float, section, "affect_hit_power", 0.f);
+	m_fAffectHitImpulse		= READ_IF_EXISTS(pSettings, r_float, section, "affect_hit_impulse", 0.f);
+	m_uAffectHitBone		= READ_IF_EXISTS(pSettings, r_u16, section, "affect_hit_bone", BI_NONE);
 }
 
 // if sound is absent just do not load that one
@@ -389,3 +407,7 @@ void CBaseMonster::fill_bones_body_parts	(LPCSTR body_part, CriticalWoundType wo
 		);
 }
 
+bool CBaseMonster::HasAffectHit()
+{
+	return !!pSettings->line_exist(cNameSect().c_str(), "affect_hit_type");
+}

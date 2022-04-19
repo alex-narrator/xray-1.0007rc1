@@ -31,7 +31,15 @@ Spawn_Inventory_Item_Probability = 0.2
 
 required_blade_sharpness   	= 0.5 	;минимально необходимая острота (condition) ножа чтобы срезать часть монстра
 stabs_to_cut_off			= 10 	;сколько ударов надо чтобы срезать часть монстра
-
+;;
+affect_distance 			= 30
+affect_dead 				= true
+affect_hit_period 			= 1;(1000 = 1 sec)
+affect_hit_type 			= radiation
+affect_hit_power 			= 0.001
+;affect_hit_impulse 			= 100
+;affect_hit_bone 			= bip01_pelvis
+affect_satiety_restore_speed = -10
 ;------------------------------------------------------------------------
 ; Physics
 ;------------------------------------------------------------------------

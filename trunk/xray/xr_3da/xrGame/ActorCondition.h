@@ -49,7 +49,7 @@ public:
 	virtual void		reinit						();
 
 	virtual CWound*		ConditionHit				(SHit* pHDS);
-	/*virtual*/ void	UpdateCondition				();
+	virtual void		UpdateCondition				();
 	//скорость потери крови из всех открытых ран 
 	virtual float		BleedingSpeed               ();
 	//

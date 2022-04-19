@@ -84,6 +84,8 @@ CBaseMonster::CBaseMonster()
 	Home							= xr_new<CMonsterHome>(this);
 
 	com_man().add_ability			(ControlCom::eComCriticalWound);
+
+	m_dwDeltaTime					= 0;
 }
 
 
@@ -129,6 +131,8 @@ void CBaseMonster::shedule_Update(u32 dt)
 	m_anomaly_detector->update_schedule();
 	
 	m_pPhysics_support->in_shedule_Update(dt);
+
+	UpdateRemoteAffect(dt);
 
 #ifdef DEBUG	
 	show_debug_info();
@@ -560,4 +564,58 @@ void CBaseMonster::OnEvent(NET_Packet& P, u16 type)
 	}
 }
 
+#include "../../xr_3da/xrGame/ActorCondition.h"
+void CBaseMonster::UpdateRemoteAffect(u32 dt)
+{
+	if (fis_zero(m_fAffectDistance) || m_uAffectHitPeriod == 0) return;
+	if (!g_Alive() && !m_bAffectDead) return;
 
+	if (m_dwDeltaTime < m_uAffectHitPeriod)
+	{
+		m_dwDeltaTime += dt;
+		return;
+	}
+	m_dwDeltaTime = 0;
+
+	feel_touch_update(Position(), m_fAffectDistance);
+
+	typedef xr_vector<CObject*>				creatures;
+
+	for (creatures::const_iterator it = feel_touch.begin(); it != feel_touch.end(); ++it)
+	{
+		auto const	Actor = smart_cast<CActor*>(*it);
+		if (!Actor)	continue;
+
+		float distance = Position().distance_to(Actor->Position());
+		if (distance > m_fAffectDistance) return;
+
+		float dist_attenuation = 1.f - (distance / m_fAffectDistance);
+
+		auto condition = &Actor->conditions();
+
+		if (!fis_zero(m_fAffectBleedingRestoreSpeed))
+			condition->ChangeBleeding(condition->GetWoundIncarnation()	* m_fAffectBleedingRestoreSpeed		* dist_attenuation);
+		if (!fis_zero(m_fAffectHealthRestoreSpeed))
+			condition->ChangeHealth(condition->GetHealthRestore()		* m_fAffectHealthRestoreSpeed		* dist_attenuation);
+		if (!fis_zero(m_fAffectPowerRestoreSpeed))
+			condition->ChangePower(condition->GetPowerRestore()			* m_fAffectPowerRestoreSpeed		* dist_attenuation);
+		if (!fis_zero(m_fAffectSatietyRestoreSpeed))
+			condition->ChangeSatiety(condition->GetSatietyRestore()		* m_fAffectSatietyRestoreSpeed		* dist_attenuation);
+		if (!fis_zero(m_fAffectPsyHealthRestoreSpeed))
+			condition->ChangePsyHealth(condition->GetPsyHealthRestore()	* m_fAffectPsyHealthRestoreSpeed	* dist_attenuation);
+		if (!fis_zero(m_fAffectAlcoholRestoreSpeed))
+			condition->ChangeAlcohol(condition->GetAlcoholRestore()		* m_fAffectAlcoholRestoreSpeed		* dist_attenuation);
+
+		if (HasAffectHit())
+		{
+			auto HDS = SHit(m_fAffectHitPower * dist_attenuation, Direction(), this, m_uAffectHitBone, Fvector().set(0, 0, 0), m_fAffectHitImpulse * dist_attenuation, m_eAffectHitType);
+			if (HDS.damage() > EPS)
+			{
+				Actor->Hit(&HDS);
+				Msg("Moster [%s] hit power [%.6f] distance [%.2f] attenuation [%.3f] timestamp [%d]", cName().c_str(), HDS.damage(), distance, dist_attenuation, Device.dwTimeGlobal);
+			}
+		}
+
+		Msg("Moster [%s] UpdateRemoteAffect at distance [%.2f], timestamp [%d]", cName().c_str(), distance, Device.dwTimeGlobal);
+	}
+}

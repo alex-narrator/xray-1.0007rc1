@@ -388,6 +388,8 @@ public:
 	virtual bool			check_start_conditions	(ControlCom::EControlType);
 	virtual void			on_activate_control		(ControlCom::EControlType){}
 
+	virtual void			UpdateRemoteAffect		(u32 dt);
+
 protected:
 	CControl_Manager		*m_control_manager;
 	
@@ -427,6 +429,27 @@ protected:
 public:	
 	float					m_fRequiredBladeSharpness;	//condition ножа при котором все еще доступен обыск трупа монстра
 	u32						m_uStabsToCutOff;			//кол-во ударов ножом для срезания части монстра (на неё умножим износ ножа за удар)
+	//дистанційні ефекти
+	u32						m_dwDeltaTime;
+	//проміжок часу між дією ефекту (мілісекунди)
+	u32						m_uAffectHitPeriod;
+	//виявляє ефект будучі мертвим
+	bool					m_bAffectDead;
+	//дистанція, менш якої ефект починає впливати
+	float					m_fAffectDistance;
+	//зміна параметрів актора для дистанційного ефекту
+	float					m_fAffectHealthRestoreSpeed;
+	float 					m_fAffectSatietyRestoreSpeed;
+	float					m_fAffectPowerRestoreSpeed;
+	float					m_fAffectBleedingRestoreSpeed;
+	float					m_fAffectPsyHealthRestoreSpeed;
+	float					m_fAffectAlcoholRestoreSpeed;
+	//хіт для дистанційного ефекту
+	ALife::EHitType			m_eAffectHitType;
+	float					m_fAffectHitPower;
+	float					m_fAffectHitImpulse;
+	u16						m_uAffectHitBone;
+	bool					HasAffectHit();
 
 //////////////////////////////////////////////////////////////////////////
 // DEBUG stuff
