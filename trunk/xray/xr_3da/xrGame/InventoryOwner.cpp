@@ -342,7 +342,7 @@ float  CInventoryOwner::MaxCarryWeight () const
 		{
 			auto artefact = smart_cast<CArtefact*>(*it);
 
-			if (artefact && !artefact->InContainer() && !fis_zero(artefact->GetCondition()))
+			if (artefact /*&& !artefact->InContainer()*/ && !fis_zero(artefact->GetCondition()))
 			{
 				ret += artefact->GetAdditionalMaxWeight();
 			}
@@ -377,7 +377,7 @@ float  CInventoryOwner::MaxCarryVolume()
 		{
 			auto artefact = smart_cast<CArtefact*>(*it);
 
-			if (artefact && artefact->CanAffect())
+			if (artefact && !fis_zero(artefact->GetCondition())/*artefact->CanAffect()*/)
 				vol += artefact->GetAdditionalMaxVolume();
 		}
 	}

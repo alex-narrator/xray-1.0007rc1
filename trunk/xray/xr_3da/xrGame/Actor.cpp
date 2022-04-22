@@ -1664,7 +1664,7 @@ void CActor::UpdateArtefactsOnBelt()
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		//
-		if (artefact && artefact->CanAffect())
+		if (artefact && !fis_zero(artefact->GetCondition())/*artefact->CanAffect()*/)
 		{
 			float random_k = artefact->GetRandomKoef();
 			float condition = artefact->GetCondition();
@@ -1679,7 +1679,7 @@ void CActor::UpdateArtefactsOnBelt()
 			cond->ChangePsyHealth	(conditions().GetPsyHealthRestore	() * artefact->m_fPsyHealthRestoreSpeed * f_update_time * random_k * condition);
 			cond->ChangeAlcohol		(conditions().GetAlcoholRestore		() * artefact->m_fAlcoholRestoreSpeed	* f_update_time * random_k * condition);
 			//
-			artefact->UpdateConditionDecOnEffect();
+//			artefact->UpdateConditionDecOnEffect();
 		}
 	} // for belt items
 #ifdef OBJECTS_RADIOACTIVE
@@ -1698,8 +1698,21 @@ void CActor::UpdateArtefactsOnBelt()
 		float random_k = artefact ? artefact->GetRandomKoef() : 1.f;
 		float condition = iitem->GetCondition();
 
-		if (iitem != artefact || artefact->CanAffect())
-			cond->ChangeRadiation(conditions().GetRadiationRestore() * iitem->m_fRadiationRestoreSpeed * f_update_time * random_k * condition);
+		if (!fis_zero(condition))
+		{
+			float radiation_restore_speed = iitem->m_fRadiationRestoreSpeed;
+
+			if (iitem != inventory().ActiveItem()) //що взяте в руки те випромінює на повну
+			{
+				if (GetOutfit()) //костюм захищає від радіації речей
+					radiation_restore_speed *= (1.f - GetOutfit()->GetHitTypeProtection(ALife::eHitTypeRadiation));
+
+				if (GetBackPack() && inventory().InRuck(iitem)) //рюкзак захищає від радіації речей у рюкзаку
+					radiation_restore_speed *= (1.f - GetBackPack()->GetHitTypeProtection(ALife::eHitTypeRadiation));
+			}
+
+			cond->ChangeRadiation(conditions().GetRadiationRestore() * radiation_restore_speed * f_update_time * random_k * condition);
+		}
 	}
 
 	auto outfit = GetOutfit();
@@ -1749,7 +1762,7 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		//
-		if (artefact && !fis_zero(artefact->GetHitTypeProtection(hit_type)) && artefact->CanAffect())
+		if (artefact && !fis_zero(artefact->GetHitTypeProtection(hit_type)) && !fis_zero(artefact->GetCondition())/*artefact->CanAffect()*/)
 		{
 			res_hit_power_k += 1.0f - artefact->GetHitTypeProtection(hit_type);
 			_af_count += 1.0f;

@@ -4,6 +4,7 @@
 #include "PhysicsShellHolder.h"
 #include "game_cl_base.h"
 #include "../skeletonanimated.h"
+#include "Actor.h"
 #include "inventory.h"
 #include "level.h"
 #include "ai_object_location.h"
@@ -133,7 +134,7 @@ void CArtefact::Load(LPCSTR section)
 
 	m_bCanSpawnZone = !!pSettings->line_exist("artefact_spawn_zones", section);
 
-	m_fConditionDecOnEffect = READ_IF_EXISTS(pSettings, r_float, section, "condition_dec_on_effect", 0.f);
+	m_fTTLOnAffect = READ_IF_EXISTS(pSettings, r_float, section, "ttl_on_affect", 0.f);
 
 	animGetEx(m_anim_idle, "anim_idle");
 	animGetEx(m_anim_idle_sprint, "anim_idle_sprint");
@@ -278,6 +279,8 @@ void CArtefact::UpdateCL		()
 	
 	if (o_fastmode || m_activationObj)
 		UpdateWorkload			(Device.dwTimeDelta);	
+
+	UpdateConditionDecOnAffect	();
 }
 
 void CArtefact::UpdateWorkload		(u32 dt) 
@@ -534,27 +537,36 @@ u16	CArtefact::bone_count_to_synchronize	() const
 	return CInventoryItem::object().PHGetSyncItemsNumber();
 }
 
-void CArtefact::UpdateConditionDecOnEffect()
+void CArtefact::UpdateConditionDecOnAffect()
 {
-	if (fis_zero(m_fConditionDecOnEffect) || 
-		fis_zero(m_fCondition)) return;
+	if (fis_zero(m_fTTLOnAffect) || 
+		fis_zero(m_fCondition) ||
+		!ParentIsActor()) return;
 
-	ChangeCondition(-m_fConditionDecOnEffect);
+	if(!psActorFlags.test(AF_ARTEFACTS_FROM_ALL) && !m_pCurrentInventory->InBelt(this)) 
+		return;
+
+	float condition_dec = 
+		(1.f / (m_fTTLOnAffect * 3600.f)) *	//приведення до ігрових годин
+		Level().GetGameTimeFactor() *					//з урахуванням таймфактору
+		Device.fTimeDelta;
+
+	ChangeCondition(-condition_dec);
+//	Msg("! Artefact [%s] change condition on [%.6f]|current condition [%.6f]|delta_time  [%.6f]|time_factor [%.6f]", cName().c_str(), condition_dec, GetCondition(), Device.fTimeDelta, Level().GetGameTimeFactor());
 }
 
-#include "Actor.h"
-bool CArtefact::InContainer()
+/*bool CArtefact::InContainer()
 {
 	return m_pCurrentInventory == g_actor->m_inventory &&
 		psActorFlags.test(AF_ARTEFACTS_FROM_ALL) &&
 		m_pCurrentInventory->ItemFromSlot(ARTEFACT_SLOT) == this &&	//артефакт в слоте артефакта
 		m_pCurrentInventory->ActiveItem() != this;					//артефакт в слоте артефакта не взят в руки
-}
+}*/
 
-bool CArtefact::CanAffect()
+/*bool CArtefact::CanAffect()
 {
 	return !fis_zero(GetCondition()) && !InContainer();
-}
+}*/
 
 float CArtefact::GetAdditionalWalkAccel()
 {
@@ -579,6 +591,13 @@ float CArtefact::GetAdditionalMaxVolume()
 float	CArtefact::GetHitTypeProtection(ALife::EHitType hit_type)
 {
 	return m_HitTypeProtection[hit_type] * GetCondition() * GetRandomKoef();
+}
+
+BOOL CArtefact::ParentIsActor()
+{
+	CObject* O = H_Parent();
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+	return EA && EA->cast_actor() != 0;
 }
 
 //---SArtefactActivation----

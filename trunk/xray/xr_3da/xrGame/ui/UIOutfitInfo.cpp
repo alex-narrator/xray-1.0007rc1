@@ -101,7 +101,7 @@ void CUIOutfitInfo::SetItem(u32 hitType, bool force_add)
 	bool show_rad = pDetector && pDetector->IsGeigerCounter() && hitType == ALife::eHitTypeRadiation;
 	bool show_anom = pDetector && pDetector->IsAnomDetector() && hitType != ALife::eHitTypeRadiation;
 
-	if (fis_zero(_val_outfit) && fis_zero(_val_af) && !force_add)
+	if (fis_zero(_val_outfit) && fis_zero(_val_af) && !force_add || !outfit && !show_rad && !show_anom)
 	{
 		if(_s->GetParent()!=NULL)
 			m_listWnd->RemoveWindow(_s);
@@ -111,7 +111,8 @@ void CUIOutfitInfo::SetItem(u32 hitType, bool force_add)
 	LPCSTR			_imm_name	= *CStringTable().translate(_imm_st_names[hitType]);
 
 	int _sz			= sprintf_s	(_buff,sizeof(_buff),"%s ", _imm_name);
-	_sz				+= sprintf_s	(_buff+_sz,sizeof(_buff)-_sz,"%s %+3.1f%%", (_val_outfit>0.0f)?"%c[green]":"%c[red]", _val_outfit*100.0f);
+	if (outfit)
+		_sz				+= sprintf_s	(_buff+_sz,sizeof(_buff)-_sz,"%s %+3.1f%%", (_val_outfit>0.0f)?"%c[green]":"%c[red]", _val_outfit*100.0f);
 
 	if (!fis_zero(_val_af) && (show_rad || show_anom))
 	{

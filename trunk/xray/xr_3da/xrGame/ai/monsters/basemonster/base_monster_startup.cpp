@@ -67,23 +67,23 @@ void CBaseMonster::Load(LPCSTR section)
 	m_fRequiredBladeSharpness		= READ_IF_EXISTS(pSettings, r_float, section, "required_blade_sharpness", 0.f);//condition ножа при котором все еще доступен обыск трупа монстра
 	m_uStabsToCutOff				= READ_IF_EXISTS(pSettings, r_u32, section, "stabs_to_cut_off",	0);	//кол-во ударов ножом для срезания части монстра (на неё умножим износ ножа за удар)
 	//
-	m_bAffectDead					= READ_IF_EXISTS(!!pSettings, r_bool, section, "affect_dead", false);
+	m_uAffectHitPeriod				= READ_IF_EXISTS(pSettings, r_u32, section, "affect_period", 0);
 	m_fAffectDistance				= READ_IF_EXISTS(pSettings, r_float, section, "affect_distance", 0.f); 
-	//*_restore_speed
+	m_bAffectDead					= READ_IF_EXISTS(!!pSettings, r_bool, section, "affect_dead", false);
+	//*_restore_speed affect
 	m_fAffectHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "affect_health_restore_speed", 0.f);
 	m_fAffectSatietyRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "affect_satiety_restore_speed", 0.f);
 	m_fAffectPowerRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "affect_power_restore_speed", 0.f);
 	m_fAffectBleedingRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "affect_bleeding_restore_speed", 0.f);
 	m_fAffectPsyHealthRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "affect_psy_health_restore_speed", 0.f);
 	m_fAffectAlcoholRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "affect_alcohol_restore_speed", 0.f);
-	//
+	//hit affect
 	if (pSettings->line_exist(section, "affect_hit_type"))
-		m_eAffectHitType	= ALife::g_tfString2HitType(pSettings->r_string(section, "affect_hit_type"));
-	m_uAffectHitPeriod		= READ_IF_EXISTS(pSettings, r_u32, section, "affect_hit_period", 0);
-	m_fAffectHitImpulse		= READ_IF_EXISTS(pSettings, r_float, section, "affect_hit_impulse", 0.f);
-	m_fAffectHitPower		= READ_IF_EXISTS(pSettings, r_float, section, "affect_hit_power", 0.f);
-	m_fAffectHitImpulse		= READ_IF_EXISTS(pSettings, r_float, section, "affect_hit_impulse", 0.f);
-	m_uAffectHitBone		= READ_IF_EXISTS(pSettings, r_u16, section, "affect_hit_bone", BI_NONE);
+		m_eAffectHitType			= ALife::g_tfString2HitType(pSettings->r_string(section, "affect_hit_type"));
+	m_fAffectHitImpulse				= READ_IF_EXISTS(pSettings, r_float, section, "affect_hit_impulse", 0.f);
+	m_fAffectHitPower				= READ_IF_EXISTS(pSettings, r_float, section, "affect_hit_power", 0.f);
+	m_fAffectHitImpulse				= READ_IF_EXISTS(pSettings, r_float, section, "affect_hit_impulse", 0.f);
+	m_uAffectHitBone				= READ_IF_EXISTS(pSettings, r_u16, section, "affect_hit_bone", BI_NONE);
 }
 
 // if sound is absent just do not load that one

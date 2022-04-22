@@ -78,17 +78,6 @@ public:
 
 public:
 	virtual u32		ef_weapon_type			() const;
-//
-public:
-	//обновления состояния с течением времени
-	void				UpdateConditionTime		();
-	IC void				SetConditionDeltaTime	(float DeltaTime) { m_fDeltaTime = DeltaTime; };
-
-protected:
-	//для отслеживания времени 
-	u64					m_iLastTimeCalled;
-	float				m_fDeltaTime;
-	bool				m_bTimeValid;
 };
 
 #include "inventory_item_inline.h"

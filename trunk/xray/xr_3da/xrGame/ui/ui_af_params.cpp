@@ -128,7 +128,7 @@ void CUIArtefactParams::InitFromXml(CUIXml& xml_doc)
 bool CUIArtefactParams::Check(CGameObject *obj/*const shared_str& af_section*/)
 {
 	//return !!pSettings->line_exist(af_section, "af_actor_properties");
-	return (!!smart_cast<CInventoryItem*>(obj)/* || smart_cast<CArtefact*>(obj) || smart_cast<CCustomOutfit*>(obj) || smart_cast<CBackPack*>(obj)*/);
+	return (!!smart_cast<CInventoryItem*>(obj));
 }
 #include "../string_table.h"
 void CUIArtefactParams::SetInfo(CGameObject *obj)
