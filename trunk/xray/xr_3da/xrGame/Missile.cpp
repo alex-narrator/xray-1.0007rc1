@@ -380,6 +380,10 @@ void CMissile::OnAnimationEnd(u32 state)
 		} break;
 	case MS_THROW:
 		{
+			auto pActor = smart_cast<CActor*>(H_Parent());
+			bool b_have_no_power = pActor && pActor->conditions().IsCantWalk();
+			if (pActor && !b_have_no_power) pActor->conditions().ConditionJump(Weight() * 0.1f);
+			//
 			Throw();
 			OnStateSwitch(MS_END);
 		} break;
@@ -590,9 +594,6 @@ bool CMissile::Action(s32 cmd, u32 flags)
 				m_throw = true;
 				if (GetState() == MS_IDLE)
 					SwitchState(MS_THREATEN);
-				//
-				if (pActor) pActor->conditions().ConditionJump(Weight() * 0.1f);
-				//
 			} 
 			return true;
 		}break;
@@ -608,9 +609,6 @@ bool CMissile::Action(s32 cmd, u32 flags)
 				else if(GetState() == MS_READY)
 				{
 					m_throw = true; 
-					//
-					if (pActor) pActor->conditions().ConditionJump(Weight() * 0.1f);
-					//
 				}
 
 			} 
@@ -618,9 +616,6 @@ bool CMissile::Action(s32 cmd, u32 flags)
 			{
 				m_throw = true; 
 				if (GetState() == MS_READY) SwitchState(MS_THROW);
-				//
-				if (pActor && !b_have_no_power) pActor->conditions().ConditionJump(Weight() * 0.1f);
-				//
 			}
 			return true;
 		}break;

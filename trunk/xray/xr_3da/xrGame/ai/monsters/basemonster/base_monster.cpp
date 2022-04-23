@@ -587,7 +587,7 @@ void CBaseMonster::UpdateRemoteAffect(u32 dt)
 		if (!Actor)	continue;
 
 		float distance = Position().distance_to(Actor->Position());
-		if (distance > m_fAffectDistance) return;
+		if (distance > m_fAffectDistance) continue;
 
 		float dist_attenuation = 1.f - (distance / m_fAffectDistance);
 
@@ -612,10 +612,10 @@ void CBaseMonster::UpdateRemoteAffect(u32 dt)
 			if (HDS.damage() > EPS)
 			{
 				Actor->Hit(&HDS);
-				Msg("Moster [%s] hit power [%.6f] distance [%.2f] attenuation [%.3f] timestamp [%d]", cName().c_str(), HDS.damage(), distance, dist_attenuation, Device.dwTimeGlobal);
+//				Msg("Moster [%s] hit power [%.6f] distance [%.2f] attenuation [%.3f] timestamp [%d]", cName().c_str(), HDS.damage(), distance, dist_attenuation, Device.dwTimeGlobal);
 			}
 		}
 
-		Msg("Moster [%s] UpdateRemoteAffect at distance [%.2f], timestamp [%d]", cName().c_str(), distance, Device.dwTimeGlobal);
+//		Msg("Moster [%s] UpdateRemoteAffect at distance [%.2f], timestamp [%d]", cName().c_str(), distance, Device.dwTimeGlobal);
 	}
 }

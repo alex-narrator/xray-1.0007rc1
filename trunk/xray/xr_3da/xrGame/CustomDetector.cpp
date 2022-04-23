@@ -9,6 +9,7 @@
 #include "cameraEffector.h"
 #include "actor.h"
 #include "actorcondition.h"
+#include "../xr_3da/xrGame/ai/monsters/basemonster/base_monster.h"
 #include "ai_sounds.h"
 
 ZONE_INFO::ZONE_INFO	()
@@ -26,6 +27,7 @@ CCustomDetector::CCustomDetector(void)
 {
 	m_bWorking					= false;
 	radiation_snd_time			= 0;
+	monster_radiation_snd_time	= 0;
 }
 
 CCustomDetector::~CCustomDetector(void) 
@@ -171,6 +173,7 @@ void CCustomDetector::UpdateCL()
 	}
 
 	UpdateActorRadiation();
+	UpdateMonsterRadiation();
 }
 
 void CCustomDetector::feel_touch_new(CObject* O) 
@@ -196,7 +199,7 @@ void CCustomDetector::feel_touch_delete(CObject* O)
 
 BOOL CCustomDetector::feel_touch_contact(CObject* O) 
 {
-	return (NULL != smart_cast<CCustomZone*>(O));
+	return (!!smart_cast<CCustomZone*>(O) || !!smart_cast<CBaseMonster*>(O));
 }
 
 void CCustomDetector::OnH_A_Chield() 
@@ -387,4 +390,44 @@ void CCustomDetector::UpdateActorRadiation()
 	}
 	else
 		radiation_snd_time += Device.dwTimeDelta;
+}
+
+void CCustomDetector::UpdateMonsterRadiation()
+{
+	if (m_ZoneTypeMap.find(CLSID_Z_RADIO) == m_ZoneTypeMap.end()) return;
+	ZONE_TYPE& zone_type = m_ZoneTypeMap[CLSID_Z_RADIO];
+
+	typedef xr_vector<CObject*>				creatures;
+	
+	for (creatures::const_iterator it = feel_touch.begin(); it != feel_touch.end(); ++it)
+	{
+		auto const	Monster = smart_cast<CBaseMonster*>(*it);
+		if (!Monster)	continue;
+
+		if (!Monster->HasAffectHit() || Monster->m_eAffectHitType != ALife::eHitTypeRadiation)
+			continue;
+
+		float distance = H_Parent()->Position().distance_to(Monster->Position());
+		if (distance > m_fRadius || distance > Monster->m_fAffectDistance) 
+			continue;
+
+		if (!Monster->g_Alive() && !Monster->m_bAffectDead)
+			continue;
+
+		float fRelPow = 1.f - distance / Monster->m_fAffectDistance;//m_fRadius;
+
+		//определить текущую частоту срабатывания сигнала
+		float cur_freq = zone_type.min_freq
+			+ (zone_type.max_freq - zone_type.min_freq)
+			* fRelPow * fRelPow * fRelPow * fRelPow;
+		float current_snd_time = 1000.f * 1.f / cur_freq;
+
+		if (monster_radiation_snd_time > current_snd_time)
+		{
+			monster_radiation_snd_time = 0;
+			HUD_SOUND::PlaySound(zone_type.detect_snds, Fvector().set(0, 0, 0), this, true, false);
+		}
+		else
+			monster_radiation_snd_time += Device.dwTimeDelta;
+	}
 }

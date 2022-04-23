@@ -93,6 +93,9 @@ protected:
 	u32					radiation_snd_time;
 	void				UpdateActorRadiation();
 
+	u32					monster_radiation_snd_time;
+	void				UpdateMonsterRadiation();
+
 public:
 	virtual u32			ef_detector_type	() const;
 	bool				IsGeigerCounter		();
