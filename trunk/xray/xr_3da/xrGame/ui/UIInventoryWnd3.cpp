@@ -349,8 +349,8 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		b_show			= true;
 	}
 
-	bool disallow_drop	= (pOutfit&&bAlreadyDressed);
-	disallow_drop		|= !!CurrentIItem()->IsQuestItem();
+	bool disallow_drop = !!CurrentIItem()->IsQuestItem();//(pOutfit&&bAlreadyDressed);
+//	disallow_drop		|= !!CurrentIItem()->IsQuestItem();
 
 	if(!disallow_drop)
 	{

@@ -309,6 +309,7 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	else if (BUTTON_CLICKED == msg && m_pUIRepackAmmoButton == pWnd)
 	{
 		m_pOurObject->inventory().RepackAmmo();
+		UpdateLists_delayed();
 	}
 	else if (BUTTON_CLICKED == msg && m_pUIMoveAllFromRuckButton == pWnd)
 	{

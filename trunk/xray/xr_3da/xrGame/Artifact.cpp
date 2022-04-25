@@ -82,6 +82,8 @@ CArtefact::CArtefact(void)
 		m_HitTypeProtection[i] = 0.0f;*/
 
 	m_bPending = false;
+
+	m_bDestroyOnZeroCondition = false;
 }
 
 

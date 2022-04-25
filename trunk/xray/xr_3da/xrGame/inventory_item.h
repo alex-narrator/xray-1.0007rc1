@@ -11,6 +11,7 @@
 #include "inventory_space.h"
 #include "hit_immunity.h"
 #include "attachable_item.h"
+#include "hudsound.h"
 
 class CUIInventoryCellItem;
 
@@ -194,6 +195,9 @@ public:
 	virtual SLOT_ID				GetSlot				()  const					{return m_slot;}
 			void				SetSlot				(SLOT_ID slot)				{m_slot = slot;};	
 #endif
+			bool				m_bDestroyOnZeroCondition;
+		HUD_SOUND				zero_cond_destroy_snd;
+	virtual void				CheckForDestroyOnZeroCondition();
 protected:
 	// 0-используется без участия рук, 1-одна рука, 2-две руки
 	EHandDependence			eHandDependence;

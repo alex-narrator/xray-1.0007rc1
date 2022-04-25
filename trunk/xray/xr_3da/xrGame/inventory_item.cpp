@@ -25,6 +25,7 @@
 #include "eatable_item.h"
 #include "medkit.h"
 #include "antirad.h"
+#include "ai_sounds.h"
 
 #ifdef DEBUG
 #	include "debug_renderer.h"
@@ -104,6 +105,8 @@ CInventoryItem::CInventoryItem()
 	m_fRadiationRestoreSpeed	= 0.f;
 	m_fRadiationAccumFactor		= 0.f;
 	m_fRadiationAccumLimit		= 0.f;
+
+	m_bDestroyOnZeroCondition = true;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -225,6 +228,12 @@ void CInventoryItem::Load(LPCSTR section)
 	//
 	if (pSettings->line_exist(section, "use_condition"))
 		m_flags.set(FUsingCondition, pSettings->r_bool(section, "use_condition"));
+
+	if (pSettings->line_exist(section, "destroy_on_zero_condition"))
+		m_bDestroyOnZeroCondition = !!pSettings->r_bool(section, "destroy_on_zero_condition");
+
+	if (pSettings->line_exist(section, "zero_condition_destroy_sound"))
+		HUD_SOUND::LoadSound(section, "zero_condition_destroy_sound", zero_cond_destroy_snd, SOUND_TYPE_ITEM);
 
 	//радіація
 	m_fRadiationRestoreSpeed	=	READ_IF_EXISTS ( pSettings, r_float, section,	"radiation_restore_speed", 0.f );
@@ -382,6 +391,7 @@ void CInventoryItem::UpdateCL()
 
 #endif
 
+	CheckForDestroyOnZeroCondition();
 }
 
 void CInventoryItem::OnEvent (NET_Packet& P, u16 type)
@@ -1315,4 +1325,26 @@ void CInventoryItem::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name
 	str_name = Name();
 	str_count = "";
 	icon_sect_name = *m_object->cNameSect();
+}
+
+void CInventoryItem::CheckForDestroyOnZeroCondition()
+{
+	if (m_bDestroyOnZeroCondition && fis_zero(GetCondition()))
+	{
+		if (!IsQuestItem())
+		{
+			Fvector pos;
+			pos.set(object().Position());
+			bool hud_mode = false;
+
+			if (smart_cast<CActor*>(object().H_Parent()))
+			{
+				pos.set(0, 0, 0);
+				hud_mode = true;
+			}
+
+			HUD_SOUND::PlaySound(zero_cond_destroy_snd, pos, object().H_Parent(), hud_mode, false, false);
+			object().DestroyObject();
+		}
+	}
 }
