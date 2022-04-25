@@ -579,11 +579,9 @@ void CBaseMonster::UpdateRemoteAffect(u32 dt)
 
 	feel_touch_update(Position(), m_fAffectDistance);
 
-	typedef xr_vector<CObject*>				creatures;
-
-	for (creatures::const_iterator it = feel_touch.begin(); it != feel_touch.end(); ++it)
+	for (auto object : feel_touch)
 	{
-		auto const	Actor = smart_cast<CActor*>(*it);
+		auto const	Actor = smart_cast<CActor*>(object);
 		if (!Actor)	continue;
 
 		float distance = Position().distance_to(Actor->Position());

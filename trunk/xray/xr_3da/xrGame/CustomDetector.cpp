@@ -199,7 +199,7 @@ void CCustomDetector::feel_touch_delete(CObject* O)
 
 BOOL CCustomDetector::feel_touch_contact(CObject* O) 
 {
-	return (!!smart_cast<CCustomZone*>(O) || !!smart_cast<CBaseMonster*>(O));
+	return (smart_cast<CCustomZone*>(O) || smart_cast<CBaseMonster*>(O));
 }
 
 void CCustomDetector::OnH_A_Chield() 
@@ -397,11 +397,9 @@ void CCustomDetector::UpdateMonsterRadiation()
 	if (m_ZoneTypeMap.find(CLSID_Z_RADIO) == m_ZoneTypeMap.end()) return;
 	ZONE_TYPE& zone_type = m_ZoneTypeMap[CLSID_Z_RADIO];
 
-	typedef xr_vector<CObject*>				creatures;
-	
-	for (creatures::const_iterator it = feel_touch.begin(); it != feel_touch.end(); ++it)
+	for (auto object : feel_touch)
 	{
-		auto const	Monster = smart_cast<CBaseMonster*>(*it);
+		auto const	Monster = smart_cast<CBaseMonster*>(object);
 		if (!Monster)	continue;
 
 		if (!Monster->HasAffectHit() || Monster->m_eAffectHitType != ALife::eHitTypeRadiation)
