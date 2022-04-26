@@ -622,7 +622,7 @@ void CWeapon::save(NET_Packet &output_packet)
 	save_data(m_flagsAddOnState, output_packet);
 	save_data(m_ammoType, output_packet);
 	save_data(m_bZoomMode, output_packet);
-	save_data(bMisfire, output_packet);
+//	save_data(bMisfire, output_packet);
 }
 
 void CWeapon::load(IReader &input_packet)
@@ -633,7 +633,7 @@ void CWeapon::load(IReader &input_packet)
 	UpdateAddonsVisibility();
 	load_data(m_ammoType, input_packet);
 	load_data(m_bZoomMode, input_packet);
-	load_data(bMisfire, input_packet);
+//	load_data(bMisfire, input_packet);
 
 	if (m_bZoomMode)	OnZoomIn();
 	else			OnZoomOut();
