@@ -156,8 +156,10 @@
 // 121 - CSE_ALifeItemWeaponMagazinedWGL added ammo_type2 and a_elapsed2 to save/load type and count of GL-ammo
 //     - CSE_ALifeItemWeapon			added bMisfire to save/load missfiring state
 // 122 - CSE_ALifeCustomZone            added m_zone_ttl - time to live for anomalies created from artefacts
+// 123 - CSE_ALifeItemWeaponMagazined   versioned for fire mode, mixed ammo-loading, attached magazine parameters
+//										(to prevent troubles with all.spawn items)				
 //------------------------------------------------------------------------------
-#define SPAWN_VERSION	u16(122)
+#define SPAWN_VERSION	u16(123)
 
 SERVER_ENTITY_DECLARE_BEGIN2(CSE_Shape,ISE_Shape,CShapeData)
 public:

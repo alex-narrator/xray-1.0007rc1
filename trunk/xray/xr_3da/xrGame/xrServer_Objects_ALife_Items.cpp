@@ -611,19 +611,22 @@ CSE_ALifeItemWeaponMagazined::~CSE_ALifeItemWeaponMagazined	()
 void CSE_ALifeItemWeaponMagazined::UPDATE_Read		(NET_Packet& P)
 {
 	inherited::UPDATE_Read(P);
-
-	m_u8CurFireMode = P.r_u8();
 	//
-	m_AmmoIDs.clear();
-	u8 AmmoCount = P.r_u8();
-	for (u8 i = 0; i<AmmoCount; i++)
+	if (m_wVersion > 122)
 	{
-		m_AmmoIDs.push_back(P.r_u8());
+		m_u8CurFireMode = P.r_u8();
+		//
+		m_AmmoIDs.clear();
+		u8 AmmoCount = P.r_u8();
+		for (u8 i = 0; i < AmmoCount; i++)
+		{
+			m_AmmoIDs.push_back(P.r_u8());
+		}
+		//
+		m_bIsMagazineAttached = !!(P.r_u8() & 0x1);
+		//
+		m_fAttachedSilencerCondition = P.r_float();
 	}
-	//
-	m_bIsMagazineAttached	= !!(P.r_u8() & 0x1);
-	//
-	P.r_float_q8(m_fAttachedSilencerCondition, 0.0f, 1.0f);
 }
 void CSE_ALifeItemWeaponMagazined::UPDATE_Write	(NET_Packet& P)
 {
@@ -639,7 +642,7 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Write	(NET_Packet& P)
 	//
 	P.w_u8(m_bIsMagazineAttached ? 1 : 0);
 	//
-	P.w_float_q8(m_fAttachedSilencerCondition, 0.0f, 1.0f);
+	P.w_float(m_fAttachedSilencerCondition);
 }
 void CSE_ALifeItemWeaponMagazined::STATE_Read		(NET_Packet& P, u16 size)
 {

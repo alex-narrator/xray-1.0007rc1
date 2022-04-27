@@ -459,12 +459,16 @@ void CWeaponMagazined::ReloadMagazine()
 		m_magazine.empty() && HasDetachableMagazine())	//разрядить пустой магазин
 		UnloadMagazine();
 
-	if (HasDetachableMagazine() && m_pAmmo && m_pAmmo->IsBoxReloadable())
+	if (HasDetachableMagazine() /*&& m_pAmmo && m_pAmmo->IsBoxReloadable()*/)
 	{
-		int chamber_ammo = HasChamber() ? 1 : 0;	//учтём дополнительный патрон в патроннике
-		iMagazineSize = m_pAmmo->m_boxSize + chamber_ammo; 
-		m_LastLoadedMagType = m_ammoType;
-		m_bIsMagazineAttached = true;
+		bool b_attaching_magazine = AmmoTypeIsMagazine(m_ammoType);
+
+		int chamber_ammo		= HasChamber() ? 1 : 0;	//учтём дополнительный патрон в патроннике
+		int mag_size			= b_attaching_magazine ? m_pAmmo->m_boxSize : 0;
+
+		iMagazineSize			= mag_size + chamber_ammo;
+		m_LastLoadedMagType		= b_attaching_magazine ? m_ammoType : 0;
+		m_bIsMagazineAttached	= b_attaching_magazine;//true;
 	}
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
@@ -1447,8 +1451,6 @@ void CWeaponMagazined::save(NET_Packet &output_packet)
 	save_data(m_iQueueSize, output_packet);
 	save_data(m_iShotNum, output_packet);
 	save_data(m_iCurFireMode, output_packet);
-	//
-	//save_data(m_bIsMagazineAttached, output_packet);
 }
 
 void CWeaponMagazined::load(IReader &input_packet)
@@ -1457,8 +1459,6 @@ void CWeaponMagazined::load(IReader &input_packet)
 	load_data(m_iQueueSize, input_packet); SetQueueSize(m_iQueueSize);
 	load_data(m_iShotNum, input_packet);
 	load_data(m_iCurFireMode, input_packet);
-	//
-	//load_data(m_bIsMagazineAttached, input_packet);
 }
 
 BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
@@ -1479,6 +1479,7 @@ BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
 	}
 	//
 	m_bIsMagazineAttached = wpn->m_bIsMagazineAttached;
+	Msg("weapon [%s] spawned with magazine status [%s]", cName().c_str(), wpn->m_bIsMagazineAttached ? "atached" : "detached");
 
 	if (IsMagazineAttached())
 		m_LastLoadedMagType = m_ammoType;
@@ -1504,7 +1505,7 @@ void CWeaponMagazined::net_Export(NET_Packet& P)
 	//
 	P.w_u8(m_bIsMagazineAttached ? 1 : 0);
 	//
-	P.w_float_q8(m_fAttachedSilencerCondition, 0.0f, 1.0f);
+	P.w_float(m_fAttachedSilencerCondition);
 }
 
 void CWeaponMagazined::net_Import(NET_Packet& P)
@@ -1533,7 +1534,7 @@ void CWeaponMagazined::net_Import(NET_Packet& P)
 	//
 	m_bIsMagazineAttached = !!(P.r_u8() & 0x1);
 	//
-	P.r_float_q8(m_fAttachedSilencerCondition, 0.f, 1.f);
+	m_fAttachedSilencerCondition = P.r_float();
 }
 #include "string_table.h"
 #include "ui/UIMainIngameWnd.h"
