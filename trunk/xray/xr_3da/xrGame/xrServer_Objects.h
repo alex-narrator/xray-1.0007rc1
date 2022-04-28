@@ -157,9 +157,10 @@
 //     - CSE_ALifeItemWeapon			added bMisfire to save/load missfiring state
 // 122 - CSE_ALifeCustomZone            added m_zone_ttl - time to live for anomalies created from artefacts
 // 123 - CSE_ALifeItemWeaponMagazined   versioned for fire mode, mixed ammo-loading, attached magazine parameters
-//										(to prevent troubles with all.spawn items)				
+//										(to prevent troubles with all.spawn items)	
+// 124 - CSE_ALifeInventoryItem			read/write m_fCondition on UPDATE_Read/UPDATE_Write
 //------------------------------------------------------------------------------
-#define SPAWN_VERSION	u16(123)
+#define SPAWN_VERSION	u16(124)
 
 SERVER_ENTITY_DECLARE_BEGIN2(CSE_Shape,ISE_Shape,CShapeData)
 public:

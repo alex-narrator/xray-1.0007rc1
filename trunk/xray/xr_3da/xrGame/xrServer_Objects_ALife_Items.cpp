@@ -75,19 +75,16 @@ CSE_ALifeInventoryItem::~CSE_ALifeInventoryItem	()
 {
 }
 
-#include "Level.h"
-#include "inventory_item.h"
+//#include "Level.h"
+//#include "inventory_item.h"
 void CSE_ALifeInventoryItem::STATE_Write	(NET_Packet &tNetPacket)
 {
-	if (auto item = smart_cast<CInventoryItem*>(Level().Objects.net_Find(base()->ID)))
+/*	if (auto item = smart_cast<CInventoryItem*>(Level().Objects.net_Find(base()->ID)))
 	{
 		m_fCondition = item->GetCondition();
-		m_fRadiationRestoreSpeed = item->m_fRadiationRestoreSpeed;
-	}
-
+	}*/
 
 	tNetPacket.w_float			(m_fCondition);
-	tNetPacket.w_float			(m_fRadiationRestoreSpeed);
 	State.position				= base()->o_Position;
 }
 
@@ -96,8 +93,6 @@ void CSE_ALifeInventoryItem::STATE_Read		(NET_Packet &tNetPacket, u16 size)
 	u16 m_wVersion = base()->m_wVersion;
 	if (m_wVersion > 52)
 		tNetPacket.r_float		(m_fCondition);
-
-	tNetPacket.r_float			(m_fRadiationRestoreSpeed);
 
 	State.position				= base()->o_Position;
 }
@@ -109,6 +104,9 @@ static inline bool check (const u8 &mask, const u8 &test)
 
 void CSE_ALifeInventoryItem::UPDATE_Write	(NET_Packet &tNetPacket)
 {
+	tNetPacket.w_float(m_fCondition);
+	tNetPacket.w_float(m_fRadiationRestoreSpeed);
+
 	if (!m_u8NumItems) {
 		tNetPacket.w_u8				(0);
 		return;
@@ -151,6 +149,13 @@ void CSE_ALifeInventoryItem::UPDATE_Write	(NET_Packet &tNetPacket)
 
 void CSE_ALifeInventoryItem::UPDATE_Read	(NET_Packet &tNetPacket)
 {
+	u16 m_wVersion = base()->m_wVersion;
+	if (m_wVersion > 123)
+	{
+		tNetPacket.r_float(m_fCondition);
+		tNetPacket.r_float(m_fRadiationRestoreSpeed);
+	}
+
 	tNetPacket.r_u8					(m_u8NumItems);
 	if (!m_u8NumItems) {
 		return;
@@ -414,7 +419,7 @@ void CSE_ALifeItemWeapon::UPDATE_Read(NET_Packet	&tNetPacket)
 {
 	inherited::UPDATE_Read		(tNetPacket);
 
-	tNetPacket.r_float_q8		(m_fCondition,0.0f,1.0f);
+//	tNetPacket.r_float_q8		(m_fCondition,0.0f,1.0f);
 	tNetPacket.r_u8				(wpn_flags);
 	tNetPacket.r_u16			(a_elapsed);
 	tNetPacket.r_u8				(m_addon_flags.flags);
@@ -433,7 +438,7 @@ void CSE_ALifeItemWeapon::UPDATE_Write(NET_Packet	&tNetPacket)
 {
 	inherited::UPDATE_Write		(tNetPacket);
 
-	tNetPacket.w_float_q8		(m_fCondition,0.0f,1.0f);
+//	tNetPacket.w_float_q8		(m_fCondition,0.0f,1.0f);
 	tNetPacket.w_u8				(wpn_flags);
 	tNetPacket.w_u16			(a_elapsed);
 	tNetPacket.w_u8				(m_addon_flags.get());
@@ -1152,13 +1157,13 @@ void CSE_ALifeItemCustomOutfit::STATE_Write		(NET_Packet	&tNetPacket)
 void CSE_ALifeItemCustomOutfit::UPDATE_Read		(NET_Packet	&tNetPacket)
 {
 	inherited::UPDATE_Read			(tNetPacket);
-	tNetPacket.r_float_q8			(m_fCondition,0.0f,1.0f);
+//	tNetPacket.r_float_q8			(m_fCondition,0.0f,1.0f);
 }
 
 void CSE_ALifeItemCustomOutfit::UPDATE_Write		(NET_Packet	&tNetPacket)
 {
 	inherited::UPDATE_Write			(tNetPacket);
-	tNetPacket.w_float_q8			(m_fCondition,0.0f,1.0f);
+//	tNetPacket.w_float_q8			(m_fCondition,0.0f,1.0f);
 }
 
 void CSE_ALifeItemCustomOutfit::FillProps			(LPCSTR pref, PropItemVec& items)

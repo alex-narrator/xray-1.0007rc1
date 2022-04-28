@@ -513,6 +513,8 @@ BOOL CInventoryItem::net_Spawn			(CSE_Abstract* DC)
 
 	//!!!
 	m_fCondition = pSE_InventoryItem->m_fCondition;
+	m_fRadiationRestoreSpeed = pSE_InventoryItem->m_fRadiationRestoreSpeed;
+
 	if (GameID() != GAME_SINGLE)
 		object().processing_activate();
 
@@ -530,8 +532,8 @@ void CInventoryItem::net_Destroy		()
 void CInventoryItem::save(NET_Packet &packet)
 {
 	packet.w_u8				((u8)m_eItemPlace);
-	packet.w_float			(m_fCondition);
-	packet.w_float			(m_fRadiationRestoreSpeed);
+//	packet.w_float			(m_fCondition);
+//	packet.w_float			(m_fRadiationRestoreSpeed);
 #pragma message("alpet: здесь можно сохранять все слоты, но это будет несовместимо по формату сейвов")
 	packet.w_u8				((u8)GetSlot());
 
@@ -549,6 +551,9 @@ typedef CSE_ALifeInventoryItem::mask_num_items	mask_num_items;
 
 void CInventoryItem::net_Import			(NET_Packet& P) 
 {	
+	P.r_float(m_fCondition);
+	P.r_float(m_fRadiationRestoreSpeed);
+
 	u8							NumItems = 0;
 	NumItems					= P.r_u8();
 	if (!NumItems)
@@ -612,6 +617,9 @@ void CInventoryItem::net_Import			(NET_Packet& P)
 
 void CInventoryItem::net_Export			(NET_Packet& P) 
 {	
+	P.w_float(m_fCondition);
+	P.w_float(m_fRadiationRestoreSpeed);
+
 	if (object().H_Parent() || IsGameTypeSingle()) 
 	{
 		P.w_u8				(0);
@@ -693,8 +701,8 @@ void CInventoryItem::net_Export			(NET_Packet& P)
 void CInventoryItem::load(IReader &packet)
 {
 	m_eItemPlace			= (EItemPlace)packet.r_u8();
-	m_fCondition			= packet.r_float();
-	m_fRadiationRestoreSpeed = packet.r_float();
+//	m_fCondition			= packet.r_float();
+//	m_fRadiationRestoreSpeed = packet.r_float();
 	SetSlot (packet.r_u8());
 	if (GetSlot() == 255)
 		SetSlot (NO_ACTIVE_SLOT);

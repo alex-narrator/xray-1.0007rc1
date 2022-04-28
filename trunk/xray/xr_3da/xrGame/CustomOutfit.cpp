@@ -38,13 +38,13 @@ CCustomOutfit::~CCustomOutfit()
 void CCustomOutfit::net_Export(NET_Packet& P)
 {
 	inherited::net_Export	(P);
-	P.w_float_q8			(m_fCondition,0.0f,1.0f);
+//	P.w_float_q8			(m_fCondition,0.0f,1.0f);
 }
 
 void CCustomOutfit::net_Import(NET_Packet& P)
 {
 	inherited::net_Import	(P);
-	P.r_float_q8			(m_fCondition,0.0f,1.0f);
+//	P.r_float_q8			(m_fCondition,0.0f,1.0f);
 }
 
 void CCustomOutfit::Load(LPCSTR section) 
