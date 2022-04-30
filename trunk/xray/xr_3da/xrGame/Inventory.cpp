@@ -1307,14 +1307,16 @@ CInventoryItem *CInventory::get_object_by_id(ALife::_OBJECT_ID tObjectID)
 #include "game_object_space.h"
 #include "script_callback_ex.h"
 #include "script_game_object.h"
-bool CInventory::Eat(PIItem pIItem)
+bool CInventory::Eat(PIItem pIItem, CInventoryOwner *eater)
 {
-	R_ASSERT(pIItem->m_pCurrentInventory==this);
+//	R_ASSERT(pIItem->m_pCurrentInventory==this);
 	//устанаовить съедобна ли вещь
 	CEatableItem* pItemToEat = smart_cast<CEatableItem*>(pIItem);
 	R_ASSERT				(pItemToEat);
 
-	CEntityAlive *entity_alive = smart_cast<CEntityAlive*>(m_pOwner);
+	auto eatem_eater = eater ? eater : m_pOwner;
+
+	CEntityAlive *entity_alive = smart_cast<CEntityAlive*>(eatem_eater/*m_pOwner*/);
 	R_ASSERT				(entity_alive);
 	
 	pItemToEat->UseBy		(entity_alive);
@@ -1324,12 +1326,14 @@ bool CInventory::Eat(PIItem pIItem)
 
 	if(pItemToEat->Empty() && entity_alive->Local())
 	{
+		auto object = pIItem->cast_game_object();
+
 		NET_Packet					P;
-		CGameObject::u_EventGen		(P,GE_OWNERSHIP_REJECT,entity_alive->ID());
+		CGameObject::u_EventGen		(P, GE_OWNERSHIP_REJECT,/*entity_alive*/object->H_Parent()->ID());
 		P.w_u16						(pIItem->object().ID());
 		CGameObject::u_EventSend	(P);
 
-		CGameObject::u_EventGen		(P,GE_DESTROY,pIItem->object().ID());
+		CGameObject::u_EventGen		(P,GE_DESTROY,/*pIItem->object()*/object->ID());
 		CGameObject::u_EventSend	(P);
 
 		return		false;

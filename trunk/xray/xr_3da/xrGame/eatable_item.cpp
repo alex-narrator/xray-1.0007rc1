@@ -124,8 +124,8 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 {
 	CInventoryOwner* IO	= smart_cast<CInventoryOwner*>(entity_alive);
 	R_ASSERT		(IO);
-	R_ASSERT		(m_pCurrentInventory==IO->m_inventory);
-	R_ASSERT		(object().H_Parent()->ID()==entity_alive->ID());
+//	R_ASSERT		(m_pCurrentInventory==IO->m_inventory);
+//	R_ASSERT		(object().H_Parent()->ID()==entity_alive->ID());
 
 	auto econd = &entity_alive->conditions();
 
@@ -137,6 +137,8 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 	econd->ChangeBleeding	(m_fWoundsHealPerc		* GetCondition());
 	
 	econd->SetMaxPower		(econd->GetMaxPower() + (m_fMaxPowerUpInfluence * GetCondition()));
+
+//	Msg("~~ eatem [%s] eated by [%s]", object().cName().c_str(), entity_alive->cName().c_str());
 	
 	//уменьшить количество порций
 	if(m_iPortionsNum > 0)

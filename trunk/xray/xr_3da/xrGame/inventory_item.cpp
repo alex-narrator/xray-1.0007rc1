@@ -522,7 +522,7 @@ BOOL CInventoryItem::net_Spawn			(CSE_Abstract* DC)
 	if (fis_zero(pSE_InventoryItem->m_fLastTimeCalled))
 		pSE_InventoryItem->m_fLastTimeCalled = Level().GetGameDayTimeSec();
 	m_fLastTimeCalled			= pSE_InventoryItem->m_fLastTimeCalled;
-	Msg("IItem [%s] spawned with m_fLastTimeCalled [%.6f]", object().cName().c_str(), m_fLastTimeCalled);
+//	Msg("~~ IItem [%s] spawned with m_fLastTimeCalled [%.6f]", object().cName().c_str(), m_fLastTimeCalled);
 
 	if (GameID() != GAME_SINGLE || !fis_zero(m_fTTLOnDecrease))
 		object().processing_activate();
@@ -1395,5 +1395,5 @@ void CInventoryItem::UpdateConditionDecrease(float current_time)
 
 	ChangeCondition(-condition_dec);
 
-	Msg("! IItem [%s] change condition on [%.6f]|current condition [%.6f]|delta_time  [%.6f], current time [%.6f]", object().cName().c_str(), condition_dec, GetCondition(), delta_time, current_time);
+//	Msg("! IItem [%s] change condition on [%.6f]|current condition [%.6f]|delta_time  [%.6f], current time [%.6f]", object().cName().c_str(), condition_dec, GetCondition(), delta_time, current_time);
 }

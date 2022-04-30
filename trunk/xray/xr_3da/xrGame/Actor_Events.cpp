@@ -169,7 +169,7 @@ void CActor::OnEvent		(NET_Packet& P, u16 type)
 				inventory().Ruck(smart_cast<CInventoryItem*>(O)); 
 				break;
 			case GEG_PLAYER_ITEM_EAT:	 
-				inventory().Eat(smart_cast<CInventoryItem*>(O)); 
+				inventory().Eat(smart_cast<CInventoryItem*>(O), cast_inventory_owner());
 				break;
 			case GEG_PLAYER_ACTIVATEARTEFACT:
 				{

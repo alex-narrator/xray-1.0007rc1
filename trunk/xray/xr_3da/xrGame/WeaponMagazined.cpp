@@ -390,9 +390,9 @@ void CWeaponMagazined::HandleCartridgeInChamber()
 		//else if (*m_magazine[1].m_ammoSect == *m_magazine.back().m_ammoSect) //второй патрон аналогичен последнему патрону
 		{//конец заряжания магазина
 			//перекладываем патрон отличного типа (первый заряженный, он же последний на отстрел) из начала вектора в конец
-			Msg("weapon:[%s]|back:[%s]|front:[%s]|[1]:[%s] on reloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[1].m_ammoSect);
+			Msg("~~ weapon:[%s]|back:[%s]|front:[%s]|[1]:[%s] on reloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[1].m_ammoSect);
 			rotate(m_magazine.begin(), m_magazine.begin() + 1, m_magazine.end());
-			Msg("weapon:[%s]|back:[%s]|front:[%s]|[1]:[%s] after rotate on reloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[1].m_ammoSect);
+			Msg("~~ weapon:[%s]|back:[%s]|front:[%s]|[1]:[%s] after rotate on reloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[1].m_ammoSect);
 		}
 	}
 }
@@ -1479,7 +1479,7 @@ BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
 	}
 	//
 	m_bIsMagazineAttached = wpn->m_bIsMagazineAttached;
-	Msg("weapon [%s] spawned with magazine status [%s]", cName().c_str(), wpn->m_bIsMagazineAttached ? "atached" : "detached");
+//	Msg("weapon [%s] spawned with magazine status [%s]", cName().c_str(), wpn->m_bIsMagazineAttached ? "atached" : "detached");
 
 	if (IsMagazineAttached())
 		m_LastLoadedMagType = m_ammoType;
