@@ -644,7 +644,7 @@ void CCustomZone::feel_touch_new	(CObject* O)
 		object_info.zone_ignore = false;
 	enter_Zone(object_info);
 	m_ObjectInfoMap.push_back(object_info);
-	Msg("feel_touch_new obj [%s], ignore state = [%s]", object_info.object->cNameSect().c_str(), object_info.zone_ignore ? "true" : "false");
+//	Msg("feel_touch_new obj [%s], ignore state = [%s]", object_info.object->cNameSect().c_str(), object_info.zone_ignore ? "true" : "false");
 	
 	if (IsEnabled())
 	{

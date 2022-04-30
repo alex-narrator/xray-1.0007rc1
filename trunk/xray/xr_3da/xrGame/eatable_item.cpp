@@ -25,6 +25,7 @@ CEatableItem::CEatableItem()
 	m_fSatietyInfluence		= 0;
 	m_fRadiationInfluence	= 0;
 	m_fPsyHealthInfluence	= 0;
+	m_fAlcoholInfluence		= 0;
 
 	m_iPortionsNum			= -1;
 
@@ -52,7 +53,8 @@ void CEatableItem::Load(LPCSTR section)
 	m_fPsyHealthInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_psyhealth",		0.0f);
 	m_fWoundsHealPerc			= READ_IF_EXISTS	(pSettings,r_float,section,"wounds_heal_perc",	0.0f);//pSettings->r_float(section, "wounds_heal_perc");
 	clamp						(m_fWoundsHealPerc, 0.f, 1.f);
-	
+	m_fAlcoholInfluence			= READ_IF_EXISTS	(pSettings, r_float,section,"eat_alcohol",		0.0f);
+
 	m_iStartPortionsNum			= READ_IF_EXISTS	(pSettings,r_s32,section,"eat_max_power",		1);//pSettings->r_s32	(section, "eat_portions_num");
 	m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",		0.0f);
 	VERIFY						(m_iPortionsNum<10000);
@@ -80,6 +82,7 @@ BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
 			u32     c = GetOnePortionCost();
 			u32     cost = c * m_iPortionsNum;
 			SetWeight(weight);
+			SetVolume(volume);
 			SetCost(cost);
 		}
 #endif
@@ -135,6 +138,7 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 	econd->ChangeRadiation	((m_fRadiationInfluence + m_fRadiationRestoreSpeed*m_fSelfRadiationInfluence)	* GetCondition());
 	econd->ChangePsyHealth	(m_fPsyHealthInfluence	* GetCondition());
 	econd->ChangeBleeding	(m_fWoundsHealPerc		* GetCondition());
+	econd->ChangeAlcohol	(m_fAlcoholInfluence	* GetCondition());
 	
 	econd->SetMaxPower		(econd->GetMaxPower() + (m_fMaxPowerUpInfluence * GetCondition()));
 

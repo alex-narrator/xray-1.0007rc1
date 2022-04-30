@@ -39,6 +39,8 @@ protected:
 	float					m_fMaxPowerUpInfluence;
 	//заживление ран на кол-во процентов
 	float					m_fWoundsHealPerc;
+	//алкоголь
+	float					m_fAlcoholInfluence;
 	//яка доля власної радіоактивності предмета буде передана гравцеві при вживанні
 	float					m_fSelfRadiationInfluence;
 
