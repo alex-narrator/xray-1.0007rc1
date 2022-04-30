@@ -65,6 +65,7 @@ public:
 	virtual bool					bfUseful();
 
 	float 							m_fRadiationRestoreSpeed;
+	float							m_fLastTimeCalled;
 
 	/////////// network ///////////////
 	u8								m_u8NumItems;

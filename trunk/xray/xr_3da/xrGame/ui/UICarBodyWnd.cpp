@@ -429,6 +429,14 @@ void CUICarBodyWnd::Update()
 
 		UpdateLists		();
 
+	if (CurrentIItem())
+	{
+		if (CurrentIItem() && !CurrentIItem()->GetDropManual())
+			SetCurrentItem(CurrentItem());
+		else
+			DropItemsfromCell(true);
+	}
+
 	m_pUIOurVolumeWnd->SetVisible(!!psActorFlags.is(AF_INVENTORY_VOLUME));
 	
 	if(m_pOthersObject && (smart_cast<CGameObject*>(m_pOurObject))->Position().distance_to((smart_cast<CGameObject*>(m_pOthersObject))->Position()) > 3.0f)
@@ -483,7 +491,7 @@ PIItem CUICarBodyWnd::CurrentIItem()
 
 void CUICarBodyWnd::SetCurrentItem(CUICellItem* itm)
 {
-	if(m_pCurrentCellItem == itm) return;
+//	if(m_pCurrentCellItem == itm) return;
 	m_pCurrentCellItem		= itm;
 	m_pUIItemInfo->InitItem(CurrentIItem());
 }
@@ -523,19 +531,19 @@ void CUICarBodyWnd::TakeAll()
 	}
 }
 
-void SendEvent_Item_Drop(PIItem	pItem, u16 owner_id)
-{
-	pItem->OnMoveOut(pItem->m_eItemPlace);
-	pItem->SetDropManual(TRUE);
-
-	//if (OnClient())
-	{
-		NET_Packet P;
-		pItem->object().u_EventGen(P, GE_OWNERSHIP_REJECT, /*pItem->object().H_Parent()->ID()*/owner_id);
-		P.w_u16(pItem->object().ID());
-		pItem->object().u_EventSend(P);
-	}
-}
+//void SendEvent_Item_Drop(PIItem	pItem, u16 owner_id)
+//{
+//	pItem->OnMoveOut(pItem->m_eItemPlace);
+//	pItem->SetDropManual(TRUE);
+//
+//	//if (OnClient())
+//	{
+//		NET_Packet P;
+//		pItem->object().u_EventGen(P, GE_OWNERSHIP_REJECT, /*pItem->object().H_Parent()->ID()*/owner_id);
+//		P.w_u16(pItem->object().ID());
+//		pItem->object().u_EventSend(P);
+//	}
+//}
 
 void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 {
@@ -552,7 +560,7 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 	}
 
 	CUIDragDropListEx* owner_list = ci->OwnerList();
-	u16 owner_id = 0;
+/*	u16 owner_id = 0;
 	if (owner_list == m_pUIOthersBagList)
 	{
 		owner_id = (m_pInventoryBox) ? m_pInventoryBox->ID() : smart_cast<CGameObject*>(m_pOthersObject)->ID();
@@ -560,7 +568,7 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 	else
 	{
 		owner_id = smart_cast<CGameObject*>(m_pOurObject)->ID();
-	}
+	}*/
 
 	if (b_all)
 	{
@@ -571,14 +579,17 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 			CUICellItem*	itm = ci->PopChild();
 			PIItem			iitm = (PIItem)itm->m_pData;
 
-			SendEvent_Item_Drop(iitm, owner_id);
+			//SendEvent_Item_Drop(iitm, owner_id);
+			iitm->SendEvent_Item_Drop();
 		}
 	}
 
-	PIItem	iitm = (PIItem)ci->m_pData;
+//	PIItem	iitm = (PIItem)ci->m_pData;
 
 	//SendEvent_Item_Drop(CurrentIItem());
-	SendEvent_Item_Drop(iitm, owner_id);
+//	SendEvent_Item_Drop(iitm, owner_id);
+
+	CurrentIItem()->SendEvent_Item_Drop();
 
 	owner_list->RemoveItem(ci, b_all);
 
@@ -929,6 +940,13 @@ bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 
 bool CUICarBodyWnd::OnItemSelected(CUICellItem* itm)
 {
+	PIItem iitm = (PIItem)(itm->m_pData);
+	if (!iitm || iitm->GetDropManual())
+	{
+		UpdateLists_delayed();
+		return false;
+	}
+
 	SetCurrentItem		(itm);
 	itm->ColorizeWeapon	(m_pUIOurBagList, m_pUIOthersBagList);
 	return				false;

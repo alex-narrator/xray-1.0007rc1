@@ -107,6 +107,9 @@ CInventoryItem::CInventoryItem()
 	m_fRadiationAccumLimit		= 0.f;
 
 	m_bDestroyOnZeroCondition = true;
+
+	m_fTTLOnDecrease			= 0.f;
+	m_fLastTimeCalled			= 0.f;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -239,6 +242,8 @@ void CInventoryItem::Load(LPCSTR section)
 	m_fRadiationRestoreSpeed	=	READ_IF_EXISTS ( pSettings, r_float, section,	"radiation_restore_speed", 0.f );
 	m_fRadiationAccumFactor		=	READ_IF_EXISTS ( pSettings, r_float, section,	"radiation_accum_factor",  0.f );	
 	m_fRadiationAccumLimit		=	READ_IF_EXISTS ( pSettings, r_float, section,	"radiation_accum_limit",   0.f );	
+
+	m_fTTLOnDecrease			=	READ_IF_EXISTS(pSettings, r_float, section, "ttl_on_dec", 0.f);
 }
 
 
@@ -338,7 +343,7 @@ const char* CInventoryItem::NameShort()
 
 bool CInventoryItem::Useful() const
 {
-	return CanTake();
+	return CanTake() && (!m_bDestroyOnZeroCondition || !fis_zero(GetCondition()));
 }
 
 bool CInventoryItem::Activate() 
@@ -390,8 +395,8 @@ void CInventoryItem::UpdateCL()
 	}
 
 #endif
-
-	CheckForDestroyOnZeroCondition();
+	UpdateConditionDecrease			(Level().GetGameDayTimeSec());
+	CheckForDestroyOnZeroCondition	();
 }
 
 void CInventoryItem::OnEvent (NET_Packet& P, u16 type)
@@ -512,10 +517,14 @@ BOOL CInventoryItem::net_Spawn			(CSE_Abstract* DC)
 
 
 	//!!!
-	m_fCondition = pSE_InventoryItem->m_fCondition;
-	m_fRadiationRestoreSpeed = pSE_InventoryItem->m_fRadiationRestoreSpeed;
+	m_fCondition				= pSE_InventoryItem->m_fCondition;
+	m_fRadiationRestoreSpeed	= pSE_InventoryItem->m_fRadiationRestoreSpeed;
+	if (fis_zero(pSE_InventoryItem->m_fLastTimeCalled))
+		pSE_InventoryItem->m_fLastTimeCalled = Level().GetGameDayTimeSec();
+	m_fLastTimeCalled			= pSE_InventoryItem->m_fLastTimeCalled;
+	Msg("IItem [%s] spawned with m_fLastTimeCalled [%.6f]", object().cName().c_str(), m_fLastTimeCalled);
 
-	if (GameID() != GAME_SINGLE)
+	if (GameID() != GAME_SINGLE || !fis_zero(m_fTTLOnDecrease))
 		object().processing_activate();
 
 	m_dwItemIndependencyTime		= 0;
@@ -553,6 +562,7 @@ void CInventoryItem::net_Import			(NET_Packet& P)
 {	
 	P.r_float(m_fCondition);
 	P.r_float(m_fRadiationRestoreSpeed);
+	P.r_float(m_fLastTimeCalled);
 
 	u8							NumItems = 0;
 	NumItems					= P.r_u8();
@@ -619,6 +629,7 @@ void CInventoryItem::net_Export			(NET_Packet& P)
 {	
 	P.w_float(m_fCondition);
 	P.w_float(m_fRadiationRestoreSpeed);
+	P.w_float(m_fLastTimeCalled);
 
 	if (object().H_Parent() || IsGameTypeSingle()) 
 	{
@@ -1344,7 +1355,45 @@ void CInventoryItem::CheckForDestroyOnZeroCondition()
 			}
 
 			HUD_SOUND::PlaySound(zero_cond_destroy_snd, pos, object().H_Parent(), hud_mode, false, false);
-			object().DestroyObject();
+			Msg("! IItem [%s] destroyed on zero condition | current game time [%.6f sec]", object().cName().c_str(), Level().GetGameDayTimeSec());
+			if (object().H_Parent())
+				SendEvent_Item_Drop();
+			else
+				object().DestroyObject();
 		}
 	}
+}
+
+void CInventoryItem::SendEvent_Item_Drop()
+{
+	if (!this) return;
+
+	OnMoveOut(m_eItemPlace);
+	SetDropManual(TRUE);
+
+	NET_Packet P;
+	object().u_EventGen(P, GE_OWNERSHIP_REJECT, object().H_Parent()->ID());
+	P.w_u16(object().ID());
+	object().u_EventSend(P);
+}
+
+void CInventoryItem::UpdateConditionDecrease(float current_time)
+{
+	if (fis_zero(m_fTTLOnDecrease) ||
+		fis_zero(m_fCondition)) return;
+
+	float delta_time = 0.f;
+
+	if (current_time > m_fLastTimeCalled)
+		delta_time = current_time - m_fLastTimeCalled;
+	
+	m_fLastTimeCalled = Level().GetGameDayTimeSec();
+
+	float condition_dec =
+		(1.f / (m_fTTLOnDecrease * 3600.f)) *	//приведення до ігрових годин
+		delta_time;
+
+	ChangeCondition(-condition_dec);
+
+	Msg("! IItem [%s] change condition on [%.6f]|current condition [%.6f]|delta_time  [%.6f], current time [%.6f]", object().cName().c_str(), condition_dec, GetCondition(), delta_time, current_time);
 }

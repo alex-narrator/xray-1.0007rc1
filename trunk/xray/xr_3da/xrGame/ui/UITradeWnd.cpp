@@ -324,6 +324,14 @@ void CUITradeWnd::Update()
 	if(et!=eNone)
 		UpdateLists					(et);
 
+	if (CurrentIItem())
+	{
+		if (CurrentIItem() && !CurrentIItem()->GetDropManual())
+			SetCurrentItem(CurrentItem());
+		else
+			DropItemsfromCell(true);
+	};
+
 	inherited::Update				();
 	UpdateCameraDirection			(smart_cast<CGameObject*>(m_pOthersInvOwner));
 
@@ -644,6 +652,13 @@ bool CUITradeWnd::OnItemStartDrag(CUICellItem* itm)
 
 bool CUITradeWnd::OnItemSelected(CUICellItem* itm)
 {
+	PIItem iitm = (PIItem)(itm->m_pData);
+	if (!iitm || iitm->GetDropManual())
+	{
+		UpdateLists(eBoth);
+		return false;
+	}
+
 	SetCurrentItem		(itm);
 	itm->ColorizeWeapon	(&m_uidata->UIOurTradeList, &m_uidata->UIOthersTradeList, &m_uidata->UIOurBagList, &m_uidata->UIOthersBagList);
 	return				false;
@@ -914,7 +929,7 @@ PIItem CUITradeWnd::CurrentIItem()
 
 void CUITradeWnd::SetCurrentItem(CUICellItem* itm)
 {
-	if(m_pCurrentCellItem == itm) return;
+//	if(m_pCurrentCellItem == itm) return;
 	m_pCurrentCellItem				= itm;
 	m_uidata->UIItemInfo.InitItem	(CurrentIItem());
 	
@@ -944,4 +959,39 @@ void CUITradeWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUITradeWnd::OnItemDbClick);
 	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUITradeWnd::OnItemSelected);
 	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUITradeWnd::OnItemRButtonClick);
+}
+
+void CUITradeWnd::DropItemsfromCell(bool b_all)
+{
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (!pActor)
+	{
+		return;
+	}
+
+	CUICellItem* ci = CurrentItem();
+	if (!ci)
+	{
+		return;
+	}
+
+	CUIDragDropListEx* owner_list = ci->OwnerList();
+
+	if (b_all)
+	{
+		u32 cnt = ci->ChildsCount();
+
+		for (u32 i = 0; i<cnt; ++i)
+		{
+			CUICellItem*	itm = ci->PopChild();
+			PIItem			iitm = (PIItem)itm->m_pData;
+			iitm->SendEvent_Item_Drop();
+		}
+	}
+
+	CurrentIItem()->SendEvent_Item_Drop();
+
+	owner_list->RemoveItem(ci, b_all);
+
+	SetCurrentItem(NULL);
 }

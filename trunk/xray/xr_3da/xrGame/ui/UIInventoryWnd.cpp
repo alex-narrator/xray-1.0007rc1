@@ -442,6 +442,14 @@ void CUIInventoryWnd::Update()
 
 	}
 
+	if (CurrentIItem())
+	{
+		if (CurrentIItem() && !CurrentIItem()->GetDropManual())
+			SetCurrentItem(CurrentItem());
+		else
+			SendEvent_Item_Drop(CurrentIItem());
+	}
+
 	InventoryUtilities::UpdateWeight(UIBagWnd, true);
 	UIVolumeWnd.SetVisible(!!psActorFlags.is(AF_INVENTORY_VOLUME));
 	InventoryUtilities::UpdateVolume(UIVolumeWnd, true);
@@ -629,7 +637,7 @@ void	CUIInventoryWnd::SendEvent_Item2Ruck			(PIItem	pItem)
 
 void	CUIInventoryWnd::SendEvent_Item_Drop(PIItem	pItem)
 {
-	pItem->SetDropManual			(TRUE);
+/*	pItem->SetDropManual			(TRUE);
 
 	if( OnClient() )
 	{
@@ -637,7 +645,9 @@ void	CUIInventoryWnd::SendEvent_Item_Drop(PIItem	pItem)
 		pItem->object().u_EventGen	(P, GE_OWNERSHIP_REJECT, pItem->object().H_Parent()->ID());
 		P.w_u16						(pItem->object().ID());
 		pItem->object().u_EventSend(P);
-	}
+	}*/
+
+	pItem->SendEvent_Item_Drop();
 	g_pInvWnd->PlaySnd				(eInvDropItem);
 };
 

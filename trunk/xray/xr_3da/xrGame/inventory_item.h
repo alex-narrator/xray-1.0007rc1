@@ -118,6 +118,8 @@ public:
 			BOOL				GetDropManual		() const	{ return m_flags.test(FdropManual);}
 			void				SetDropManual		(BOOL val)	{ m_flags.set(FdropManual, val);}
 
+			void				SendEvent_Item_Drop	();
+
 			BOOL				IsInvalid			() const;
 
 			BOOL				IsQuestItem			()	const	{return m_flags.test(FIsQuestItem);}			
@@ -197,7 +199,12 @@ public:
 #endif
 			bool				m_bDestroyOnZeroCondition;
 		HUD_SOUND				zero_cond_destroy_snd;
-	virtual void				CheckForDestroyOnZeroCondition();
+	virtual void				CheckForDestroyOnZeroCondition	();
+
+	//проміжок часу до повного розряджання
+			float				m_fTTLOnDecrease;
+			float				m_fLastTimeCalled;
+	virtual void				UpdateConditionDecrease			(float);
 protected:
 	// 0-используется без участия рук, 1-одна рука, 2-две руки
 	EHandDependence			eHandDependence;

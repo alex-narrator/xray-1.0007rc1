@@ -31,7 +31,7 @@ PIItem CUIInventoryWnd::CurrentIItem()
 
 void CUIInventoryWnd::SetCurrentItem(CUICellItem* itm)
 {
-	if(m_pCurrentCellItem == itm) return;
+//	if(m_pCurrentCellItem == itm) return;
 	m_pCurrentCellItem				= itm;
 	UIItemInfo.InitItem			(CurrentIItem());
 }
@@ -428,6 +428,13 @@ bool CUIInventoryWnd::OnItemStartDrag(CUICellItem* itm)
 
 bool CUIInventoryWnd::OnItemSelected(CUICellItem* itm)
 {
+	PIItem iitm = (PIItem)(itm->m_pData);
+	if (!iitm || iitm->GetDropManual())
+	{
+		m_b_need_reinit = true;
+		return false;
+	}
+
 	SetCurrentItem		(itm);
 	itm->ColorizeWeapon	(m_pUIBagList, m_pUIBeltList);
 	return				false;

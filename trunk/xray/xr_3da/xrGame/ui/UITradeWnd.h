@@ -95,6 +95,8 @@ protected:
 	bool                MoveItemsFromCell			(CUICellItem* itm, bool b_all);  //переместить предмет/стак предметов
 	//
 	bool                b_TakeAllActionKeyHolded;
+	//
+	void				DropItemsfromCell			(bool b_all);        //выбросить предмет/стак предметов
 
 	bool		xr_stdcall		OnItemDrop			(CUICellItem* itm);
 	bool		xr_stdcall		OnItemStartDrag		(CUICellItem* itm);

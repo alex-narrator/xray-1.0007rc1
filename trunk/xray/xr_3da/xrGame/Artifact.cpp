@@ -136,8 +136,6 @@ void CArtefact::Load(LPCSTR section)
 
 	m_bCanSpawnZone = !!pSettings->line_exist("artefact_spawn_zones", section);
 
-	m_fTTLOnAffect = READ_IF_EXISTS(pSettings, r_float, section, "ttl_on_affect", 0.f);
-
 	animGetEx(m_anim_idle, "anim_idle");
 	animGetEx(m_anim_idle_sprint, "anim_idle_sprint");
 	animGetEx(m_anim_hide, "anim_hide");
@@ -281,8 +279,6 @@ void CArtefact::UpdateCL		()
 	
 	if (o_fastmode || m_activationObj)
 		UpdateWorkload			(Device.dwTimeDelta);	
-
-	UpdateConditionDecOnAffect	();
 }
 
 void CArtefact::UpdateWorkload		(u32 dt) 
@@ -539,18 +535,18 @@ u16	CArtefact::bone_count_to_synchronize	() const
 	return CInventoryItem::object().PHGetSyncItemsNumber();
 }
 
-void CArtefact::UpdateConditionDecOnAffect()
+void CArtefact::UpdateConditionDecrease(float current_time)
 {
-	if (fis_zero(m_fTTLOnAffect) || 
+	if (fis_zero(m_fTTLOnDecrease) ||
 		fis_zero(m_fCondition) ||
-		!ParentIsActor()) return;
+		!smart_cast<CActor*>(H_Parent())) return;
 
 	if(!psActorFlags.test(AF_ARTEFACTS_FROM_ALL) && !m_pCurrentInventory->InBelt(this)) 
 		return;
 
 	float condition_dec = 
-		(1.f / (m_fTTLOnAffect * 3600.f)) *	//приведення до ігрових годин
-		Level().GetGameTimeFactor() *					//з урахуванням таймфактору
+		(1.f / (m_fTTLOnDecrease * 3600.f)) *	//приведення до ігрових годин
+		Level().GetGameTimeFactor() *			//з урахуванням таймфактору
 		Device.fTimeDelta;
 
 	ChangeCondition(-condition_dec);
@@ -593,13 +589,6 @@ float CArtefact::GetAdditionalMaxVolume()
 float	CArtefact::GetHitTypeProtection(ALife::EHitType hit_type)
 {
 	return m_HitTypeProtection[hit_type] * GetCondition() * GetRandomKoef();
-}
-
-BOOL CArtefact::ParentIsActor()
-{
-	CObject* O = H_Parent();
-	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
-	return EA && EA->cast_actor() != 0;
 }
 
 //---SArtefactActivation----

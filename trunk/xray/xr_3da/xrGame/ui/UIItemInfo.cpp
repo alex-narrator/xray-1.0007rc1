@@ -147,6 +147,8 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	m_pInvItem				= pInvItem;
 	if(!m_pInvItem)			return;
 
+	if (pInvItem->GetDropManual()) return;
+
 	string256				str;
 	if(UIName)
 	{

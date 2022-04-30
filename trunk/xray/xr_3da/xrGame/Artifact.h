@@ -42,8 +42,6 @@ public:
 	//for smart_cast
 	virtual CArtefact*				cast_artefact						()		{return this;}
 
-	virtual BOOL					ParentIsActor					();
-
 protected:
 	virtual void					UpdateCLChild						()		{};
 
@@ -92,9 +90,7 @@ public:
 	float							m_fRandomK;
 	float							GetRandomKoef						()				{ return m_fRandomK; };
 	//
-	//проміжок часу до повного розряджання
-	float							m_fTTLOnAffect;
-	void							UpdateConditionDecOnAffect			();
+	virtual void					UpdateConditionDecrease				(float) override;
 //	bool							InContainer							();
 //	bool							CanAffect							();
 	//
