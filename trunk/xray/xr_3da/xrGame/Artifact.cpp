@@ -83,7 +83,7 @@ CArtefact::CArtefact(void)
 
 	m_bPending = false;
 
-	m_bDestroyOnZeroCondition = false;
+	m_bBreakOnZeroCondition = false;
 }
 
 

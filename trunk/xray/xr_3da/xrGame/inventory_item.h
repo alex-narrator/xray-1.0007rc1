@@ -11,7 +11,6 @@
 #include "inventory_space.h"
 #include "hit_immunity.h"
 #include "attachable_item.h"
-#include "hudsound.h"
 
 class CUIInventoryCellItem;
 
@@ -118,8 +117,6 @@ public:
 			BOOL				GetDropManual		() const	{ return m_flags.test(FdropManual);}
 			void				SetDropManual		(BOOL val)	{ m_flags.set(FdropManual, val);}
 
-			void				SendEvent_Item_Drop	();
-
 			BOOL				IsInvalid			() const;
 
 			BOOL				IsQuestItem			()	const	{return m_flags.test(FIsQuestItem);}			
@@ -197,9 +194,9 @@ public:
 	virtual SLOT_ID				GetSlot				()  const					{return m_slot;}
 			void				SetSlot				(SLOT_ID slot)				{m_slot = slot;};	
 #endif
-			bool				m_bDestroyOnZeroCondition;
-		HUD_SOUND				zero_cond_destroy_snd;
-	virtual void				CheckForDestroyOnZeroCondition	();
+			bool				m_bBreakOnZeroCondition;
+	virtual void				TryBreakToPieces();
+	virtual bool				WillBeBroken();
 
 	//проміжок часу до повного розряджання
 			float				m_fTTLOnDecrease;
@@ -222,6 +219,11 @@ protected:
 
 	float						m_fControlInertionFactor;
 	shared_str					m_icon_name;
+
+	//партікли знищення
+	shared_str m_sBreakParticles;
+	//звук знищення
+	ref_sound sndBreaking;
 
 	////////// network //////////////////////////////////////////////////
 public:

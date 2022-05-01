@@ -280,6 +280,14 @@ void CUIDragDropListEx::Draw()
 void CUIDragDropListEx::Update()
 {
 	inherited::Update			();
+
+	for (u32 i = 0; i<ItemsCount(); ++i)
+	{
+		CUICellItem*	ci = GetItemIdx(i);
+		PIItem itm = (PIItem)(ci->m_pData);
+		if (itm->WillBeBroken())
+			RemoveItem(ci, true);
+	}
 		
 
 	if( m_drag_item ){

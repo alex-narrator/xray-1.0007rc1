@@ -430,12 +430,12 @@ void CUICarBodyWnd::Update()
 
 		UpdateLists		();
 
-	if (CurrentIItem())
+	if (CurrentItem())
 	{
-		if (CurrentIItem() && !CurrentIItem()->GetDropManual())
+		if (!CurrentIItem()->WillBeBroken())
 			SetCurrentItem(CurrentItem());
 		else
-			DropItemsfromCell(true);
+			SetCurrentItem(NULL);
 	}
 
 	m_pUIOurVolumeWnd->SetVisible(!!psActorFlags.is(AF_INVENTORY_VOLUME));
@@ -581,7 +581,8 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 			PIItem			iitm = (PIItem)itm->m_pData;
 
 			//SendEvent_Item_Drop(iitm, owner_id);
-			iitm->SendEvent_Item_Drop();
+			//iitm->SendEvent_Item_Drop();
+			iitm->SetDropManual(TRUE);
 		}
 	}
 
@@ -590,7 +591,8 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 	//SendEvent_Item_Drop(CurrentIItem());
 //	SendEvent_Item_Drop(iitm, owner_id);
 
-	CurrentIItem()->SendEvent_Item_Drop();
+//	CurrentIItem()->SendEvent_Item_Drop();
+	CurrentIItem()->SetDropManual(TRUE);
 
 	owner_list->RemoveItem(ci, b_all);
 
@@ -942,7 +944,7 @@ bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 bool CUICarBodyWnd::OnItemSelected(CUICellItem* itm)
 {
 	PIItem iitm = (PIItem)(itm->m_pData);
-	if (!iitm || iitm->GetDropManual())
+	if (!iitm || iitm->WillBeBroken())
 	{
 		UpdateLists_delayed();
 		return false;

@@ -324,13 +324,13 @@ void CUITradeWnd::Update()
 	if(et!=eNone)
 		UpdateLists					(et);
 
-	if (CurrentIItem())
+	if (CurrentItem())
 	{
-		if (CurrentIItem() && !CurrentIItem()->GetDropManual())
+		if (!CurrentIItem()->WillBeBroken())
 			SetCurrentItem(CurrentItem());
 		else
-			DropItemsfromCell(true);
-	};
+			SetCurrentItem(NULL);
+	}
 
 	inherited::Update				();
 	UpdateCameraDirection			(smart_cast<CGameObject*>(m_pOthersInvOwner));
@@ -985,11 +985,13 @@ void CUITradeWnd::DropItemsfromCell(bool b_all)
 		{
 			CUICellItem*	itm = ci->PopChild();
 			PIItem			iitm = (PIItem)itm->m_pData;
-			iitm->SendEvent_Item_Drop();
+//			iitm->SendEvent_Item_Drop();
+			iitm->SetDropManual(TRUE);
 		}
 	}
 
-	CurrentIItem()->SendEvent_Item_Drop();
+//	CurrentIItem()->SendEvent_Item_Drop();
+	CurrentIItem()->SetDropManual(TRUE);
 
 	owner_list->RemoveItem(ci, b_all);
 

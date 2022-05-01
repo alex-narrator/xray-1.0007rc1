@@ -18,7 +18,7 @@ public:
 	virtual ~CBottleItem(void);
 
 
-	virtual void Load				(LPCSTR section);
+/*	virtual void Load				(LPCSTR section);
 	
 
 	void	OnEvent					(NET_Packet& P, u16 type);
@@ -30,8 +30,8 @@ public:
 			void					BreakToPieces		();
 	virtual void					UseBy				(CEntityAlive* entity_alive);
 protected:
-//	float		m_alcohol;
+	float		m_alcohol;
 	//партиклы разбивания бутылки
 	shared_str m_sBreakParticles;
-	ref_sound sndBreaking;
+	ref_sound sndBreaking;*/
 };

@@ -25,7 +25,6 @@
 #include "eatable_item.h"
 #include "medkit.h"
 #include "antirad.h"
-#include "ai_sounds.h"
 
 #ifdef DEBUG
 #	include "debug_renderer.h"
@@ -106,7 +105,7 @@ CInventoryItem::CInventoryItem()
 	m_fRadiationAccumFactor		= 0.f;
 	m_fRadiationAccumLimit		= 0.f;
 
-	m_bDestroyOnZeroCondition = true;
+	m_bBreakOnZeroCondition		= true;
 
 	m_fTTLOnDecrease			= 0.f;
 	m_fLastTimeCalled			= 0.f;
@@ -232,18 +231,21 @@ void CInventoryItem::Load(LPCSTR section)
 	if (pSettings->line_exist(section, "use_condition"))
 		m_flags.set(FUsingCondition, pSettings->r_bool(section, "use_condition"));
 
-	if (pSettings->line_exist(section, "destroy_on_zero_condition"))
-		m_bDestroyOnZeroCondition = !!pSettings->r_bool(section, "destroy_on_zero_condition");
+	if (pSettings->line_exist(section, "break_on_zero_condition"))
+		m_bBreakOnZeroCondition = !!pSettings->r_bool(section, "break_on_zero_condition");
 
-	if (pSettings->line_exist(section, "zero_condition_destroy_sound"))
-		HUD_SOUND::LoadSound(section, "zero_condition_destroy_sound", zero_cond_destroy_snd, SOUND_TYPE_ITEM);
+	if (pSettings->line_exist(section, "break_particles"))
+		m_sBreakParticles = pSettings->r_string(section, "break_particles");
+
+	if (pSettings->line_exist(section, "break_sound"))
+		sndBreaking.create(pSettings->r_string(section, "break_sound"), st_Effect, sg_SourceType);
 
 	//радіація
-	m_fRadiationRestoreSpeed	=	READ_IF_EXISTS ( pSettings, r_float, section,	"radiation_restore_speed", 0.f );
-	m_fRadiationAccumFactor		=	READ_IF_EXISTS ( pSettings, r_float, section,	"radiation_accum_factor",  0.f );	
-	m_fRadiationAccumLimit		=	READ_IF_EXISTS ( pSettings, r_float, section,	"radiation_accum_limit",   0.f );	
-
-	m_fTTLOnDecrease			=	READ_IF_EXISTS(pSettings, r_float, section, "ttl_on_dec", 0.f);
+	m_fRadiationRestoreSpeed	=	READ_IF_EXISTS	( pSettings, r_float, section,	"radiation_restore_speed", 0.f );
+	m_fRadiationAccumFactor		=	READ_IF_EXISTS	( pSettings, r_float, section,	"radiation_accum_factor",  0.f );	
+	m_fRadiationAccumLimit		=	READ_IF_EXISTS	( pSettings, r_float, section,	"radiation_accum_limit",   0.f );	
+	//
+	m_fTTLOnDecrease			=	READ_IF_EXISTS	(pSettings, r_float, section,	"ttl_on_dec", 0.f);
 }
 
 
@@ -251,6 +253,8 @@ void  CInventoryItem::ChangeCondition(float fDeltaCondition)
 {
 	m_fCondition += fDeltaCondition;
 	clamp(m_fCondition, 0.f, 1.f);
+
+	TryBreakToPieces();
 }
 
 #ifdef INV_NEW_SLOTS_SYSTEM
@@ -329,6 +333,8 @@ void	CInventoryItem::Hit					(SHit* pHDS)
 
 	if (m_flags.test(FUsingCondition))
 		ChangeCondition(-hit_power);
+
+	TryBreakToPieces();
 }
 
 const char* CInventoryItem::Name() 
@@ -343,7 +349,7 @@ const char* CInventoryItem::NameShort()
 
 bool CInventoryItem::Useful() const
 {
-	return CanTake() && (!m_bDestroyOnZeroCondition || !fis_zero(GetCondition()));
+	return CanTake();
 }
 
 bool CInventoryItem::Activate() 
@@ -396,7 +402,6 @@ void CInventoryItem::UpdateCL()
 
 #endif
 	UpdateConditionDecrease			(Level().GetGameDayTimeSec());
-	CheckForDestroyOnZeroCondition	();
 }
 
 void CInventoryItem::OnEvent (NET_Packet& P, u16 type)
@@ -1338,43 +1343,31 @@ void CInventoryItem::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name
 	icon_sect_name = *m_object->cNameSect();
 }
 
-void CInventoryItem::CheckForDestroyOnZeroCondition()
+void CInventoryItem::TryBreakToPieces()
 {
-	if (m_bDestroyOnZeroCondition && fis_zero(GetCondition()))
+	if (WillBeBroken())
 	{
-		if (!IsQuestItem())
+		//играем звук
+		sndBreaking.play_at_pos(0, object().Position(), false);
+
+		if (!object().H_Parent())
 		{
-			Fvector pos;
-			pos.set(object().Position());
-			bool hud_mode = false;
-
-			if (smart_cast<CActor*>(object().H_Parent()))
+			//отыграть партиклы разбивания
+			if (*m_sBreakParticles)
 			{
-				pos.set(0, 0, 0);
-				hud_mode = true;
+				//показываем эффекты
+				CParticlesObject* pStaticPG;
+				pStaticPG = CParticlesObject::Create(*m_sBreakParticles, TRUE);
+				pStaticPG->play_at_pos(object().Position());
 			}
-
-			HUD_SOUND::PlaySound(zero_cond_destroy_snd, pos, object().H_Parent(), hud_mode, false, false);
-			Msg("! IItem [%s] destroyed on zero condition | current game time [%.6f sec]", object().cName().c_str(), Level().GetGameDayTimeSec());
-			if (object().H_Parent())
-				SendEvent_Item_Drop();
-			else
-				object().DestroyObject();
 		}
+		object().DestroyObject();
 	}
 }
 
-void CInventoryItem::SendEvent_Item_Drop()
+bool  CInventoryItem::WillBeBroken()
 {
-	if (!this) return;
-
-	OnMoveOut(m_eItemPlace);
-	SetDropManual(TRUE);
-
-	NET_Packet P;
-	object().u_EventGen(P, GE_OWNERSHIP_REJECT, object().H_Parent()->ID());
-	P.w_u16(object().ID());
-	object().u_EventSend(P);
+	return m_bBreakOnZeroCondition && fis_zero(GetCondition()) && !IsQuestItem();
 }
 
 void CInventoryItem::UpdateConditionDecrease(float current_time)

@@ -111,14 +111,9 @@ void CBackPack::HitItemsInBackPack(SHit* pHDS, bool hit_random_item)
 
 				auto pIItem = hit_random_item ? ruck[random_item] : *it;
 
-				if (pIItem->m_flags.is(FUsingCondition) && !fis_zero(pIItem->GetCondition()))
-				{
-					pIItem->Hit(pHDS);
-					Msg("Hit item [%s]", pIItem->Name());
-					if (hit_random_item)
-						break;
-				}
-
+				pIItem->Hit(pHDS);
+				Msg("Hit item [%s] in backpack", pIItem->Name());
+				if (hit_random_item) break;
 			}
 		}
 	}

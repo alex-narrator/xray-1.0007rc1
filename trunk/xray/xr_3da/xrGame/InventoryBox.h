@@ -18,4 +18,9 @@ public:
 				CScriptGameObject* GetObjectByName		(LPCSTR);
 				CScriptGameObject* GetObjectByIndex		(u32);
 
+	virtual		void	UpdateCL						();
+
+protected:
+				void	UpdateDropTasks					();
+				void	UpdateDropItem					(PIItem pIItem);
 };

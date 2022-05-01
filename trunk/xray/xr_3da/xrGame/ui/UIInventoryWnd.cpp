@@ -442,12 +442,12 @@ void CUIInventoryWnd::Update()
 
 	}
 
-	if (CurrentIItem())
+	if (CurrentItem())
 	{
-		if (CurrentIItem() && !CurrentIItem()->GetDropManual())
+		if (!CurrentIItem()->WillBeBroken())
 			SetCurrentItem(CurrentItem());
 		else
-			SendEvent_Item_Drop(CurrentIItem());
+			SetCurrentItem(NULL);
 	}
 
 	InventoryUtilities::UpdateWeight(UIBagWnd, true);
@@ -647,7 +647,8 @@ void	CUIInventoryWnd::SendEvent_Item_Drop(PIItem	pItem)
 		pItem->object().u_EventSend(P);
 	}*/
 
-	pItem->SendEvent_Item_Drop();
+	//pItem->SendEvent_Item_Drop();
+	pItem->SetDropManual(TRUE);
 	g_pInvWnd->PlaySnd				(eInvDropItem);
 };
 

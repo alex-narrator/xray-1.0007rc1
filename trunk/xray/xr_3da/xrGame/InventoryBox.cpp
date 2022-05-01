@@ -102,3 +102,37 @@ CScriptGameObject* CInventoryBox::GetObjectByIndex(u32 id)
 	}
 	return NULL;
 }
+
+void CInventoryBox::UpdateCL()
+{
+	//Msg("UpdateCL() for InventoryBox [%s]", cName().c_str());
+	UpdateDropTasks();
+}
+
+void CInventoryBox::UpdateDropTasks()
+{
+	xr_vector<u16>::const_iterator it = m_items.begin();
+	xr_vector<u16>::const_iterator it_e = m_items.end();
+
+	for (; it != it_e; ++it)
+	{
+		PIItem itm = smart_cast<PIItem>(Level().Objects.net_Find(*it)); VERIFY(itm);
+
+		UpdateDropItem(itm);
+	}
+}
+
+void CInventoryBox::UpdateDropItem(PIItem pIItem)
+{
+	if (pIItem->GetDropManual())
+	{
+		pIItem->SetDropManual(FALSE);
+		if (OnServer())
+		{
+			NET_Packet					P;
+			pIItem->object().u_EventGen(P, GE_OWNERSHIP_REJECT, pIItem->object().H_Parent()->ID());
+			P.w_u16(u16(pIItem->object().ID()));
+			pIItem->object().u_EventSend(P);
+		}
+	}// dropManual
+}
