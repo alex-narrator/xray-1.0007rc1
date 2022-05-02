@@ -145,7 +145,7 @@ public:
 	void Initialize							(void);
 	void ShutDown							(void);
 
-public:
+/*public:
 	void time_factor						(const float &time_factor)
 	{
 		Timer.time_factor		(time_factor);
@@ -156,7 +156,8 @@ public:
 	{
 		VERIFY					(Timer.time_factor() == TimerGlobal.time_factor());
 		return					(Timer.time_factor());
-	}
+	}*/
+	void time_factor						(const float& time_factor); //--#SM+#--
 
 	// Multi-threading
 	xrCriticalSection	mt_csEnter;

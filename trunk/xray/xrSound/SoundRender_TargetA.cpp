@@ -153,6 +153,7 @@ void	CSoundRender_TargetA::fill_parameters()
 
 	VERIFY2(pEmitter,SE->source->file_name());
     float	_pitch	= pEmitter->p_source.freq;			clamp	(_pitch,EPS_L,2.f);
+	_pitch = std::min(_pitch * psSoundTimeFactor, 100.f); //--#SM+#-- Correct sound "speed" by time factor
     if (!fsimilar(_pitch,cache_pitch)){
         cache_pitch	= _pitch;
         A_CHK(alSourcef	(pSource, AL_PITCH,				_pitch));
