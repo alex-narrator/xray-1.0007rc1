@@ -56,10 +56,10 @@ void CBaseMonster::Load(LPCSTR section)
 
 	m_rank							= (pSettings->line_exist(section,"rank")) ? int(pSettings->r_u32(section,"rank")) : 0;
 
-//	if (pSettings->line_exist(section,"Spawn_Inventory_Item_Section")) {
-//		m_item_section					= pSettings->r_string(section,"Spawn_Inventory_Item_Section");
-//		m_spawn_probability				= pSettings->r_float(section,"Spawn_Inventory_Item_Probability");
-//	} else m_spawn_probability			= 0.f;
+	if (pSettings->line_exist(section,"Spawn_Inventory_Item_Section")) {
+		m_item_section					= pSettings->r_string(section,"Spawn_Inventory_Item_Section");
+		m_spawn_probability				= pSettings->r_float(section,"Spawn_Inventory_Item_Probability");
+	}// else m_spawn_probability			= 0.f;
 
 	m_melee_rotation_factor			= READ_IF_EXISTS(pSettings,r_float,section,"Melee_Rotation_Factor", 1.5f);
 	berserk_always					= READ_IF_EXISTS(!!pSettings,r_bool,section,"berserk_always", false);

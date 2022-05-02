@@ -86,6 +86,9 @@ CBaseMonster::CBaseMonster()
 	com_man().add_ability			(ControlCom::eComCriticalWound);
 
 	m_dwDeltaTime					= 0;
+
+	m_item_section					= nullptr;
+	m_spawn_probability				= 0.f;
 }
 
 
@@ -159,6 +162,8 @@ void CBaseMonster::Die(CObject* who)
 	monster_squad().remove_member	((u8)g_Team(),(u8)g_Squad(),(u8)g_Group(),this);
 	
 	if (m_controlled)			m_controlled->on_die();
+
+	TrySpawnInventoryItem();
 }
 
 
@@ -616,4 +621,29 @@ void CBaseMonster::UpdateRemoteAffect(u32 dt)
 
 //		Msg("Moster [%s] UpdateRemoteAffect at distance [%.2f], timestamp [%d]", cName().c_str(), distance, Device.dwTimeGlobal);
 	}
+}
+
+void CBaseMonster::TrySpawnInventoryItem()
+{
+	if (!m_item_section || fis_zero(m_spawn_probability))
+		return;
+
+	float probability = Random.randF();
+	if ((probability >= m_spawn_probability) && !fsimilar(m_spawn_probability, 1.f))
+		return;
+
+	// spawn inventory item
+	CSE_Abstract	*object = Level().spawn_item(m_item_section, Position(), ai_location().level_vertex_id(), ID(), true);
+	CSE_ALifeObject	*alife_object = smart_cast<CSE_ALifeObject*>(object);
+	if (alife_object)
+		alife_object->m_flags.set(CSE_ALifeObject::flCanSave, FALSE);
+
+	{
+		NET_Packet				P;
+		object->Spawn_Write(P, TRUE);
+		Level().Send(P, net_flags(TRUE));
+		F_entity_Destroy(object);
+	}
+
+//	Msg("! TrySpawnInventoryItem - Monster [%s] spawn monster part [%s]", cName().c_str(), m_item_section);
 }

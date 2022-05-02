@@ -1362,6 +1362,8 @@ void CInventoryItem::TryBreakToPieces()
 			}
 		}
 		object().DestroyObject();
+
+//		Msg("~~ Item [%s] destroyed on zero condition | current game time [%.6f]", object().cName().c_str(), Level().GetGameDayTimeSec());
 	}
 }
 
@@ -1388,5 +1390,5 @@ void CInventoryItem::UpdateConditionDecrease(float current_time)
 
 	ChangeCondition(-condition_dec);
 
-//	Msg("! IItem [%s] change condition on [%.6f]|current condition [%.6f]|delta_time  [%.6f], current time [%.6f]", object().cName().c_str(), condition_dec, GetCondition(), delta_time, current_time);
+//	Msg("IItem [%s] change condition on [%.6f]|current condition [%.6f]|delta_time  [%.6f], current time [%.6f]", object().cName().c_str(), condition_dec, GetCondition(), delta_time, current_time);
 }

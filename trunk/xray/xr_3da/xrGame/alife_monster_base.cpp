@@ -16,7 +16,7 @@ void CSE_ALifeMonsterBase::on_spawn				()
 {
 	inherited1::on_spawn		();
 
-	if (!pSettings->line_exist(s_name,"Spawn_Inventory_Item_Section"))
+/*	if (!pSettings->line_exist(s_name,"Spawn_Inventory_Item_Section"))
 		return;
 
 	LPCSTR						item_section = pSettings->r_string(s_name,"Spawn_Inventory_Item_Section");
@@ -26,6 +26,7 @@ void CSE_ALifeMonsterBase::on_spawn				()
 		return;
 
 	alife().spawn_item(item_section,o_Position,m_tNodeID,m_tGraphID,ID)->ID_Parent = ID;
+	Msg("~~ on_spawn - Monster [%s] spawn monster part [%s]", s_name.c_str(), item_section);*/
 }
 
 extern void add_online_impl		(CSE_ALifeDynamicObject *object, const bool &update_registries);
