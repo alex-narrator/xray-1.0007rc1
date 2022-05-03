@@ -58,12 +58,12 @@ void CPurchaseList::process	(const CGameObject &owner, const shared_str &name, c
 
 	DEFICITS::const_iterator	I = m_deficits.find(name);
 	VERIFY3						(I == m_deficits.end(),"Duplicate section in the purchase list",*name);
-	m_deficits.insert			(
-		std::make_pair(
-			name,
-			(float)count*probability
-			/
-			_max((float)j,min_deficit_factor)
-		)
-	);
+	float deficit = (float)count*probability / (float)j;
+	clamp(deficit,
+		READ_IF_EXISTS(pSettings, r_float, "trade", "min_deficit_factor", 1.f),
+		READ_IF_EXISTS(pSettings, r_float, "trade", "max_deficit_factor", 1.f)
+		);
+	m_deficits.insert(std::make_pair(name, deficit));
+
+//	Msg("~~ deficit [%.4f] for item [%s] (count [%d]|prob [%.4f]|item spawned [%d])", deficit, name.c_str(), count, probability, j);
 }
