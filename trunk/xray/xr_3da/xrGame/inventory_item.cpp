@@ -253,8 +253,6 @@ void  CInventoryItem::ChangeCondition(float fDeltaCondition)
 {
 	m_fCondition += fDeltaCondition;
 	clamp(m_fCondition, 0.f, 1.f);
-
-	TryBreakToPieces();
 }
 
 #ifdef INV_NEW_SLOTS_SYSTEM
@@ -331,10 +329,11 @@ void	CInventoryItem::Hit					(SHit* pHDS)
 		//Msg("! item [%s] current m_fRadiationRestoreSpeed [%.3f]", object().cName().c_str(), m_fRadiationRestoreSpeed);
 	}
 
-	if (m_flags.test(FUsingCondition))
-		ChangeCondition(-hit_power);
+	if (!m_flags.test(FUsingCondition)) return;
 
-	TryBreakToPieces();
+	ChangeCondition(-hit_power);
+
+	TryBreakToPieces(true);
 }
 
 const char* CInventoryItem::Name() 
@@ -1343,24 +1342,28 @@ void CInventoryItem::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name
 	icon_sect_name = *m_object->cNameSect();
 }
 
-void CInventoryItem::TryBreakToPieces()
+void CInventoryItem::TryBreakToPieces(bool play_effects)
 {
 	if (WillBeBroken())
 	{
-		//играем звук
-		sndBreaking.play_at_pos(0, object().Position(), false);
-
-		if (!object().H_Parent())
+		if (play_effects)
 		{
-			//отыграть партиклы разбивания
-			if (*m_sBreakParticles)
+			//играем звук
+			sndBreaking.play_at_pos(0, object().Position(), false);
+
+			if (!object().H_Parent())
 			{
-				//показываем эффекты
-				CParticlesObject* pStaticPG;
-				pStaticPG = CParticlesObject::Create(*m_sBreakParticles, TRUE);
-				pStaticPG->play_at_pos(object().Position());
+				//отыграть партиклы разбивания
+				if (*m_sBreakParticles)
+				{
+					//показываем эффекты
+					CParticlesObject* pStaticPG;
+					pStaticPG = CParticlesObject::Create(*m_sBreakParticles, TRUE);
+					pStaticPG->play_at_pos(object().Position());
+				}
 			}
 		}
+
 		object().DestroyObject();
 
 //		Msg("~~ Item [%s] destroyed on zero condition | current game time [%.6f]", object().cName().c_str(), Level().GetGameDayTimeSec());
@@ -1390,5 +1393,6 @@ void CInventoryItem::UpdateConditionDecrease(float current_time)
 
 	ChangeCondition(-condition_dec);
 
+	TryBreakToPieces(false);
 //	Msg("IItem [%s] change condition on [%.6f]|current condition [%.6f]|delta_time  [%.6f], current time [%.6f]", object().cName().c_str(), condition_dec, GetCondition(), delta_time, current_time);
 }

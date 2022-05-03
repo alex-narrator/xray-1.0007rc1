@@ -195,7 +195,7 @@ public:
 			void				SetSlot				(SLOT_ID slot)				{m_slot = slot;};	
 #endif
 			bool				m_bBreakOnZeroCondition;
-	virtual void				TryBreakToPieces();
+	virtual void				TryBreakToPieces(bool);
 	virtual bool				WillBeBroken();
 
 	//проміжок часу до повного розряджання
