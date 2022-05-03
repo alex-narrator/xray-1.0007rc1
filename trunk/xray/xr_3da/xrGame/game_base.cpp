@@ -5,6 +5,9 @@
 #include "level.h"
 #include "xrMessages.h"
 
+#include "alife_simulator.h"
+#include "alife_time_manager.h"
+
 u64		g_qwStartGameTime		= 12*60*60*1000;
 float	g_fTimeFactor			= pSettings->r_float("alife","time_factor");
 u64		g_qwEStartGameTime		= 12*60*60*1000;
@@ -233,11 +236,15 @@ void game_GameState::switch_Phase		(u32 new_phase)
 
 ALife::_TIME_ID game_GameState::GetGameTime()
 {
-	return			(m_qwStartGameTime + iFloor(m_fTimeFactor*float(Level().timeServer_Async() - m_qwStartProcessorTime)));
+	if (ai().get_alife() && ai().alife().initialized())
+		return(ai().alife().time_manager().game_time());
+	return			(m_qwStartGameTime + ALife::_TIME_ID(m_fTimeFactor*float(Level().timeServer_Async() - m_qwStartProcessorTime)));
 }
 
 float game_GameState::GetGameTimeFactor()
 {
+	if (ai().get_alife() && ai().alife().initialized())
+		return(ai().alife().time_manager().time_factor());
 	return			(m_fTimeFactor);
 }
 
@@ -257,12 +264,12 @@ void game_GameState::SetGameTimeFactor	(ALife::_TIME_ID GameTime, const float fT
 
 ALife::_TIME_ID game_GameState::GetEnvironmentGameTime()
 {
-	return			(m_qwEStartGameTime + iFloor(m_fETimeFactor*float(Level().timeServer_Async() - m_qwEStartProcessorTime)));
+	return			GetGameTime();//(m_qwEStartGameTime + iFloor(m_fETimeFactor*float(Level().timeServer_Async() - m_qwEStartProcessorTime)));
 }
 
 float game_GameState::GetEnvironmentGameTimeFactor()
 {
-	return			(m_fETimeFactor);
+	return			GetGameTimeFactor();//(m_fETimeFactor);
 }
 
 void game_GameState::SetEnvironmentGameTimeFactor (const float fTimeFactor)
