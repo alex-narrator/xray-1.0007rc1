@@ -13,8 +13,6 @@
 #include "ai_object_location.h"
 #include "level.h"
 
-static float min_deficit_factor = .3f;
-
 void CPurchaseList::process	(CInifile &ini_file, LPCSTR section, CInventoryOwner &owner)
 {
 	owner.sell_useless_items();
@@ -25,6 +23,16 @@ void CPurchaseList::process	(CInifile &ini_file, LPCSTR section, CInventoryOwner
 	CInifile::Sect			&S = ini_file.r_section(section);
 	CInifile::SectCIt		I = S.Data.begin();
 	CInifile::SectCIt		E = S.Data.end();
+
+	auto trade_ini = &ini_file;
+	CInifile *config = nullptr;
+
+	config = (trade_ini->section_exist("trade")) ? trade_ini : pSettings;
+	min_deficit = READ_IF_EXISTS(config, r_float, "trade", "min_deficit_factor", 1.f);
+
+	config = (trade_ini->section_exist("trade")) ? trade_ini : pSettings;
+	max_deficit = READ_IF_EXISTS(config, r_float, "trade", "max_deficit_factor", 1.f);
+
 	for ( ; I != E; ++I) {
 		VERIFY3				((*I).second.size(),"PurchaseList : cannot handle lines in section without values",section);
 
@@ -60,8 +68,8 @@ void CPurchaseList::process	(const CGameObject &owner, const shared_str &name, c
 	VERIFY3						(I == m_deficits.end(),"Duplicate section in the purchase list",*name);
 	float deficit = (float)count*probability / (float)j;
 	clamp(deficit,
-		READ_IF_EXISTS(pSettings, r_float, "trade", "min_deficit_factor", 1.f),
-		READ_IF_EXISTS(pSettings, r_float, "trade", "max_deficit_factor", 1.f)
+		min_deficit,
+		max_deficit
 		);
 	m_deficits.insert(std::make_pair(name, deficit));
 

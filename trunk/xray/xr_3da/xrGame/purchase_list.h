@@ -19,6 +19,8 @@ public:
 
 private:
 	DEFICITS				m_deficits;
+	float					min_deficit;
+	float					max_deficit;
 
 private:
 			void			process			(const CGameObject &owner, const shared_str &name, const u32 &count, const float &probability);
