@@ -286,7 +286,10 @@ void CUIDragDropListEx::Update()
 		CUICellItem*	ci = GetItemIdx(i);
 		PIItem itm = (PIItem)(ci->m_pData);
 		if (itm->WillBeBroken())
+		{
+			DestroyDragItem();
 			RemoveItem(ci, true);
+		}
 	}
 		
 

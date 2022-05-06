@@ -85,8 +85,8 @@ void CHudItem::Load(LPCSTR section)
 		m_strafe_offset[0][1] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "strafe_aim_hud_offset_pos", (Fvector{ 0.005f, 0.f, 0.f }));
 		m_strafe_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "strafe_aim_hud_offset_rot", (Fvector{ 0.f, 0.f, 2.5f }));
 
-		m_strafe_offset[2][0].set(READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "strafe_enabled", true), READ_IF_EXISTS(pSettings, r_float, *hud_sect, "strafe_transition_time", 0.25f), 0.f); // normal
-		m_strafe_offset[2][1].set(READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "strafe_aim_enabled", true), READ_IF_EXISTS(pSettings, r_float, *hud_sect, "strafe_aim_transition_time", 0.15f), 0.f); // aim-GL
+		m_strafe_offset[2][0].set((float)READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "strafe_enabled", true), READ_IF_EXISTS(pSettings, r_float, *hud_sect, "strafe_transition_time", 0.25f), 0.f); // normal
+		m_strafe_offset[2][1].set((float)READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "strafe_aim_enabled", true), READ_IF_EXISTS(pSettings, r_float, *hud_sect, "strafe_aim_transition_time", 0.15f), 0.f); // aim-GL
 
 		m_lookout_offset[0][0] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "lookout_hud_offset_pos", (Fvector{ 0.045f, 0.f, 0.f }));
 		m_lookout_offset[1][0] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "lookout_hud_offset_rot", (Fvector{ 0.f, 0.f, 10.f }));
@@ -94,8 +94,8 @@ void CHudItem::Load(LPCSTR section)
 		m_lookout_offset[0][1] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "lookout_aim_hud_offset_pos", (Fvector{ 0.f, 0.f, 0.f }));
 		m_lookout_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, *hud_sect, "lookout_aim_hud_offset_rot", (Fvector{ 0.f, 0.f, 15.f }));
 
-		m_lookout_offset[2][0].set(READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "lookout_enabled", true), READ_IF_EXISTS(pSettings, r_float, *hud_sect, "lookout_transition_time", 0.25f), 0.f); // normal
-		m_lookout_offset[2][1].set(READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "lookout_aim_enabled", true), READ_IF_EXISTS(pSettings, r_float, *hud_sect, "lookout_aim_transition_time", 0.15f), 0.f); // aim-GL
+		m_lookout_offset[2][0].set((float)READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "lookout_enabled", true), READ_IF_EXISTS(pSettings, r_float, *hud_sect, "lookout_transition_time", 0.25f), 0.f); // normal
+		m_lookout_offset[2][1].set((float)READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "lookout_aim_enabled", true), READ_IF_EXISTS(pSettings, r_float, *hud_sect, "lookout_aim_transition_time", 0.15f), 0.f); // aim-GL
 
 		// Смещение при движении вперёд/назад
 		m_longitudinal_offset[0] = READ_IF_EXISTS(pSettings, r_float, *hud_sect, "longitudinal_hud_offset", 0.04f);
@@ -104,7 +104,7 @@ void CHudItem::Load(LPCSTR section)
 		// Параметры движения вперёд/назад
 		m_longitudinal_offset[2] = READ_IF_EXISTS(pSettings, r_float, *hud_sect, "longitudinal_transition_time", 0.18f);
 		m_longitudinal_offset[3] = READ_IF_EXISTS(pSettings, r_float, *hud_sect, "longitudinal_aim_transition_time", m_longitudinal_offset[2]);
-		m_longitudinal_offset[4] = READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "longitudinal_enabled", true);
+		m_longitudinal_offset[4] = (float)READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "longitudinal_enabled", true);
 		m_longitudinal_offset[5] = READ_IF_EXISTS(pSettings, r_bool, *hud_sect, "longitudinal_aim_enabled", m_longitudinal_offset[4]);
 		//--#SM+# End--
 		////////////////////////////////////////////

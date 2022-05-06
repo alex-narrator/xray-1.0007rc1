@@ -109,6 +109,8 @@ CInventoryItem::CInventoryItem()
 
 	m_fTTLOnDecrease			= 0.f;
 	m_fLastTimeCalled			= 0.f;
+
+	b_brake_item = false;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -400,6 +402,8 @@ void CInventoryItem::UpdateCL()
 	}
 
 #endif
+	if (b_brake_item)
+		object().DestroyObject();
 	UpdateConditionDecrease			(Level().GetGameDayTimeSec());
 }
 
@@ -1344,7 +1348,7 @@ void CInventoryItem::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name
 
 void CInventoryItem::TryBreakToPieces(bool play_effects)
 {
-	if (WillBeBroken())
+	if (WillBeBroken() && !b_brake_item)
 	{
 		if (play_effects)
 		{
@@ -1364,10 +1368,15 @@ void CInventoryItem::TryBreakToPieces(bool play_effects)
 			}
 		}
 
-		object().DestroyObject();
+		b_brake_item = true;
+		return;
+	}
+
+	//if (b_brake_item)
+	//	object().DestroyObject();
 
 //		Msg("~~ Item [%s] destroyed on zero condition | current game time [%.6f]", object().cName().c_str(), Level().GetGameDayTimeSec());
-	}
+//	}
 }
 
 bool  CInventoryItem::WillBeBroken()

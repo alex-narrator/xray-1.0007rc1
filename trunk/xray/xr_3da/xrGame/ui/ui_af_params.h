@@ -11,8 +11,8 @@ public:
 								CUIArtefactParams		();
 	virtual						~CUIArtefactParams		();
 	void 						InitFromXml				(CUIXml& xml_doc);
-	bool 						Check					(CGameObject *obj/*const shared_str& af_section*/);
-	void 						SetInfo					(CGameObject *obj);
+//	bool 						Check					(CGameObject *obj);
+	void 						SetInfo					(CInventoryItem *obj);
 
 protected:
 	enum{

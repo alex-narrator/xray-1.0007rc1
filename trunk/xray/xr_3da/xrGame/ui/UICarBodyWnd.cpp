@@ -145,8 +145,8 @@ void CUICarBodyWnd::Init()
 	AttachChild						(m_pUIMoveAllFromRuckButton);
 	xml_init.Init3tButton			(uiXml, "move_all_from_ruck_button", 0, m_pUIMoveAllFromRuckButton);
 
-	BindDragDropListEnents			(m_pUIOurBagList);
-	BindDragDropListEnents			(m_pUIOthersBagList);
+	BindDragDropListEvents			(m_pUIOurBagList);
+	BindDragDropListEvents			(m_pUIOthersBagList);
 }
 
 void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryBox* pInvBox)
@@ -227,8 +227,6 @@ void CUICarBodyWnd::UpdateLists_delayed()
 {
 		m_b_need_update = true;
 }
-
-#include "UIInventoryUtilities.h"
 
 void CUICarBodyWnd::Hide()
 {
@@ -424,21 +422,16 @@ void CUICarBodyWnd::Draw()
 
 void CUICarBodyWnd::Update()
 {
-	if(	m_b_need_update||
+	if (m_b_need_update || CurrentItem() && (CurrentIItem()->WillBeBroken() || CurrentIItem()->GetDropManual()) ||
 		m_pOurObject->inventory().ModifyFrame()==Device.dwFrame || 
 		(m_pOthersObject&&m_pOthersObject->inventory().ModifyFrame()==Device.dwFrame))
 
 		UpdateLists		();
 
-	if (CurrentItem())
-	{
-		if (!CurrentIItem()->WillBeBroken())
-			SetCurrentItem(CurrentItem());
-		else
-			SetCurrentItem(NULL);
-	}
-
 	m_pUIOurVolumeWnd->SetVisible(!!psActorFlags.is(AF_INVENTORY_VOLUME));
+
+	InventoryUtilities::UpdateWeight(*m_pUIOurBagWnd, true);
+	InventoryUtilities::UpdateVolume(*m_pUIOurVolumeWnd, true);
 	
 	if(m_pOthersObject && (smart_cast<CGameObject*>(m_pOurObject))->Position().distance_to((smart_cast<CGameObject*>(m_pOthersObject))->Position()) > 3.0f)
 	{
@@ -453,8 +446,8 @@ void CUICarBodyWnd::Show()
 	InventoryUtilities::SendInfoToActor		("ui_car_body");
 	inherited::Show							();
 	SetCurrentItem							(NULL);
-	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd, true);
-	InventoryUtilities::UpdateVolume		(*m_pUIOurVolumeWnd, true);
+/*	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd, true);
+	InventoryUtilities::UpdateVolume		(*m_pUIOurVolumeWnd, true);*/
 	//
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	CBaseMonster* Monster = smart_cast<CBaseMonster *>(m_pOthersObject);
@@ -492,7 +485,7 @@ PIItem CUICarBodyWnd::CurrentIItem()
 
 void CUICarBodyWnd::SetCurrentItem(CUICellItem* itm)
 {
-//	if(m_pCurrentCellItem == itm) return;
+	if(m_pCurrentCellItem == itm) return;
 	m_pCurrentCellItem		= itm;
 	m_pUIItemInfo->InitItem(CurrentIItem());
 }
@@ -532,19 +525,19 @@ void CUICarBodyWnd::TakeAll()
 	}
 }
 
-//void SendEvent_Item_Drop(PIItem	pItem, u16 owner_id)
-//{
-//	pItem->OnMoveOut(pItem->m_eItemPlace);
-//	pItem->SetDropManual(TRUE);
-//
-//	//if (OnClient())
-//	{
-//		NET_Packet P;
-//		pItem->object().u_EventGen(P, GE_OWNERSHIP_REJECT, /*pItem->object().H_Parent()->ID()*/owner_id);
-//		P.w_u16(pItem->object().ID());
-//		pItem->object().u_EventSend(P);
-//	}
-//}
+void CUICarBodyWnd::SendEvent_Item_Drop(PIItem	pItem)
+{
+	pItem->OnMoveOut(pItem->m_eItemPlace);
+	pItem->SetDropManual(TRUE);
+
+	if (OnClient())
+	{
+		NET_Packet P;
+		pItem->object().u_EventGen(P, GE_OWNERSHIP_REJECT, pItem->object().H_Parent()->ID());
+		P.w_u16(pItem->object().ID());
+		pItem->object().u_EventSend(P);
+	}
+}
 
 void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 {
@@ -580,25 +573,17 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 			CUICellItem*	itm = ci->PopChild();
 			PIItem			iitm = (PIItem)itm->m_pData;
 
-			//SendEvent_Item_Drop(iitm, owner_id);
-			//iitm->SendEvent_Item_Drop();
-			iitm->SetDropManual(TRUE);
+			SendEvent_Item_Drop(iitm);
 		}
 	}
 
-//	PIItem	iitm = (PIItem)ci->m_pData;
-
-	//SendEvent_Item_Drop(CurrentIItem());
-//	SendEvent_Item_Drop(iitm, owner_id);
-
-//	CurrentIItem()->SendEvent_Item_Drop();
-	CurrentIItem()->SetDropManual(TRUE);
+	SendEvent_Item_Drop(CurrentIItem());
 
 	owner_list->RemoveItem(ci, b_all);
 
 	SetCurrentItem(NULL);
-	InventoryUtilities::UpdateWeight(*m_pUIOurBagWnd, true);
-	InventoryUtilities::UpdateVolume(*m_pUIOurVolumeWnd, true);
+/*	InventoryUtilities::UpdateWeight(*m_pUIOurBagWnd, true);
+	InventoryUtilities::UpdateVolume(*m_pUIOurVolumeWnd, true);*/
 }
 
 #include "../xr_level_controller.h"
@@ -1018,7 +1003,7 @@ bool CUICarBodyWnd::TransferItem(PIItem itm, CInventoryOwner* owner_from, CInven
 	return true;
 }
 
-void CUICarBodyWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
+void CUICarBodyWnd::BindDragDropListEvents(CUIDragDropListEx* lst)
 {
 	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemDrop);
 	lst->m_f_item_start_drag		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemStartDrag);

@@ -197,6 +197,7 @@ public:
 			bool				m_bBreakOnZeroCondition;
 	virtual void				TryBreakToPieces(bool);
 	virtual bool				WillBeBroken();
+	bool b_brake_item;
 
 	//проміжок часу до повного розряджання
 			float				m_fTTLOnDecrease;

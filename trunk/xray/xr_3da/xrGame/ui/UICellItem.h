@@ -71,6 +71,8 @@ public:
 				u32         u_ColorWeapon;
 				u32         u_ColorEquipped;
 				u32         u_ColorUntradeable;
+
+				bool		IsDummy();
 };
 
 class CUIDragItem: public CUIWindow, public pureRender, public pureFrame

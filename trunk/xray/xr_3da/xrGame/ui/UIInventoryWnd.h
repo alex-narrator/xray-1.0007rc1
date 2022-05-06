@@ -131,7 +131,7 @@ protected:
 #endif
 	
 	void						ClearAllLists				();
-	void						BindDragDropListEnents		(CUIDragDropListEx* lst);
+	void						BindDragDropListEvents		(CUIDragDropListEx* lst);
 	
 	EListType					GetType						(CUIDragDropListEx* l);
 	CUIDragDropListEx*			GetSlotList					(u32 slot_idx);

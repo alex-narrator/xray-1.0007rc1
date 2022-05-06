@@ -145,9 +145,8 @@ bool				IsGameTypeSingle();
 void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 {
 	m_pInvItem				= pInvItem;
-	if(!m_pInvItem)			return;
-
-	if (m_pInvItem->WillBeBroken()) return;
+	if (!m_pInvItem || m_pInvItem->WillBeBroken())			
+		return;
 
 	string256				str;
 	if(UIName)
@@ -182,8 +181,8 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	{
 		UIDesc->Clear						();
 		VERIFY								(0==UIDesc->GetSize());
-		TryAddWpnInfo						(pInvItem->cast_game_object()/*pInvItem->object().cNameSect()*/);
-		TryAddArtefactInfo					(pInvItem->cast_game_object()/*pInvItem->object().cNameSect()*/);
+		TryAddWpnInfo						(pInvItem);
+		TryAddArtefactInfo					(pInvItem);
 		if(m_desc_info.bShowDescrText)
 		{
 			CUIStatic* pItem					= xr_new<CUIStatic>();
@@ -225,27 +224,52 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	}
 }
 
-void CUIItemInfo::TryAddWpnInfo(CGameObject *obj/*const shared_str& wpn_section*/)
+void CUIItemInfo::TryAddWpnInfo(CInventoryItem *obj)
 {
-	if (UIWpnParams->Check(obj/*wpn_section*/))
+	if (UIWpnParams->Check(obj))
 	{
-		UIWpnParams->SetInfo(/*&m_pInvItem->object()*/obj);
+		UIWpnParams->SetInfo(obj);
 		UIDesc->AddWindow(UIWpnParams,false);
 	}
 }
 
 #include "../CustomOutfit.h"
-void CUIItemInfo::TryAddArtefactInfo(CGameObject *obj/*const shared_str& af_section*/)
+void CUIItemInfo::TryAddArtefactInfo(CInventoryItem *obj)
 {
-	if (UIArtefactParams->Check(/*af_section*/obj))
-	{
-		UIArtefactParams->SetInfo(obj/*&m_pInvItem->object()*/);
+/*	if (UIArtefactParams->Check(obj))
+	{*/
+		UIArtefactParams->SetInfo(obj);
 		UIDesc->AddWindow(UIArtefactParams, false);
-	}
+//	}
 }
 
 void CUIItemInfo::Draw()
 {
 	if(m_pInvItem || m_b_force_drawing)
 		inherited::Draw();
+}
+
+void CUIItemInfo::Update()
+{
+	if (!m_pInvItem) return;
+
+	if (m_pInvItem->WillBeBroken())
+	{
+		m_pInvItem = nullptr;
+		return;
+	}
+
+	if (UICondProgresBar)
+		{
+			float cond = m_pInvItem->GetConditionToShow();
+			UICondProgresBar->Show(true);
+			UICondProgresBar->SetProgressPos(cond*100.0f + 1.0f - EPS);
+		}
+
+		if (UIArtefactParams)
+		{
+			UIArtefactParams->SetInfo(m_pInvItem);
+		}
+
+	inherited::Update();
 }

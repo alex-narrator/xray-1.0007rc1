@@ -108,5 +108,7 @@ protected:
 	bool		xr_stdcall	OnItemRButtonClick			(CUICellItem* itm);
 
 	bool					TransferItem				(PIItem itm, CInventoryOwner* owner_from, CInventoryOwner* owner_to, bool b_check);
-	void					BindDragDropListEnents		(CUIDragDropListEx* lst);
+	void					BindDragDropListEvents		(CUIDragDropListEx* lst);
+
+	void					SendEvent_Item_Drop			(PIItem	pItem);
 };

@@ -28,8 +28,8 @@ struct SLuaWpnParams{
 SLuaWpnParams::SLuaWpnParams()
 {
 	bool	functor_exists;
-	functor_exists	= ai().script_engine().functor("ui_wpn_params.GetRPM" ,		m_functorRPM);			VERIFY(functor_exists);
-	functor_exists	= ai().script_engine().functor("ui_wpn_params.GetDamage" ,	m_functorDamage);		VERIFY(functor_exists);
+	functor_exists	= ai().script_engine().functor("ui_wpn_params.GetRPM" ,		m_functorRPM);		VERIFY(functor_exists);
+	functor_exists	= ai().script_engine().functor("ui_wpn_params.GetDamage" ,	m_functorDamage);	VERIFY(functor_exists);
 	functor_exists	= ai().script_engine().functor("ui_wpn_params.GetDamageMP" ,m_functorDamageMP);	VERIFY(functor_exists);
 	functor_exists	= ai().script_engine().functor("ui_wpn_params.GetHandling" ,m_functorHandling);	VERIFY(functor_exists);
 	functor_exists	= ai().script_engine().functor("ui_wpn_params.GetAccuracy" ,m_functorAccuracy);	VERIFY(functor_exists);
@@ -90,9 +90,9 @@ void CUIWpnParams::InitFromXml(CUIXml& xml_doc){
 
 }
 
-void CUIWpnParams::SetInfo(CGameObject *wpn)
+void CUIWpnParams::SetInfo(CInventoryItem *wpn)
 {
-	const shared_str &wpn_section = wpn->cNameSect();	
+	const shared_str &wpn_section = wpn->object().cNameSect();
 
 	if(!g_lua_wpn_params)
 		g_lua_wpn_params = xr_new<SLuaWpnParams>();
@@ -102,7 +102,7 @@ void CUIWpnParams::SetInfo(CGameObject *wpn)
 	lua_getglobal(L, "ui_wpn_params");
 	if (lua_istable(L, -1))
 	{
-		lua_pushgameobject(L, wpn);
+		lua_pushgameobject(L, wpn->cast_game_object());
 		lua_setfield(L, -2, "wpn_object"); // alpet: позволит динамически выбрать параметры из скрипта
 	}
 	lua_pop(L, 1);	
@@ -117,9 +117,9 @@ void CUIWpnParams::SetInfo(CGameObject *wpn)
 	//
 	string1024 text_to_show;
 	char temp_text[64];
-	CWeapon* pWeapon = smart_cast<CWeapon*>(wpn);
-	CWeaponMagazined* pWeaponMag = smart_cast<CWeaponMagazined*>(wpn);
-	CWeaponMagazinedWGrenade* pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>(wpn);
+	auto pWeapon			= smart_cast<CWeapon*>					(wpn);
+	auto pWeaponMag			= smart_cast<CWeaponMagazined*>			(wpn);
+	auto pWeaponMagWGren	= smart_cast<CWeaponMagazinedWGrenade*>	(wpn);
 	//кол-во и тип снаряженных боеприпасов
 	sprintf_s(temp_text, " %d | %s", pWeapon->GetAmmoElapsed(), pWeapon->GetCurrentAmmo_ShortName());
 	strconcat(sizeof(text_to_show), text_to_show, *CStringTable().translate("st_current_ammo"), pWeapon->GetAmmoElapsed() ? temp_text : *CStringTable().translate("st_not_loaded"));
@@ -131,20 +131,11 @@ void CUIWpnParams::SetInfo(CGameObject *wpn)
 	m_textMagSizeFiremode.SetText(text_to_show);
 }
 
-bool CUIWpnParams::Check(CGameObject *wpn/*const shared_str& wpn_section*/){
-	
-
-	if (pSettings->line_exist(wpn->cNameSect(), "fire_dispersion_base"))
+bool CUIWpnParams::Check(CInventoryItem *wpn)
+{
+	if (pSettings->line_exist(wpn->object().cNameSect(), "fire_dispersion_base"))
 	{
-        /*if (0==xr_strcmp(wpn_section, "wpn_addon_silencer"))
-            return false;
-        if (0==xr_strcmp(wpn_section, "wpn_binoc"))
-            return false;
-        if (0==xr_strcmp(wpn_section, "mp_wpn_binoc"))
-            return false;
-		if (0==xr_strcmp(wpn_section, "wpn_knife"))
-			return false;*/
-		const char* wpn_clsid_str = pSettings->r_string(wpn->cNameSect(), "class");
+		const char* wpn_clsid_str = pSettings->r_string(wpn->object().cNameSect(), "class");
 		if (strstr(wpn_clsid_str, "KNIFE")
 			|| strstr(wpn_clsid_str, "SILENC")
 			|| strstr(wpn_clsid_str, "BINOC")

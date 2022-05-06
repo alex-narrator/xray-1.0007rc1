@@ -102,7 +102,7 @@
         <text x="22" y="8" font="graffiti19" r="231" g="153" b="22">ui_inv_bag</text>
     </bag_static>
 	
-	<volume_static x="11" y="260" width="400" height="400" stretch="1" complex_mode="1">		
+	<volume_static x="11" y="220" width="400" height="400" stretch="1" complex_mode="1">		
         <text x="22" y="8" font="graffiti19" r="231" g="153" b="22">ui_inv_bag</text>
     </volume_static>
     

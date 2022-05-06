@@ -350,6 +350,11 @@ Ivector2 CUICellItem::GetGridSize(bool with_child)
 	return m_grid_size;
 }
 
+bool CUICellItem::IsDummy()
+{
+	return !m_pData;
+}
+
 
 CUIDragItem::CUIDragItem(CUICellItem* parent)
 {

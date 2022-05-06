@@ -30,10 +30,11 @@ public:
 	void				Init				(float x, float y, float width, float height, LPCSTR xml_name);
 	void				Init				(LPCSTR xml_name);
 	void				InitItem			(CInventoryItem* pInvItem);
-	void				TryAddWpnInfo		(CGameObject *obj/*const shared_str& wpn_section*/);
-	void				TryAddArtefactInfo	(CGameObject *obj/*const shared_str& af_section*/);
+	void				TryAddWpnInfo		(CInventoryItem *obj);
+	void				TryAddArtefactInfo	(CInventoryItem *obj);
 
 	virtual void		Draw				();
+	virtual void		Update				();
 	bool				m_b_force_drawing;
 	CUIStatic*			UIName;
 	CUIStatic*			UIWeight;

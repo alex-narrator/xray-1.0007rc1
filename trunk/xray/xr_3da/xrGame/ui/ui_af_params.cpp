@@ -125,23 +125,24 @@ void CUIArtefactParams::InitFromXml(CUIXml& xml_doc)
 	}
 }
 
-bool CUIArtefactParams::Check(CGameObject *obj/*const shared_str& af_section*/)
+/*bool CUIArtefactParams::Check(CGameObject *obj)
 {
-	//return !!pSettings->line_exist(af_section, "af_actor_properties");
 	return (!!smart_cast<CInventoryItem*>(obj));
-}
+}*/
 #include "../string_table.h"
-void CUIArtefactParams::SetInfo(CGameObject *obj)
+void CUIArtefactParams::SetInfo(CInventoryItem *obj)
 {	
-	auto iitem		= smart_cast<CInventoryItem*>	(obj);
+	if (!obj) return;
+
 	auto artefact	= smart_cast<CArtefact*>		(obj);
 	auto outfit		= smart_cast<CCustomOutfit*>	(obj);
 	auto backpack	= smart_cast<CBackPack*>		(obj);
 
 //	R_ASSERT2(art, "object is not CArtefact");
-	const shared_str& item_section = obj->cNameSect();
+	const shared_str& item_section = obj->object().cNameSect();
 	CActor *pActor = Actor();
 	if (!pActor) return;
+
 	//
 	auto pDetector = pActor->GetDetector();
 
@@ -198,9 +199,9 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 			else if (i == _item_radiation_restore_speed)
 			{
 				if (!pDetector || pDetector && !pDetector->IsGeigerCounter()) continue;
-				_val				= iitem->m_fRadiationRestoreSpeed;
+				_val				= obj->m_fRadiationRestoreSpeed;
 				if (artefact) _val	*= artefact->GetRandomKoef();
-				_val				*= iitem->GetCondition();
+				_val				*= obj->GetCondition();
 			}
 			else
 			//
@@ -213,7 +214,7 @@ void CUIArtefactParams::SetInfo(CGameObject *obj)
 				_val = READ_IF_EXISTS(pSettings, r_float, item_section, af_item_sect_names[i], 0.f);
 #endif
 				if (artefact) _val *= artefact->GetRandomKoef();
-				_val *= iitem->GetCondition();
+				_val *= obj->GetCondition();
 			}
 		}
 		else

@@ -16,8 +16,8 @@ public:
 	virtual						~CUIWpnParams			();
 
 	void 						InitFromXml				(CUIXml& xml_doc);
-	void 						SetInfo					(CGameObject *wpn);
-	bool 						Check					(CGameObject *wpn/*const shared_str& wpn_section*/);
+	void 						SetInfo					(CInventoryItem *wpn);
+	bool 						Check					(CInventoryItem *wpn);
 
 protected:
 	CUIProgressBar				m_progressAccuracy;

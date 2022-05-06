@@ -31,7 +31,7 @@ PIItem CUIInventoryWnd::CurrentIItem()
 
 void CUIInventoryWnd::SetCurrentItem(CUICellItem* itm)
 {
-//	if(m_pCurrentCellItem == itm) return;
+	if(m_pCurrentCellItem == itm) return;
 	m_pCurrentCellItem				= itm;
 	UIItemInfo.InitItem			(CurrentIItem());
 }
@@ -205,7 +205,7 @@ void CUIInventoryWnd::InitInventory()
 	if(_itm)
 	{
 		CUICellItem* itm				= create_cell_item(_itm);
-		m_pUIGrenadeList->SetItem(itm);
+		m_pUIGrenadeList->SetItem	(itm);
 	}
 
 	InventoryUtilities::UpdateWeight					(UIBagWnd, true);
@@ -222,30 +222,34 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 	CActor *pActor			= smart_cast<CActor*>(Level().CurrentEntity());
 	if(!pActor)				return;
 
-	if(!b_all && CurrentIItem() && !CurrentIItem()->IsQuestItem())
+	CUICellItem* ci = CurrentItem();
+	if (!ci)
 	{
-		SendEvent_Item_Drop		(CurrentIItem());
-		SetCurrentItem			(NULL);
-		//InventoryUtilities::UpdateWeight			(UIBagWnd, true);
-		//InventoryUtilities::UpdateVolume			(UIVolumeWnd, true);
 		return;
 	}
 
-	if(b_all && CurrentIItem() && !CurrentIItem()->IsQuestItem())
-	{
-		u32 cnt = CurrentItem()->ChildsCount();
+	if (CurrentIItem()->IsQuestItem()) return;
 
-		for(u32 i=0; i<cnt; ++i){
-			CUICellItem*	itm				= CurrentItem()->PopChild();
-			PIItem			iitm			= (PIItem)itm->m_pData;
-			SendEvent_Item_Drop				(iitm);
+	CUIDragDropListEx* owner_list = ci->OwnerList();
+
+	if (b_all)
+	{
+		u32 cnt = ci->ChildsCount();
+
+		for (u32 i = 0; i<cnt; ++i)
+		{
+			CUICellItem*	itm = ci->PopChild();
+			PIItem			iitm = (PIItem)itm->m_pData;
+
+			SendEvent_Item_Drop(iitm);
 		}
-
-		SendEvent_Item_Drop					(CurrentIItem());
-		SetCurrentItem						(NULL);
-		//InventoryUtilities::UpdateWeight	(UIBagWnd, true);
-		return;
 	}
+
+	SendEvent_Item_Drop(CurrentIItem());
+
+	owner_list->RemoveItem(ci, b_all);
+
+	SetCurrentItem(NULL);
 }
 
 //------------------------------------------
@@ -429,9 +433,9 @@ bool CUIInventoryWnd::OnItemStartDrag(CUICellItem* itm)
 bool CUIInventoryWnd::OnItemSelected(CUICellItem* itm)
 {
 	PIItem iitm = (PIItem)(itm->m_pData);
-	if (!iitm || iitm->GetDropManual())
+	if (!iitm || iitm->WillBeBroken())
 	{
-		m_b_need_reinit = true;
+		InitInventory_delayed();
 		return false;
 	}
 
@@ -444,8 +448,9 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 {
 	CUIDragDropListEx*	old_owner		= itm->OwnerList();
 	CUIDragDropListEx*	new_owner		= CUIDragDropListEx::m_drag_item->BackList();
+	PIItem iitm							= (PIItem)(itm->m_pData);
 	if(old_owner==new_owner || !old_owner || !new_owner)
-					return false;
+		return false;
 
 	EListType t_new		= GetType(new_owner);
 	EListType t_old		= GetType(old_owner);

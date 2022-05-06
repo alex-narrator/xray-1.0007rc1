@@ -55,10 +55,10 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 		return false;
 
 	return					(
-								fsimilar(object()->GetCondition(), ci->object()->GetCondition(), 0.01f) &&
-								fsimilar(object()->Weight(), ci->object()->Weight(), 0.01f) &&
-								fsimilar(object()->Volume(), ci->object()->Volume(), 0.01f) &&
-								fsimilar(object()->m_fRadiationRestoreSpeed, ci->object()->m_fRadiationRestoreSpeed, 0.01f) &&
+								fsimilar(object()->GetCondition(), ci->object()->GetCondition()/*, 0.01f*/) &&
+								fsimilar(object()->Weight(), ci->object()->Weight()/*, 0.01f*/) &&
+								fsimilar(object()->Volume(), ci->object()->Volume()/*, 0.01f*/) &&
+								fsimilar(object()->m_fRadiationRestoreSpeed, ci->object()->m_fRadiationRestoreSpeed/*, 0.01f*/) &&
 								object()->object().cNameSect() == ci->object()->object().cNameSect() && 
 								object()->m_eItemPlace == ci->object()->m_eItemPlace &&
 								object()->Cost() == ci->object()->Cost()

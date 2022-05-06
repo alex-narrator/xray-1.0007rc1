@@ -179,10 +179,10 @@ void CUITradeWnd::Init()
 
 	m_uidata->UIDealMsg					= NULL;
 
-	BindDragDropListEnents				(&m_uidata->UIOurBagList);
-	BindDragDropListEnents				(&m_uidata->UIOthersBagList);
-	BindDragDropListEnents				(&m_uidata->UIOurTradeList);
-	BindDragDropListEnents				(&m_uidata->UIOthersTradeList);
+	BindDragDropListEvents				(&m_uidata->UIOurBagList);
+	BindDragDropListEvents				(&m_uidata->UIOthersBagList);
+	BindDragDropListEvents				(&m_uidata->UIOurTradeList);
+	BindDragDropListEvents				(&m_uidata->UIOthersTradeList);
 }
 
 void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
@@ -314,7 +314,7 @@ void CUITradeWnd::Update()
 {
 	EListType et					= eNone;
 	
-	if(m_pInv->ModifyFrame()==Device.dwFrame && m_pOthersInv->ModifyFrame()==Device.dwFrame){
+	if (m_pInv->ModifyFrame() == Device.dwFrame && m_pOthersInv->ModifyFrame() == Device.dwFrame || CurrentItem() && CurrentIItem()->WillBeBroken()){
 		et = eBoth;
 	}else if(m_pInv->ModifyFrame()==Device.dwFrame){
 		et = e1st;
@@ -324,13 +324,7 @@ void CUITradeWnd::Update()
 	if(et!=eNone)
 		UpdateLists					(et);
 
-	if (CurrentItem())
-	{
-		if (!CurrentIItem()->WillBeBroken())
-			SetCurrentItem(CurrentItem());
-		else
-			SetCurrentItem(NULL);
-	}
+	UpdatePrices();
 
 	inherited::Update				();
 	UpdateCameraDirection			(smart_cast<CGameObject*>(m_pOthersInvOwner));
@@ -653,7 +647,7 @@ bool CUITradeWnd::OnItemStartDrag(CUICellItem* itm)
 bool CUITradeWnd::OnItemSelected(CUICellItem* itm)
 {
 	PIItem iitm = (PIItem)(itm->m_pData);
-	if (!iitm || iitm->GetDropManual())
+	if (!iitm || iitm->WillBeBroken())
 	{
 		UpdateLists(eBoth);
 		return false;
@@ -680,7 +674,7 @@ bool CUITradeWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 
 bool CUITradeWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 {
-	////вызов дополнительного меню по правой кнопке
+	//вызов дополнительного меню по правой кнопке
 	if (mouse_action == WINDOW_RBUTTON_DOWN)
 	{
 		if (m_pUIPropertiesBox->IsShown())
@@ -929,7 +923,7 @@ PIItem CUITradeWnd::CurrentIItem()
 
 void CUITradeWnd::SetCurrentItem(CUICellItem* itm)
 {
-//	if(m_pCurrentCellItem == itm) return;
+	if(m_pCurrentCellItem == itm) return;
 	m_pCurrentCellItem				= itm;
 	m_uidata->UIItemInfo.InitItem	(CurrentIItem());
 	
@@ -952,7 +946,7 @@ void CUITradeWnd::SwitchToTalk()
 	GetMessageTarget()->SendMessage		(this, TRADE_WND_CLOSED);
 }
 
-void CUITradeWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
+void CUITradeWnd::BindDragDropListEvents(CUIDragDropListEx* lst)
 {
 	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUITradeWnd::OnItemDrop);
 	lst->m_f_item_start_drag		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUITradeWnd::OnItemStartDrag);
@@ -985,15 +979,27 @@ void CUITradeWnd::DropItemsfromCell(bool b_all)
 		{
 			CUICellItem*	itm = ci->PopChild();
 			PIItem			iitm = (PIItem)itm->m_pData;
-//			iitm->SendEvent_Item_Drop();
-			iitm->SetDropManual(TRUE);
+			SendEvent_Item_Drop(iitm);
 		}
 	}
 
-//	CurrentIItem()->SendEvent_Item_Drop();
-	CurrentIItem()->SetDropManual(TRUE);
+	SendEvent_Item_Drop(CurrentIItem());
 
 	owner_list->RemoveItem(ci, b_all);
 
 	SetCurrentItem(NULL);
+}
+
+void CUITradeWnd::SendEvent_Item_Drop(PIItem	pItem)
+{
+	pItem->OnMoveOut(pItem->m_eItemPlace);
+	pItem->SetDropManual(TRUE);
+
+	if (OnClient())
+	{
+		NET_Packet P;
+		pItem->object().u_EventGen(P, GE_OWNERSHIP_REJECT, pItem->object().H_Parent()->ID());
+		P.w_u16(pItem->object().ID());
+		pItem->object().u_EventSend(P);
+	}
 }
