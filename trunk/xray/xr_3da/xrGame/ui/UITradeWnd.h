@@ -17,6 +17,7 @@ class CUITradeWnd: public CUIWindow
 {
 private:
 	typedef CUIWindow inherited;
+	bool	m_b_need_update;
 public:
 						CUITradeWnd					();
 	virtual				~CUITradeWnd				();
@@ -42,6 +43,8 @@ public:
 	void 				SwitchToTalk				();
 	void 				StartTrade					();
 	void 				StopTrade					();
+
+	void				UpdateLists_delayed			();
 protected:
 
 	CUITradeInternal*	m_uidata;

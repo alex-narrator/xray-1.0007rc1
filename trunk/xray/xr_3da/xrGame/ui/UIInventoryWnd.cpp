@@ -374,7 +374,7 @@ void CUIInventoryWnd::Draw()
 
 void CUIInventoryWnd::Update()
 {
-	if (m_b_need_reinit || CurrentItem() && (CurrentIItem()->WillBeBroken() || CurrentIItem()->GetDropManual()))
+	if (m_b_need_reinit)
 		InitInventory					();
 
 

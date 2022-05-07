@@ -1489,7 +1489,6 @@ void  CInventory::AddAvailableItems(TIItemContainer& items_container, bool for_t
 	for(TIItemContainer::const_iterator it = m_ruck.begin(); m_ruck.end() != it; ++it) 
 	{
 		PIItem pIItem = *it;
-		if (pIItem->WillBeBroken()) continue;
 		if(!for_trade || pIItem->CanTrade())
 			items_container.push_back(pIItem);
 	}
@@ -1499,7 +1498,6 @@ void  CInventory::AddAvailableItems(TIItemContainer& items_container, bool for_t
 		for(TIItemContainer::const_iterator it = m_belt.begin(); m_belt.end() != it; ++it) 
 		{
 			PIItem pIItem = *it;
-			if (pIItem->WillBeBroken()) continue;
 			if(!for_trade || pIItem->CanTrade())
 				items_container.push_back(pIItem);
 		}
@@ -1514,7 +1512,6 @@ void  CInventory::AddAvailableItems(TIItemContainer& items_container, bool for_t
 			const CInventorySlot& S = *slot_it;
 			if(S.m_pIItem && (!for_trade || S.m_pIItem->CanTrade())  )
 			{
-				if (S.m_pIItem->WillBeBroken()) continue;
 				if(!S.m_bPersistent/* || S.m_pIItem->GetSlot()==GRENADE_SLOT */)
 					items_container.push_back(S.m_pIItem);
 			}

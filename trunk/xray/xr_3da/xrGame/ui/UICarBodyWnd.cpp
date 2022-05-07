@@ -422,7 +422,7 @@ void CUICarBodyWnd::Draw()
 
 void CUICarBodyWnd::Update()
 {
-	if (m_b_need_update || CurrentItem() && (CurrentIItem()->WillBeBroken() || CurrentIItem()->GetDropManual()) ||
+	if (m_b_need_update ||
 		m_pOurObject->inventory().ModifyFrame()==Device.dwFrame || 
 		(m_pOthersObject&&m_pOthersObject->inventory().ModifyFrame()==Device.dwFrame))
 
@@ -928,13 +928,6 @@ bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 
 bool CUICarBodyWnd::OnItemSelected(CUICellItem* itm)
 {
-	PIItem iitm = (PIItem)(itm->m_pData);
-	if (!iitm || iitm->WillBeBroken())
-	{
-		UpdateLists_delayed();
-		return false;
-	}
-
 	SetCurrentItem		(itm);
 	itm->ColorizeWeapon	(m_pUIOurBagList, m_pUIOthersBagList);
 	return				false;

@@ -29,6 +29,7 @@ CUIGameSP::CUIGameSP()
 	PdaMenu			= xr_new<CUIPdaWnd>			();
 	TalkMenu		= xr_new<CUITalkWnd>		();
 	UICarBodyMenu	= xr_new<CUICarBodyWnd>		();
+	UITradeMenu		= xr_new<CUITradeWnd>		();
 	UIChangeLevelWnd= xr_new<CChangeLevelWnd>		();
 }
 
@@ -38,6 +39,7 @@ CUIGameSP::~CUIGameSP()
 	delete_data(PdaMenu);	
 	delete_data(TalkMenu);
 	delete_data(UICarBodyMenu);
+	delete_data(UITradeMenu);
 	delete_data(UIChangeLevelWnd);
 }
 
@@ -229,7 +231,8 @@ void CUIGameSP::ReInitShownUI()
 		InventoryMenu->InitInventory_delayed(); 
 	else if(UICarBodyMenu->IsShown())
 		UICarBodyMenu->UpdateLists_delayed();
-	
+	else if (UITradeMenu->IsShown())
+		UITradeMenu->UpdateLists_delayed();
 };
 
 

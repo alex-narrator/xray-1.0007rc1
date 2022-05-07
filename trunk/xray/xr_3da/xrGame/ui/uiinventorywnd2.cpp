@@ -432,13 +432,6 @@ bool CUIInventoryWnd::OnItemStartDrag(CUICellItem* itm)
 
 bool CUIInventoryWnd::OnItemSelected(CUICellItem* itm)
 {
-	PIItem iitm = (PIItem)(itm->m_pData);
-	if (!iitm || iitm->WillBeBroken())
-	{
-		InitInventory_delayed();
-		return false;
-	}
-
 	SetCurrentItem		(itm);
 	itm->ColorizeWeapon	(m_pUIBagList, m_pUIBeltList);
 	return				false;

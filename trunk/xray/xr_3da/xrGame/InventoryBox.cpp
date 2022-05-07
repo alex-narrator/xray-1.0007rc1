@@ -3,6 +3,8 @@
 #include "level.h"
 #include "actor.h"
 #include "game_object_space.h"
+#include "uigamesp.h"
+#include "hudmanager.h"
 
 #include "script_callback_ex.h"
 #include "script_game_object.h"
@@ -51,6 +53,9 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 			{
 				CGameObject* GO		= smart_cast<CGameObject*>(itm);
 				Actor()->callback(GameObject::eInvBoxItemTake)( this->lua_game_object(), GO->lua_game_object() );
+
+				if (Level().CurrentViewEntity() == Actor() && HUD().GetUI() && HUD().GetUI()->UIGame())
+					HUD().GetUI()->UIGame()->ReInitShownUI();
 			}
 		}break;
 	};

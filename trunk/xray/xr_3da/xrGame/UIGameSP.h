@@ -44,6 +44,7 @@ public:
 	CUIPdaWnd*			PdaMenu;
 	CUITalkWnd*			TalkMenu;
 	CUICarBodyWnd*		UICarBodyMenu;
+	CUITradeWnd*		UITradeMenu;
 	CChangeLevelWnd*	UIChangeLevelWnd;
 };
 

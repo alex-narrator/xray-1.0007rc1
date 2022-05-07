@@ -116,8 +116,8 @@ void CActor::OnEvent		(NET_Packet& P, u16 type)
 
 			SelectBestWeapon(O);
 
-/*			if (Level().CurrentViewEntity() == this && HUD().GetUI() && HUD().GetUI()->UIGame())
-				HUD().GetUI()->UIGame()->ReInitShownUI();*/
+			if (Level().CurrentViewEntity() == this && HUD().GetUI() && HUD().GetUI()->UIGame())
+				HUD().GetUI()->UIGame()->ReInitShownUI();
 		}
 		break;
 	case GE_INV_ACTION:

@@ -83,6 +83,7 @@ CUITradeWnd::CUITradeWnd()
 	Init();
 	Hide();
 	SetCurrentItem			(NULL);
+	m_b_need_update			= false;
 }
 
 CUITradeWnd::~CUITradeWnd()
@@ -310,11 +311,16 @@ void CUITradeWnd::Draw()
 
 extern void UpdateCameraDirection(CGameObject* pTo);
 
+void CUITradeWnd::UpdateLists_delayed()
+{
+	m_b_need_update = true;
+}
+
 void CUITradeWnd::Update()
 {
 	EListType et					= eNone;
 	
-	if (m_pInv->ModifyFrame() == Device.dwFrame && m_pOthersInv->ModifyFrame() == Device.dwFrame || CurrentItem() && CurrentIItem()->WillBeBroken()){
+	if (m_pInv->ModifyFrame() == Device.dwFrame && m_pOthersInv->ModifyFrame() == Device.dwFrame || m_b_need_update){
 		et = eBoth;
 	}else if(m_pInv->ModifyFrame()==Device.dwFrame){
 		et = e1st;
@@ -623,6 +629,8 @@ void CUITradeWnd::UpdateLists(EListType mode)
 		std::sort						(ruck_list.begin(),ruck_list.end(),InventoryUtilities::GreaterRoomInRuck);
 		FillList						(ruck_list, m_uidata->UIOthersBagList, false);
 	}
+
+	m_b_need_update = false;
 }
 
 void CUITradeWnd::FillList	(TIItemContainer& cont, CUIDragDropListEx& dragDropList, bool do_colorize)
@@ -646,13 +654,6 @@ bool CUITradeWnd::OnItemStartDrag(CUICellItem* itm)
 
 bool CUITradeWnd::OnItemSelected(CUICellItem* itm)
 {
-	PIItem iitm = (PIItem)(itm->m_pData);
-	if (!iitm || iitm->WillBeBroken())
-	{
-		UpdateLists(eBoth);
-		return false;
-	}
-
 	SetCurrentItem		(itm);
 	itm->ColorizeWeapon	(&m_uidata->UIOurTradeList, &m_uidata->UIOthersTradeList, &m_uidata->UIOurBagList, &m_uidata->UIOthersBagList);
 	return				false;
@@ -662,6 +663,9 @@ bool CUITradeWnd::OnItemSelected(CUICellItem* itm)
 
 bool CUITradeWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 {
+	if (m_b_need_update)
+		return true;
+
 	if (m_pUIPropertiesBox->GetVisible())
 		m_pUIPropertiesBox->OnKeyboard(dik, keyboard_action);
 
@@ -674,6 +678,9 @@ bool CUITradeWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 
 bool CUITradeWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 {
+	if (m_b_need_update)
+		return true;
+
 	//вызов дополнительного меню по правой кнопке
 	if (mouse_action == WINDOW_RBUTTON_DOWN)
 	{

@@ -1346,17 +1346,29 @@ void CInventoryItem::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name
 	icon_sect_name = *m_object->cNameSect();
 }
 
+bool  CInventoryItem::WillBeBroken()
+{
+	return m_bBreakOnZeroCondition && fis_zero(GetCondition()) && !IsQuestItem();
+}
+
 void CInventoryItem::TryBreakToPieces(bool play_effects)
 {
 	if (WillBeBroken() && !b_brake_item)
 	{
+		b_brake_item = true;
+
 		if (play_effects)
 		{
-			//играем звук
-			sndBreaking.play_at_pos(0, object().Position(), false);
-
-			if (!object().H_Parent())
+			if (object().H_Parent())
 			{
+				//играем звук
+				sndBreaking.play_at_pos(object().H_Parent(), object().H_Parent()->Position(), false);
+				SetDropManual(TRUE);
+			}
+			else
+			{
+				//играем звук
+				sndBreaking.play_at_pos(cast_game_object(), object().Position(), false);
 				//отыграть партиклы разбивания
 				if (*m_sBreakParticles)
 				{
@@ -1367,21 +1379,7 @@ void CInventoryItem::TryBreakToPieces(bool play_effects)
 				}
 			}
 		}
-
-		b_brake_item = true;
-		return;
 	}
-
-	//if (b_brake_item)
-	//	object().DestroyObject();
-
-//		Msg("~~ Item [%s] destroyed on zero condition | current game time [%.6f]", object().cName().c_str(), Level().GetGameDayTimeSec());
-//	}
-}
-
-bool  CInventoryItem::WillBeBroken()
-{
-	return m_bBreakOnZeroCondition && fis_zero(GetCondition()) && !IsQuestItem();
 }
 
 void CInventoryItem::UpdateConditionDecrease(float current_time)
