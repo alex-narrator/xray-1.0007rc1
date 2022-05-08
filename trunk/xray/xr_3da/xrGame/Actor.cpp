@@ -1664,31 +1664,19 @@ void CActor::UpdateArtefactsOnBelt()
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		//
-		if (artefact && !fis_zero(artefact->GetCondition())/*artefact->CanAffect()*/)
+		if (artefact && !fis_zero(artefact->GetCondition()))
 		{
 			float random_k = artefact->GetRandomKoef();
 			float condition = artefact->GetCondition();
 			//
-			cond->ChangeBleeding	(conditions().GetWoundIncarnation	() * artefact->m_fBleedingRestoreSpeed	* f_update_time * random_k * condition);
-			cond->ChangeHealth		(conditions().GetHealthRestore		() * artefact->m_fHealthRestoreSpeed	* f_update_time * random_k * condition);
-			cond->ChangePower		(conditions().GetPowerRestore		() * artefact->m_fPowerRestoreSpeed		* f_update_time * random_k * condition);
-			cond->ChangeSatiety		(conditions().GetSatietyRestore		() * artefact->m_fSatietyRestoreSpeed	* f_update_time * random_k * condition);
-#ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
-//			cond->ChangeRadiation	(conditions().GetRadiationRestore	() * artefact->m_fRadiationRestoreSpeed * f_update_time * random_k * condition);
-#endif
-			cond->ChangePsyHealth	(conditions().GetPsyHealthRestore	() * artefact->m_fPsyHealthRestoreSpeed * f_update_time * random_k * condition);
-			cond->ChangeAlcohol		(conditions().GetAlcoholRestore		() * artefact->m_fAlcoholRestoreSpeed	* f_update_time * random_k * condition);
-			//
-//			artefact->UpdateConditionDecOnEffect();
+			cond->ChangeBleeding	(cond->GetWoundIncarnation	() * artefact->m_fBleedingRestoreSpeed	* f_update_time * random_k * condition);
+			cond->ChangeHealth		(cond->GetHealthRestore		() * artefact->m_fHealthRestoreSpeed	* f_update_time * random_k * condition);
+			cond->ChangePower		(cond->GetPowerRestore		() * artefact->m_fPowerRestoreSpeed		* f_update_time * random_k * condition);
+			cond->ChangeSatiety		(cond->GetSatietyRestore	() * artefact->m_fSatietyRestoreSpeed	* f_update_time * random_k * condition);
+			cond->ChangePsyHealth	(cond->GetPsyHealthRestore	() * artefact->m_fPsyHealthRestoreSpeed * f_update_time * random_k * condition);
+			cond->ChangeAlcohol		(cond->GetAlcoholRestore	() * artefact->m_fAlcoholRestoreSpeed	* f_update_time * random_k * condition);
 		}
-	} // for belt items
-#ifdef OBJECTS_RADIOACTIVE
-	for (TIItemContainer::iterator it = inventory().m_all.begin(); inventory().m_all.end() != it; ++it)
-	{
-		CGameObject *obj = smart_cast<CGameObject*>(*it);
-		conditions().ChangeRadiation		(obj->m_fRadiationRestoreSpeed*f_update_time);
 	}
-#endif
 	//OBJECTS_RADIOACTIVE - new version
 	for (TIItemContainer::iterator it = inventory().m_all.begin(); inventory().m_all.end() != it; ++it)
 	{
@@ -1696,7 +1684,8 @@ void CActor::UpdateArtefactsOnBelt()
 		auto artefact = smart_cast<CArtefact*>(iitem);
 
 		float random_k = artefact ? artefact->GetRandomKoef() : 1.f;
-		float condition = iitem->GetCondition();
+		//condition впливає на випромінення радіації тільки для артефактів
+		float condition = artefact ? artefact->GetCondition() : 1.f;
 
 		if (!fis_zero(condition))
 		{
@@ -1711,7 +1700,7 @@ void CActor::UpdateArtefactsOnBelt()
 					radiation_restore_speed *= (1.f - GetBackPack()->GetHitTypeProtection(ALife::eHitTypeRadiation));
 			}
 
-			cond->ChangeRadiation(conditions().GetRadiationRestore() * radiation_restore_speed * f_update_time * random_k * condition);
+			cond->ChangeRadiation(cond->GetRadiationRestore() * radiation_restore_speed * f_update_time * random_k * condition);
 		}
 	}
 
@@ -1721,15 +1710,12 @@ void CActor::UpdateArtefactsOnBelt()
 		float condition = outfit->GetCondition();
 		if (!fis_zero(condition))
 		{
-			cond->ChangeBleeding	(conditions().GetWoundIncarnation	() * outfit->m_fBleedingRestoreSpeed	* f_update_time * condition);
-			cond->ChangeHealth		(conditions().GetHealthRestore		() * outfit->m_fHealthRestoreSpeed		* f_update_time * condition);
-			cond->ChangePower		(conditions().GetPowerRestore		() * outfit->m_fPowerRestoreSpeed		* f_update_time * condition);
-			cond->ChangeSatiety		(conditions().GetSatietyRestore		() * outfit->m_fSatietyRestoreSpeed		* f_update_time * condition);
-#ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
-//			cond->ChangeRadiation	(conditions().GetRadiationRestore	() * outfit->m_fRadiationRestoreSpeed	* f_update_time * condition);
-#endif
-			cond->ChangePsyHealth	(conditions().GetPsyHealthRestore	() * outfit->m_fPsyHealthRestoreSpeed	* f_update_time * condition);
-			cond->ChangeAlcohol		(conditions().GetAlcoholRestore		() * outfit->m_fAlcoholRestoreSpeed		* f_update_time * condition);
+			cond->ChangeBleeding	(cond->GetWoundIncarnation	() * outfit->m_fBleedingRestoreSpeed	* f_update_time * condition);
+			cond->ChangeHealth		(cond->GetHealthRestore		() * outfit->m_fHealthRestoreSpeed		* f_update_time * condition);
+			cond->ChangePower		(cond->GetPowerRestore		() * outfit->m_fPowerRestoreSpeed		* f_update_time * condition);
+			cond->ChangeSatiety		(cond->GetSatietyRestore	() * outfit->m_fSatietyRestoreSpeed		* f_update_time * condition);
+			cond->ChangePsyHealth	(cond->GetPsyHealthRestore	() * outfit->m_fPsyHealthRestoreSpeed	* f_update_time * condition);
+			cond->ChangeAlcohol		(cond->GetAlcoholRestore	() * outfit->m_fAlcoholRestoreSpeed		* f_update_time * condition);
 		}
 	}
 
@@ -1739,15 +1725,12 @@ void CActor::UpdateArtefactsOnBelt()
 		float condition = backpack->GetCondition();
 		if (!fis_zero(condition))
 		{
-			cond->ChangeBleeding	(conditions().GetWoundIncarnation	() * backpack->m_fBleedingRestoreSpeed	* f_update_time * condition);
-			cond->ChangeHealth		(conditions().GetHealthRestore		() * backpack->m_fHealthRestoreSpeed	* f_update_time * condition);
-			cond->ChangePower		(conditions().GetPowerRestore		() * backpack->m_fPowerRestoreSpeed		* f_update_time * condition);
-			cond->ChangeSatiety		(conditions().GetSatietyRestore		() * backpack->m_fSatietyRestoreSpeed	* f_update_time * condition);
-#ifndef OBJECTS_RADIOACTIVE // alpet: отключается для избежания двойного хита
-//			cond->ChangeRadiation	(conditions().GetRadiationRestore	() * backpack->m_fRadiationRestoreSpeed	* f_update_time * condition);
-#endif
-			cond->ChangePsyHealth	(conditions().GetPsyHealthRestore	() * backpack->m_fPsyHealthRestoreSpeed	* f_update_time * condition);
-			cond->ChangeAlcohol		(conditions().GetAlcoholRestore		() * backpack->m_fAlcoholRestoreSpeed	* f_update_time * condition);
+			cond->ChangeBleeding	(cond->GetWoundIncarnation	() * backpack->m_fBleedingRestoreSpeed	* f_update_time * condition);
+			cond->ChangeHealth		(cond->GetHealthRestore		() * backpack->m_fHealthRestoreSpeed	* f_update_time * condition);
+			cond->ChangePower		(cond->GetPowerRestore		() * backpack->m_fPowerRestoreSpeed		* f_update_time * condition);
+			cond->ChangeSatiety		(cond->GetSatietyRestore	() * backpack->m_fSatietyRestoreSpeed	* f_update_time * condition);
+			cond->ChangePsyHealth	(cond->GetPsyHealthRestore	() * backpack->m_fPsyHealthRestoreSpeed	* f_update_time * condition);
+			cond->ChangeAlcohol		(cond->GetAlcoholRestore	() * backpack->m_fAlcoholRestoreSpeed	* f_update_time * condition);
 		}
 	}
 }
@@ -1762,7 +1745,7 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		//
-		if (artefact && !fis_zero(artefact->GetHitTypeProtection(hit_type)) && !fis_zero(artefact->GetCondition())/*artefact->CanAffect()*/)
+		if (artefact && !fis_zero(artefact->GetHitTypeProtection(hit_type)) && !fis_zero(artefact->GetCondition()))
 		{
 			res_hit_power_k += 1.0f - artefact->GetHitTypeProtection(hit_type);
 			_af_count += 1.0f;
