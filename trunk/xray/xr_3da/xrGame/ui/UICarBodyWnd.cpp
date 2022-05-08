@@ -929,7 +929,7 @@ bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 bool CUICarBodyWnd::OnItemSelected(CUICellItem* itm)
 {
 	SetCurrentItem		(itm);
-	itm->ColorizeWeapon	(m_pUIOurBagList, m_pUIOthersBagList);
+	itm->ColorizeWeapon({ m_pUIOurBagList, m_pUIOthersBagList });
 	return				false;
 }
 

@@ -655,7 +655,7 @@ bool CUITradeWnd::OnItemStartDrag(CUICellItem* itm)
 bool CUITradeWnd::OnItemSelected(CUICellItem* itm)
 {
 	SetCurrentItem		(itm);
-	itm->ColorizeWeapon	(&m_uidata->UIOurTradeList, &m_uidata->UIOthersTradeList, &m_uidata->UIOurBagList, &m_uidata->UIOthersBagList);
+	itm->ColorizeWeapon({ &m_uidata->UIOurTradeList, &m_uidata->UIOthersTradeList, &m_uidata->UIOurBagList, &m_uidata->UIOthersBagList });
 	return				false;
 }
 
@@ -669,6 +669,22 @@ bool CUITradeWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 	if (m_pUIPropertiesBox->GetVisible())
 		m_pUIPropertiesBox->OnKeyboard(dik, keyboard_action);
 
+	if (keyboard_action == WINDOW_KEY_PRESSED)
+	{
+		// здійснити торгівельну операцію по натисканню kCHECKACTIVEITEM
+		if (is_binded(kCHECKACTIVEITEM, dik))
+		{
+			PerformTrade();
+			return true;
+		}
+		// перейти до діалогу по натисканню kQUIT
+		if (is_binded(kQUIT, dik))
+		{
+			SwitchToTalk();
+			return true;
+		}
+	}
+	//
 	if (inherited::OnKeyboard(dik, keyboard_action))return true;
 	//
 	b_TakeAllActionKeyHolded = keyboard_action == WINDOW_KEY_PRESSED && is_binded(kCROUCH, dik);

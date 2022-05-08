@@ -267,28 +267,19 @@ void CUICellItem::ColorizeEquipped(CUICellItem* itm, bool b_can_trade)
 		itm->SetTextureColor(u_ColorEquipped);
 }
 //
-void CUICellItem::ColorizeWeapon(CUIDragDropListEx* List1, CUIDragDropListEx* List2, CUIDragDropListEx* List3, CUIDragDropListEx* List4)
+void CUICellItem::ColorizeWeapon(std::initializer_list<CUIDragDropListEx*> args)
 {
 	auto inventoryitem = (CInventoryItem*)this->m_pData;
 	if (!inventoryitem)
 		return;
 
-	auto ClearTextureColor = [=](CUIDragDropListEx* DdListEx) 
-	{
-		for (u32 i = 0, item_count = DdListEx->ItemsCount(); i < item_count; ++i) 
-		{
+	for (auto* DdListEx : args) {
+		for (u32 i = 0, item_count = DdListEx->ItemsCount(); i < item_count; ++i) {
 			CUICellItem* CellItem = DdListEx->GetItemIdx(i);
 			if (CellItem->GetTextureColor() == u_ColorWeapon)
 				CellItem->SetTextureColor(0xffffffff);
 		}
-	};
-
-	ClearTextureColor(List1);
-	ClearTextureColor(List2);
-	if (List3)
-		ClearTextureColor(List3);
-	if (List4)
-		ClearTextureColor(List4);
+	}
 
 	auto Wpn = smart_cast<CWeaponMagazined*>(inventoryitem);
 	auto Ammo = smart_cast<CWeaponAmmo*>(inventoryitem);
@@ -318,24 +309,15 @@ void CUICellItem::ColorizeWeapon(CUIDragDropListEx* List1, CUIDragDropListEx* Li
 
 
 
-	auto ProcessColorize = [=](CUIDragDropListEx* DdListEx) 
-	{
-		for (u32 i = 0, item_count = DdListEx->ItemsCount(); i < item_count; ++i) 
-		{
+	for (auto* DdListEx : args) {
+		for (u32 i = 0, item_count = DdListEx->ItemsCount(); i < item_count; ++i) {
 			CUICellItem* CellItem = DdListEx->GetItemIdx(i);
 			auto invitem = (CInventoryItem*)CellItem->m_pData;
 			if (invitem && (std::find(ColorizeSects.begin(), ColorizeSects.end(), invitem->object().cNameSect()) != ColorizeSects.end()))
 				if (CellItem->GetTextureColor() == 0xffffffff)
 					CellItem->SetTextureColor(u_ColorWeapon);
 		}
-	};
-
-	ProcessColorize(List1);
-	ProcessColorize(List2);
-	if (List3)
-		ProcessColorize(List3);
-	if (List4)
-		ProcessColorize(List4);
+	}
 }
 //
 

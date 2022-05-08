@@ -220,7 +220,7 @@
 
 <!-- HUD по нажатию клавиш начало -->
 	<string id="ui_mm_hud_on_key">
-		<text>Отображать элементы HUD при удержании кнопок [$$ACTION_SCORES$$] | [$$ACTION_WPN_RELOAD$$] | [$$ACTION_CHECK_GEAR$$]</text>
+		<text>Отображать элементы HUD при удержании кнопок [$$ACTION_SCORES$$] | [$$ACTION_CHECK_ACTIVE_ITEM$$] | [$$ACTION_CHECK_GEAR$$]</text>
 	</string>
 	<string id="hk_off">
 		<text>отключено</text>

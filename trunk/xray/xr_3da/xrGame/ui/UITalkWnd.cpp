@@ -380,7 +380,7 @@ void CUITalkWnd::SwitchToTrade()
 		UITalkDialogWnd->Hide		();
 
 		UITradeWnd->InitTrade		(m_pOurInvOwner, m_pOthersInvOwner);
-		UITradeWnd->Show				();
+		UITradeWnd->Show			();
 		UITradeWnd->StartTrade		();
 		UITradeWnd->BringAllToTop	();
 		StopSnd						();
@@ -409,6 +409,16 @@ bool CUITalkWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 	{
 		return true;
 	}
+	// відкрити торгівельне вікно по натисканню kCHECKACTIVEITEM
+	if (keyboard_action == WINDOW_KEY_PRESSED && is_binded(kCHECKACTIVEITEM, dik))
+	{
+		if (!UITradeWnd->IsShown())
+		{
+			SwitchToTrade();
+			return true;
+		}
+	}
+	//
 	return inherited::OnKeyboard(dik,keyboard_action);
 }
 

@@ -247,7 +247,7 @@
 	</string>
 <!--                            camera modes keys end                            -->
     <string id="kb_check_active_item">
-		<text>Проверить предмет в руках</text>
+		<text>Проверить предмет в руках | Торговать</text>
 	</string>
 	<string id="kb_check_gear">
 		<text>Проверить снаряжение</text>

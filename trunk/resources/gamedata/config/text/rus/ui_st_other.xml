@@ -76,7 +76,7 @@
 		<text>час.</text>
 	</string>
 	<string id="ui_st_leave">
-		<text>Уйти</text>
+		<text>Говорить [$$ACTION_QUIT$$]</text>
 	</string>
 	<string id="ui_st_mins">
 		<text>мин.</text>
@@ -100,7 +100,7 @@
 		<text>Осталось</text>
 	</string>
 	<string id="ui_st_trade">
-		<text>Торговать</text>
+		<text>Торговать [$$ACTION_CHECK_ACTIVE_ITEM$$]</text>
 	</string>
 	<string id="ui_st_barter">
 		<text>Меняться</text>
@@ -115,7 +115,7 @@
 		<text>Твои вещи</text>
 	</string>
 	<string id="st_game_over_press_jump">
-		<text>Нажмите ($$ACTION_JUMP$$) для выхода в главное меню</text>
+		<text>Нажмите [$$ACTION_JUMP$$] для выхода в главное меню</text>
 	</string>
 	<string id="st_level">
 		<text>Уровень</text>

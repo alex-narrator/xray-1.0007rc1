@@ -433,7 +433,7 @@ bool CUIInventoryWnd::OnItemStartDrag(CUICellItem* itm)
 bool CUIInventoryWnd::OnItemSelected(CUICellItem* itm)
 {
 	SetCurrentItem		(itm);
-	itm->ColorizeWeapon	(m_pUIBagList, m_pUIBeltList);
+	itm->ColorizeWeapon({ m_pUIBagList, m_pUIBeltList });
 	return				false;
 }
 
