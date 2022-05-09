@@ -67,6 +67,9 @@ wounds_heal_perc = 0
 eat_portions_num = 4
 use_portion_volume = true
 
+radiation_accum_factor = 0.1
+radiation_accum_limit = 2
+
 ; food item
 ;slot				= 4
 animation_slot		= 4
@@ -271,6 +274,8 @@ animation_slot		= 4
 
 ;hud item
 hud = wpn_vodka_hud
+
+use_condition 		= true
 
 break_particles		= explosions\explosion_bottle
 break_sound			= material\bottle\collide\bottle_break_1
@@ -612,6 +617,9 @@ attach_angle_offset		= 0, -3.14, 1.6
 attach_position_offset	= 0.115, 0.00, 0.07
 attach_bone_name		= bip01_head
 auto_attach				= false
+
+snd_torch_on = weapons\nv_start
+snd_torch_off = weapons\nv_off
 
 night_vision				= on
 night_vision_texture		= wpn\wpn_crosshair ;wpn\wpn_crosshair_bino ;wpn\wpn_night

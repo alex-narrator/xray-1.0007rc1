@@ -71,6 +71,9 @@ protected:
 public:
 	bool					m_bNightVisionOn;
 protected:
+	HUD_SOUND				m_TorchOnSnd;
+	HUD_SOUND				m_TorchOffSnd;
+	//
 	HUD_SOUND				m_NightVisionOnSnd;
 	HUD_SOUND				m_NightVisionOffSnd;
 	HUD_SOUND				m_NightVisionIdleSnd;

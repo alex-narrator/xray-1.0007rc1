@@ -110,6 +110,11 @@ void CTorch::Load(LPCSTR section)
 		m_NightVisionSect				= READ_IF_EXISTS(pSettings, r_string, section, "night_vision_effector", NULL);
 		m_NightVisionTexture			= READ_IF_EXISTS(pSettings, r_string, section, "night_vision_texture",	NULL);
 	}
+
+	if (pSettings->line_exist(section, "snd_torch_on"))
+		HUD_SOUND::LoadSound(section, "snd_torch_on", m_TorchOnSnd, SOUND_TYPE_ITEM_USING);
+	if (pSettings->line_exist(section, "snd_torch_off"))
+		HUD_SOUND::LoadSound(section, "snd_torch_off", m_TorchOffSnd, SOUND_TYPE_ITEM_USING);
 }
 
 void CTorch::SwitchNightVision()
@@ -250,6 +255,17 @@ void CTorch::Switch	(bool light_on)
 		Actor()->callback(GameObject::eSwitchTorch)(light_on);
 	}
 	/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
+	bool bPlaySoundFirstPerson = (pA == Level().CurrentViewEntity());
+	if (m_switched_on)
+	{
+		if (pSettings->line_exist(cNameSect(), "snd_torch_on"))
+			HUD_SOUND::PlaySound(m_TorchOnSnd, pA->Position(), pA, bPlaySoundFirstPerson);
+	}
+	else
+	{
+		if (pSettings->line_exist(cNameSect(), "snd_torch_off"))
+			HUD_SOUND::PlaySound(m_TorchOffSnd, pA->Position(), pA, bPlaySoundFirstPerson);
+	}
 }
 
 BOOL CTorch::net_Spawn(CSE_Abstract* DC) 
@@ -335,6 +351,9 @@ void CTorch::OnH_B_Independent	(bool just_before_destroy)
 	HUD_SOUND::StopSound		(m_NightVisionOnSnd);
 	HUD_SOUND::StopSound		(m_NightVisionOffSnd);
 	HUD_SOUND::StopSound		(m_NightVisionIdleSnd);
+
+	HUD_SOUND::StopSound		(m_TorchOnSnd);
+	HUD_SOUND::StopSound		(m_TorchOffSnd);
 
 	//m_NightVisionChargeTime		= m_NightVisionRechargeTime;
 }

@@ -1683,25 +1683,25 @@ void CActor::UpdateArtefactsOnBelt()
 		auto iitem = smart_cast<CInventoryItem*>(*it);
 		auto artefact = smart_cast<CArtefact*>(iitem);
 
-		float random_k = artefact ? artefact->GetRandomKoef() : 1.f;
-		//condition впливає на випромінення радіації тільки для артефактів
-		float condition = artefact ? artefact->GetCondition() : 1.f;
+		float radiation_restore_speed = iitem->m_fRadiationRestoreSpeed;
 
-		if (!fis_zero(condition))
+		if (iitem != inventory().ActiveItem()) //що взяте в руки те випромінює на повну
 		{
-			float radiation_restore_speed = iitem->m_fRadiationRestoreSpeed;
+			if (GetOutfit()) //костюм захищає від радіації речей
+				radiation_restore_speed *= (1.f - GetOutfit()->GetHitTypeProtection(ALife::eHitTypeRadiation));
 
-			if (iitem != inventory().ActiveItem()) //що взяте в руки те випромінює на повну
-			{
-				if (GetOutfit()) //костюм захищає від радіації речей
-					radiation_restore_speed *= (1.f - GetOutfit()->GetHitTypeProtection(ALife::eHitTypeRadiation));
-
-				if (GetBackPack() && inventory().InRuck(iitem)) //рюкзак захищає від радіації речей у рюкзаку
-					radiation_restore_speed *= (1.f - GetBackPack()->GetHitTypeProtection(ALife::eHitTypeRadiation));
-			}
-
-			cond->ChangeRadiation(cond->GetRadiationRestore() * radiation_restore_speed * f_update_time * random_k * condition);
+			if (GetBackPack() && inventory().InRuck(iitem)) //рюкзак захищає від радіації речей у рюкзаку
+				radiation_restore_speed *= (1.f - GetBackPack()->GetHitTypeProtection(ALife::eHitTypeRadiation));
 		}
+
+		if (artefact)
+		{
+			radiation_restore_speed *= artefact->GetRandomKoef();
+			//condition впливає на випромінення радіації тільки для артефактів
+			radiation_restore_speed *= artefact->GetCondition();
+		}
+
+		cond->ChangeRadiation(cond->GetRadiationRestore() * radiation_restore_speed * f_update_time);
 	}
 
 	auto outfit = GetOutfit();

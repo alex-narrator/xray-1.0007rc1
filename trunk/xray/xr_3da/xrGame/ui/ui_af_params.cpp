@@ -200,8 +200,12 @@ void CUIArtefactParams::SetInfo(CInventoryItem *obj)
 			{
 				if (!pDetector || pDetector && !pDetector->IsGeigerCounter()) continue;
 				_val				= obj->m_fRadiationRestoreSpeed;
-				if (artefact) _val	*= artefact->GetRandomKoef();
-				_val				*= obj->GetCondition();
+				if (artefact)
+				{
+					_val *= artefact->GetRandomKoef();
+					//condition впливає на випромінення радіації тільки для артефактів
+					_val *= artefact->GetCondition();
+				}
 			}
 			else
 			//
