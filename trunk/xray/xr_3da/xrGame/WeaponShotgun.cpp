@@ -92,16 +92,12 @@ void CWeaponShotgun::Fire2Start ()
 			if (GetState()==eShowing)		return;
 			if (GetState()==eHiding)		return;
 
-			if (!iAmmoElapsed)	
-			{
-				CWeapon::FireStart			();
-				SwitchState					(eMagEmpty);
-			}
-			else					
-			{
-				CWeapon::FireStart			();
-				SwitchState					((iAmmoElapsed < iMagazineSize)?eFire:eFire2);
-			}
+			CWeapon::FireStart();
+
+			if (!iAmmoElapsed)
+				SwitchState(eMagEmpty);
+			else
+				SwitchState((iAmmoElapsed < iMagazineSize) ? eFire : eFire2);
 		}
 	}
 	else if (IsMisfire())
@@ -160,6 +156,34 @@ void CWeaponShotgun::OnShotBoth()
 	CShootingObject::StartParticles(pSmokeParticles, *m_sSmokeParticlesCurrent, get_LastFP(),  zero_vel, true);
 	pSmokeParticles = NULL;
 	CShootingObject::StartParticles(pSmokeParticles, *m_sSmokeParticlesCurrent, get_LastFP2(), zero_vel, true);
+
+}
+
+void CWeaponShotgun::UpdateCL()
+{
+	float dt = Device.fTimeDelta;
+
+	if (GetNextState() == GetState())
+	{
+		switch (GetState())
+		{
+		case eFire2:
+			if (fTime <= 0)
+			{
+				if (iAmmoElapsed == 0)
+					OnMagazineEmpty();
+				StopShooting();
+			}
+			else
+			{
+				fTime -= dt;
+			}
+
+			break;
+		}
+	}
+
+	inherited::UpdateCL();
 
 }
 

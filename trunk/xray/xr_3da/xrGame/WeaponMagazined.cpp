@@ -353,7 +353,7 @@ void CWeaponMagazined::UnloadAmmo(int unload_count, bool spawn_ammo, bool detach
 void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 {
 	int chamber_ammo = HasChamber() ? 1 : 0;	//учтём дополнительный патрон в патроннике
-	UnloadAmmo(iAmmoElapsed - chamber_ammo, spawn_ammo, GetMagazineEmptySect());
+	UnloadAmmo(iAmmoElapsed - chamber_ammo, spawn_ammo, !!GetMagazineEmptySect());
 }
 
 bool CWeaponMagazined::HasDetachableMagazine() const

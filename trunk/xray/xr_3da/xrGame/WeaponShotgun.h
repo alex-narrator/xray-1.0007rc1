@@ -32,6 +32,8 @@ public:
 	virtual void	PlayAnimAddOneCartridgeWeapon();
 	void			PlayAnimCloseWeapon	();
 
+	virtual void	UpdateCL			();
+
 	virtual bool	Action(s32 cmd, u32 flags);
 
 protected:

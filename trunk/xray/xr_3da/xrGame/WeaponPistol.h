@@ -19,6 +19,7 @@ public:
 	virtual void	OnH_B_Chield	();
 
 	//анимации
+	virtual bool	TryPlayAnimIdle	(u8);
 	virtual void	PlayAnimShow	();
 	virtual void	PlayAnimIdle	(u8);
 	virtual void	PlayAnimHide	();
