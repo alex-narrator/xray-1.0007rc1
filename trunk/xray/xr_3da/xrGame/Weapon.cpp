@@ -1672,26 +1672,39 @@ LPCSTR	CWeapon::GetCurrentAmmo_ShortName()
 	return *(l_cartridge.m_InvShortName);
 }
 
+float CWeapon::GetAmmoInMagazineWeight(const decltype(CWeapon::m_magazine)& mag)
+{
+	float res = 0;
+	const char* last_type = nullptr;
+	float last_ammo_weight = 0;
+	for (auto c : mag)
+	{
+		// Usually ammos in mag have same type, use this fact to improve performance
+		if (last_type != c.m_ammoSect.c_str())
+		{
+			last_type = c.m_ammoSect.c_str();
+			last_ammo_weight = c.Weight();
+		}
+		res += last_ammo_weight;
+	}
+	return res;
+}
+
 float CWeapon::Weight()
 {
 	float res = CInventoryItemObject::Weight();
-	if (IsGrenadeLauncherAttached() && GetGrenadeLauncherName().size()){
+
+	if (GrenadeLauncherAttachable() && IsGrenadeLauncherAttached())
 		res += pSettings->r_float(GetGrenadeLauncherName(), "inv_weight");
-	}
-	if (IsScopeAttached() && GetScopeName().size()){
+
+	if (ScopeAttachable() && IsScopeAttached())
 		res += pSettings->r_float(GetScopeName(), "inv_weight");
-	}
-	if (IsSilencerAttached() && GetSilencerName().size()){
+
+	if (SilencerAttachable() && IsSilencerAttached())
 		res += pSettings->r_float(GetSilencerName(), "inv_weight");
-	}
 
-	if (iAmmoElapsed)
-	{
-		float w = pSettings->r_float(*m_ammoTypes[m_ammoType], "inv_weight");
-		float bs = pSettings->r_float(*m_ammoTypes[m_ammoType], "box_size");
+	res += GetAmmoInMagazineWeight(m_magazine);
 
-		res += w*(iAmmoElapsed / bs);
-	}
 	return res;
 }
 void CWeapon::Hide()

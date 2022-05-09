@@ -884,3 +884,8 @@ void CWeaponMagazinedWGrenade::PlayAnimShutter()
 			inherited::PlayAnimShutter();
 	}
 }
+
+float CWeaponMagazinedWGrenade::Weight() 
+{
+	return inherited::Weight() + GetAmmoInMagazineWeight(m_magazine2);
+}

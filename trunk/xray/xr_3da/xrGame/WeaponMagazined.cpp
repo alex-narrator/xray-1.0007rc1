@@ -306,10 +306,7 @@ void CWeaponMagazined::UnloadAmmo(int unload_count, bool spawn_ammo, bool detach
 		int chamber_ammo = HasChamber() ? 1 : 0;	//учтём дополнительный патрон в патроннике
 
 		if (iAmmoElapsed <= chamber_ammo && spawn_ammo)	//spawn mag empty
-		{
-			LPCSTR empty_sect = pSettings->r_string(m_ammoTypes[m_LastLoadedMagType], "empty_box");
-			SpawnAmmo(0, empty_sect);
-		}
+			SpawnAmmo(0, GetMagazineEmptySect());
 
 		iMagazineSize = 1;
 		m_bIsMagazineAttached = false;
@@ -356,7 +353,7 @@ void CWeaponMagazined::UnloadAmmo(int unload_count, bool spawn_ammo, bool detach
 void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 {
 	int chamber_ammo = HasChamber() ? 1 : 0;	//учтём дополнительный патрон в патроннике
-	UnloadAmmo(iAmmoElapsed - chamber_ammo, spawn_ammo, HasDetachableMagazine() && IsMagazineAttached());
+	UnloadAmmo(iAmmoElapsed - chamber_ammo, spawn_ammo, GetMagazineEmptySect());
 }
 
 bool CWeaponMagazined::HasDetachableMagazine() const
@@ -1435,10 +1432,9 @@ float CWeaponMagazined::GetConditionMisfireProbability() const
 {
 	float mis = inherited::GetConditionMisfireProbability();
 	//вероятность осечки от магазина
-	if (HasDetachableMagazine() && IsMagazineAttached())
+	if (GetMagazineEmptySect())
 	{
-		LPCSTR empty_sect = pSettings->r_string(m_ammoTypes[m_LastLoadedMagType], "empty_box");
-		float mag_missfire_prob = READ_IF_EXISTS(pSettings, r_float, empty_sect, "misfire_probability_box", 0.0f);
+		float mag_missfire_prob = READ_IF_EXISTS(pSettings, r_float, GetMagazineEmptySect(), "misfire_probability_box", 0.0f);
 		mis += mag_missfire_prob;
 	}
 	clamp(mis, 0.0f, 0.99f);
@@ -1652,4 +1648,25 @@ bool CWeaponMagazined::AmmoTypeIsMagazine(u32 type) const
 {
 	return pSettings->line_exist(m_ammoTypes[type], "ammo_in_box") &&
 		pSettings->line_exist(m_ammoTypes[type], "empty_box");
+}
+
+float CWeaponMagazined::Weight()
+{
+	float res = inherited::Weight();
+
+	//додамо вагу пустого магазину, бо вагу набоїв розрахували раніше
+	if (GetMagazineEmptySect())
+		res += pSettings->r_float(GetMagazineEmptySect(), "inv_weight");
+
+	return res;
+}
+
+LPCSTR CWeaponMagazined::GetMagazineEmptySect() const
+{
+	LPCSTR empty_sect = nullptr;
+
+	if (HasDetachableMagazine() && IsMagazineAttached())
+		empty_sect = pSettings->r_string(m_ammoTypes[m_LastLoadedMagType], "empty_box");
+
+	return empty_sect;
 }

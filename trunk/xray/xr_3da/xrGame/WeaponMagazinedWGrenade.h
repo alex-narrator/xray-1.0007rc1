@@ -36,6 +36,8 @@ public:
 	virtual bool	UseScopeTexture();
 	virtual	float	CurrentZoomFactor	();
 
+	virtual float	Weight();
+
 	
 	virtual void	OnStateSwitch	(u32 S);
 	

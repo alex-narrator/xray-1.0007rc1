@@ -29,6 +29,8 @@ public:
 	shared_str	m_InvShortName;
 	//вероятность осечки
 	float		m_misfireProbability;
+
+	virtual float					Weight();
 };
 
 class CWeaponAmmo :	public CInventoryItemObject {

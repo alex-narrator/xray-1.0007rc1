@@ -148,10 +148,11 @@ public:
 	//
 	virtual bool	IsSingleReloading	();
 	virtual bool	AmmoTypeIsMagazine	(u32 type) const;
+	LPCSTR			GetMagazineEmptySect() const;
 
 	virtual void	GetBriefInfo	(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 
-
+	virtual float	Weight();
 	//////////////////////////////////////////////
 	// для стрельбы очередями или одиночными
 	//////////////////////////////////////////////

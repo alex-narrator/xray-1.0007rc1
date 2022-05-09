@@ -484,6 +484,7 @@ public:
 	IC	bool				can_be_strapped() const { return m_can_be_strapped; };
 
 	LPCSTR					GetCurrentAmmo_ShortName();
+	float					GetAmmoInMagazineWeight(const decltype(m_magazine)& mag);
 
 protected:
 	u32						m_ef_main_weapon_type;
