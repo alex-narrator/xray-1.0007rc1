@@ -942,17 +942,21 @@ DLL_API float g_fov = 67.5f;
 
 float CActor::currentFOV()
 {
-	CWeapon* pWeapon = smart_cast<CWeapon*>(inventory().ActiveItem());	
+	float current_fov = g_fov;
 
+	CWeapon* pWeapon = smart_cast<CWeapon*>(inventory().ActiveItem());	
 
 	if (eacFirstEye == cam_active && pWeapon &&
 		pWeapon->IsZoomed() && (!pWeapon->ZoomTexture() ||
 		(!pWeapon->IsRotatingToZoom() && pWeapon->ZoomTexture())))
-		return pWeapon->GetZoomFactor()
+		current_fov /= pWeapon->GetZoomFactor()
+//		return pWeapon->GetZoomFactor()
 //		* (wpn_fov_ratio)
 		;
-	else
-		return g_fov; // cam_Active()->f_fov;
+/*	else
+		return g_fov*/; // cam_Active()->f_fov;
+
+	return current_fov;
 }
 
 void CActor::UpdateCL	()

@@ -221,6 +221,7 @@ protected:
 protected:
 	// разрешение регулирования приближения. Real Wolf.
 	bool			m_bScopeDynamicZoom;
+	float			 m_fRTZoomFactor; //run-time zoom factor
 	//разрешение режима приближения
 	bool			m_bZoomEnabled;
 	//текущий фактор приближения
@@ -255,6 +256,9 @@ public:
 
 	IC float				GetZoomFactor() const		{ return m_fZoomFactor; }
 	virtual	float			CurrentZoomFactor();
+
+	void GetZoomData		(float scope_factor, float& delta, float& min_zoom_factor);
+	virtual void			OnZoomChanged() {}
 	//показывает, что оружие находится в соостоянии поворота для приближенного прицеливания
 	bool			IsRotatingToZoom() const		{ return (m_fZoomRotationFactor < 1.f); }
 	float			GetZoomRotationFactor() { return m_fZoomRotationFactor; };

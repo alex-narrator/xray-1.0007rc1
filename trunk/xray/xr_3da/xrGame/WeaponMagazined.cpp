@@ -68,6 +68,8 @@ CWeaponMagazined::~CWeaponMagazined()
 	HUD_SOUND::DestroySound(sndSightsDown);		//added by Daemonion for ironsight audio in weapon parameters - sights being lowered
 	//
 	HUD_SOUND::DestroySound(sndShutter);
+	//
+	HUD_SOUND::DestroySound(sndZoomChange);
 }
 
 void CWeaponMagazined::StopHUDSounds()
@@ -84,6 +86,8 @@ void CWeaponMagazined::StopHUDSounds()
 	HUD_SOUND::StopSound(sndSightsDown);		//added by Daemonion for ironsight audio in weapon parameters - sights being lowered
 	//
 	HUD_SOUND::StopSound(sndShutter);
+	//
+	HUD_SOUND::StopSound(sndZoomChange);
 	//.	if(sndShot.enable && sndShot.snd.feedback)
 	//.		sndShot.snd.feedback->switch_to_3D();
 
@@ -110,6 +114,9 @@ void CWeaponMagazined::Load(LPCSTR section)
 	//
 	bool b_shutter_sound = !!pSettings->line_exist(section, "snd_shutter");
 	HUD_SOUND::LoadSound(section, b_shutter_sound ? "snd_shutter" : "snd_draw", sndShutter, m_eSoundShutter);
+	//
+	if (pSettings->line_exist(section, "snd_zoom_change"))
+		HUD_SOUND::LoadSound(section, "snd_zoom_change", sndZoomChange, m_eSoundZoomChange);
 
 
 	m_pSndShotCurrent = &sndShot;
@@ -644,6 +651,8 @@ void CWeaponMagazined::UpdateSounds()
 	if (sndSightsDown.playing	())	sndSightsDown.set_position		(get_LastFP());			//Daemonion - iron sight audio - sights being lowered
 	//
 	if (sndShutter.playing		()) sndShutter.set_position			(get_LastFP());
+	//
+	if (sndZoomChange.playing	()) sndZoomChange.set_position		(get_LastFP());
 }
 
 void CWeaponMagazined::state_Fire(float dt)
@@ -1126,6 +1135,7 @@ void CWeaponMagazined::InitAddons()
 			scope_tex_name = pSettings->r_string(*m_sScopeName, "scope_texture");
 
 			m_fScopeZoomFactor = pSettings->r_float(*m_sScopeName, "scope_zoom_factor");
+			m_bScopeDynamicZoom = !!READ_IF_EXISTS(pSettings, r_bool, *m_sScopeName, "scope_dynamic_zoom", false);
 
 			if (m_UIScope) xr_delete(m_UIScope);
 			m_UIScope = xr_new<CUIStaticItem>();
@@ -1136,6 +1146,7 @@ void CWeaponMagazined::InitAddons()
 		else if (m_eScopeStatus == ALife::eAddonPermanent)
 		{
 			m_fScopeZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
+			m_bScopeDynamicZoom = !!READ_IF_EXISTS(pSettings, r_bool, cNameSect(), "scope_dynamic_zoom", false);
 
 			shared_str scope_tex_name;
 			scope_tex_name = pSettings->r_string(cNameSect(), "scope_texture");
@@ -1151,7 +1162,19 @@ void CWeaponMagazined::InitAddons()
 		if (m_UIScope) xr_delete(m_UIScope);
 
 		if (IsZoomEnabled())
+		{
+			m_bScopeDynamicZoom = false;
 			m_fIronSightZoomFactor = READ_IF_EXISTS(pSettings, r_float, cNameSect(), "ironsight_zoom_factor", 1.0f);
+		}
+	}
+
+	if (m_bScopeDynamicZoom)
+	{
+//		m_fRTZoomFactor = m_fScopeZoomFactor;
+		float delta, min_zoom_factor;
+		GetZoomData(m_fScopeZoomFactor, delta, min_zoom_factor);
+
+		m_fRTZoomFactor = min_zoom_factor; // set minimal zoom by default
 	}
 
 	if (IsSilencerAttached() && SilencerAttachable())
@@ -1330,6 +1353,11 @@ void CWeaponMagazined::OnZoomOut()
 		pActor->Cameras().RemoveCamEffector(eCEZoom);
 		pActor->SetHardHold(false);
 	}
+}
+
+void CWeaponMagazined::OnZoomChanged()
+{
+	PlaySound(sndZoomChange, get_LastFP());
 }
 
 //переключение режимов стрельбы одиночными и очередями

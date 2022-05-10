@@ -30,6 +30,8 @@ protected:
 	HUD_SOUND		sndSightsDown;		//added by Daemonion for iron sight audio parameter - sights being lowered
 	//
 	HUD_SOUND		sndShutter;
+	//
+	HUD_SOUND		sndZoomChange;
 	//звук текущего выстрела
 	HUD_SOUND*		m_pSndShotCurrent;
 
@@ -49,6 +51,8 @@ protected:
 	ESoundTypes		m_eSoundSightsDown;		//added by Daemonion for iron sight audio parameter - sights being lowered
 	//
 	ESoundTypes		m_eSoundShutter;
+	//
+	ESoundTypes		m_eSoundZoomChange;
 	struct SWMmotions{
 		MotionSVec		mhud_idle;
 		MotionSVec		mhud_idle_aim;
@@ -205,6 +209,7 @@ protected:
 public:
 	virtual void	OnZoomIn			();
 	virtual void	OnZoomOut			();
+	virtual void	OnZoomChanged		();
 	virtual	void	OnNextFireMode		();
 	virtual	void	OnPrevFireMode		();
 	virtual bool	HasFireModes		() { return m_bHasDifferentFireModes; };
