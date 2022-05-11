@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "WeaponBinocularsVision.h"
-#include "WeaponBinoculars.h"
+#include "WeaponMagazined.h"
 #include "ui\UIFrameWindow.h"
 #include "entity_alive.h"
 #include "visual_memory_manager.h"
@@ -173,10 +173,10 @@ void SBinocVisibleObj::Update()
 }
 
 
-CBinocularsVision::CBinocularsVision(CWeaponBinoculars* parent)
+CBinocularsVision::CBinocularsVision(CWeaponMagazined* parent)
 {
 	m_parent = parent;
-	Load									(m_parent->cNameSect());
+	Load(m_parent->binoc_vision_sect/*cNameSect()*/);
 }
 CBinocularsVision::~CBinocularsVision()
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include "ui\uistatic.h"
 class CObject;
-class CWeaponBinoculars;
+class CWeaponMagazined;
 
 
 enum{
@@ -31,14 +31,14 @@ class CBinocularsVision
 	typedef VIS_OBJECTS::iterator			VIS_OBJECTS_IT;
 	VIS_OBJECTS								m_active_objects;
 public:
-	CBinocularsVision			(CWeaponBinoculars* parent);
+	CBinocularsVision			(CWeaponMagazined* parent);
 	~CBinocularsVision			();
 	void	Update				();
 	void	Draw				();
 	void	remove_links		(CObject *object);
 
 protected :
-	CWeaponBinoculars*			m_parent;
+	CWeaponMagazined*			m_parent;
 	Fcolor						m_frame_color;
 	float						m_rotating_speed;
 	void	Load				(const shared_str& section);

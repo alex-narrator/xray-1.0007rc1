@@ -10,8 +10,8 @@
 #include "hudmanager.h"
 CWeaponBinoculars::CWeaponBinoculars() : CWeaponCustomPistol("BINOCULARS")
 {
-	m_binoc_vision	= NULL;
-	m_bVision		= false;
+/*	m_binoc_vision	= NULL;
+	m_bVision		= false;*/
 	SetSlot (APPARATUS_SLOT);
 }
 
@@ -19,7 +19,7 @@ CWeaponBinoculars::~CWeaponBinoculars()
 {
 /*	HUD_SOUND::DestroySound	(sndZoomIn);
 	HUD_SOUND::DestroySound	(sndZoomOut);*/
-	xr_delete				(m_binoc_vision);
+//	xr_delete				(m_binoc_vision);
 }
 
 void CWeaponBinoculars::Load	(LPCSTR section)
@@ -29,7 +29,7 @@ void CWeaponBinoculars::Load	(LPCSTR section)
 	// Sounds
 /*	HUD_SOUND::LoadSound(section, "snd_zoomin",  sndZoomIn,		SOUND_TYPE_ITEM_USING);
 	HUD_SOUND::LoadSound(section, "snd_zoomout", sndZoomOut,	SOUND_TYPE_ITEM_USING);*/
-	m_bVision = !!pSettings->r_bool(section,"vision_present");
+//	m_bVision = !!pSettings->r_bool(section,"vision_present");
 }
 
 
@@ -51,11 +51,11 @@ void CWeaponBinoculars::OnZoomIn		()
 /*		HUD_SOUND::StopSound(sndZoomOut);
 		bool b_hud_mode = (Level().CurrentEntity() == H_Parent());
 		HUD_SOUND::PlaySound(sndZoomIn, H_Parent()->Position(), H_Parent(), b_hud_mode);*/
-		if(m_bVision && !m_binoc_vision) 
+/*		if(m_bVision && !m_binoc_vision) 
 		{
 			//.VERIFY			(!m_binoc_vision);
 			m_binoc_vision	= xr_new<CBinocularsVision>(this);
-		}
+		}*/
 	}
 
 	inherited::OnZoomIn();
@@ -69,8 +69,8 @@ void CWeaponBinoculars::OnZoomOut		()
 /*		HUD_SOUND::StopSound(sndZoomIn);
 		bool b_hud_mode = (Level().CurrentEntity() == H_Parent());	
 		HUD_SOUND::PlaySound(sndZoomOut, H_Parent()->Position(), H_Parent(), b_hud_mode);*/
-		VERIFY			(m_binoc_vision);
-		xr_delete		(m_binoc_vision);
+/*		VERIFY			(m_binoc_vision);
+		xr_delete		(m_binoc_vision);*/
 	
 //		m_fRTZoomFactor = m_fZoomFactor;//store current
 	}
@@ -93,21 +93,21 @@ BOOL	CWeaponBinoculars::net_Spawn			(CSE_Abstract* DC)
 void	CWeaponBinoculars::net_Destroy()
 {
 	inherited::net_Destroy();
-	xr_delete(m_binoc_vision);
+//	xr_delete(m_binoc_vision);
 }
 
 void	CWeaponBinoculars::UpdateCL()
 {
 	inherited::UpdateCL();
 	//manage visible entities here...
-	if(H_Parent() && IsZoomed() && !IsRotatingToZoom() && m_binoc_vision)
-		m_binoc_vision->Update();
+/*	if(H_Parent() && IsZoomed() && !IsRotatingToZoom() && m_binoc_vision)
+		m_binoc_vision->Update();*/
 }
 
 void CWeaponBinoculars::OnDrawUI()
 {
-	if(H_Parent() && IsZoomed() && !IsRotatingToZoom() && m_binoc_vision)
-		m_binoc_vision->Draw();
+/*	if(H_Parent() && IsZoomed() && !IsRotatingToZoom() && m_binoc_vision)
+		m_binoc_vision->Draw();*/
 	inherited::OnDrawUI	();
 }
 
@@ -132,8 +132,8 @@ void CWeaponBinoculars::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_n
 
 void CWeaponBinoculars::net_Relcase	(CObject *object)
 {
-	if (!m_binoc_vision)
+/*	if (!m_binoc_vision)
 		return;
 
-	m_binoc_vision->remove_links	(object);
+	m_binoc_vision->remove_links	(object);*/
 }

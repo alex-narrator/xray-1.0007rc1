@@ -13,6 +13,7 @@ class ENGINE_API CMotionDef;
 //заканчиваем стрельбу, только, если кончились патроны
 #define WEAPON_ININITE_QUEUE -1
 
+class CBinocularsVision;
 
 class CWeaponMagazined: public CWeapon
 {
@@ -131,7 +132,9 @@ public:
 	virtual void	net_Export		(NET_Packet& P);
 	virtual void	net_Import		(NET_Packet& P);
 
-	virtual void	OnH_A_Chield		();
+	virtual void	OnH_A_Chield	();
+
+	virtual void	OnDrawUI		();
 
 	virtual bool	Attach(PIItem pIItem, bool b_send_event);
 	virtual bool	Detach(const char* item_section_name, bool b_spawn_item, float item_condition = 1.f);
@@ -156,6 +159,7 @@ public:
 	LPCSTR			GetMagazineEmptySect() const;
 
 	virtual void	GetBriefInfo	(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
+	virtual void	net_Relcase		(CObject *object);
 
 	virtual float	Weight();
 	//////////////////////////////////////////////
@@ -261,6 +265,11 @@ public:
 	// Real Wolf.20.01.15
 	/*IC*/virtual			bool TryToGetAmmo(u32);
 	bool					m_bGrenadeMode;
+	//
+	LPCSTR					binoc_vision_sect;
+protected:
+	CBinocularsVision*		m_binoc_vision;
+	bool					m_bVision;
 };
 
 #endif //__XR_WEAPON_MAG_H__

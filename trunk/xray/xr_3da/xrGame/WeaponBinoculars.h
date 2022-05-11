@@ -5,7 +5,7 @@
 
 class CUIFrameWindow;
 class CUIStatic;
-class CBinocularsVision;
+//class CBinocularsVision;
 
 class CWeaponBinoculars: public CWeaponCustomPistol
 {
@@ -15,7 +15,7 @@ protected:
 /*	HUD_SOUND		sndZoomIn;
 	HUD_SOUND		sndZoomOut;*/
 //	float			m_fRTZoomFactor; //run-time zoom factor
-	bool			m_bVision;
+//	bool			m_bVision;
 public:
 					CWeaponBinoculars	(); 
 	virtual			~CWeaponBinoculars	();
@@ -38,7 +38,7 @@ public:
 	virtual void	GetBriefInfo		(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 	virtual void	net_Relcase			(CObject *object);
 protected:
-	CBinocularsVision*					m_binoc_vision;
+//	CBinocularsVision*					m_binoc_vision;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

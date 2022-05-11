@@ -238,6 +238,8 @@ bool CWeaponMagazinedWGrenade::SwitchMode()
 
 void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 {
+	if (IsZoomed())		OnZoomOut();
+
 	m_bGrenadeMode		= !m_bGrenadeMode;
 
 	m_bHasChamber		= !m_bGrenadeMode;

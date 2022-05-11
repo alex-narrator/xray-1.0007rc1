@@ -17,6 +17,8 @@
 #include "object_broker.h"
 #include "string_table.h"
 
+#include "WeaponBinocularsVision.h"
+
 // Headers included by Cribbledirge (for callbacks).
 #include "pch_script.h"
 #include "script_callback_ex.h"
@@ -55,6 +57,10 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	m_fAttachedSilencerCondition = 1.f;
 	//
 	m_bGrenadeMode				= false;
+	//
+	m_binoc_vision				= NULL;
+	m_bVision					= false;
+	binoc_vision_sect			= nullptr;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -74,6 +80,8 @@ CWeaponMagazined::~CWeaponMagazined()
 	HUD_SOUND::DestroySound(sndZoomIn);
 	HUD_SOUND::DestroySound(sndZoomOut);
 	HUD_SOUND::DestroySound(sndZoomChange);
+	//
+	xr_delete(m_binoc_vision);
 }
 
 void CWeaponMagazined::StopHUDSounds()
@@ -103,6 +111,7 @@ void CWeaponMagazined::StopHUDSounds()
 void CWeaponMagazined::net_Destroy()
 {
 	inherited::net_Destroy();
+	xr_delete(m_binoc_vision);
 }
 
 void CWeaponMagazined::Load(LPCSTR section)
@@ -633,6 +642,9 @@ void CWeaponMagazined::UpdateCL()
 	}
 
 	UpdateSounds();
+
+	if (H_Parent() && IsZoomed() && !IsRotatingToZoom() && m_binoc_vision)
+		m_binoc_vision->Update();
 }
 
 void CWeaponMagazined::UpdateSounds()
@@ -1177,6 +1189,9 @@ void CWeaponMagazined::LoadZoomParams(LPCSTR section)
 		return;
 	}
 
+	m_bVision = !!READ_IF_EXISTS(pSettings, r_bool, section, "vision_present", false);
+	if (m_bVision) binoc_vision_sect = section;
+
 	m_fScopeZoomFactor = pSettings->r_float(section, "scope_zoom_factor");
 
 	m_bScopeDynamicZoom = !!READ_IF_EXISTS(pSettings, r_bool, section, "scope_dynamic_zoom", false);
@@ -1343,6 +1358,9 @@ void CWeaponMagazined::OnZoomIn()
 		if (IsScopeAttached() && !m_bGrenadeMode)
 		{
 			HUD_SOUND::PlaySound(sndZoomIn, H_Parent()->Position(), H_Parent(), b_hud_mode);
+
+			if (m_bVision && !m_binoc_vision)
+				m_binoc_vision = xr_new<CBinocularsVision>(this);
 		}
 		else
 			HUD_SOUND::PlaySound(sndSightsUp, H_Parent()->Position(), H_Parent(), b_hud_mode);	//--END	
@@ -1379,6 +1397,12 @@ void CWeaponMagazined::OnZoomOut()
 	}
 	else
 		HUD_SOUND::PlaySound(sndSightsDown, H_Parent()->Position(), H_Parent(), b_hud_mode);//--END
+
+	if(H_Parent())
+	{
+		VERIFY(m_binoc_vision);
+		xr_delete(m_binoc_vision);
+	}
 
 	if (pActor)
 	{
@@ -1733,4 +1757,19 @@ LPCSTR CWeaponMagazined::GetMagazineEmptySect() const
 		empty_sect = pSettings->r_string(m_ammoTypes[m_LastLoadedMagType], "empty_box");
 
 	return empty_sect;
+}
+
+void CWeaponMagazined::OnDrawUI()
+{
+	if (H_Parent() && IsZoomed() && !IsRotatingToZoom() && m_binoc_vision)
+		m_binoc_vision->Draw();
+	inherited::OnDrawUI();
+}
+
+void CWeaponMagazined::net_Relcase(CObject *object)
+{
+	if (!m_binoc_vision)
+		return;
+
+	m_binoc_vision->remove_links(object);
 }
