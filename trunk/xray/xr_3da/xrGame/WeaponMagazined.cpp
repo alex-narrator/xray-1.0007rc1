@@ -53,6 +53,8 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	m_bIsMagazineAttached		= true;
 	//
 	m_fAttachedSilencerCondition = 1.f;
+	//
+	m_bGrenadeMode				= false;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -69,6 +71,8 @@ CWeaponMagazined::~CWeaponMagazined()
 	//
 	HUD_SOUND::DestroySound(sndShutter);
 	//
+	HUD_SOUND::DestroySound(sndZoomIn);
+	HUD_SOUND::DestroySound(sndZoomOut);
 	HUD_SOUND::DestroySound(sndZoomChange);
 }
 
@@ -87,6 +91,8 @@ void CWeaponMagazined::StopHUDSounds()
 	//
 	HUD_SOUND::StopSound(sndShutter);
 	//
+	HUD_SOUND::StopSound(sndZoomIn);
+	HUD_SOUND::StopSound(sndZoomOut);
 	HUD_SOUND::StopSound(sndZoomChange);
 	//.	if(sndShot.enable && sndShot.snd.feedback)
 	//.		sndShot.snd.feedback->switch_to_3D();
@@ -114,10 +120,6 @@ void CWeaponMagazined::Load(LPCSTR section)
 	//
 	bool b_shutter_sound = !!pSettings->line_exist(section, "snd_shutter");
 	HUD_SOUND::LoadSound(section, b_shutter_sound ? "snd_shutter" : "snd_draw", sndShutter, m_eSoundShutter);
-	//
-	if (pSettings->line_exist(section, "snd_zoom_change"))
-		HUD_SOUND::LoadSound(section, "snd_zoom_change", sndZoomChange, m_eSoundZoomChange);
-
 
 	m_pSndShotCurrent = &sndShot;
 
@@ -652,6 +654,8 @@ void CWeaponMagazined::UpdateSounds()
 	//
 	if (sndShutter.playing		()) sndShutter.set_position			(get_LastFP());
 	//
+	if (sndZoomIn.playing		()) sndZoomChange.set_position		(get_LastFP());
+	if (sndZoomOut.playing		()) sndZoomChange.set_position		(get_LastFP());
 	if (sndZoomChange.playing	()) sndZoomChange.set_position		(get_LastFP());
 }
 
@@ -1190,7 +1194,27 @@ void CWeaponMagazined::LoadZoomParams(LPCSTR section)
 			clamp(m_fRTZoomFactor, m_fMinScopeZoomFactor, m_fScopeZoomFactor);
 //			Msg("LoadZoomParams clamp m_fRTZoomFactor = [%.2f]", m_fRTZoomFactor);
 		}
+		//sounds
+		if (pSettings->line_exist(section, "snd_zoom_change"))
+		{
+			HUD_SOUND::StopSound	(sndZoomChange);
+			HUD_SOUND::DestroySound	(sndZoomChange);
+			HUD_SOUND::LoadSound	(section, "snd_zoom_change", sndZoomChange, SOUND_TYPE_ITEM_USING);
+		}
+	}
 
+	//sounds
+	if (pSettings->line_exist(section, "snd_zoomin"))
+	{
+		HUD_SOUND::StopSound	(sndZoomIn);
+		HUD_SOUND::DestroySound	(sndZoomIn);
+		HUD_SOUND::LoadSound	(section, "snd_zoomin", sndZoomIn, SOUND_TYPE_ITEM_USING);
+	}
+	if (pSettings->line_exist(section, "snd_zoomout"))
+	{
+		HUD_SOUND::StopSound	(sndZoomOut);
+		HUD_SOUND::DestroySound	(sndZoomOut);
+		HUD_SOUND::LoadSound	(section, "snd_zoomout", sndZoomOut, SOUND_TYPE_ITEM_USING);
 	}
 
 	LPCSTR scope_tex_name = READ_IF_EXISTS(pSettings, r_string, section, "scope_texture", nullptr);
@@ -1313,9 +1337,15 @@ void CWeaponMagazined::OnZoomIn()
 	{
 																					
 		HUD_SOUND::StopSound(sndSightsUp);													//daemonion - iron sight audio - sights being raised
-		HUD_SOUND::StopSound(sndSightsDown);												//									
+		HUD_SOUND::StopSound(sndSightsDown);												//	
+		HUD_SOUND::StopSound(sndZoomOut);
 		bool b_hud_mode = (Level().CurrentEntity() == H_Parent());							//
-		HUD_SOUND::PlaySound(sndSightsUp, H_Parent()->Position(), H_Parent(), b_hud_mode);	//--END	
+		if (IsScopeAttached() && !m_bGrenadeMode)
+		{
+			HUD_SOUND::PlaySound(sndZoomIn, H_Parent()->Position(), H_Parent(), b_hud_mode);
+		}
+		else
+			HUD_SOUND::PlaySound(sndSightsUp, H_Parent()->Position(), H_Parent(), b_hud_mode);	//--END	
 
 		CEffectorZoomInertion* S = smart_cast<CEffectorZoomInertion*>	(pActor->Cameras().GetCamEffector(eCEZoom));
 		if (!S)
@@ -1339,9 +1369,16 @@ void CWeaponMagazined::OnZoomOut()
 	CActor* pActor = smart_cast<CActor*>(H_Parent());
 																						
 	HUD_SOUND::StopSound(sndSightsUp);													//daemonion - iron sight audio - sights being lowered
-	HUD_SOUND::StopSound(sndSightsDown);												//									
+	HUD_SOUND::StopSound(sndSightsDown);												//		
+	HUD_SOUND::StopSound(sndZoomIn);
 	bool b_hud_mode = (Level().CurrentEntity() == H_Parent());							//
-	HUD_SOUND::PlaySound(sndSightsDown, H_Parent()->Position(), H_Parent(), b_hud_mode);//--END
+	if (IsScopeAttached() && !m_bGrenadeMode)
+	{
+		if (H_Parent())
+			HUD_SOUND::PlaySound(sndZoomOut, H_Parent()->Position(), H_Parent(), b_hud_mode);
+	}
+	else
+		HUD_SOUND::PlaySound(sndSightsDown, H_Parent()->Position(), H_Parent(), b_hud_mode);//--END
 
 	if (pActor)
 	{

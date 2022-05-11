@@ -31,6 +31,8 @@ protected:
 	//
 	HUD_SOUND		sndShutter;
 	//
+	HUD_SOUND		sndZoomIn;
+	HUD_SOUND		sndZoomOut;
 	HUD_SOUND		sndZoomChange;
 	//звук текущего выстрела
 	HUD_SOUND*		m_pSndShotCurrent;
@@ -51,8 +53,6 @@ protected:
 	ESoundTypes		m_eSoundSightsDown;		//added by Daemonion for iron sight audio parameter - sights being lowered
 	//
 	ESoundTypes		m_eSoundShutter;
-	//
-	ESoundTypes		m_eSoundZoomChange;
 	struct SWMmotions{
 		MotionSVec		mhud_idle;
 		MotionSVec		mhud_idle_aim;
@@ -260,6 +260,7 @@ protected:
 public:
 	// Real Wolf.20.01.15
 	/*IC*/virtual			bool TryToGetAmmo(u32);
+	bool					m_bGrenadeMode;
 };
 
 #endif //__XR_WEAPON_MAG_H__

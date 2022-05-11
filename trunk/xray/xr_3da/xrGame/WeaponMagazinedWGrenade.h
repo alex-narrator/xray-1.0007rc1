@@ -122,7 +122,7 @@ public:
 	int						iMagazineSize2;
 	int						iAmmoElapsed2;
 	xr_vector<CCartridge>	m_magazine2;
-	bool					m_bGrenadeMode;
+//	bool					m_bGrenadeMode;
 
 	CCartridge				m_DefaultCartridge2;
 	//получаем износ при выстреле из подствольника
