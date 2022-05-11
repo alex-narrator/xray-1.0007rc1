@@ -35,6 +35,8 @@ public:
 	virtual void	InitAddons();
 	virtual bool	UseScopeTexture();
 	virtual	float	CurrentZoomFactor	();
+	virtual void	ZoomInc();
+	virtual void	ZoomDec();
 
 	virtual float	Weight();
 

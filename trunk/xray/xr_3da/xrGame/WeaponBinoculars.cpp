@@ -114,13 +114,13 @@ void CWeaponBinoculars::OnDrawUI()
 void CWeaponBinoculars::save(NET_Packet &output_packet)
 {
 	inherited::save(output_packet);
-	save_data		(m_fRTZoomFactor,output_packet);
+//	save_data		(m_fRTZoomFactor,output_packet);
 }
 
 void CWeaponBinoculars::load(IReader &input_packet)
 {
 	inherited::load(input_packet);
-	load_data		(m_fRTZoomFactor,input_packet);
+//	load_data		(m_fRTZoomFactor,input_packet);
 }
 
 void CWeaponBinoculars::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)

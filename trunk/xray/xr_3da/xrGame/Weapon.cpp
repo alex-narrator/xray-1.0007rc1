@@ -377,8 +377,8 @@ void CWeapon::Load(LPCSTR section)
 	m_fZoomRotateTime = ROTATION_TIME;
 
 	m_bScopeDynamicZoom		= false;
-	m_fScopeZoomFactor		= 0.f;
-	m_fRTZoomFactor			= 0.f;
+	m_fScopeZoomFactor		= 1.f;
+	m_fRTZoomFactor			= 1.f;
 
 	if (m_bZoomEnabled && m_pHUD) LoadZoomOffset(*hud_sect, "");
 
@@ -1367,14 +1367,16 @@ void CWeapon::InitAddons()
 
 float CWeapon::CurrentZoomFactor()
 {
-	return IsScopeAttached() ? m_fScopeZoomFactor : m_fIronSightZoomFactor;
+	return IsScopeAttached() ? 
+		m_bScopeDynamicZoom ? m_fRTZoomFactor :
+		m_fScopeZoomFactor : m_fIronSightZoomFactor;
 };
 
 void CWeapon::OnZoomIn()
 {
 	m_bZoomMode = true;
 //	m_fZoomFactor = g_fov / CurrentZoomFactor();
-	m_fZoomFactor = m_bScopeDynamicZoom ? m_fRTZoomFactor : CurrentZoomFactor();
+	m_fZoomFactor = CurrentZoomFactor();
 	//StopHudInertion();
 }
 

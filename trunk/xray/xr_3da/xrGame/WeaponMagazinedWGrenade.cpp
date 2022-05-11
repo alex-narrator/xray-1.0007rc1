@@ -251,10 +251,6 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 	
 	swap				(m_DefaultCartridge, m_DefaultCartridge2);
 
-	/*xr_vector<CCartridge> l_magazine;
-	while(m_magazine.size()) { l_magazine.push_back(m_magazine.back()); m_magazine.pop_back(); }
-	while(m_magazine2.size()) { m_magazine.push_back(m_magazine2.back()); m_magazine2.pop_back(); }
-	while(l_magazine.size()) { m_magazine2.push_back(l_magazine.back()); l_magazine.pop_back(); }*/
 	m_magazine.swap(m_magazine2);
 	iAmmoElapsed	= (int)m_magazine.size();
 	iAmmoElapsed2	= (int)m_magazine2.size();
@@ -268,8 +264,7 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 		}
 		else 
 		{
-			if (IsScopeAttached())
-				m_fZoomFactor = m_fScopeZoomFactor; //если установлен прицел, то при выходе из режима гранатомёта установим зум прицела
+			m_fZoomFactor = CurrentZoomFactor(); //если установлен прицел, то при выходе из режима гранатомёта установим зум прицела
 			
 			if(GrenadeLauncherAttachable())
 				LoadZoomOffset(*hud_sect, "grenade_normal_");
@@ -633,6 +628,18 @@ void CWeaponMagazinedWGrenade::InitAddons()
 			}
 		}
 	}
+}
+
+void CWeaponMagazinedWGrenade::ZoomInc()
+{
+	if (m_bGrenadeMode) return;
+	inherited::ZoomInc();
+}
+
+void CWeaponMagazinedWGrenade::ZoomDec()
+{
+	if (m_bGrenadeMode) return;
+	inherited::ZoomDec();
 }
 
 bool	CWeaponMagazinedWGrenade::UseScopeTexture()

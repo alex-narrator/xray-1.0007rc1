@@ -195,6 +195,7 @@ bool		m_bIsMagazineAttached;
 //для хранения состояния присоединённого глушителя
 float		m_fAttachedSilencerCondition;
 //
+float		m_fRTZoomFactor;
 xr_vector<u8> m_AmmoIDs;
 //
 CSE_ALifeItemWeaponMagazined(LPCSTR caSection);

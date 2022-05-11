@@ -221,7 +221,7 @@ protected:
 protected:
 	// разрешение регулирования приближения. Real Wolf.
 	bool			m_bScopeDynamicZoom;
-	float			 m_fRTZoomFactor; //run-time zoom factor
+	float			m_fRTZoomFactor;		//run-time zoom factor
 	//разрешение режима приближения
 	bool			m_bZoomEnabled;
 	//текущий фактор приближения

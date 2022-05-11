@@ -159,8 +159,9 @@
 // 123 - CSE_ALifeItemWeaponMagazined   versioned for fire mode, mixed ammo-loading, attached magazine parameters
 //										(to prevent troubles with all.spawn items)	
 // 124 - CSE_ALifeInventoryItem			read/write m_fCondition on UPDATE_Read/UPDATE_Write
+// 125 - CSE_ALifeItemWeaponMagazined	added m_fRTZoomFactor for weapon
 //------------------------------------------------------------------------------
-#define SPAWN_VERSION	u16(124)
+#define SPAWN_VERSION	u16(125)
 
 SERVER_ENTITY_DECLARE_BEGIN2(CSE_Shape,ISE_Shape,CShapeData)
 public:

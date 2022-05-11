@@ -1121,60 +1121,15 @@ void CWeaponMagazined::InitAddons()
 {
 	//////////////////////////////////////////////////////////////////////////
 	// Прицел
-	m_fIronSightZoomFactor = READ_IF_EXISTS(pSettings, r_float, cNameSect(), "ironsight_zoom_factor", 1.0f);
+	InitZoomParams(cNameSect().c_str());
 
-	if (IsScopeAttached())
+	if (IsScopeAttached() && ScopeAttachable())
 	{
-		if (m_eScopeStatus == ALife::eAddonAttachable)
-		{
-			m_sScopeName = pSettings->r_string(cNameSect(), "scope_name");
-			m_iScopeX = pSettings->r_s32(cNameSect(), "scope_x");
-			m_iScopeY = pSettings->r_s32(cNameSect(), "scope_y");
+		m_sScopeName = pSettings->r_string(cNameSect(), "scope_name");
+		m_iScopeX = pSettings->r_s32(cNameSect(), "scope_x");
+		m_iScopeY = pSettings->r_s32(cNameSect(), "scope_y");
 
-			shared_str scope_tex_name;
-			scope_tex_name = pSettings->r_string(*m_sScopeName, "scope_texture");
-
-			m_fScopeZoomFactor = pSettings->r_float(*m_sScopeName, "scope_zoom_factor");
-			m_bScopeDynamicZoom = !!READ_IF_EXISTS(pSettings, r_bool, *m_sScopeName, "scope_dynamic_zoom", false);
-
-			if (m_UIScope) xr_delete(m_UIScope);
-			m_UIScope = xr_new<CUIStaticItem>();
-
-			//			m_UIScope->Init(*scope_tex_name, "hud\\default", 0, 0, alNone);
-			m_UIScope->Init(*scope_tex_name, "hud\\scopes", 0, 0, alNone);	// KD: special shader that account screen resolution
-		}
-		else if (m_eScopeStatus == ALife::eAddonPermanent)
-		{
-			m_fScopeZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
-			m_bScopeDynamicZoom = !!READ_IF_EXISTS(pSettings, r_bool, cNameSect(), "scope_dynamic_zoom", false);
-
-			shared_str scope_tex_name;
-			scope_tex_name = pSettings->r_string(cNameSect(), "scope_texture");
-
-			if (m_UIScope) xr_delete(m_UIScope);
-			m_UIScope = xr_new<CUIStaticItem>();
-			//			m_UIScope->Init(*scope_tex_name, "hud\\default", 0, 0, alNone);
-			m_UIScope->Init(*scope_tex_name, "hud\\scopes", 0, 0, alNone);	// KD: special shader that account screen resolution
-		}
-	}
-	else
-	{
-		if (m_UIScope) xr_delete(m_UIScope);
-
-		if (IsZoomEnabled())
-		{
-			m_bScopeDynamicZoom = false;
-			m_fIronSightZoomFactor = READ_IF_EXISTS(pSettings, r_float, cNameSect(), "ironsight_zoom_factor", 1.0f);
-		}
-	}
-
-	if (m_bScopeDynamicZoom)
-	{
-//		m_fRTZoomFactor = m_fScopeZoomFactor;
-		float delta, min_zoom_factor;
-		GetZoomData(m_fScopeZoomFactor, delta, min_zoom_factor);
-
-		m_fRTZoomFactor = min_zoom_factor; // set minimal zoom by default
+		InitZoomParams(m_sScopeName.c_str());
 	}
 
 	if (IsSilencerAttached() && SilencerAttachable())
@@ -1203,6 +1158,44 @@ void CWeaponMagazined::InitAddons()
 	}
 
 	inherited::InitAddons();
+}
+
+void CWeaponMagazined::InitZoomParams(LPCSTR section)
+{
+	m_fIronSightZoomFactor = READ_IF_EXISTS(pSettings, r_float, section, "ironsight_zoom_factor", 1.0f);
+
+	if (m_UIScope)
+		xr_delete(m_UIScope);
+
+	if (!IsScopeAttached())
+	{
+		m_bScopeDynamicZoom = false;
+		return;
+	}
+
+	m_fScopeZoomFactor = pSettings->r_float(section, "scope_zoom_factor");
+
+	m_bScopeDynamicZoom = !!READ_IF_EXISTS(pSettings, r_bool, section, "scope_dynamic_zoom", false);
+	if (m_bScopeDynamicZoom)
+	{
+		auto se_obj = alife_object();
+		if (se_obj)
+		{
+			auto wpn = smart_cast<CSE_ALifeItemWeaponMagazined*>(se_obj);
+			if (wpn)
+				m_fRTZoomFactor = wpn->m_fRTZoomFactor;
+		}
+
+		float delta, min_zoom_factor;
+		GetZoomData(m_fScopeZoomFactor, delta, min_zoom_factor);
+		clamp(m_fRTZoomFactor, min_zoom_factor, m_fScopeZoomFactor);
+	}
+
+	LPCSTR scope_tex_name = READ_IF_EXISTS(pSettings, r_string, section, "scope_texture", nullptr);//pSettings->r_string(section, "scope_texture");
+	if (!scope_tex_name) return;
+
+	m_UIScope = xr_new<CUIStaticItem>();
+	m_UIScope->Init(scope_tex_name, "hud\\scopes", 0, 0, alNone);	// KD: special shader that account screen resolution
 }
 
 void CWeaponMagazined::ApplySilencerKoeffs()
@@ -1530,6 +1523,8 @@ void CWeaponMagazined::net_Export(NET_Packet& P)
 	P.w_u8(m_bIsMagazineAttached ? 1 : 0);
 	//
 	P.w_float(m_fAttachedSilencerCondition);
+	//
+	P.w_float(m_fRTZoomFactor);
 }
 
 void CWeaponMagazined::net_Import(NET_Packet& P)
@@ -1559,6 +1554,8 @@ void CWeaponMagazined::net_Import(NET_Packet& P)
 	m_bIsMagazineAttached = !!(P.r_u8() & 0x1);
 	//
 	m_fAttachedSilencerCondition = P.r_float();
+	//
+	m_fRTZoomFactor = P.r_float();
 }
 #include "string_table.h"
 #include "ui/UIMainIngameWnd.h"
