@@ -378,6 +378,8 @@ void CWeapon::Load(LPCSTR section)
 
 	m_bScopeDynamicZoom		= false;
 	m_fScopeZoomFactor		= 1.f;
+	m_fMinScopeZoomFactor	= 1.f;
+	m_uZoomStepCount		= 3;
 	m_fRTZoomFactor			= 1.f;
 
 	if (m_bZoomEnabled && m_pHUD) LoadZoomOffset(*hud_sect, "");
@@ -930,28 +932,19 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 	return false;
 }
 
-void CWeapon::GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor)
+float  CWeapon::GetZoomStepDelta(float scope_factor, float min_scope_factor, u32 step_count)
 {
-	float def_fov = 1.0f;//float(g_fov);
-	float min_zoom_k = 0.3f;
-	float zoom_step_count = 3.0f;
-	float delta_factor_total = def_fov - scope_factor;
-	VERIFY(delta_factor_total > 0);
-	min_zoom_factor = def_fov - delta_factor_total*min_zoom_k;
-	delta = (delta_factor_total*(1 - min_zoom_k)) / zoom_step_count;
+	float total_zoom_delta = scope_factor - min_scope_factor;
+	return total_zoom_delta / step_count;
 }
 
 void CWeapon::ZoomInc()
 {
-	float delta, min_zoom_factor;
-	GetZoomData(m_fScopeZoomFactor, delta, min_zoom_factor);
 
 	float currentZoomFactor = m_fZoomFactor;
 
-	//	m_fZoomFactor	-=delta;
-	m_fZoomFactor += delta;
-	//	clamp(m_fZoomFactor,m_fScopeZoomFactor,min_zoom_factor);
-	clamp(m_fZoomFactor, min_zoom_factor, m_fScopeZoomFactor);
+	m_fZoomFactor -= GetZoomStepDelta(m_fScopeZoomFactor, m_fMinScopeZoomFactor, m_uZoomStepCount);//delta;
+	clamp(m_fZoomFactor, m_fMinScopeZoomFactor, m_fScopeZoomFactor);
 
 	if (!fsimilar(currentZoomFactor, m_fZoomFactor))
 	{
@@ -961,15 +954,10 @@ void CWeapon::ZoomInc()
 
 void CWeapon::ZoomDec()
 {
-	float delta, min_zoom_factor;
-	GetZoomData(m_fScopeZoomFactor, delta, min_zoom_factor);
-
 	float currentZoomFactor = m_fZoomFactor;
 
-	//	m_fZoomFactor	+=delta;
-	m_fZoomFactor -= delta;
-	//	clamp(m_fZoomFactor,m_fScopeZoomFactor, min_zoom_factor);
-	clamp(m_fZoomFactor, min_zoom_factor, m_fScopeZoomFactor);
+	m_fZoomFactor += GetZoomStepDelta(m_fScopeZoomFactor, m_fMinScopeZoomFactor, m_uZoomStepCount);//delta;
+	clamp(m_fZoomFactor, m_fMinScopeZoomFactor, m_fScopeZoomFactor);
 
 	if (!fsimilar(currentZoomFactor, m_fZoomFactor))
 	{
@@ -1367,23 +1355,47 @@ void CWeapon::InitAddons()
 
 float CWeapon::CurrentZoomFactor()
 {
-	return IsScopeAttached() ? 
-		m_bScopeDynamicZoom ? m_fRTZoomFactor :
-		m_fScopeZoomFactor : m_fIronSightZoomFactor;
+	float res = 1.f;
+
+	if (IsScopeAttached())
+	{
+		if (m_bScopeDynamicZoom)
+		{
+			res = m_fRTZoomFactor;
+//			Msg("m_fRTZoomFactor res = [%.2f]", res);
+		}
+		else
+		{
+			res = m_fScopeZoomFactor;
+//			Msg("m_fScopeZoomFactor res = [%.2f]", res);
+		}
+	}
+	else
+	{
+		res = m_fIronSightZoomFactor;
+//		Msg("m_fIronSightZoomFactor res = [%.2f]", res);
+	}
+
+	return res;
 };
 
 void CWeapon::OnZoomIn()
 {
 	m_bZoomMode = true;
-//	m_fZoomFactor = g_fov / CurrentZoomFactor();
 	m_fZoomFactor = CurrentZoomFactor();
+
+//	Msg("OnZoomIn() m_fZoomFactor = [%.2f]", m_fZoomFactor);
 	//StopHudInertion();
 }
 
 void CWeapon::OnZoomOut()
 {
 	if (H_Parent() && IsZoomed() && !IsRotatingToZoom() && m_bScopeDynamicZoom)
+	{
 		m_fRTZoomFactor = m_fZoomFactor;//store current
+		clamp(m_fRTZoomFactor, m_fMinScopeZoomFactor, m_fScopeZoomFactor);
+//		Msg("OnZoomOut() m_fRTZoomFactor res = [%.2f]", m_fRTZoomFactor);
+	}
 
 	m_bZoomMode = false;
 	m_fZoomFactor = 1.0f;// g_fov;

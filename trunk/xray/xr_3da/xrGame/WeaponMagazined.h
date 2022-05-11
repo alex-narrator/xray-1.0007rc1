@@ -139,7 +139,7 @@ public:
 	virtual bool	CanDetach(const char* item_section_name);
 
 	virtual void	InitAddons();
-	virtual void	InitZoomParams(LPCSTR section);
+	virtual void	LoadZoomParams(LPCSTR section);
 
 	virtual bool	Action			(s32 cmd, u32 flags);
 	virtual void	onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);

@@ -257,15 +257,14 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 
 	if(m_bZoomEnabled && m_pHUD)
 	{
+		m_fZoomFactor = CurrentZoomFactor();
+
 		if (m_bGrenadeMode)
 		{
-			m_fZoomFactor = m_fIronSightZoomFactor; //зададим зум в режиме гранатомёта
 			LoadZoomOffset(*hud_sect, "grenade_");
 		}
 		else 
 		{
-			m_fZoomFactor = CurrentZoomFactor(); //если установлен прицел, то при выходе из режима гранатомёта установим зум прицела
-			
 			if(GrenadeLauncherAttachable())
 				LoadZoomOffset(*hud_sect, "grenade_normal_");
 			else
@@ -276,17 +275,21 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 
 bool CWeaponMagazinedWGrenade::Action(s32 cmd, u32 flags) 
 {
-	if (m_bGrenadeMode && (cmd == kWPN_FIREMODE_PREV || cmd == kWPN_FIREMODE_NEXT))
+	if (m_bGrenadeMode && (cmd == kWPN_FIREMODE_PREV || 
+		cmd == kWPN_FIREMODE_NEXT ||
+		cmd == kWPN_ZOOM_INC ||
+		cmd == kWPN_ZOOM_DEC
+		))
 		return false;
 
 	if(inherited::Action(cmd, flags)) return true;
 	
 	switch(cmd) 
 	{
-	case kWPN_ZOOM: 
+//	case kWPN_ZOOM: 
 	case kWPN_FUNC: 
 			{
-                if(flags&CMD_START) 
+				if(flags&CMD_START) 
 					SwitchState(eSwitch);
 				return true;
 			}
@@ -628,18 +631,6 @@ void CWeaponMagazinedWGrenade::InitAddons()
 			}
 		}
 	}
-}
-
-void CWeaponMagazinedWGrenade::ZoomInc()
-{
-	if (m_bGrenadeMode) return;
-	inherited::ZoomInc();
-}
-
-void CWeaponMagazinedWGrenade::ZoomDec()
-{
-	if (m_bGrenadeMode) return;
-	inherited::ZoomDec();
 }
 
 bool	CWeaponMagazinedWGrenade::UseScopeTexture()

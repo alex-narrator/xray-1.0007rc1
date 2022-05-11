@@ -1121,7 +1121,7 @@ void CWeaponMagazined::InitAddons()
 {
 	//////////////////////////////////////////////////////////////////////////
 	// Прицел
-	InitZoomParams(cNameSect().c_str());
+	LoadZoomParams(cNameSect().c_str());
 
 	if (IsScopeAttached() && ScopeAttachable())
 	{
@@ -1129,7 +1129,7 @@ void CWeaponMagazined::InitAddons()
 		m_iScopeX = pSettings->r_s32(cNameSect(), "scope_x");
 		m_iScopeY = pSettings->r_s32(cNameSect(), "scope_y");
 
-		InitZoomParams(m_sScopeName.c_str());
+		LoadZoomParams(m_sScopeName.c_str());
 	}
 
 	if (IsSilencerAttached() && SilencerAttachable())
@@ -1160,7 +1160,7 @@ void CWeaponMagazined::InitAddons()
 	inherited::InitAddons();
 }
 
-void CWeaponMagazined::InitZoomParams(LPCSTR section)
+void CWeaponMagazined::LoadZoomParams(LPCSTR section)
 {
 	m_fIronSightZoomFactor = READ_IF_EXISTS(pSettings, r_float, section, "ironsight_zoom_factor", 1.0f);
 
@@ -1178,20 +1178,22 @@ void CWeaponMagazined::InitZoomParams(LPCSTR section)
 	m_bScopeDynamicZoom = !!READ_IF_EXISTS(pSettings, r_bool, section, "scope_dynamic_zoom", false);
 	if (m_bScopeDynamicZoom)
 	{
+		m_fMinScopeZoomFactor = READ_IF_EXISTS(pSettings, r_float, section, "min_scope_zoom_factor", m_fScopeZoomFactor / 3);
+		m_uZoomStepCount		= READ_IF_EXISTS(pSettings, r_u32, section, "zoom_step_count", 3);
+
 		auto se_obj = alife_object();
 		if (se_obj)
 		{
 			auto wpn = smart_cast<CSE_ALifeItemWeaponMagazined*>(se_obj);
-			if (wpn)
-				m_fRTZoomFactor = wpn->m_fRTZoomFactor;
+			if (wpn) m_fRTZoomFactor = wpn->m_fRTZoomFactor;
+//			Msg("LoadZoomParams m_fRTZoomFactor = [%.2f]", m_fRTZoomFactor);
+			clamp(m_fRTZoomFactor, m_fMinScopeZoomFactor, m_fScopeZoomFactor);
+//			Msg("LoadZoomParams clamp m_fRTZoomFactor = [%.2f]", m_fRTZoomFactor);
 		}
 
-		float delta, min_zoom_factor;
-		GetZoomData(m_fScopeZoomFactor, delta, min_zoom_factor);
-		clamp(m_fRTZoomFactor, min_zoom_factor, m_fScopeZoomFactor);
 	}
 
-	LPCSTR scope_tex_name = READ_IF_EXISTS(pSettings, r_string, section, "scope_texture", nullptr);//pSettings->r_string(section, "scope_texture");
+	LPCSTR scope_tex_name = READ_IF_EXISTS(pSettings, r_string, section, "scope_texture", nullptr);
 	if (!scope_tex_name) return;
 
 	m_UIScope = xr_new<CUIStaticItem>();
