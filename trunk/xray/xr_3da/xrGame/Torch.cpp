@@ -69,6 +69,8 @@ CTorch::~CTorch(void)
 	HUD_SOUND::DestroySound	(m_NightVisionOffSnd);
 	HUD_SOUND::DestroySound	(m_NightVisionIdleSnd);
 	HUD_SOUND::DestroySound	(m_NightVisionBrokenSnd);
+	HUD_SOUND::DestroySound	(m_TorchOnSnd);
+	HUD_SOUND::DestroySound	(m_TorchOffSnd);
 	xr_delete				(m_UINightVisionMask);
 }
 
@@ -96,10 +98,14 @@ void CTorch::Load(LPCSTR section)
 	m_bNightVisionEnabled = !!pSettings->r_bool(section,"night_vision");
 	if(m_bNightVisionEnabled)
 	{
-		HUD_SOUND::LoadSound(section,"snd_night_vision_on"	, m_NightVisionOnSnd	, SOUND_TYPE_ITEM_USING);
-		HUD_SOUND::LoadSound(section,"snd_night_vision_off"	, m_NightVisionOffSnd	, SOUND_TYPE_ITEM_USING);
-		HUD_SOUND::LoadSound(section,"snd_night_vision_idle", m_NightVisionIdleSnd	, SOUND_TYPE_ITEM_USING);
-		HUD_SOUND::LoadSound(section,"snd_night_vision_broken", m_NightVisionBrokenSnd, SOUND_TYPE_ITEM_USING);
+		if (pSettings->line_exist(section, "snd_night_vision_on"))
+			HUD_SOUND::LoadSound(section,"snd_night_vision_on"	, m_NightVisionOnSnd	, SOUND_TYPE_ITEM_USING);
+		if (pSettings->line_exist(section, "snd_night_vision_off"))
+			HUD_SOUND::LoadSound(section,"snd_night_vision_off"	, m_NightVisionOffSnd	, SOUND_TYPE_ITEM_USING);
+		if (pSettings->line_exist(section, "snd_night_vision_idle"))
+			HUD_SOUND::LoadSound(section,"snd_night_vision_idle", m_NightVisionIdleSnd	, SOUND_TYPE_ITEM_USING);
+		if (pSettings->line_exist(section, "snd_night_vision_broken"))
+			HUD_SOUND::LoadSound(section,"snd_night_vision_broken", m_NightVisionBrokenSnd, SOUND_TYPE_ITEM_USING);
 
 	
 		/*m_NightVisionRechargeTime		= pSettings->r_float(section,"night_vision_recharge_time");
@@ -258,13 +264,11 @@ void CTorch::Switch	(bool light_on)
 	bool bPlaySoundFirstPerson = (pA == Level().CurrentViewEntity());
 	if (m_switched_on)
 	{
-		if (pSettings->line_exist(cNameSect(), "snd_torch_on"))
-			HUD_SOUND::PlaySound(m_TorchOnSnd, pA->Position(), pA, bPlaySoundFirstPerson);
+		HUD_SOUND::PlaySound(m_TorchOnSnd, pA->Position(), pA, bPlaySoundFirstPerson);
 	}
 	else
 	{
-		if (pSettings->line_exist(cNameSect(), "snd_torch_off"))
-			HUD_SOUND::PlaySound(m_TorchOffSnd, pA->Position(), pA, bPlaySoundFirstPerson);
+		HUD_SOUND::PlaySound(m_TorchOffSnd, pA->Position(), pA, bPlaySoundFirstPerson);
 	}
 }
 

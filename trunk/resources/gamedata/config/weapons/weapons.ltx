@@ -1771,6 +1771,14 @@ vis_frame_speed				= 4				; скорость, с которой наводитс
 vis_frame_color				= 0.7,0.7,0.7,1.0	; цвет рамки RGBA (A) Не учитывается
 found_snd					= detectors\DA-2_beep1
 
+night_vision				= on
+night_vision_effector		= effector_nightvision; postprocess_night
+
+snd_night_vision_on			= weapons\nv_start
+snd_night_vision_off		= weapons\nv_off
+snd_night_vision_idle		= weapons\nv_loop
+snd_night_vision_broken		= weapons\nv_off
+
 [wpn_addon_scope_susat]:identity_immunities
 GroupControlSection	= spawn_group
 discovery_dependency = 

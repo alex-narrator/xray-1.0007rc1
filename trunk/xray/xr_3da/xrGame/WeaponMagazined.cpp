@@ -61,6 +61,7 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	m_binoc_vision				= NULL;
 	m_bVision					= false;
 	binoc_vision_sect			= nullptr;
+	m_bNightVisionEnabled		= false;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -80,6 +81,11 @@ CWeaponMagazined::~CWeaponMagazined()
 	HUD_SOUND::DestroySound(sndZoomIn);
 	HUD_SOUND::DestroySound(sndZoomOut);
 	HUD_SOUND::DestroySound(sndZoomChange);
+	//
+	HUD_SOUND::DestroySound(m_NightVisionOnSnd);
+	HUD_SOUND::DestroySound(m_NightVisionOffSnd);
+	HUD_SOUND::DestroySound(m_NightVisionIdleSnd);
+	HUD_SOUND::DestroySound(m_NightVisionBrokenSnd);
 	//
 	xr_delete(m_binoc_vision);
 }
@@ -102,6 +108,11 @@ void CWeaponMagazined::StopHUDSounds()
 	HUD_SOUND::StopSound(sndZoomIn);
 	HUD_SOUND::StopSound(sndZoomOut);
 	HUD_SOUND::StopSound(sndZoomChange);
+	//
+	HUD_SOUND::StopSound(m_NightVisionOnSnd);
+	HUD_SOUND::StopSound(m_NightVisionOffSnd);
+	HUD_SOUND::StopSound(m_NightVisionIdleSnd);
+	HUD_SOUND::StopSound(m_NightVisionBrokenSnd);
 	//.	if(sndShot.enable && sndShot.snd.feedback)
 	//.		sndShot.snd.feedback->switch_to_3D();
 
@@ -1178,6 +1189,8 @@ void CWeaponMagazined::InitAddons()
 
 void CWeaponMagazined::LoadZoomParams(LPCSTR section)
 {
+	if (IsZoomed()) OnZoomOut();
+
 	m_fIronSightZoomFactor = READ_IF_EXISTS(pSettings, r_float, section, "ironsight_zoom_factor", 1.0f);
 
 	if (m_UIScope)
@@ -1191,6 +1204,21 @@ void CWeaponMagazined::LoadZoomParams(LPCSTR section)
 
 	m_bVision = !!READ_IF_EXISTS(pSettings, r_bool, section, "vision_present", false);
 	if (m_bVision) binoc_vision_sect = section;
+
+	m_bNightVisionEnabled = !!READ_IF_EXISTS(pSettings, r_bool, section, "night_vision", false);
+	if (m_bNightVisionEnabled)
+	{
+		if (pSettings->line_exist(section, "snd_night_vision_on"))
+			HUD_SOUND::LoadSound(section, "snd_night_vision_on", m_NightVisionOnSnd, SOUND_TYPE_ITEM_USING);
+		if (pSettings->line_exist(section, "snd_night_vision_off"))
+			HUD_SOUND::LoadSound(section, "snd_night_vision_off", m_NightVisionOffSnd, SOUND_TYPE_ITEM_USING);
+		if (pSettings->line_exist(section, "snd_night_vision_idle"))
+			HUD_SOUND::LoadSound(section, "snd_night_vision_idle", m_NightVisionIdleSnd, SOUND_TYPE_ITEM_USING);
+		if (pSettings->line_exist(section, "snd_night_vision_broken"))
+			HUD_SOUND::LoadSound(section, "snd_night_vision_broken", m_NightVisionBrokenSnd, SOUND_TYPE_ITEM_USING);
+
+		m_NightVisionSect = READ_IF_EXISTS(pSettings, r_string, section, "night_vision_effector", nullptr);
+	}
 
 	m_fScopeZoomFactor = pSettings->r_float(section, "scope_zoom_factor");
 
@@ -1361,6 +1389,8 @@ void CWeaponMagazined::OnZoomIn()
 
 			if (m_bVision && !m_binoc_vision)
 				m_binoc_vision = xr_new<CBinocularsVision>(this);
+
+			SwitchNightVision(true);
 		}
 		else
 			HUD_SOUND::PlaySound(sndSightsUp, H_Parent()->Position(), H_Parent(), b_hud_mode);	//--END	
@@ -1408,6 +1438,7 @@ void CWeaponMagazined::OnZoomOut()
 	{
 		pActor->Cameras().RemoveCamEffector(eCEZoom);
 		pActor->SetHardHold(false);
+		SwitchNightVision(false);
 	}
 }
 
@@ -1772,4 +1803,43 @@ void CWeaponMagazined::net_Relcase(CObject *object)
 		return;
 
 	m_binoc_vision->remove_links(object);
+}
+
+void CWeaponMagazined::SwitchNightVision(bool vision_on)
+{
+	if (!m_bNightVisionEnabled) return;
+
+	CActor *pA = smart_cast<CActor *>(H_Parent());
+	if (!pA)					return;
+
+	if (vision_on)
+	{
+		m_bNightVisionOn = true;
+	}
+	else
+	{
+		m_bNightVisionOn = false;
+	}
+
+	bool bPlaySoundFirstPerson = (pA == Level().CurrentViewEntity());
+
+	if (m_bNightVisionOn){
+		CEffectorPP* pp = pA->Cameras().GetPPEffector((EEffectorPPType)effNightvisionScope);
+		if (!pp){
+			if (!!m_NightVisionSect)
+			{
+				AddEffector(pA, effNightvisionScope, m_NightVisionSect);
+				HUD_SOUND::PlaySound(m_NightVisionOnSnd, pA->Position(), pA, bPlaySoundFirstPerson);
+				HUD_SOUND::PlaySound(m_NightVisionIdleSnd, pA->Position(), pA, bPlaySoundFirstPerson, true);
+			}
+		}
+	}
+	else{
+		CEffectorPP* pp = pA->Cameras().GetPPEffector((EEffectorPPType)effNightvisionScope);
+		if (pp){
+			pp->Stop(1.0f);
+			HUD_SOUND::PlaySound(m_NightVisionOffSnd, pA->Position(), pA, bPlaySoundFirstPerson);
+			HUD_SOUND::StopSound(m_NightVisionIdleSnd);
+		}
+	}
 }

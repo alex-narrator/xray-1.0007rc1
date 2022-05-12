@@ -15,6 +15,7 @@
 #define effControllerAura		(eStartEffectorID+7)
 #define effControllerAura2		(eStartEffectorID+8)
 #define effBigMonsterHit		(eStartEffectorID+9)
+#define effNightvisionScope		(eStartEffectorID+10)
 
 #define	eCEFall					((ECamEffectorType)(cefNext+1))
 #define	eCENoise				((ECamEffectorType)(cefNext+2))

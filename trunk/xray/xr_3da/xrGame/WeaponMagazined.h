@@ -35,6 +35,12 @@ protected:
 	HUD_SOUND		sndZoomIn;
 	HUD_SOUND		sndZoomOut;
 	HUD_SOUND		sndZoomChange;
+	//
+	HUD_SOUND		m_NightVisionOnSnd;
+	HUD_SOUND		m_NightVisionOffSnd;
+	HUD_SOUND		m_NightVisionIdleSnd;
+	HUD_SOUND		m_NightVisionBrokenSnd;
+	//
 	//звук текущего выстрела
 	HUD_SOUND*		m_pSndShotCurrent;
 
@@ -267,9 +273,14 @@ public:
 	bool					m_bGrenadeMode;
 	//
 	LPCSTR					binoc_vision_sect;
+	//
+	LPCSTR					m_NightVisionSect;
+	bool					m_bNightVisionOn;
+	void					SwitchNightVision(bool);
 protected:
 	CBinocularsVision*		m_binoc_vision;
 	bool					m_bVision;
+	bool					m_bNightVisionEnabled;
 };
 
 #endif //__XR_WEAPON_MAG_H__
