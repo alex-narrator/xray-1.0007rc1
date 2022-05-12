@@ -29,6 +29,7 @@ protected:
 	HUD_SOUND		sndReload;
 	HUD_SOUND		sndSightsUp;		//added by Daemonion for iron sight audio parameter - sights being raised
 	HUD_SOUND		sndSightsDown;		//added by Daemonion for iron sight audio parameter - sights being lowered
+	HUD_SOUND		sndSwitchFiremode;
 	//
 	HUD_SOUND		sndShutter;
 	//
@@ -277,6 +278,7 @@ public:
 	LPCSTR					m_NightVisionSect;
 	bool					m_bNightVisionOn;
 	void					SwitchNightVision(bool);
+	void					UpdateSwitchNightVision();
 protected:
 	CBinocularsVision*		m_binoc_vision;
 	bool					m_bVision;

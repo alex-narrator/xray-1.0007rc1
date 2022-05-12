@@ -75,6 +75,7 @@ CWeaponMagazined::~CWeaponMagazined()
 	HUD_SOUND::DestroySound(sndReload);
 	HUD_SOUND::DestroySound(sndSightsUp);		//added by Daemonion for ironsight audio in weapon parameters - sights being raised
 	HUD_SOUND::DestroySound(sndSightsDown);		//added by Daemonion for ironsight audio in weapon parameters - sights being lowered
+	HUD_SOUND::DestroySound(sndSwitchFiremode);
 	//
 	HUD_SOUND::DestroySound(sndShutter);
 	//
@@ -102,6 +103,7 @@ void CWeaponMagazined::StopHUDSounds()
 	HUD_SOUND::StopSound(sndSilencerShot);
 	HUD_SOUND::StopSound(sndSightsUp);			//added by Daemonion for ironsight audio in weapon parameters - sights being raised
 	HUD_SOUND::StopSound(sndSightsDown);		//added by Daemonion for ironsight audio in weapon parameters - sights being lowered
+	HUD_SOUND::StopSound(sndSwitchFiremode);
 	//
 	HUD_SOUND::StopSound(sndShutter);
 	//
@@ -137,6 +139,8 @@ void CWeaponMagazined::Load(LPCSTR section)
 	HUD_SOUND::LoadSound(section, "snd_reload", sndReload, m_eSoundReload);
 	HUD_SOUND::LoadSound(section, "snd_SightsUp", sndSightsUp, m_eSoundSightsUp);		//added by Daemonion for ironsight audio in weapon parameters - sights being raised
 	HUD_SOUND::LoadSound(section, "snd_SightsDown", sndSightsDown, m_eSoundSightsDown);	//added by Daemonion for ironsight audio in weapon parameters - sights being lowered
+	if (pSettings->line_exist(section, "snd_switch_firemode"))
+		HUD_SOUND::LoadSound(section, "snd_switch_firemode", sndSwitchFiremode, m_eSoundEmptyClick);
 	//
 	bool b_shutter_sound = !!pSettings->line_exist(section, "snd_shutter");
 	HUD_SOUND::LoadSound(section, b_shutter_sound ? "snd_shutter" : "snd_draw", sndShutter, m_eSoundShutter);
@@ -654,8 +658,13 @@ void CWeaponMagazined::UpdateCL()
 
 	UpdateSounds();
 
-	if (H_Parent() && IsZoomed() && !IsRotatingToZoom() && m_binoc_vision)
-		m_binoc_vision->Update();
+	if (H_Parent() && IsZoomed() && !IsRotatingToZoom())
+	{
+		if (m_binoc_vision)
+			m_binoc_vision->Update();
+
+		UpdateSwitchNightVision();
+	}
 }
 
 void CWeaponMagazined::UpdateSounds()
@@ -674,6 +683,7 @@ void CWeaponMagazined::UpdateSounds()
 	if (sndEmptyClick.playing	())	sndEmptyClick.set_position		(get_LastFP());
 	if (sndSightsUp.playing		())	sndSightsUp.set_position		(get_LastFP());			//Daemonion - iron sight audio - sights being raised
 	if (sndSightsDown.playing	())	sndSightsDown.set_position		(get_LastFP());			//Daemonion - iron sight audio - sights being lowered
+	if (sndSwitchFiremode.playing())	sndSwitchFiremode.set_position(get_LastFP());
 	//
 	if (sndShutter.playing		()) sndShutter.set_position			(get_LastFP());
 	//
@@ -1438,6 +1448,7 @@ void CWeaponMagazined::OnZoomOut()
 	{
 		pActor->Cameras().RemoveCamEffector(eCEZoom);
 		pActor->SetHardHold(false);
+
 		SwitchNightVision(false);
 	}
 }
@@ -1483,6 +1494,7 @@ void	CWeaponMagazined::OnNextFireMode()
 	if (GetState() != eIdle) return;
 	m_iCurFireMode = (m_iCurFireMode + 1 + m_aFireModes.size()) % m_aFireModes.size();
 	SetQueueSize(GetCurrentFireMode());
+	PlaySound(sndSwitchFiremode, get_LastFP());
 };
 
 void	CWeaponMagazined::OnPrevFireMode()
@@ -1491,6 +1503,7 @@ void	CWeaponMagazined::OnPrevFireMode()
 	if (GetState() != eIdle) return;
 	m_iCurFireMode = (m_iCurFireMode - 1 + m_aFireModes.size()) % m_aFireModes.size();
 	SetQueueSize(GetCurrentFireMode());
+	PlaySound(sndSwitchFiremode, get_LastFP());
 };
 
 void	CWeaponMagazined::OnH_A_Chield()
@@ -1842,4 +1855,14 @@ void CWeaponMagazined::SwitchNightVision(bool vision_on)
 			HUD_SOUND::StopSound(m_NightVisionIdleSnd);
 		}
 	}
+}
+
+void CWeaponMagazined::UpdateSwitchNightVision()
+{
+	if (!m_bNightVisionEnabled) return;
+	if (OnClient()) return;
+
+	auto* pA = smart_cast<CActor*>(H_Parent());
+	if (pA && m_bNightVisionOn && !pA->Cameras().GetPPEffector((EEffectorPPType)effNightvision))
+		SwitchNightVision(true);
 }
