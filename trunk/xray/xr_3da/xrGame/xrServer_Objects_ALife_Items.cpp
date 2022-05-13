@@ -403,6 +403,8 @@ CSE_ALifeItemWeapon::CSE_ALifeItemWeapon	(LPCSTR caSection) : CSE_ALifeItem(caSe
 	bMisfire					= false;
 	//
 	m_cur_scope					= 0;
+	m_cur_silencer				= 0;
+	m_cur_glauncher				= 0;
 }
 
 CSE_ALifeItemWeapon::~CSE_ALifeItemWeapon	()
@@ -440,7 +442,11 @@ void CSE_ALifeItemWeapon::UPDATE_Read(NET_Packet	&tNetPacket)
 	}
 	//
 	if (m_wVersion > 125)
-		m_cur_scope = tNetPacket.r_u8();
+	{
+		m_cur_scope		= tNetPacket.r_u8();
+		m_cur_silencer	= tNetPacket.r_u8();
+		m_cur_glauncher = tNetPacket.r_u8();
+	}
 }
 
 void CSE_ALifeItemWeapon::UPDATE_Write(NET_Packet	&tNetPacket)
@@ -458,6 +464,8 @@ void CSE_ALifeItemWeapon::UPDATE_Write(NET_Packet	&tNetPacket)
 	tNetPacket.w_u8				(bMisfire ? 1 : 0);
 		//
 	tNetPacket.w_u8				(m_cur_scope);
+	tNetPacket.w_u8				(m_cur_silencer);
+	tNetPacket.w_u8				(m_cur_glauncher);
 }
 
 void CSE_ALifeItemWeapon::STATE_Read(NET_Packet	&tNetPacket, u16 size)

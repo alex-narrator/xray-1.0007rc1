@@ -160,7 +160,7 @@
 //										(to prevent troubles with all.spawn items)	
 // 124 - CSE_ALifeInventoryItem			read/write m_fCondition on UPDATE_Read/UPDATE_Write
 // 125 - CSE_ALifeItemWeaponMagazined	added m_fRTZoomFactor for weapon
-// 126 - CSE_ALifeItemWeapon			added m_cur_scope for scope multi-addon
+// 126 - CSE_ALifeItemWeapon			added m_cur_scope, m_cur_silencer, m_cur_glauncher for multi-addon
 //------------------------------------------------------------------------------
 #define SPAWN_VERSION	u16(126)
 

@@ -190,10 +190,13 @@ public:
 	int	GetGrenadeLauncherX	();// { return m_iGrenadeLauncherX; }
 	int	GetGrenadeLauncherY	();// { return m_iGrenadeLauncherY; }
 
-	const shared_str& GetGrenadeLauncherName	()		{ return m_sGrenadeLauncherName; }
-//	const shared_str& GetScopeName()		{ return m_sScopeName; }
-	const shared_str GetScopeName				() const { return m_scopes[m_cur_scope]; }
-	const shared_str& GetSilencerName			()		{ return m_sSilencerName; }
+//	const shared_str& GetGrenadeLauncherName	()		{ return m_sGrenadeLauncherName; }
+//	const shared_str& GetScopeName				()		{ return m_sScopeName; }
+//	const shared_str& GetSilencerName			()		{ return m_sSilencerName; }
+
+	const shared_str GetScopeName				() const { return m_scopes		[m_cur_scope]		; }
+	const shared_str GetSilencerName			() const { return m_silencers	[m_cur_silencer]	; }
+	const shared_str GetGrenadeLauncherName		() const { return m_glaunchers	[m_cur_glauncher]	; }
 
 	u8		GetAddonsState()		const		{ return m_flagsAddOnState; };
 	void	SetAddonsState(u8 st)	{ m_flagsAddOnState = st; }//dont use!!! for buy menu only!!!
@@ -207,9 +210,9 @@ protected:
 	ALife::EWeaponAddonStatus	m_eGrenadeLauncherStatus;
 
 	//названия секций подключаемых аддонов
-	shared_str		m_sScopeName;
+/*	shared_str		m_sScopeName;
 	shared_str		m_sSilencerName;
-	shared_str		m_sGrenadeLauncherName;
+	shared_str		m_sGrenadeLauncherName;*/
 
 	//смещение иконов апгрейдов в инвентаре
 	int	m_iScopeX, m_iScopeY;
@@ -478,6 +481,12 @@ public:
 
 	xr_vector<shared_str>	m_scopes;
 	u8						m_cur_scope;
+
+	xr_vector<shared_str>	m_silencers;
+	u8						m_cur_silencer;
+
+	xr_vector<shared_str>	m_glaunchers;
+	u8						m_cur_glauncher;
 
 	CWeaponAmmo*			m_pAmmo;
 	u32						m_ammoType;

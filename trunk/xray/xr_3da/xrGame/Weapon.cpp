@@ -90,13 +90,17 @@ CWeapon::CWeapon(LPCSTR name)
 	m_class_name = get_class_name<CWeapon>(this);
 	need_slot = true;
 
-	m_cur_scope = 0;
+	m_cur_scope		= 0;
+	m_cur_silencer	= 0;
+	m_cur_glauncher = 0;
 }
 
 CWeapon::~CWeapon()
 {
 	xr_delete(m_UIScope);
 	delete_data(m_scopes);
+	delete_data(m_silencers);
+	delete_data(m_glaunchers);
 }
 
 //void CWeapon::Hit(float P, Fvector &dir,
@@ -384,6 +388,8 @@ void CWeapon::Load(LPCSTR section)
 	m_fMinScopeZoomFactor	= 1.f;
 	m_uZoomStepCount		= 3;
 	m_fRTZoomFactor			= 1.f;
+	conditionDecreasePerShotSilencerKoef = 1.f;
+	conditionDecreasePerShotSilencer = 0.f;
 
 	if (m_bZoomEnabled && m_pHUD) LoadZoomOffset(*hud_sect, "");
 
@@ -406,20 +412,40 @@ void CWeapon::Load(LPCSTR section)
 
 	if (m_eSilencerStatus == ALife::eAddonAttachable)
 	{
-		m_sSilencerName = pSettings->r_string(section, "silencer_name");
+/*		m_sSilencerName = pSettings->r_string(section, "silencer_name");
 		m_iSilencerX = pSettings->r_s32(section, "silencer_x");
-		m_iSilencerY = pSettings->r_s32(section, "silencer_y");
+		m_iSilencerY = pSettings->r_s32(section, "silencer_y");*/
+		if (pSettings->line_exist(section, "silencer_name"))
+		{
+			LPCSTR str = pSettings->r_string(section, "silencer_name");
+			for (int i = 0, count = _GetItemCount(str); i < count; ++i)
+			{
+				string128 silencer_section;
+				_GetItem(str, i, silencer_section);
+				m_silencers.push_back(silencer_section);
+			}
+		}
 		//увеличение изношености при выстреле с глушителем - из секции съёмного глушителя
-		conditionDecreasePerShotSilencerKoef = READ_IF_EXISTS(pSettings, r_float, m_sSilencerName, "condition_shot_dec_k", 1.f);
+//		conditionDecreasePerShotSilencerKoef = READ_IF_EXISTS(pSettings, r_float, GetSilencerName(), "condition_shot_dec_k", 1.f);
 		//увеличение изношености самого глушителя при выстреле - из секции съёмного глушителя
-		conditionDecreasePerShotSilencer = READ_IF_EXISTS(pSettings, r_float, m_sSilencerName, "condition_shot_dec", .0f);
+//		conditionDecreasePerShotSilencer = READ_IF_EXISTS(pSettings, r_float, GetSilencerName(), "condition_shot_dec", .0f);
 	}
 
 	if (m_eGrenadeLauncherStatus == ALife::eAddonAttachable)
 	{
-		m_sGrenadeLauncherName = pSettings->r_string(section, "grenade_launcher_name");
+/*		m_sGrenadeLauncherName = pSettings->r_string(section, "grenade_launcher_name");
 		m_iGrenadeLauncherX = pSettings->r_s32(section, "grenade_launcher_x");
-		m_iGrenadeLauncherY = pSettings->r_s32(section, "grenade_launcher_y");
+		m_iGrenadeLauncherY = pSettings->r_s32(section, "grenade_launcher_y");*/
+		if (pSettings->line_exist(section, "grenade_launcher_name"))
+		{
+			LPCSTR str = pSettings->r_string(section, "grenade_launcher_name");
+			for (int i = 0, count = _GetItemCount(str); i < count; ++i)
+			{
+				string128 glauncher_section;
+				_GetItem(str, i, glauncher_section);
+				m_glaunchers.push_back(glauncher_section);
+			}
+		}
 	}
 
 	InitAddons();
@@ -523,7 +549,9 @@ BOOL CWeapon::net_Spawn(CSE_Abstract* DC)
 	//
 	bMisfire = E->bMisfire;
 	//
-	m_cur_scope = E->m_cur_scope;
+	m_cur_scope		= E->m_cur_scope;
+	m_cur_silencer	= E->m_cur_silencer;
+	m_cur_glauncher = E->m_cur_glauncher;
 	//Msg("CWeapon::net_Spawn: weapon [%s] with m_ammoType [%d], ammo [%s]", Name_script(), m_ammoType, *m_ammoTypes[m_ammoType]);
 	m_DefaultCartridge.Load(*m_ammoTypes[m_ammoType], u8(m_ammoType));
 	if (iAmmoElapsed)
@@ -582,6 +610,8 @@ void CWeapon::net_Export(NET_Packet& P)
 	P.w_u8((u8)bMisfire);
 	//
 	P.w_u8((u8)m_cur_scope);
+	P.w_u8((u8)m_cur_silencer);
+	P.w_u8((u8)m_cur_glauncher);
 }
 
 void CWeapon::net_Import(NET_Packet& P)
@@ -611,7 +641,9 @@ void CWeapon::net_Import(NET_Packet& P)
 	//
 	bMisfire = !!(P.r_u8() & 0x1);
 	//
-	m_cur_scope = P.r_u8();
+	m_cur_scope		= P.r_u8();
+	m_cur_silencer	= P.r_u8();
+	m_cur_glauncher = P.r_u8();
 
 	if (H_Parent() && H_Parent()->Remote())
 	{
@@ -1755,7 +1787,7 @@ float CWeapon::Weight()
 	if (GrenadeLauncherAttachable() && IsGrenadeLauncherAttached())
 		res += pSettings->r_float(GetGrenadeLauncherName(), "inv_weight");
 
-	if (ScopeAttachable() && IsScopeAttached() && m_scopes.size())
+	if (ScopeAttachable() && IsScopeAttached())
 		res += pSettings->r_float(GetScopeName(), "inv_weight");
 
 	if (SilencerAttachable() && IsSilencerAttached())
@@ -1856,7 +1888,58 @@ int	CWeapon::GetScopeY()
 	return res;
 }
 
-int	CWeapon::GetSilencerX() { return m_iSilencerX; }
-int	CWeapon::GetSilencerY() { return m_iSilencerY; }
-int	CWeapon::GetGrenadeLauncherX() { return m_iGrenadeLauncherX; }
-int	CWeapon::GetGrenadeLauncherY() { return m_iGrenadeLauncherY; }
+int	CWeapon::GetSilencerX()
+{
+	int res = pSettings->r_s32(cNameSect(), "silencer_x");
+
+	string1024 silencer_sect_x;
+	const char* silencer_sect = m_silencers[m_cur_silencer].c_str();
+	strconcat(sizeof(silencer_sect_x), silencer_sect_x, silencer_sect, "_x");
+
+	if (pSettings->line_exist(cNameSect(), silencer_sect_x))
+		res = pSettings->r_s32(cNameSect(), silencer_sect_x);
+
+	return res;
+}
+
+int	CWeapon::GetSilencerY()
+{
+	int res = pSettings->r_s32(cNameSect(), "silencer_y");
+
+	string1024 silencer_sect_y;
+	const char* silencer_sect = m_silencers[m_cur_silencer].c_str();
+	strconcat(sizeof(silencer_sect_y), silencer_sect_y, silencer_sect, "_y");
+
+	if (pSettings->line_exist(cNameSect(), silencer_sect_y))
+		res = pSettings->r_s32(cNameSect(), silencer_sect_y);
+
+	return res;
+}
+
+int	CWeapon::GetGrenadeLauncherX()
+{
+	int res = pSettings->r_s32(cNameSect(), "grenade_launcher_x");
+
+	string1024 glauncher_sect_x;
+	const char* glauncher_sect = m_glaunchers[m_cur_glauncher].c_str();
+	strconcat(sizeof(glauncher_sect_x), glauncher_sect_x, glauncher_sect, "_x");
+
+	if (pSettings->line_exist(cNameSect(), glauncher_sect_x))
+		res = pSettings->r_s32(cNameSect(), glauncher_sect_x);
+
+	return res;
+}
+
+int	CWeapon::GetGrenadeLauncherY()
+{
+	int res = pSettings->r_s32(cNameSect(), "grenade_launcher_y");
+
+	string1024 glauncher_sect_y;
+	const char* glauncher_sect = m_glaunchers[m_cur_glauncher].c_str();
+	strconcat(sizeof(glauncher_sect_y), glauncher_sect_y, glauncher_sect, "_y");
+
+	if (pSettings->line_exist(cNameSect(), glauncher_sect_y))
+		res = pSettings->r_s32(cNameSect(), glauncher_sect_y);
+
+	return res;
+}

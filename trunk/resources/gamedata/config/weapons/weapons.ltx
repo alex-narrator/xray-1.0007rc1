@@ -1860,6 +1860,34 @@ fire_dispersion_base_k = 1.25;2
 cam_dispersion_k	= 0.8
 condition_shot_dec_k = 10 ;множитель износа оружия при стрельбе с установленным глушителем
 
+[wpn_addon_silencer_long]:identity_immunities
+GroupControlSection	= spawn_group
+discovery_dependency = 
+$spawn			= "weapons\addons\silencer" ; option for Level Editor
+class			= W_SILENC
+cform           = skeleton
+visual          = weapons\upgrade\wpn_silencer.ogf
+description		= enc_weapons1_wpn-addon-silencer
+$prefetch 		= 32
+
+cost					 = 100;150
+inv_name		= wpn-addon-silencer_long
+inv_name_short	= wpn-addon-silencer_long
+inv_weight		= .1
+
+inv_grid_width		= 2
+inv_grid_height		= 1
+inv_grid_x			= 11
+inv_grid_y			= 31
+
+condition_shot_dec = 0.01 ;износ глушителя за выстрел
+
+bullet_hit_power_k	= 0.8
+bullet_speed_k	 	= 0.8
+fire_dispersion_base_k = 1.25;2
+cam_dispersion_k	= 0.8
+condition_shot_dec_k = 2 ;множитель износа оружия при стрельбе с установленным глушителем
+
 [wpn_addon_grenade_launcher]:identity_immunities
 GroupControlSection	= spawn_group
 discovery_dependency = 

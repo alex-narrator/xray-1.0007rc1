@@ -171,6 +171,8 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	bool							bMisfire;
 	//
 	u8								m_cur_scope;
+	u8								m_cur_silencer;
+	u8								m_cur_glauncher;
 
 									CSE_ALifeItemWeapon	(LPCSTR caSection);
 	virtual							~CSE_ALifeItemWeapon();

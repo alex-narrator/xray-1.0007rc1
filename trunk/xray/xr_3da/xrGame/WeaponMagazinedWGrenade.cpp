@@ -537,9 +537,15 @@ bool CWeaponMagazinedWGrenade::CanAttach(PIItem pIItem)
 	
 	if(pGrenadeLauncher &&
 	   CSE_ALifeItemWeapon::eAddonAttachable == m_eGrenadeLauncherStatus &&
-	   0 == (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&
-	   !xr_strcmp(*m_sGrenadeLauncherName, pIItem->object().cNameSect()))
-       return true;
+	   0 == (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher))
+	{
+		for (u32 i = 0; i < m_glaunchers.size(); ++i)
+		{
+			if (m_glaunchers[i] == pIItem->object().cNameSect())
+				return true;
+		}
+		return false;
+	}
 	else
 		return inherited::CanAttach(pIItem);
 }
@@ -547,9 +553,15 @@ bool CWeaponMagazinedWGrenade::CanAttach(PIItem pIItem)
 bool CWeaponMagazinedWGrenade::CanDetach(const char* item_section_name)
 {
 	if(CSE_ALifeItemWeapon::eAddonAttachable == m_eGrenadeLauncherStatus &&
-	   0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&
-	   !xr_strcmp(*m_sGrenadeLauncherName, item_section_name))
-	   return true;
+	   0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher))
+	{
+		for (u32 i = 0; i < m_glaunchers.size(); ++i)
+		{
+			if (m_glaunchers[i] == item_section_name)
+				return true;
+		}
+		return false;
+	}
 	else
 	   return inherited::CanDetach(item_section_name);
 }
@@ -560,9 +572,13 @@ bool CWeaponMagazinedWGrenade::Attach(PIItem pIItem, bool b_send_event)
 	
 	if(pGrenadeLauncher &&
 	   CSE_ALifeItemWeapon::eAddonAttachable == m_eGrenadeLauncherStatus &&
-	   0 == (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&
-	   !xr_strcmp(*m_sGrenadeLauncherName, pIItem->object().cNameSect()))
+	   0 == (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher))
 	{
+		for (u32 i = 0; i < m_glaunchers.size(); ++i)
+		{
+			if (m_glaunchers[i] == pIItem->object().cNameSect())
+				m_cur_glauncher = (u8)i;
+		}
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher;
 
 		CRocketLauncher::m_fLaunchSpeed = pGrenadeLauncher->GetGrenadeVel();
@@ -586,14 +602,9 @@ bool CWeaponMagazinedWGrenade::Detach(const char* item_section_name, bool b_spaw
 {
 	if (CSE_ALifeItemWeapon::eAddonAttachable == m_eGrenadeLauncherStatus &&
 	   0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&
-	   !xr_strcmp(*m_sGrenadeLauncherName, item_section_name))
+		DetachGlauncher(item_section_name, b_spawn_item))
 	{
 		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher;
-		/*if(m_bGrenadeMode)
-		{
-			UnloadMagazine();
-			PerformSwitchGL();
-		}*/
 		// Now we need to unload GL's magazine
 		if (!m_bGrenadeMode)
 		{
@@ -617,7 +628,7 @@ void CWeaponMagazinedWGrenade::InitAddons()
 	{
 		if(IsGrenadeLauncherAttached())
 		{
-			CRocketLauncher::m_fLaunchSpeed = pSettings->r_float(*m_sGrenadeLauncherName,"grenade_vel");
+			CRocketLauncher::m_fLaunchSpeed = pSettings->r_float(GetGrenadeLauncherName(),"grenade_vel");
 		}
 
 		if(m_bZoomEnabled && m_pHUD)
@@ -653,7 +664,7 @@ float CWeaponMagazinedWGrenade::GetWeaponDeterioration()
 	if (!m_bGrenadeMode)
 		return inherited::GetWeaponDeterioration();
 
-	shared_str target = GrenadeLauncherAttachable() ? m_sGrenadeLauncherName : cNameSect();
+	shared_str target = GrenadeLauncherAttachable() ? GetGrenadeLauncherName() : cNameSect();
 	conditionDecreasePerShotGL = READ_IF_EXISTS(pSettings, r_float, target, "condition_shot_dec_gl", 0.0f);
 
 	return conditionDecreasePerShotGL;

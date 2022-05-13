@@ -484,14 +484,38 @@ bool CUIWeaponCellItem::EqualTo(CUICellItem* itm)
 	CUIWeaponCellItem* ci			= smart_cast<CUIWeaponCellItem*>(itm);
 	if(!ci)							return false;
 
-	bool b_addons					= ( (object()->GetAddonsState() == ci->object()->GetAddonsState()) );
-	bool b_scopes					= ((object()->GetScopeName() == ci->object()->GetScopeName()));
+	if (object()->GetAddonsState() != ci->object()->GetAddonsState())
+	{
+		return false;
+	}
+	if (this->is_scope() && ci->is_scope())
+	{
+		if (object()->GetScopeName() != ci->object()->GetScopeName())
+		{
+			return false;
+		}
+	}
+	if (this->is_silencer() && ci->is_silencer())
+	{
+		if (object()->GetSilencerName() != ci->object()->GetSilencerName())
+		{
+			return false;
+		}
+	}
+	if (this->is_launcher() && ci->is_launcher())
+	{
+		if (object()->GetGrenadeLauncherName() != ci->object()->GetGrenadeLauncherName())
+		{
+			return false;
+		}
+	}
+
 	bool b_place					= ( (object()->m_eItemPlace == ci->object()->m_eItemPlace) );
 	
-	return							b_addons && b_place && b_scopes;
+	return							b_place;
 }
 
-/*Ivector2 CUIWeaponCellItem::GetGridSize(bool with_childs)
+Ivector2 CUIWeaponCellItem::GetGridSize(bool with_childs)
 {
 	auto child_grid_size = m_grid_size;
 
@@ -510,13 +534,13 @@ bool CUIWeaponCellItem::EqualTo(CUICellItem* itm)
 
 		str_c addons[eMaxAddon]; std::memset(addons, NULL, sizeof(addons));
 
-		if (obj->IsSilencerAttached())
+		if (obj->SilencerAttachable() && obj->IsSilencerAttached())
 			addons[eSilencer]	= obj->GetSilencerName().c_str();
 
-		if (obj->IsScopeAttached())
+		if (obj->ScopeAttachable() && obj->IsScopeAttached())
 			addons[eScope]		= obj->GetScopeName().c_str();
 
-		if (obj->IsGrenadeLauncherAttached())
+		if (obj->GrenadeLauncherAttachable() && obj->IsGrenadeLauncherAttached())
 			addons[eLauncher]	= obj->GetGrenadeLauncherName().c_str();
 
 		for (int it = eSilencer; it < eMaxAddon; ++it)
@@ -553,7 +577,7 @@ bool CUIWeaponCellItem::EqualTo(CUICellItem* itm)
 	}
 
 	return child_grid_size;
-}*/
+}
 
 CBuyItemCustomDrawCell::CBuyItemCustomDrawCell	(LPCSTR str, CGameFont* pFont)
 {
