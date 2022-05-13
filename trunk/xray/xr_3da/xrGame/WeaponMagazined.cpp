@@ -1273,7 +1273,13 @@ void CWeaponMagazined::InitAddons()
 			m_sSilencerFlameParticles = pSettings->r_string(GetSilencerName(), "silencer_flame_particles");
 		if (pSettings->line_exist(GetSilencerName(), "silencer_smoke_particles"))
 			m_sSilencerSmokeParticles = pSettings->r_string(GetSilencerName(), "silencer_smoke_particles");
-		HUD_SOUND::LoadSound(GetSilencerName().c_str(), "snd_silncer_shot", sndSilencerShot, m_eSoundShot);
+
+		HUD_SOUND::StopSound(sndSilencerShot);
+		HUD_SOUND::DestroySound(sndSilencerShot);
+
+		shared_str silencer_sound_sect = pSettings->line_exist(GetSilencerName(), "snd_silncer_shot") ? GetSilencerName() : cNameSect();
+
+		HUD_SOUND::LoadSound(silencer_sound_sect.c_str(), "snd_silncer_shot", sndSilencerShot, m_eSoundShot);
 
 		m_sFlameParticlesCurrent = m_sSilencerFlameParticles;
 		m_sSmokeParticlesCurrent = m_sSilencerSmokeParticles;
