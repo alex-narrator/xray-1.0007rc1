@@ -148,6 +148,8 @@ public:
 	virtual bool	CanAttach(PIItem pIItem);
 	virtual bool	CanDetach(const char* item_section_name);
 
+			bool	DetachScope(const char* item_section_name, bool b_spawn_item);
+
 	virtual void	InitAddons();
 	virtual void	LoadZoomParams(LPCSTR section);
 

@@ -183,16 +183,17 @@ public:
 	virtual void InitAddons();
 
 	//для отоброажения иконок апгрейдов в интерфейсе
-	int	GetScopeX() { return m_iScopeX; }
-	int	GetScopeY() { return m_iScopeY; }
-	int	GetSilencerX() { return m_iSilencerX; }
-	int	GetSilencerY() { return m_iSilencerY; }
-	int	GetGrenadeLauncherX() { return m_iGrenadeLauncherX; }
-	int	GetGrenadeLauncherY() { return m_iGrenadeLauncherY; }
+	int	GetScopeX			();// { return m_iScopeX; }
+	int	GetScopeY			();// { return m_iScopeY; }
+	int	GetSilencerX		();// { return m_iSilencerX; }
+	int	GetSilencerY		();// { return m_iSilencerY; }
+	int	GetGrenadeLauncherX	();// { return m_iGrenadeLauncherX; }
+	int	GetGrenadeLauncherY	();// { return m_iGrenadeLauncherY; }
 
-	const shared_str& GetGrenadeLauncherName()		{ return m_sGrenadeLauncherName; }
-	const shared_str& GetScopeName()		{ return m_sScopeName; }
-	const shared_str& GetSilencerName()		{ return m_sSilencerName; }
+	const shared_str& GetGrenadeLauncherName	()		{ return m_sGrenadeLauncherName; }
+//	const shared_str& GetScopeName()		{ return m_sScopeName; }
+	const shared_str GetScopeName				() const { return m_scopes[m_cur_scope]; }
+	const shared_str& GetSilencerName			()		{ return m_sSilencerName; }
 
 	u8		GetAddonsState()		const		{ return m_flagsAddOnState; };
 	void	SetAddonsState(u8 st)	{ m_flagsAddOnState = st; }//dont use!!! for buy menu only!!!
@@ -474,6 +475,9 @@ protected:
 	virtual bool			IsNecessaryItem(const shared_str& item_sect);
 public:
 	xr_vector<shared_str>	m_ammoTypes;
+
+	xr_vector<shared_str>	m_scopes;
+	u8						m_cur_scope;
 
 	CWeaponAmmo*			m_pAmmo;
 	u32						m_ammoType;

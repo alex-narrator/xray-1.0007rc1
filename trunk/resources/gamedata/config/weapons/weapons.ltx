@@ -1779,6 +1779,31 @@ snd_night_vision_off		= weapons\nv_off
 snd_night_vision_idle		= weapons\nv_loop
 snd_night_vision_broken		= weapons\nv_off
 
+[wpn_addon_scope_pso]:identity_immunities
+GroupControlSection	= spawn_group
+discovery_dependency = 
+$spawn			= "weapons\addons\scope" ; option for Level Editor
+class			= WP_SCOPE
+cform           = skeleton
+visual          = weapons\upgrade\wpn_scope.ogf
+$prefetch 		= 32
+description		= enc_weapons1_wpn-addon-scope
+cost			= 200
+
+holder_range_modifier	= 1.2
+holder_fov_modifier		= 0.3
+
+inv_name		= wpn-addon-scope_pso
+inv_name_short	= wpn-addon-scope_pso
+inv_weight		= .1
+
+inv_grid_width		= 2
+inv_grid_height		= 1
+inv_grid_x			= 17
+inv_grid_y			= 27
+scope_texture		= wpn\wpn_crosshair
+scope_zoom_factor	= 2;30		;ПСО-1 2X
+
 [wpn_addon_scope_susat]:identity_immunities
 GroupControlSection	= spawn_group
 discovery_dependency = 

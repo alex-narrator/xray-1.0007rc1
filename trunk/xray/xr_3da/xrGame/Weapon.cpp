@@ -89,11 +89,14 @@ CWeapon::CWeapon(LPCSTR name)
 	m_bZoomingIn = false;
 	m_class_name = get_class_name<CWeapon>(this);
 	need_slot = true;
+
+	m_cur_scope = 0;
 }
 
 CWeapon::~CWeapon()
 {
 	xr_delete(m_UIScope);
+	delete_data(m_scopes);
 }
 
 //void CWeapon::Hit(float P, Fvector &dir,
@@ -386,9 +389,19 @@ void CWeapon::Load(LPCSTR section)
 
 	if (m_eScopeStatus == ALife::eAddonAttachable)
 	{
-		m_sScopeName = pSettings->r_string(section, "scope_name");
+/*		m_sScopeName = pSettings->r_string(section, "scope_name");
 		m_iScopeX = pSettings->r_s32(section, "scope_x");
-		m_iScopeY = pSettings->r_s32(section, "scope_y");
+		m_iScopeY = pSettings->r_s32(section, "scope_y");*/
+		if (pSettings->line_exist(section, "scope_name"))
+		{
+			LPCSTR str = pSettings->r_string(section, "scope_name");
+			for (int i = 0, count = _GetItemCount(str); i < count; ++i)
+			{
+				string128 scope_section;
+				_GetItem(str, i, scope_section);
+				m_scopes.push_back(scope_section);
+			}
+		}
 	}
 
 	if (m_eSilencerStatus == ALife::eAddonAttachable)
@@ -509,6 +522,8 @@ BOOL CWeapon::net_Spawn(CSE_Abstract* DC)
 	SetNextState(E->wpn_state);
 	//
 	bMisfire = E->bMisfire;
+	//
+	m_cur_scope = E->m_cur_scope;
 	//Msg("CWeapon::net_Spawn: weapon [%s] with m_ammoType [%d], ammo [%s]", Name_script(), m_ammoType, *m_ammoTypes[m_ammoType]);
 	m_DefaultCartridge.Load(*m_ammoTypes[m_ammoType], u8(m_ammoType));
 	if (iAmmoElapsed)
@@ -565,6 +580,8 @@ void CWeapon::net_Export(NET_Packet& P)
 	P.w_u8((u8)m_bZoomMode);
 	//
 	P.w_u8((u8)bMisfire);
+	//
+	P.w_u8((u8)m_cur_scope);
 }
 
 void CWeapon::net_Import(NET_Packet& P)
@@ -593,6 +610,8 @@ void CWeapon::net_Import(NET_Packet& P)
 	P.r_u8((u8)Zoom);
 	//
 	bMisfire = !!(P.r_u8() & 0x1);
+	//
+	m_cur_scope = P.r_u8();
 
 	if (H_Parent() && H_Parent()->Remote())
 	{
@@ -629,7 +648,6 @@ void CWeapon::save(NET_Packet &output_packet)
 	save_data(m_flagsAddOnState, output_packet);
 	save_data(m_ammoType, output_packet);
 	save_data(m_bZoomMode, output_packet);
-//	save_data(bMisfire, output_packet);
 }
 
 void CWeapon::load(IReader &input_packet)
@@ -640,7 +658,6 @@ void CWeapon::load(IReader &input_packet)
 	UpdateAddonsVisibility();
 	load_data(m_ammoType, input_packet);
 	load_data(m_bZoomMode, input_packet);
-//	load_data(bMisfire, input_packet);
 
 	if (m_bZoomMode)	OnZoomIn();
 	else			OnZoomOut();
@@ -1461,8 +1478,8 @@ void CWeapon::reload(LPCSTR section)
 		m_can_be_strapped = false;
 
 	if (m_eScopeStatus == ALife::eAddonAttachable) {
-		m_addon_holder_range_modifier = READ_IF_EXISTS(pSettings, r_float, m_sScopeName, "holder_range_modifier", m_holder_range_modifier);
-		m_addon_holder_fov_modifier = READ_IF_EXISTS(pSettings, r_float, m_sScopeName, "holder_fov_modifier", m_holder_fov_modifier);
+		m_addon_holder_range_modifier = READ_IF_EXISTS(pSettings, r_float, GetScopeName()/*m_sScopeName*/, "holder_range_modifier", m_holder_range_modifier);
+		m_addon_holder_fov_modifier = READ_IF_EXISTS(pSettings, r_float, GetScopeName()/*m_sScopeName*/, "holder_fov_modifier", m_holder_fov_modifier);
 	}
 	else {
 		m_addon_holder_range_modifier = m_holder_range_modifier;
@@ -1738,7 +1755,7 @@ float CWeapon::Weight()
 	if (GrenadeLauncherAttachable() && IsGrenadeLauncherAttached())
 		res += pSettings->r_float(GetGrenadeLauncherName(), "inv_weight");
 
-	if (ScopeAttachable() && IsScopeAttached())
+	if (ScopeAttachable() && IsScopeAttached() && m_scopes.size())
 		res += pSettings->r_float(GetScopeName(), "inv_weight");
 
 	if (SilencerAttachable() && IsSilencerAttached())
@@ -1810,3 +1827,36 @@ u8 CWeapon::idle_state() {
 
 	return eIdle;
 }
+
+int	CWeapon::GetScopeX() 
+{ 
+	int res = pSettings->r_s32(cNameSect(), "scope_x"); 
+
+	string1024 scope_sect_x;
+	const char* scope_sect = m_scopes[m_cur_scope].c_str();
+	strconcat(sizeof(scope_sect_x), scope_sect_x, scope_sect, "_x");
+
+	if (pSettings->line_exist(cNameSect(), scope_sect_x))
+		res = pSettings->r_s32(cNameSect(), scope_sect_x);
+
+	return res;
+}
+
+int	CWeapon::GetScopeY() 
+{ 
+	int res = pSettings->r_s32(cNameSect(), "scope_y");
+
+	string1024 scope_sect_y;
+	const char* scope_sect = m_scopes[m_cur_scope].c_str();
+	strconcat(sizeof(scope_sect_y), scope_sect_y, scope_sect, "_y");
+
+	if (pSettings->line_exist(cNameSect(), scope_sect_y))
+		res = pSettings->r_s32(cNameSect(), scope_sect_y);
+
+	return res;
+}
+
+int	CWeapon::GetSilencerX() { return m_iSilencerX; }
+int	CWeapon::GetSilencerY() { return m_iSilencerY; }
+int	CWeapon::GetGrenadeLauncherX() { return m_iGrenadeLauncherX; }
+int	CWeapon::GetGrenadeLauncherY() { return m_iGrenadeLauncherY; }

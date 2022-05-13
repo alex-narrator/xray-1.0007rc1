@@ -485,12 +485,13 @@ bool CUIWeaponCellItem::EqualTo(CUICellItem* itm)
 	if(!ci)							return false;
 
 	bool b_addons					= ( (object()->GetAddonsState() == ci->object()->GetAddonsState()) );
+	bool b_scopes					= ((object()->GetScopeName() == ci->object()->GetScopeName()));
 	bool b_place					= ( (object()->m_eItemPlace == ci->object()->m_eItemPlace) );
 	
-	return							b_addons && b_place;
+	return							b_addons && b_place && b_scopes;
 }
 
-Ivector2 CUIWeaponCellItem::GetGridSize(bool with_childs)
+/*Ivector2 CUIWeaponCellItem::GetGridSize(bool with_childs)
 {
 	auto child_grid_size = m_grid_size;
 
@@ -552,7 +553,7 @@ Ivector2 CUIWeaponCellItem::GetGridSize(bool with_childs)
 	}
 
 	return child_grid_size;
-}
+}*/
 
 CBuyItemCustomDrawCell::CBuyItemCustomDrawCell	(LPCSTR str, CGameFont* pFont)
 {

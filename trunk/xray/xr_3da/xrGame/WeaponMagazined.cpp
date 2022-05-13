@@ -1027,9 +1027,16 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 
 	if (pScope &&
 		m_eScopeStatus == ALife::eAddonAttachable &&
-		(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope) == 0 &&
-		(m_sScopeName == pIItem->object().cNameSect()))
-		return true;
+		(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope) == 0/* &&
+		(m_sScopeName == pIItem->object().cNameSect())*/)
+	{
+		for (u32 i = 0; i < m_scopes.size(); ++i)
+		{
+			if (m_scopes[i] == pIItem->object().cNameSect())
+				return true;
+		}
+		return false;
+	}
 	else if (pSilencer &&
 		m_eSilencerStatus == ALife::eAddonAttachable &&
 		(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonSilencer) == 0 &&
@@ -1047,9 +1054,16 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 bool CWeaponMagazined::CanDetach(const char* item_section_name)
 {
 	if (m_eScopeStatus == CSE_ALifeItemWeapon::eAddonAttachable &&
-		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope) &&
-		(m_sScopeName == item_section_name))
-		return true;
+		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope)/* &&
+		(m_sScopeName == item_section_name)*/)
+	{
+		for (u32 i = 0; i < m_scopes.size(); ++i)
+		{
+			if (m_scopes[i] == item_section_name)
+				return true;
+		}
+		return false;
+	}
 	else if (m_eSilencerStatus == CSE_ALifeItemWeapon::eAddonAttachable &&
 		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonSilencer) &&
 		(m_sSilencerName == item_section_name))
@@ -1072,9 +1086,14 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 
 	if (pScope &&
 		m_eScopeStatus == CSE_ALifeItemWeapon::eAddonAttachable &&
-		(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope) == 0 &&
-		(m_sScopeName == pIItem->object().cNameSect()))
+		(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope) == 0/* &&
+		(m_sScopeName == pIItem->object().cNameSect())*/)
 	{
+		for (u32 i = 0; i < m_scopes.size(); ++i)
+		{
+			if (m_scopes[i] == pIItem->object().cNameSect())
+				m_cur_scope = (u8)i;
+		}
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonScope;
 		result = true;
 	}
@@ -1114,11 +1133,26 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 		return inherited::Attach(pIItem, b_send_event);
 }
 
+bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_item)
+{
+	bool detached = false;
+	for (u32 i = 0; i < m_scopes.size(); ++i)
+	{
+		LPCSTR iter_scope_name = m_scopes[i].c_str();
+		if (!xr_strcmp(iter_scope_name, item_section_name))
+		{
+			m_cur_scope = 0;
+			detached = true;
+		}
+	}
+	return detached;
+}
+
 bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item, float item_condition)
 {
 	if (m_eScopeStatus == CSE_ALifeItemWeapon::eAddonAttachable &&
-		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope) &&
-		(m_sScopeName == item_section_name))
+		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope)/* &&
+		(m_sScopeName == item_section_name)*/ && DetachScope(item_section_name, b_spawn_item))
 	{
 		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonScope;
 
@@ -1162,11 +1196,11 @@ void CWeaponMagazined::InitAddons()
 
 	if (IsScopeAttached() && ScopeAttachable())
 	{
-		m_sScopeName = pSettings->r_string(cNameSect(), "scope_name");
+/*		m_sScopeName = pSettings->r_string(cNameSect(), "scope_name");
 		m_iScopeX = pSettings->r_s32(cNameSect(), "scope_x");
-		m_iScopeY = pSettings->r_s32(cNameSect(), "scope_y");
+		m_iScopeY = pSettings->r_s32(cNameSect(), "scope_y");*/
 
-		LoadZoomParams(m_sScopeName.c_str());
+		LoadZoomParams(GetScopeName().c_str()/*m_sScopeName.c_str()*/);
 	}
 
 	if (IsSilencerAttached() && SilencerAttachable())
@@ -1212,12 +1246,31 @@ void CWeaponMagazined::LoadZoomParams(LPCSTR section)
 		return;
 	}
 
+	HUD_SOUND::StopSound(sndZoomIn);
+	HUD_SOUND::DestroySound(sndZoomIn);
+	HUD_SOUND::StopSound(sndZoomOut);
+	HUD_SOUND::DestroySound(sndZoomOut);
+	//sounds
+	if (pSettings->line_exist(section, "snd_zoomin"))
+		HUD_SOUND::LoadSound(section, "snd_zoomin", sndZoomIn, SOUND_TYPE_ITEM_USING);
+	if (pSettings->line_exist(section, "snd_zoomout"))
+		HUD_SOUND::LoadSound(section, "snd_zoomout", sndZoomOut, SOUND_TYPE_ITEM_USING);
+
 	m_bVision = !!READ_IF_EXISTS(pSettings, r_bool, section, "vision_present", false);
 	if (m_bVision) binoc_vision_sect = section;
 
 	m_bNightVisionEnabled = !!READ_IF_EXISTS(pSettings, r_bool, section, "night_vision", false);
 	if (m_bNightVisionEnabled)
 	{
+		HUD_SOUND::StopSound(m_NightVisionOnSnd);
+		HUD_SOUND::DestroySound(m_NightVisionOnSnd);
+		HUD_SOUND::StopSound(m_NightVisionOffSnd);
+		HUD_SOUND::DestroySound(m_NightVisionOffSnd);
+		HUD_SOUND::StopSound(m_NightVisionIdleSnd);
+		HUD_SOUND::DestroySound(m_NightVisionIdleSnd);
+		HUD_SOUND::StopSound(m_NightVisionBrokenSnd);
+		HUD_SOUND::DestroySound(m_NightVisionBrokenSnd);
+
 		if (pSettings->line_exist(section, "snd_night_vision_on"))
 			HUD_SOUND::LoadSound(section, "snd_night_vision_on", m_NightVisionOnSnd, SOUND_TYPE_ITEM_USING);
 		if (pSettings->line_exist(section, "snd_night_vision_off"))
@@ -1248,26 +1301,11 @@ void CWeaponMagazined::LoadZoomParams(LPCSTR section)
 //			Msg("LoadZoomParams clamp m_fRTZoomFactor = [%.2f]", m_fRTZoomFactor);
 		}
 		//sounds
-		if (pSettings->line_exist(section, "snd_zoom_change"))
-		{
-			HUD_SOUND::StopSound	(sndZoomChange);
-			HUD_SOUND::DestroySound	(sndZoomChange);
-			HUD_SOUND::LoadSound	(section, "snd_zoom_change", sndZoomChange, SOUND_TYPE_ITEM_USING);
-		}
-	}
+		HUD_SOUND::StopSound(sndZoomChange);
+		HUD_SOUND::DestroySound(sndZoomChange);
 
-	//sounds
-	if (pSettings->line_exist(section, "snd_zoomin"))
-	{
-		HUD_SOUND::StopSound	(sndZoomIn);
-		HUD_SOUND::DestroySound	(sndZoomIn);
-		HUD_SOUND::LoadSound	(section, "snd_zoomin", sndZoomIn, SOUND_TYPE_ITEM_USING);
-	}
-	if (pSettings->line_exist(section, "snd_zoomout"))
-	{
-		HUD_SOUND::StopSound	(sndZoomOut);
-		HUD_SOUND::DestroySound	(sndZoomOut);
-		HUD_SOUND::LoadSound	(section, "snd_zoomout", sndZoomOut, SOUND_TYPE_ITEM_USING);
+		if (pSettings->line_exist(section, "snd_zoom_change"))
+			HUD_SOUND::LoadSound	(section, "snd_zoom_change", sndZoomChange, SOUND_TYPE_ITEM_USING);
 	}
 
 	LPCSTR scope_tex_name = READ_IF_EXISTS(pSettings, r_string, section, "scope_texture", nullptr);
