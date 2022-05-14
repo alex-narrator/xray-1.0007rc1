@@ -628,6 +628,8 @@ CSE_ALifeItemWeaponMagazined::CSE_ALifeItemWeaponMagazined	(LPCSTR caSection) : 
 	m_fAttachedSilencerCondition = 1.f;
 	//
 	m_fRTZoomFactor = 1.f;
+	//
+	m_bNightVisionSwitchedOn = true;
 }
 
 CSE_ALifeItemWeaponMagazined::~CSE_ALifeItemWeaponMagazined	()
@@ -656,6 +658,9 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Read		(NET_Packet& P)
 	//
 	if (m_wVersion > 124)
 		m_fRTZoomFactor = P.r_float();
+	//
+	if (m_wVersion > 125)
+		m_bNightVisionSwitchedOn = !!(P.r_u8() & 0x1);
 }
 void CSE_ALifeItemWeaponMagazined::UPDATE_Write	(NET_Packet& P)
 {
@@ -674,6 +679,8 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Write	(NET_Packet& P)
 	P.w_float(m_fAttachedSilencerCondition);
 	//
 	P.w_float(m_fRTZoomFactor);
+	//
+	P.w_u8(m_bNightVisionSwitchedOn ? 1 : 0);
 }
 void CSE_ALifeItemWeaponMagazined::STATE_Read		(NET_Packet& P, u16 size)
 {

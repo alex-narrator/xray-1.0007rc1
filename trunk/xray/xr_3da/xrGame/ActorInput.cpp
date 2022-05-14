@@ -163,9 +163,15 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kCAM_3:{	cam_Set(eacFreeLook	); psActorFlags.set(AF_PSP, FALSE);				}break;
 	case kNIGHT_VISION:
 		{
-			CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
-			if (pTorch) {
-				pTorch->SwitchNightVision();
+			auto pActiveWeapon = smart_cast<CWeaponMagazined*>(inventory().ActiveItem());
+			
+			if (pActiveWeapon && pActiveWeapon->IsScopeAttached() && pActiveWeapon->IsZoomed() && !pActiveWeapon->m_bGrenadeMode)
+				pActiveWeapon->SwitchNightVision();
+			else
+			{
+				CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
+				if (pTorch)
+					pTorch->SwitchNightVision();
 			}
 		}break;
 	case kTORCH:{ 

@@ -56,12 +56,11 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	//
 	m_fAttachedSilencerCondition = 1.f;
 	//
-	m_bGrenadeMode				= false;
-	//
 	m_binoc_vision				= NULL;
 	m_bVision					= false;
 	binoc_vision_sect			= nullptr;
 	m_bNightVisionEnabled		= false;
+	m_bNightVisionSwitchedOn	= true;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -1513,8 +1512,8 @@ void CWeaponMagazined::OnZoomIn()
 
 			if (m_bVision && !m_binoc_vision)
 				m_binoc_vision = xr_new<CBinocularsVision>(this);
-
-			SwitchNightVision(true);
+			if (m_bNightVisionSwitchedOn)
+				SwitchNightVision(true, false);
 		}
 		else
 			HUD_SOUND::PlaySound(sndSightsUp, H_Parent()->Position(), H_Parent(), b_hud_mode);	//--END	
@@ -1563,7 +1562,7 @@ void CWeaponMagazined::OnZoomOut()
 		pActor->Cameras().RemoveCamEffector(eCEZoom);
 		pActor->SetHardHold(false);
 
-		SwitchNightVision(false);
+		SwitchNightVision(false, false);
 	}
 }
 
@@ -1725,6 +1724,8 @@ BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
 	if (SilencerAttachable() && IsSilencerAttached() && wpn->m_fAttachedSilencerCondition < 1.f)
 		m_fAttachedSilencerCondition = wpn->m_fAttachedSilencerCondition;
 	//
+	if (IsScopeAttached())
+		m_bNightVisionSwitchedOn = wpn->m_bNightVisionSwitchedOn;
 	return bRes;
 }
 
@@ -1746,6 +1747,8 @@ void CWeaponMagazined::net_Export(NET_Packet& P)
 	P.w_float(m_fAttachedSilencerCondition);
 	//
 	P.w_float(m_fRTZoomFactor);
+	//
+	P.w_u8(m_bNightVisionSwitchedOn ? 1 : 0);
 }
 
 void CWeaponMagazined::net_Import(NET_Packet& P)
@@ -1777,6 +1780,8 @@ void CWeaponMagazined::net_Import(NET_Packet& P)
 	m_fAttachedSilencerCondition = P.r_float();
 	//
 	m_fRTZoomFactor = P.r_float();
+	//
+	m_bNightVisionSwitchedOn = !!(P.r_u8() & 0x1);
 }
 #include "string_table.h"
 #include "ui/UIMainIngameWnd.h"
@@ -1932,7 +1937,7 @@ void CWeaponMagazined::net_Relcase(CObject *object)
 	m_binoc_vision->remove_links(object);
 }
 
-void CWeaponMagazined::SwitchNightVision(bool vision_on)
+void CWeaponMagazined::SwitchNightVision(bool vision_on, bool switch_sound)
 {
 	if (!m_bNightVisionEnabled) return;
 
@@ -1956,7 +1961,8 @@ void CWeaponMagazined::SwitchNightVision(bool vision_on)
 			if (!!m_NightVisionSect)
 			{
 				AddEffector(pA, effNightvisionScope, m_NightVisionSect);
-				HUD_SOUND::PlaySound(m_NightVisionOnSnd, pA->Position(), pA, bPlaySoundFirstPerson);
+				if (switch_sound)
+					HUD_SOUND::PlaySound(m_NightVisionOnSnd, pA->Position(), pA, bPlaySoundFirstPerson);
 				HUD_SOUND::PlaySound(m_NightVisionIdleSnd, pA->Position(), pA, bPlaySoundFirstPerson, true);
 			}
 		}
@@ -1965,7 +1971,8 @@ void CWeaponMagazined::SwitchNightVision(bool vision_on)
 		CEffectorPP* pp = pA->Cameras().GetPPEffector((EEffectorPPType)effNightvisionScope);
 		if (pp){
 			pp->Stop(1.0f);
-			HUD_SOUND::PlaySound(m_NightVisionOffSnd, pA->Position(), pA, bPlaySoundFirstPerson);
+			if (switch_sound)
+				HUD_SOUND::PlaySound(m_NightVisionOffSnd, pA->Position(), pA, bPlaySoundFirstPerson);
 			HUD_SOUND::StopSound(m_NightVisionIdleSnd);
 		}
 	}
@@ -1973,10 +1980,17 @@ void CWeaponMagazined::SwitchNightVision(bool vision_on)
 
 void CWeaponMagazined::UpdateSwitchNightVision()
 {
-	if (!m_bNightVisionEnabled) return;
+	if (!m_bNightVisionEnabled || !m_bNightVisionSwitchedOn) return;
 	if (OnClient()) return;
 
 	auto* pA = smart_cast<CActor*>(H_Parent());
 	if (pA && m_bNightVisionOn && !pA->Cameras().GetPPEffector((EEffectorPPType)effNightvision))
-		SwitchNightVision(true);
+		SwitchNightVision(true, false);
+}
+
+void CWeaponMagazined::SwitchNightVision()
+{
+	if (OnClient() || m_bGrenadeMode) return;
+	m_bNightVisionSwitchedOn = !m_bNightVisionSwitchedOn;
+	SwitchNightVision(!m_bNightVisionOn, true);
 }

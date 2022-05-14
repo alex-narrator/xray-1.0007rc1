@@ -275,18 +275,19 @@ protected:
 public:
 	// Real Wolf.20.01.15
 	/*IC*/virtual			bool TryToGetAmmo(u32);
-	bool					m_bGrenadeMode;
 	//
 	LPCSTR					binoc_vision_sect;
 	//
 	LPCSTR					m_NightVisionSect;
 	bool					m_bNightVisionOn;
-	void					SwitchNightVision(bool);
+	void					SwitchNightVision(bool, bool);
 	void					UpdateSwitchNightVision();
+	void					SwitchNightVision();
 protected:
 	CBinocularsVision*		m_binoc_vision;
 	bool					m_bVision;
 	bool					m_bNightVisionEnabled;
+	bool					m_bNightVisionSwitchedOn;
 };
 
 #endif //__XR_WEAPON_MAG_H__

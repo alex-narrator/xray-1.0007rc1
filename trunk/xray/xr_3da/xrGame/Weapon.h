@@ -243,7 +243,7 @@ protected:
 	//когда режим приближения включен
 	bool			m_bZoomMode;
 	// Member added by cribbledirge for testing weapon zoom in/out.
-	bool                    m_bZoomingIn;
+	bool            m_bZoomingIn;
 	//от 0 до 1, показывает насколько процентов
 	//мы перемещаем HUD
 	float			m_fZoomRotationFactor;
@@ -504,6 +504,8 @@ public:
 
 	LPCSTR					GetCurrentAmmo_ShortName();
 	float					GetAmmoInMagazineWeight(const decltype(m_magazine)& mag);
+
+	bool					m_bGrenadeMode;
 
 protected:
 	u32						m_ef_main_weapon_type;

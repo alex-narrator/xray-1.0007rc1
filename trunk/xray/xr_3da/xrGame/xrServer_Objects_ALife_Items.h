@@ -200,6 +200,8 @@ bool		m_bIsMagazineAttached;
 float		m_fAttachedSilencerCondition;
 //
 float		m_fRTZoomFactor;
+//
+bool		m_bNightVisionSwitchedOn;
 xr_vector<u8> m_AmmoIDs;
 //
 CSE_ALifeItemWeaponMagazined(LPCSTR caSection);

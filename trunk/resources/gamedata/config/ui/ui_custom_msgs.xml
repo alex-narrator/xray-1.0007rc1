@@ -82,6 +82,10 @@
 		<text font="graffiti22"  r="240" g="217" b="182" a="255" align="c">cant_walk_weight</text>
 	</cant_walk_weight>
 	
+	<cant_aim x="200" y="650" width="600" height="30" ttl="3">
+		<text font="graffiti22"  r="240" g="217" b="182" a="255" align="c">cant_aim</text>
+	</cant_aim>
+	
 	<not_enough_money_mine  x="100" y="100" width="800" height="60">
 		<text font="graffiti32"  r="240" g="217" b="182" a="255" align="c">st_not_enough_money</text>
 	</not_enough_money_mine>

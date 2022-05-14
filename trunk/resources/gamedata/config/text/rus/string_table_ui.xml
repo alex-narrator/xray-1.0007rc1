@@ -6,6 +6,9 @@
 	<string id="cant_walk_weight">
 		<text>Вы слишком перегружены, чтобы двигаться</text>
 	</string>
+	<string id="cant_aim">
+		<text>ПНВ мешает целиться</text>
+	</string>
 	<string id="dar_poltergeist_hold_the_door">
 		<text>Кто-то удерживает дверь.</text>
 	</string>

@@ -13,6 +13,7 @@
 
 #include "inventory.h"
 #include "xrserver_objects_alife_items.h"
+#include "Torch.h"
 
 #include "actor.h"
 #include "actoreffector.h"
@@ -89,6 +90,8 @@ CWeapon::CWeapon(LPCSTR name)
 	m_bZoomingIn = false;
 	m_class_name = get_class_name<CWeapon>(this);
 	need_slot = true;
+	//
+	m_bGrenadeMode = false;
 
 	m_cur_scope		= 0;
 	m_cur_silencer	= 0;
@@ -939,13 +942,19 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 	case kWPN_ZOOM:
 		if (IsZoomEnabled())
 		{
-			if (!g_actor->conditions().IsCantWalk())
+			auto pActor = smart_cast<const CActor*>(H_Parent());
+			auto pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
+			if (pTorch && pTorch->m_bNightVisionOn)
 			{
-				/*if (flags&CMD_START && !IsPending())
-					OnZoomIn();
-				else if (IsZoomed())
-					OnZoomOut();
-				return true;*/
+				if (IsScopeAttached() && !m_bGrenadeMode)
+				{
+					HUD().GetUI()->AddInfoMessage("cant_aim");
+					return false;
+				}
+			}
+
+			if (!pActor->conditions().IsCantWalk())
+			{
 				if (flags & CMD_START && !IsPending())
 				{
 					if (!psActorFlags.is(AF_HOLD_TO_AIM) && IsZoomed())
