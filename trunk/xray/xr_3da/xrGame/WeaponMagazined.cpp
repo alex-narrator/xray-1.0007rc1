@@ -1268,10 +1268,10 @@ void CWeaponMagazined::InitAddons()
 		//увеличение изношености самого глушителя при выстреле - из секции съёмного глушителя
 		conditionDecreasePerShotSilencer = READ_IF_EXISTS(pSettings, r_float, GetSilencerName(), "condition_shot_dec", .0f);
 
-		if (pSettings->line_exist(GetSilencerName(), "silencer_flame_particles"))
-			m_sSilencerFlameParticles = pSettings->r_string(GetSilencerName(), "silencer_flame_particles");
-		if (pSettings->line_exist(GetSilencerName(), "silencer_smoke_particles"))
-			m_sSilencerSmokeParticles = pSettings->r_string(GetSilencerName(), "silencer_smoke_particles");
+		m_sSilencerFlameParticles = READ_IF_EXISTS(pSettings, r_string, GetSilencerName(), "silencer_flame_particles", 
+			READ_IF_EXISTS(pSettings, r_string, cNameSect(), "silencer_flame_particles", nullptr));
+		m_sSilencerSmokeParticles = READ_IF_EXISTS(pSettings, r_string, GetSilencerName(), "silencer_smoke_particles", 
+			READ_IF_EXISTS(pSettings, r_string, cNameSect(), "silencer_smoke_particles", nullptr));
 
 		HUD_SOUND::StopSound(sndSilencerShot);
 		HUD_SOUND::DestroySound(sndSilencerShot);
