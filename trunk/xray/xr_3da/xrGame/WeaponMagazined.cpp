@@ -1263,11 +1263,10 @@ void CWeaponMagazined::InitAddons()
 
 	if (IsSilencerAttached() && SilencerAttachable())
 	{
-		auto se_wpn = smart_cast<CSE_ALifeItemWeaponMagazined*>(alife_object());
-		if (se_wpn)	m_fAttachedSilencerCondition = se_wpn->m_fAttachedSilencerCondition;
-
-		conditionDecreasePerShotSilencerKoef	= READ_IF_EXISTS(pSettings, r_float, GetSilencerName(), "condition_shot_dec_k", 1.f);
-		conditionDecreasePerShotSilencer		= READ_IF_EXISTS(pSettings, r_float, GetSilencerName(), "condition_shot_dec", .0f);
+		//увеличение изношености при выстреле с глушителем - из секции съёмного глушителя
+		conditionDecreasePerShotSilencerKoef = READ_IF_EXISTS(pSettings, r_float, GetSilencerName(), "condition_shot_dec_k", 1.f);
+		//увеличение изношености самого глушителя при выстреле - из секции съёмного глушителя
+		conditionDecreasePerShotSilencer = READ_IF_EXISTS(pSettings, r_float, GetSilencerName(), "condition_shot_dec", .0f);
 
 		m_sSilencerFlameParticles = READ_IF_EXISTS(pSettings, r_string, GetSilencerName(), "silencer_flame_particles", 
 			READ_IF_EXISTS(pSettings, r_string, cNameSect(), "silencer_flame_particles", nullptr));
@@ -1335,13 +1334,9 @@ void CWeaponMagazined::LoadZoomParams(LPCSTR section)
 	m_bVision = !!READ_IF_EXISTS(pSettings, r_bool, section, "vision_present", false);
 	if (m_bVision) binoc_vision_sect = section;
 
-	auto se_wpn = smart_cast<CSE_ALifeItemWeaponMagazined*>(alife_object());
-
 	m_bNightVisionEnabled = !!READ_IF_EXISTS(pSettings, r_bool, section, "night_vision", false);
 	if (m_bNightVisionEnabled)
 	{
-		if (se_wpn) m_bNightVisionSwitchedOn = se_wpn->m_bNightVisionSwitchedOn;
-
 		HUD_SOUND::StopSound(m_NightVisionOnSnd);
 		HUD_SOUND::DestroySound(m_NightVisionOnSnd);
 		HUD_SOUND::StopSound(m_NightVisionOffSnd);
@@ -1371,9 +1366,11 @@ void CWeaponMagazined::LoadZoomParams(LPCSTR section)
 		m_fMinScopeZoomFactor = READ_IF_EXISTS(pSettings, r_float, section, "min_scope_zoom_factor", m_fScopeZoomFactor / 3);
 		m_uZoomStepCount		= READ_IF_EXISTS(pSettings, r_u32, section, "zoom_step_count", 3);
 
-		if (se_wpn)
+		auto se_obj = alife_object();
+		if (se_obj)
 		{
-			m_fRTZoomFactor = se_wpn->m_fRTZoomFactor;
+			auto wpn = smart_cast<CSE_ALifeItemWeaponMagazined*>(se_obj);
+			if (wpn) m_fRTZoomFactor = wpn->m_fRTZoomFactor;
 //			Msg("LoadZoomParams m_fRTZoomFactor = [%.2f]", m_fRTZoomFactor);
 			clamp(m_fRTZoomFactor, m_fMinScopeZoomFactor, m_fScopeZoomFactor);
 //			Msg("LoadZoomParams clamp m_fRTZoomFactor = [%.2f]", m_fRTZoomFactor);
@@ -1724,6 +1721,11 @@ BOOL CWeaponMagazined::net_Spawn(CSE_Abstract* DC)
 	if (IsMagazineAttached())
 		m_LastLoadedMagType = m_ammoType;
 	//
+	if (SilencerAttachable() && IsSilencerAttached() && wpn->m_fAttachedSilencerCondition < 1.f)
+		m_fAttachedSilencerCondition = wpn->m_fAttachedSilencerCondition;
+	//
+	if (IsScopeAttached())
+		m_bNightVisionSwitchedOn = wpn->m_bNightVisionSwitchedOn;
 	return bRes;
 }
 
