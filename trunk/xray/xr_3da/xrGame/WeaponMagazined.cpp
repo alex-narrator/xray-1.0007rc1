@@ -164,15 +164,6 @@ void CWeaponMagazined::Load(LPCSTR section)
 	animGetEx(mhud.mhud_shutter, pSettings->line_exist(hud_sect.c_str(), "anim_shutter") ? "anim_shutter" : "anim_draw");
 	animGetEx(mhud.mhud_reload_single, pSettings->line_exist(hud_sect.c_str(), "anim_reload_single") ? "anim_reload_single" : "anim_draw");
 
-	//звуки и партиклы глушителя, еслит такой есть
-/*	if (m_eSilencerStatus == ALife::eAddonAttachable)
-	{
-		if (pSettings->line_exist(section, "silencer_flame_particles"))
-			m_sSilencerFlameParticles = pSettings->r_string(section, "silencer_flame_particles");
-		if (pSettings->line_exist(section, "silencer_smoke_particles"))
-			m_sSilencerSmokeParticles = pSettings->r_string(section, "silencer_smoke_particles");
-		HUD_SOUND::LoadSound(section, "snd_silncer_shot", sndSilencerShot, m_eSoundShot);
-	}*/
 	//  [7/20/2005]
 	if (pSettings->line_exist(section, "dispersion_start"))
 		m_iShootEffectorStart = pSettings->r_u8(section, "dispersion_start");
@@ -408,21 +399,11 @@ void CWeaponMagazined::HandleCartridgeInChamber()
 		return;
 	//отстрел и заряжание нового патрона идёт от конца вектора m_magazine.back() - первым подаётся последний добавленный патрон
 	if (*m_magazine.back().m_ammoSect != *m_magazine.front().m_ammoSect) //первый и последний патрон различны, значит зарядка смешанная
-	{
-		//if (*m_magazine[m_magazine.size() - 2].m_ammoSect == *m_magazine.front().m_ammoSect) //предпоследний патрон аналогичен первому
-		//{//начало разряжания магазина
-		//	//перекладываем патрон отличного типа (последний заряженный, он же первый на отстрел) из конца вектора (реверсного начала) в начало (реверсный конец)
-		//	Msg("weapon:[%s]|back:[%s]|front:[%s]|[size() - 2]:[%s] on unloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[m_magazine.size() - 2].m_ammoSect);
-		//	rotate(m_magazine.rbegin(), m_magazine.rbegin() + 1, m_magazine.rend());
-		//	Msg("weapon:[%s]|back:[%s]|front:[%s]|[size() - 2]:[%s] after rotate on unloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[m_magazine.size() - 2].m_ammoSect);
-		//}
-		//else if (*m_magazine[1].m_ammoSect == *m_magazine.back().m_ammoSect) //второй патрон аналогичен последнему патрону
-		{//конец заряжания магазина
-			//перекладываем патрон отличного типа (первый заряженный, он же последний на отстрел) из начала вектора в конец
-			Msg("~~ weapon:[%s]|back:[%s]|front:[%s]|[1]:[%s] on reloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[1].m_ammoSect);
-			rotate(m_magazine.begin(), m_magazine.begin() + 1, m_magazine.end());
-			Msg("~~ weapon:[%s]|back:[%s]|front:[%s]|[1]:[%s] after rotate on reloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[1].m_ammoSect);
-		}
+	{//конец заряжания магазина
+		//перекладываем патрон отличного типа (первый заряженный, он же последний на отстрел) из начала вектора в конец
+//		Msg("~~ weapon:[%s]|back:[%s]|front:[%s]|[1]:[%s] on reloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[1].m_ammoSect);
+		rotate(m_magazine.begin(), m_magazine.begin() + 1, m_magazine.end());
+//		Msg("~~ weapon:[%s]|back:[%s]|front:[%s]|[1]:[%s] after rotate on reloading", Name_script(), *m_magazine.back().m_ammoSect, *m_magazine.front().m_ammoSect, *m_magazine[1].m_ammoSect);
 	}
 }
 
@@ -488,7 +469,7 @@ void CWeaponMagazined::ReloadMagazine()
 		m_magazine.empty() && HasDetachableMagazine())	//разрядить пустой магазин
 		UnloadMagazine();
 
-	if (HasDetachableMagazine() /*&& m_pAmmo && m_pAmmo->IsBoxReloadable()*/)
+	if (HasDetachableMagazine())
 	{
 		bool b_attaching_magazine = AmmoTypeIsMagazine(m_ammoType);
 
@@ -497,7 +478,7 @@ void CWeaponMagazined::ReloadMagazine()
 
 		iMagazineSize			= mag_size + chamber_ammo;
 		m_LastLoadedMagType		= b_attaching_magazine ? m_ammoType : 0;
-		m_bIsMagazineAttached	= b_attaching_magazine;//true;
+		m_bIsMagazineAttached	= b_attaching_magazine;
 	}
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
@@ -581,11 +562,6 @@ void CWeaponMagazined::OnStateSwitch(u32 S)
 		switch2_Fire2();
 		break;
 	case eMisfire:
-		/*if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
-		{
-			HUD().GetUI()->UIGame()->RemoveCustomStatic("gun_not_jammed");
-			HUD().GetUI()->AddInfoMessage("gun_jammed");
-		}*/
 		// Callbacks added by Cribbledirge.
 		StateSwitchCallback(GameObject::eOnActorWeaponJammed, GameObject::eOnNPCWeaponJammed);
 		break;
@@ -1250,16 +1226,7 @@ void CWeaponMagazined::InitAddons()
 {
 	//////////////////////////////////////////////////////////////////////////
 	// Прицел
-	LoadZoomParams(cNameSect().c_str());
-
-	if (IsScopeAttached() && ScopeAttachable())
-	{
-/*		m_sScopeName = pSettings->r_string(cNameSect(), "scope_name");
-		m_iScopeX = pSettings->r_s32(cNameSect(), "scope_x");
-		m_iScopeY = pSettings->r_s32(cNameSect(), "scope_y");*/
-
-		LoadZoomParams(GetScopeName().c_str()/*m_sScopeName.c_str()*/);
-	}
+	LoadZoomParams(IsScopeAttached() && ScopeAttachable() ? GetScopeName().c_str() : cNameSect().c_str());
 
 	if (IsSilencerAttached() && SilencerAttachable())
 	{
@@ -1323,7 +1290,7 @@ void CWeaponMagazined::LoadZoomParams(LPCSTR section)
 	HUD_SOUND::DestroySound(sndZoomIn);
 	HUD_SOUND::StopSound(sndZoomOut);
 	HUD_SOUND::DestroySound(sndZoomOut);
-	//sounds
+
 	if (pSettings->line_exist(section, "snd_zoomin"))
 		HUD_SOUND::LoadSound(section, "snd_zoomin", sndZoomIn, SOUND_TYPE_ITEM_USING);
 	if (pSettings->line_exist(section, "snd_zoomout"))
@@ -1364,7 +1331,6 @@ void CWeaponMagazined::LoadZoomParams(LPCSTR section)
 		m_fMinScopeZoomFactor	= READ_IF_EXISTS(pSettings, r_float, section, "min_scope_zoom_factor", m_fScopeZoomFactor / 3);
 		m_uZoomStepCount		= READ_IF_EXISTS(pSettings, r_u32, section, "zoom_step_count", 3);
 
-		//sounds
 		HUD_SOUND::StopSound(sndZoomChange);
 		HUD_SOUND::DestroySound(sndZoomChange);
 
@@ -1898,7 +1864,7 @@ float CWeaponMagazined::Weight()
 {
 	float res = inherited::Weight();
 
-	//додамо вагу пустого магазину, бо вагу набоїв розрахували раніше
+	//додамо вагу порожнього магазину, бо вагу набоїв розрахували раніше
 	if (GetMagazineEmptySect())
 		res += pSettings->r_float(GetMagazineEmptySect(), "inv_weight");
 

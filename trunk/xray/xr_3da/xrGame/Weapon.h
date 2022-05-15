@@ -183,17 +183,14 @@ public:
 	virtual void InitAddons();
 
 	//для отоброажения иконок апгрейдов в интерфейсе
-	int	GetScopeX			();// { return m_iScopeX; }
-	int	GetScopeY			();// { return m_iScopeY; }
-	int	GetSilencerX		();// { return m_iSilencerX; }
-	int	GetSilencerY		();// { return m_iSilencerY; }
-	int	GetGrenadeLauncherX	();// { return m_iGrenadeLauncherX; }
-	int	GetGrenadeLauncherY	();// { return m_iGrenadeLauncherY; }
+	int	GetScopeX			();
+	int	GetScopeY			();
+	int	GetSilencerX		();
+	int	GetSilencerY		();
+	int	GetGrenadeLauncherX	();
+	int	GetGrenadeLauncherY	();
 
-//	const shared_str& GetGrenadeLauncherName	()		{ return m_sGrenadeLauncherName; }
-//	const shared_str& GetScopeName				()		{ return m_sScopeName; }
-//	const shared_str& GetSilencerName			()		{ return m_sSilencerName; }
-
+	//названия секций подключаемых аддонов
 	const shared_str GetScopeName				() const { return m_scopes		[m_cur_scope]		; }
 	const shared_str GetSilencerName			() const { return m_silencers	[m_cur_silencer]	; }
 	const shared_str GetGrenadeLauncherName		() const { return m_glaunchers	[m_cur_glauncher]	; }
@@ -208,11 +205,6 @@ protected:
 	ALife::EWeaponAddonStatus	m_eScopeStatus;
 	ALife::EWeaponAddonStatus	m_eSilencerStatus;
 	ALife::EWeaponAddonStatus	m_eGrenadeLauncherStatus;
-
-	//названия секций подключаемых аддонов
-/*	shared_str		m_sScopeName;
-	shared_str		m_sSilencerName;
-	shared_str		m_sGrenadeLauncherName;*/
 
 	//смещение иконов апгрейдов в инвентаре
 	int	m_iScopeX, m_iScopeY;

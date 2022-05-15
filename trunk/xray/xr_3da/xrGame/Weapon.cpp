@@ -69,8 +69,15 @@ CWeapon::CWeapon(LPCSTR name)
 
 	//eHandDependence = hdNone;
 
-	m_fZoomFactor = 1.f;// g_fov;
-	m_fZoomRotationFactor = 0.f;
+	m_fZoomFactor			= 1.f;// g_fov;
+	m_fZoomRotationFactor	= 0.f;
+	//
+	m_bScopeDynamicZoom		= false;
+	m_fScopeZoomFactor		= 1.f;
+	m_fMinScopeZoomFactor	= 1.f;
+	m_uZoomStepCount		= 3;
+	m_fRTZoomFactor			= 1.f;
+	//
 
 	m_pAmmo = NULL;
 
@@ -91,8 +98,11 @@ CWeapon::CWeapon(LPCSTR name)
 	m_class_name = get_class_name<CWeapon>(this);
 	need_slot = true;
 	//
+	conditionDecreasePerShotSilencerKoef	= 1.f;
+	conditionDecreasePerShotSilencer		= 0.f;
+	//
 	m_bGrenadeMode = false;
-
+	//
 	m_cur_scope		= 0;
 	m_cur_silencer	= 0;
 	m_cur_glauncher = 0;
@@ -382,25 +392,13 @@ void CWeapon::Load(LPCSTR section)
 	m_eSilencerStatus = (ALife::EWeaponAddonStatus)pSettings->r_s32(section, "silencer_status");
 	m_eGrenadeLauncherStatus = (ALife::EWeaponAddonStatus)pSettings->r_s32(section, "grenade_launcher_status");
 
-//	m_bScopeDynamicZoom = !!READ_IF_EXISTS(pSettings, r_bool, section, "scope_dynamic_zoom", false);
 	m_bZoomEnabled = !!pSettings->r_bool(section, "zoom_enabled");
 	m_fZoomRotateTime = ROTATION_TIME;
-
-	m_bScopeDynamicZoom		= false;
-	m_fScopeZoomFactor		= 1.f;
-	m_fMinScopeZoomFactor	= 1.f;
-	m_uZoomStepCount		= 3;
-	m_fRTZoomFactor			= 1.f;
-	conditionDecreasePerShotSilencerKoef = 1.f;
-	conditionDecreasePerShotSilencer = 0.f;
 
 	if (m_bZoomEnabled && m_pHUD) LoadZoomOffset(*hud_sect, "");
 
 	if (m_eScopeStatus == ALife::eAddonAttachable)
 	{
-/*		m_sScopeName = pSettings->r_string(section, "scope_name");
-		m_iScopeX = pSettings->r_s32(section, "scope_x");
-		m_iScopeY = pSettings->r_s32(section, "scope_y");*/
 		if (pSettings->line_exist(section, "scope_name"))
 		{
 			LPCSTR str = pSettings->r_string(section, "scope_name");
@@ -415,9 +413,6 @@ void CWeapon::Load(LPCSTR section)
 
 	if (m_eSilencerStatus == ALife::eAddonAttachable)
 	{
-/*		m_sSilencerName = pSettings->r_string(section, "silencer_name");
-		m_iSilencerX = pSettings->r_s32(section, "silencer_x");
-		m_iSilencerY = pSettings->r_s32(section, "silencer_y");*/
 		if (pSettings->line_exist(section, "silencer_name"))
 		{
 			LPCSTR str = pSettings->r_string(section, "silencer_name");
@@ -428,17 +423,10 @@ void CWeapon::Load(LPCSTR section)
 				m_silencers.push_back(silencer_section);
 			}
 		}
-		//увеличение изношености при выстреле с глушителем - из секции съёмного глушителя
-//		conditionDecreasePerShotSilencerKoef = READ_IF_EXISTS(pSettings, r_float, GetSilencerName(), "condition_shot_dec_k", 1.f);
-		//увеличение изношености самого глушителя при выстреле - из секции съёмного глушителя
-//		conditionDecreasePerShotSilencer = READ_IF_EXISTS(pSettings, r_float, GetSilencerName(), "condition_shot_dec", .0f);
 	}
 
 	if (m_eGrenadeLauncherStatus == ALife::eAddonAttachable)
 	{
-/*		m_sGrenadeLauncherName = pSettings->r_string(section, "grenade_launcher_name");
-		m_iGrenadeLauncherX = pSettings->r_s32(section, "grenade_launcher_x");
-		m_iGrenadeLauncherY = pSettings->r_s32(section, "grenade_launcher_y");*/
 		if (pSettings->line_exist(section, "grenade_launcher_name"))
 		{
 			LPCSTR str = pSettings->r_string(section, "grenade_launcher_name");
@@ -1523,8 +1511,8 @@ void CWeapon::reload(LPCSTR section)
 		m_can_be_strapped = false;
 
 	if (m_eScopeStatus == ALife::eAddonAttachable) {
-		m_addon_holder_range_modifier = READ_IF_EXISTS(pSettings, r_float, GetScopeName()/*m_sScopeName*/, "holder_range_modifier", m_holder_range_modifier);
-		m_addon_holder_fov_modifier = READ_IF_EXISTS(pSettings, r_float, GetScopeName()/*m_sScopeName*/, "holder_fov_modifier", m_holder_fov_modifier);
+		m_addon_holder_range_modifier	= READ_IF_EXISTS(pSettings, r_float, GetScopeName(), "holder_range_modifier", m_holder_range_modifier);
+		m_addon_holder_fov_modifier		= READ_IF_EXISTS(pSettings, r_float, GetScopeName(), "holder_fov_modifier", m_holder_fov_modifier);
 	}
 	else {
 		m_addon_holder_range_modifier = m_holder_range_modifier;
