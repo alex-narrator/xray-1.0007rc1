@@ -1419,6 +1419,7 @@ float CWeapon::CurrentZoomFactor()
 	{
 		if (m_bScopeDynamicZoom)
 		{
+			clamp(m_fRTZoomFactor, m_fMinScopeZoomFactor, m_fScopeZoomFactor);
 			res = m_fRTZoomFactor;
 //			Msg("m_fRTZoomFactor res = [%.2f]", res);
 		}
@@ -1450,9 +1451,12 @@ void CWeapon::OnZoomOut()
 {
 	if (H_Parent() && IsZoomed() && !IsRotatingToZoom() && m_bScopeDynamicZoom)
 	{
-		m_fRTZoomFactor = m_fZoomFactor;//store current
-		clamp(m_fRTZoomFactor, m_fMinScopeZoomFactor, m_fScopeZoomFactor);
-//		Msg("OnZoomOut() m_fRTZoomFactor res = [%.2f]", m_fRTZoomFactor);
+		if (IsScopeAttached() && !m_bGrenadeMode)
+		{
+			m_fRTZoomFactor = m_fZoomFactor;//store current
+			clamp(m_fRTZoomFactor, m_fMinScopeZoomFactor, m_fScopeZoomFactor);
+			//		Msg("OnZoomOut() m_fRTZoomFactor res = [%.2f]", m_fRTZoomFactor);
+		}
 	}
 
 	m_bZoomMode = false;
