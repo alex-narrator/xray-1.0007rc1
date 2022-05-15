@@ -11,7 +11,6 @@
 
 CExplosiveItem::CExplosiveItem(void)
 {
-	m_bBreakOnZeroCondition = false;
 }
 CExplosiveItem::~CExplosiveItem(void)
 {

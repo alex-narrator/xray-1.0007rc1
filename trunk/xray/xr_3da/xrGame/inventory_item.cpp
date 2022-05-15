@@ -105,8 +105,6 @@ CInventoryItem::CInventoryItem()
 	m_fRadiationAccumFactor		= 0.f;
 	m_fRadiationAccumLimit		= 0.f;
 
-	m_bBreakOnZeroCondition		= true;
-
 	m_fTTLOnDecrease			= 0.f;
 	m_fLastTimeCalled			= 0.f;
 
@@ -233,8 +231,7 @@ void CInventoryItem::Load(LPCSTR section)
 	if (pSettings->line_exist(section, "use_condition"))
 		m_flags.set(FUsingCondition, pSettings->r_bool(section, "use_condition"));
 
-	if (pSettings->line_exist(section, "break_on_zero_condition"))
-		m_bBreakOnZeroCondition = !!pSettings->r_bool(section, "break_on_zero_condition");
+	m_bBreakOnZeroCondition = !!READ_IF_EXISTS(pSettings, r_bool, section, "break_on_zero_condition", FALSE);
 
 	if (pSettings->line_exist(section, "break_particles"))
 		m_sBreakParticles = pSettings->r_string(section, "break_particles");

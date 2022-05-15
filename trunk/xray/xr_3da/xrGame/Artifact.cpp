@@ -82,8 +82,6 @@ CArtefact::CArtefact(void)
 		m_HitTypeProtection[i] = 0.0f;*/
 
 	m_bPending = false;
-
-	m_bBreakOnZeroCondition = false;
 }
 
 
@@ -537,19 +535,14 @@ u16	CArtefact::bone_count_to_synchronize	() const
 
 void CArtefact::UpdateConditionDecrease(float current_time)
 {
-	if (fis_zero(m_fTTLOnDecrease) ||
-		fis_zero(m_fCondition) ||
-		!smart_cast<CActor*>(H_Parent())) return;
-
-	if(!psActorFlags.test(AF_ARTEFACTS_FROM_ALL) && !m_pCurrentInventory->InBelt(this)) 
+	if (!psActorFlags.test(AF_ARTEFACTS_FROM_ALL) && !m_pCurrentInventory->InBelt(this) ||
+		!smart_cast<CActor*>(H_Parent()))
+	{
+		m_fLastTimeCalled = Level().GetGameDayTimeSec();
 		return;
+	}
 
-	float condition_dec = 
-		(1.f / (m_fTTLOnDecrease * 3600.f)) *	//приведення до ігрових годин
-		Level().GetGameTimeFactor() *			//з урахуванням таймфактору
-		Device.fTimeDelta;
-
-	ChangeCondition(-condition_dec);
+	inherited::UpdateConditionDecrease(current_time);
 //	Msg("! Artefact [%s] change condition on [%.6f]|current condition [%.6f]|delta_time  [%.6f]|time_factor [%.6f]", cName().c_str(), condition_dec, GetCondition(), Device.fTimeDelta, Level().GetGameTimeFactor());
 }
 
