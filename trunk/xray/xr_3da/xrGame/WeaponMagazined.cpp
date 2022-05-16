@@ -1241,9 +1241,12 @@ void CWeaponMagazined::InitAddons()
 		HUD_SOUND::StopSound(sndSilencerShot);
 		HUD_SOUND::DestroySound(sndSilencerShot);
 
-		shared_str silencer_sound_sect = pSettings->line_exist(GetSilencerName(), "snd_silncer_shot") ? GetSilencerName() : cNameSect();
-
-		HUD_SOUND::LoadSound(silencer_sound_sect.c_str(), "snd_silncer_shot", sndSilencerShot, m_eSoundShot);
+		if (pSettings->line_exist(cNameSect(), "snd_silncer_shot"))
+			HUD_SOUND::LoadSound(cNameSect().c_str(), "snd_silncer_shot", sndSilencerShot, m_eSoundShot);
+		else if (pSettings->line_exist(GetSilencerName(), "snd_silncer_shot"))
+			HUD_SOUND::LoadSound(GetSilencerName().c_str(), "snd_silncer_shot", sndSilencerShot, m_eSoundShot);
+		else
+			sndSilencerShot = sndShot;
 
 		m_sFlameParticlesCurrent = m_sSilencerFlameParticles;
 		m_sSmokeParticlesCurrent = m_sSilencerSmokeParticles;
@@ -1282,7 +1285,9 @@ void CWeaponMagazined::LoadZoomParams(LPCSTR section)
 
 	if (!IsScopeAttached())
 	{
-		m_bScopeDynamicZoom = false;
+		m_bScopeDynamicZoom		= false;
+		m_bVision				= false;
+		m_bNightVisionEnabled	= false;
 		return;
 	}
 
@@ -1898,7 +1903,7 @@ void CWeaponMagazined::net_Relcase(CObject *object)
 
 void CWeaponMagazined::SwitchNightVision(bool vision_on, bool switch_sound)
 {
-	if (!m_bNightVisionEnabled) return;
+	if (!m_bNightVisionEnabled || m_bGrenadeMode) return;
 
 	CActor *pA = smart_cast<CActor *>(H_Parent());
 	if (!pA)					return;

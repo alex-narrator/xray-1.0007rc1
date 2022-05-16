@@ -43,6 +43,11 @@
 #define WEAPON_REMOVE_TIME		60000
 #define ROTATION_TIME			0.25f
 
+LPCSTR wpn_scope			= "wpn_scope";
+LPCSTR wpn_silencer			= "wpn_silencer";
+LPCSTR wpn_grenade_launcher = "wpn_grenade_launcher";
+LPCSTR wpn_launcher			= "wpn_launcher";
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -124,7 +129,40 @@ CWeapon::~CWeapon()
 void CWeapon::Hit(SHit* pHDS)
 {
 	//	inherited::Hit(P, dir, who, element, position_in_object_space,impulse,hit_type);
+	if (IsHitToAddon(pHDS)) return;
 	inherited::Hit(pHDS);
+}
+
+bool CWeapon::IsHitToAddon(SHit* pHDS)
+{
+	bool result = false;
+
+	u16 bone_id;
+	bool hud_mode = ParentIsActor() && H_Parent() == Level().CurrentEntity() && !m_pHUD->IsHidden();
+	auto pVisual = smart_cast<CKinematics*>(hud_mode ? m_pHUD->Visual() : Visual());
+
+	if (IsScopeAttached() && ScopeAttachable())
+	{
+		bone_id = pVisual->LL_BoneID(wpn_scope);
+		if (pHDS->bone() == bone_id)
+			result = Detach(GetScopeName().c_str(), false);
+	}
+	if (IsSilencerAttached() && SilencerAttachable())
+	{
+		bone_id = pVisual->LL_BoneID(wpn_silencer);
+		if (pHDS->bone() == bone_id)
+			result = Detach(GetSilencerName().c_str(), false);
+	}
+	if (IsGrenadeLauncherAttached() && GrenadeLauncherAttachable())
+	{
+		bone_id = pVisual->LL_BoneID(wpn_grenade_launcher);
+		if (bone_id == BI_NONE)
+			bone_id = pVisual->LL_BoneID(wpn_launcher);
+		if (pHDS->bone() == bone_id)
+			result = Detach(GetGrenadeLauncherName().c_str(), false);
+	}
+
+	return result;
 }
 
 void CWeapon::UpdateXForm()
@@ -1236,11 +1274,6 @@ bool CWeapon::SilencerAttachable()
 {
 	return (CSE_ALifeItemWeapon::eAddonAttachable == m_eSilencerStatus);
 }
-
-LPCSTR wpn_scope = "wpn_scope";
-LPCSTR wpn_silencer = "wpn_silencer";
-LPCSTR wpn_grenade_launcher = "wpn_grenade_launcher";
-LPCSTR wpn_launcher = "wpn_launcher";
 
 void CWeapon::UpdateHUDAddonsVisibility()
 {//actor only
