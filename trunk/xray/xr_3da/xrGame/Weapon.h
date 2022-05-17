@@ -61,7 +61,6 @@ public:
 	virtual void			OnEvent(NET_Packet& P, u16 type);// {inherited::OnEvent(P,type);}
 
 	virtual	void			Hit(SHit* pHDS);
-	virtual bool			IsHitToAddon(SHit*);
 
 	virtual void			reinit();
 	virtual void			reload(LPCSTR section);

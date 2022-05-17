@@ -196,8 +196,12 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeaponMagazined,CSE_ALifeItemWeapon)
 u8			m_u8CurFireMode;
 //присоединён ли магазин
 bool		m_bIsMagazineAttached;
+//для хранения состояния присоединённого прицела
+float			m_fAttachedScopeCondition;
+//для хранения состояния присоединённого гранатомёта
+float			m_fAttachedGrenadeLauncherCondition;
 //для хранения состояния присоединённого глушителя
-float		m_fAttachedSilencerCondition;
+float			m_fAttachedSilencerCondition;
 //
 float		m_fRTZoomFactor;
 //

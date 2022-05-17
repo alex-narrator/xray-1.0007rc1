@@ -284,6 +284,13 @@ bool CWeaponMagazinedWGrenade::Action(s32 cmd, u32 flags)
 		))
 		return false;
 
+	if (m_bGrenadeMode && flags&CMD_START && cmd == kWPN_FIRE && 
+		IsGrenadeLauncherBroken())
+	{
+		OnEmptyClick();
+		return false;
+	}
+
 	if(inherited::Action(cmd, flags)) return true;
 	
 	switch(cmd) 
@@ -583,6 +590,8 @@ bool CWeaponMagazinedWGrenade::Attach(PIItem pIItem, bool b_send_event)
 
 		CRocketLauncher::m_fLaunchSpeed = pGrenadeLauncher->GetGrenadeVel();
 
+		m_fAttachedGrenadeLauncherCondition = pIItem->GetCondition();
+
  		//уничтожить подствольник из инвентаря
 		if(b_send_event)
 		{
@@ -605,6 +614,10 @@ bool CWeaponMagazinedWGrenade::Detach(const char* item_section_name, bool b_spaw
 		DetachGlauncher(item_section_name, b_spawn_item))
 	{
 		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher;
+		//
+		if (b_spawn_item) item_condition = m_fAttachedGrenadeLauncherCondition;
+		m_fAttachedGrenadeLauncherCondition = 1.f;
+		//
 		// Now we need to unload GL's magazine
 		if (!m_bGrenadeMode)
 		{
@@ -614,10 +627,10 @@ bool CWeaponMagazinedWGrenade::Detach(const char* item_section_name, bool b_spaw
 		PerformSwitchGL();
 
 		UpdateAddonsVisibility();
-		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item, item_condition);
 	}
 	else
-		return inherited::Detach(item_section_name, b_spawn_item);
+		return inherited::Detach(item_section_name, b_spawn_item, item_condition);
 }
 
 void CWeaponMagazinedWGrenade::InitAddons()

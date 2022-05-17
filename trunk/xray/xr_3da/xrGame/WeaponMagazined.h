@@ -143,6 +143,9 @@ public:
 
 	virtual void	OnDrawUI		();
 
+	virtual	void	Hit				(SHit* pHDS);
+	virtual bool	IsHitToAddon	(SHit* pHDS);
+
 	virtual bool	Attach(PIItem pIItem, bool b_send_event);
 	virtual bool	Detach(const char* item_section_name, bool b_spawn_item, float item_condition = 1.f);
 	virtual bool	CanAttach(PIItem pIItem);
@@ -151,6 +154,10 @@ public:
 			bool	DetachScope		(const char* item_section_name, bool b_spawn_item);
 			bool	DetachSilencer	(const char* item_section_name, bool b_spawn_item);
 			bool	DetachGlauncher	(const char* item_section_name, bool b_spawn_item);
+
+	virtual bool	IsSilencerBroken		();
+	virtual bool	IsScopeBroken			();
+	virtual bool	IsGrenadeLauncherBroken	();
 
 	virtual void	InitAddons();
 	virtual void	LoadZoomParams(LPCSTR section);
@@ -246,6 +253,10 @@ public:
 	virtual void	save				(NET_Packet &output_packet);
 	virtual void	load				(IReader &input_packet);
 
+	virtual void	ChangeAttachedSilencerCondition			(float);
+	virtual void	ChangeAttachedScopeCondition			(float);
+	virtual void	ChangeAttachedGrenadeLauncherCondition	(float);
+
 protected:
 	virtual bool	AllowFireWhileWorking() {return false;}
 
@@ -263,11 +274,15 @@ protected:
 	virtual void	StartIdleAnim		();
 	virtual	int		ShotsFired			() { return m_iShotNum; }
 	virtual float	GetWeaponDeterioration	();
+	//для хранения состояния присоединённого прицела
+	float			m_fAttachedScopeCondition;
+	//для хранения состояния присоединённого гранатомёта
+	float			m_fAttachedGrenadeLauncherCondition;
 	//для хранения состояния присоединённого глушителя
 	float			m_fAttachedSilencerCondition;
 	//износ самого глушителя при стрельбе
 	virtual float	GetSilencerDeterioration();
-	virtual void	DeteriorateSilencerAttachable(float fDeltaCondition);
+	virtual void	DeteriorateSilencerAttachable(float);
 
 	// Callback function added by Cribbledirge.
 	virtual IC void	StateSwitchCallback(GameObject::ECallbackType actor_type, GameObject::ECallbackType npc_type);

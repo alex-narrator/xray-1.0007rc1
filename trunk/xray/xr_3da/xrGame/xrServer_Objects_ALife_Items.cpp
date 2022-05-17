@@ -625,7 +625,9 @@ CSE_ALifeItemWeaponMagazined::CSE_ALifeItemWeaponMagazined	(LPCSTR caSection) : 
 	//
 	m_bIsMagazineAttached = true;
 	//
-	m_fAttachedSilencerCondition = 1.f;
+	m_fAttachedSilencerCondition		= 1.f;
+	m_fAttachedScopeCondition			= 1.f;
+	m_fAttachedGrenadeLauncherCondition = 1.f;
 	//
 	m_fRTZoomFactor = 1.f;
 	//
@@ -653,7 +655,9 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Read		(NET_Packet& P)
 		//
 		m_bIsMagazineAttached = !!(P.r_u8() & 0x1);
 		//
-		m_fAttachedSilencerCondition = P.r_float();
+		m_fAttachedSilencerCondition		= P.r_float();
+		m_fAttachedScopeCondition			= P.r_float();
+		m_fAttachedGrenadeLauncherCondition = P.r_float();
 	}
 	//
 	if (m_wVersion > 124)
@@ -677,6 +681,8 @@ void CSE_ALifeItemWeaponMagazined::UPDATE_Write	(NET_Packet& P)
 	P.w_u8(m_bIsMagazineAttached ? 1 : 0);
 	//
 	P.w_float(m_fAttachedSilencerCondition);
+	P.w_float(m_fAttachedScopeCondition);
+	P.w_float(m_fAttachedGrenadeLauncherCondition);
 	//
 	P.w_float(m_fRTZoomFactor);
 	//
