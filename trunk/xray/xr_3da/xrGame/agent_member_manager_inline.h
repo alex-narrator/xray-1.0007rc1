@@ -84,3 +84,13 @@ IC	const CAgentMemberManager::squad_mask_type &CAgentMemberManager::combat_mask(
 {
 	return				(m_combat_mask);
 }
+
+IC	const u32 &CAgentMemberManager::throw_time_interval() const
+{
+	return					(m_throw_time_interval);
+}
+
+IC	void CAgentMemberManager::throw_time_interval(const u32 &value)
+{
+	m_throw_time_interval = value;
+}

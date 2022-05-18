@@ -1288,3 +1288,83 @@ void CStalkerActionCriticalHit::execute						()
 {
 	inherited::execute						();
 }
+
+//////////////////////////////////////////////////////////////////////////
+// CStalkerCombatActionThrowGrenade
+//////////////////////////////////////////////////////////////////////////
+
+CStalkerCombatActionThrowGrenade::CStalkerCombatActionThrowGrenade(CAI_Stalker *object, LPCSTR action_name) :
+inherited(object, action_name)
+{
+}
+
+void CStalkerCombatActionThrowGrenade::initialize()
+{
+	inherited::initialize();
+
+	object().movement().set_mental_state(eMentalStateDanger);
+
+	const CInventoryItem					*grenade = object().inventory().ItemFromSlot(GRENADE_SLOT);//m_slots[3].m_pIItem;
+	VERIFY(grenade);
+	m_grenade_id = grenade->object().ID();
+
+	object().movement().set_movement_type(eMovementTypeStand);
+	object().movement().set_body_state(eBodyStateStand);
+	object().sound().play(eStalkerSoundThrowGrenade);
+	m_storage->set_property(eWorldPropertyStartedToThrowGrenade, true);
+}
+
+void CStalkerCombatActionThrowGrenade::finalize()
+{
+	inherited::finalize();
+
+	m_storage->set_property(eWorldPropertyStartedToThrowGrenade, false);
+}
+
+void CStalkerCombatActionThrowGrenade::execute()
+{
+	inherited::execute();
+
+	const CInventoryItem					*grenade = object().inventory().ItemFromSlot(GRENADE_SLOT);//m_slots[3].m_pIItem;
+	if (!grenade || grenade->object().ID() != m_grenade_id) {
+		object().on_throw_completed();
+		m_storage->set_property(eWorldPropertyStartedToThrowGrenade, false);
+		return;
+	}
+
+	const CEntityAlive						*enemy = object().memory().enemy().selected();
+	if (!enemy) {
+		m_storage->set_property(eWorldPropertyStartedToThrowGrenade, false);
+		return;
+	}
+
+	CMemoryInfo								mem_object = object().memory().memory(enemy);
+	if (!mem_object.m_object) {
+		m_storage->set_property(eWorldPropertyStartedToThrowGrenade, false);
+		return;
+	}
+
+	Fvector	enemy_position;
+	if (object().memory().visual().visible_now(enemy)) {
+		enemy_position = enemy->Position();
+		object().sight().setup(CSightAction(enemy, true, true));
+	}
+	else {
+		enemy_position = mem_object.m_object_params.m_position;
+		object().sight().setup(CSightAction(SightManager::eSightTypePosition, mem_object.m_object_params.m_position, true));
+	}
+
+	Fvector const enemy_direction = Fvector().sub(enemy_position, object().Position()).normalize_safe();
+	Fvector const head_direction = Fvector().setHP(-object().movement().m_head.current.yaw, -object().movement().m_head.current.pitch);
+	float const cos_alpha = head_direction.dotproduct(enemy_direction);
+
+	if (_abs(acosf(cos_alpha)) >= PI_DIV_8)
+		return;
+
+	object().throw_target(enemy_position, const_cast<CEntityAlive*>(enemy));
+
+	u32										min_queue_size, max_queue_size, min_queue_interval, max_queue_interval;
+	float									distance = enemy->Position().distance_to(object().Position());
+	select_queue_params(distance, min_queue_size, max_queue_size, min_queue_interval, max_queue_interval);
+	object().CObjectHandler::set_goal(eObjectActionFire1, &grenade->object(), min_queue_size, max_queue_size, min_queue_interval, max_queue_interval);
+}

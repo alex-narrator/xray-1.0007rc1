@@ -37,6 +37,8 @@ namespace StalkerSpace {
 		eStalkerSoundEnemyCriticallyWounded,
 		eStalkerSoundEnemyKilledOrWounded,
 
+		eStalkerSoundThrowGrenade,
+
 		eStalkerSoundScript,
 		eStalkerSoundDummy = u32(-1),
 	};

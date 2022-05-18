@@ -115,7 +115,7 @@ void CStalkerActionDetectAnomaly::initialize	()
 
 	Fvector							result;
 	object().eye_matrix.transform_tiny	(result,Fvector().set(0.f,0.f,10.f));
-	object().throw_target			(result);
+	object().throw_target			(result, 0);
 }
 
 void CStalkerActionDetectAnomaly::finalize	()
