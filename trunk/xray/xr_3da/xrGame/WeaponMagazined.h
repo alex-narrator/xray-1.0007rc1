@@ -151,10 +151,6 @@ public:
 	virtual bool	CanAttach(PIItem pIItem);
 	virtual bool	CanDetach(const char* item_section_name);
 
-			bool	DetachScope		(const char* item_section_name, bool b_spawn_item);
-			bool	DetachSilencer	(const char* item_section_name, bool b_spawn_item);
-			bool	DetachGlauncher	(const char* item_section_name, bool b_spawn_item);
-
 	virtual bool	IsSilencerBroken		();
 	virtual bool	IsScopeBroken			();
 	virtual bool	IsGrenadeLauncherBroken	();

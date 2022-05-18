@@ -544,15 +544,9 @@ bool CWeaponMagazinedWGrenade::CanAttach(PIItem pIItem)
 	
 	if(pGrenadeLauncher &&
 	   CSE_ALifeItemWeapon::eAddonAttachable == m_eGrenadeLauncherStatus &&
-	   0 == (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher))
-	{
-		for (u32 i = 0; i < m_glaunchers.size(); ++i)
-		{
-			if (m_glaunchers[i] == pIItem->object().cNameSect())
-				return true;
-		}
-		return false;
-	}
+	   0 == (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&
+	   std::find(m_glaunchers.begin(), m_glaunchers.end(), pIItem->object().cNameSect()) != m_glaunchers.end())
+	   return true;
 	else
 		return inherited::CanAttach(pIItem);
 }
@@ -560,15 +554,9 @@ bool CWeaponMagazinedWGrenade::CanAttach(PIItem pIItem)
 bool CWeaponMagazinedWGrenade::CanDetach(const char* item_section_name)
 {
 	if(CSE_ALifeItemWeapon::eAddonAttachable == m_eGrenadeLauncherStatus &&
-	   0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher))
-	{
-		for (u32 i = 0; i < m_glaunchers.size(); ++i)
-		{
-			if (m_glaunchers[i] == item_section_name)
-				return true;
-		}
-		return false;
-	}
+		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&
+		std::find(m_glaunchers.begin(), m_glaunchers.end(), item_section_name) != m_glaunchers.end())
+		return true;
 	else
 	   return inherited::CanDetach(item_section_name);
 }
@@ -611,10 +599,11 @@ bool CWeaponMagazinedWGrenade::Detach(const char* item_section_name, bool b_spaw
 {
 	if (CSE_ALifeItemWeapon::eAddonAttachable == m_eGrenadeLauncherStatus &&
 	   0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&
-		DetachGlauncher(item_section_name, b_spawn_item))
+	   std::find(m_glaunchers.begin(), m_glaunchers.end(), item_section_name) != m_glaunchers.end())
 	{
 		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher;
 		//
+		m_cur_glauncher = 0;
 		if (b_spawn_item) item_condition = m_fAttachedGrenadeLauncherCondition;
 		m_fAttachedGrenadeLauncherCondition = 1.f;
 		//
