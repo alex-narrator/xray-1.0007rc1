@@ -569,11 +569,8 @@ bool CWeaponMagazinedWGrenade::Attach(PIItem pIItem, bool b_send_event)
 	   CSE_ALifeItemWeapon::eAddonAttachable == m_eGrenadeLauncherStatus &&
 	   0 == (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher))
 	{
-		for (u32 i = 0; i < m_glaunchers.size(); ++i)
-		{
-			if (m_glaunchers[i] == pIItem->object().cNameSect())
-				m_cur_glauncher = (u8)i;
-		}
+		auto it = std::find(m_glaunchers.begin(), m_glaunchers.end(), pIItem->object().cNameSect());
+		m_cur_glauncher = (u8)std::distance(m_glaunchers.begin(), it);
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher;
 
 		CRocketLauncher::m_fLaunchSpeed = pGrenadeLauncher->GetGrenadeVel();

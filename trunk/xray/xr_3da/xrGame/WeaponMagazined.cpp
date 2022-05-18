@@ -1051,11 +1051,8 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 		m_eScopeStatus == CSE_ALifeItemWeapon::eAddonAttachable &&
 		(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope) == 0)
 	{
-		for (u32 i = 0; i < m_scopes.size(); ++i)
-		{
-			if (m_scopes[i] == pIItem->object().cNameSect())
-				m_cur_scope = (u8)i;
-		}
+		auto it = std::find(m_scopes.begin(), m_scopes.end(), pIItem->object().cNameSect());
+		m_cur_scope = (u8)std::distance(m_scopes.begin(), it);
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonScope;
 		result = true;
 		m_fAttachedScopeCondition = pIItem->GetCondition();
@@ -1064,11 +1061,8 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 		m_eSilencerStatus == CSE_ALifeItemWeapon::eAddonAttachable &&
 		(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonSilencer) == 0)
 	{
-		for (u32 i = 0; i < m_silencers.size(); ++i)
-		{
-			if (m_silencers[i] == pIItem->object().cNameSect())
-				m_cur_silencer = (u8)i;
-		}
+		auto it = std::find(m_silencers.begin(), m_silencers.end(), pIItem->object().cNameSect());
+		m_cur_silencer = (u8)std::distance(m_silencers.begin(), it);
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonSilencer;
 		result = true;
 		m_fAttachedSilencerCondition = pIItem->GetCondition();
@@ -1077,11 +1071,8 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 		m_eGrenadeLauncherStatus == CSE_ALifeItemWeapon::eAddonAttachable &&
 		(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) == 0)
 	{
-		for (u32 i = 0; i < m_glaunchers.size(); ++i)
-		{
-			if (m_glaunchers[i] == pIItem->object().cNameSect())
-				m_cur_glauncher = (u8)i;
-		};
+		auto it = std::find(m_glaunchers.begin(), m_glaunchers.end(), pIItem->object().cNameSect());
+		m_cur_glauncher = (u8)std::distance(m_glaunchers.begin(), it);
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher;
 		result = true;
 		m_fAttachedGrenadeLauncherCondition = pIItem->GetCondition();
