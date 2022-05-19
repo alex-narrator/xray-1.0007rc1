@@ -1,5 +1,5 @@
-#include "pch_script.h"
 #include "stdafx.h"
+#include "../xr_3da/xrGame/StdAfx.h"
 #include "UIInventoryWnd.h"
 
 #include "xrUIXmlParser.h"

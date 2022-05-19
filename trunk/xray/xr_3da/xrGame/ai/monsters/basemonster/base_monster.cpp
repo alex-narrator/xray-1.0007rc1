@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "../xr_3da/xrGame/StdAfx.h"
 #include "base_monster.h"
 #include "../../../PhysicsShell.h"
 #include "../../../hit.h"

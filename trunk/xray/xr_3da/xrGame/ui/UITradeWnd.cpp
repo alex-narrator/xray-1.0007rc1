@@ -1,6 +1,6 @@
 #include "stdafx.h"
+#include "../xr_3da/xrGame/StdAfx.h"
 #include "UITradeWnd.h"
-#include "../smart_cast.h"
 
 #include "xrUIXmlParser.h"
 #include "UIXmlInit.h"
