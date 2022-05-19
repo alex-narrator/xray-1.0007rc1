@@ -49,11 +49,11 @@ public:
 	virtual void	OnEvent			(NET_Packet& P, u16 type);
 	virtual void	ReloadMagazine	();
 	//считаем что в режиме подствольника стрельба только одиночными
-	virtual bool	HasFireModes	()	{ return m_bHasDifferentFireModes && !m_bGrenadeMode; }; 
+	virtual bool	HasFireModes	()	{ return m_bHasDifferentFireModes && !GetGrenadeMode(); }; 
 	//передёргивание затвора
 	virtual void	switch2_Shutter	();
 	//оружие использует отъёмный магазин
-	virtual bool	HasDetachableMagazine() { return inherited::HasDetachableMagazine() && !m_bGrenadeMode; };
+	virtual bool	HasDetachableMagazine() { return inherited::HasDetachableMagazine() && !GetGrenadeMode(); };
 
 	virtual bool	Action			(s32 cmd, u32 flags);
 
@@ -122,7 +122,8 @@ public:
 	int						iMagazineSize2;
 	int						iAmmoElapsed2;
 	xr_vector<CCartridge>	m_magazine2;
-//	bool					m_bGrenadeMode;
+	bool					m_bGrenadeMode;
+	virtual bool			GetGrenadeMode	(){return m_bGrenadeMode;};
 
 	CCartridge				m_DefaultCartridge2;
 	//получаем износ при выстреле из подствольника

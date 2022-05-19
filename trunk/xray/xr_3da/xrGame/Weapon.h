@@ -497,7 +497,7 @@ public:
 	LPCSTR					GetCurrentAmmo_ShortName();
 	float					GetAmmoInMagazineWeight(const decltype(m_magazine)& mag);
 
-	bool					m_bGrenadeMode;
+	virtual bool			GetGrenadeMode	(){ return false; };
 
 protected:
 	u32						m_ef_main_weapon_type;

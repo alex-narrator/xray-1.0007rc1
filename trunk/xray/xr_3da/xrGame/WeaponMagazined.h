@@ -187,6 +187,8 @@ public:
 	virtual bool	StopedAfterQueueFired	()			{return m_bStopedAfterQueueFired; }
 	virtual void	StopedAfterQueueFired	(bool value){m_bStopedAfterQueueFired = value; }
 
+	virtual bool	GetGrenadeMode			(){ return false; };
+
 protected:
 	//максимальный размер очереди, которой можно стрельнуть
 	int				m_iQueueSize;

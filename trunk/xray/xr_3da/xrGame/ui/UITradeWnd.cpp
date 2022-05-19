@@ -718,7 +718,6 @@ bool CUITradeWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 	return true; // always returns true, because ::StopAnyMove() == true;
 }
 
-#include "../weaponmagazinedwgrenade.h"
 #include "../Artifact.h"
 #include "../string_table.h"
 void CUITradeWnd::ActivatePropertiesBox()
@@ -728,7 +727,6 @@ void CUITradeWnd::ActivatePropertiesBox()
 	//CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 
 	CWeaponMagazined*			pWeapon			= smart_cast<CWeaponMagazined*>			(CurrentIItem());
-	CWeaponMagazinedWGrenade*	pWeaponMagWGren = smart_cast<CWeaponMagazinedWGrenade*>	(CurrentIItem());
 	CArtefact*					pArtefact		= smart_cast<CArtefact*>				(CurrentIItem());
 	CWeaponAmmo*				pAmmo			= smart_cast<CWeaponAmmo*>				(CurrentIItem());
 
@@ -782,7 +780,7 @@ void CUITradeWnd::ActivatePropertiesBox()
 		{
 			if (pWeapon->IsGrenadeLauncherAttached())
 			{
-				const char *switch_gl_text = pWeaponMagWGren->m_bGrenadeMode ? "st_deactivate_gl" : "st_activate_gl";
+				const char *switch_gl_text = pWeapon->GetGrenadeMode() ? "st_deactivate_gl" : "st_activate_gl";
 				if (m_pInv->InSlot(pWeapon))
 					m_pUIPropertiesBox->AddItem(switch_gl_text, NULL, INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE);
 				b_show = true;
@@ -841,7 +839,7 @@ void CUITradeWnd::ActivatePropertiesBox()
 
 			if (b)
 			{
-				const char *unload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_unload_gl" : "st_unload") : "st_unload";
+				const char *unload_text = pWeapon->GetGrenadeMode() ? "st_unload_gl" : "st_unload";
 				m_pUIPropertiesBox->AddItem(unload_text, NULL, INVENTORY_UNLOAD_MAGAZINE);
 				b_show = true;
 			}

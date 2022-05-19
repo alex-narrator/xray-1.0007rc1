@@ -13,7 +13,6 @@
 #include "../string_table.h"
 #include "../weapon.h"
 #include "../weaponmagazined.h"
-#include "../weaponmagazinedwgrenade.h"
 
 struct SLuaWpnParams{
 	luabind::functor<float>		m_functorRPM;
@@ -119,13 +118,12 @@ void CUIWpnParams::SetInfo(CInventoryItem *wpn)
 	char temp_text[64];
 	auto pWeapon			= smart_cast<CWeapon*>					(wpn);
 	auto pWeaponMag			= smart_cast<CWeaponMagazined*>			(wpn);
-	auto pWeaponMagWGren	= smart_cast<CWeaponMagazinedWGrenade*>	(wpn);
 	//кол-во и тип снаряженных боеприпасов
 	sprintf_s(temp_text, " %d | %s", pWeapon->GetAmmoElapsed(), pWeapon->GetCurrentAmmo_ShortName());
 	strconcat(sizeof(text_to_show), text_to_show, *CStringTable().translate("st_current_ammo"), pWeapon->GetAmmoElapsed() ? temp_text : *CStringTable().translate("st_not_loaded"));
 	m_textCurrentAmmo.SetText(text_to_show);
 	//размер магазина и текущий режим огня
-	sprintf_s(temp_text, pWeaponMagWGren && pWeaponMagWGren->m_bGrenadeMode ? *CStringTable().translate("st_gl_mode") : 
+	sprintf_s(temp_text, pWeapon->GetGrenadeMode() ? *CStringTable().translate("st_gl_mode") :
 		" %d |%s", pWeapon->GetAmmoMagSize(), pWeaponMag->HasFireModes() ? pWeaponMag->GetCurrentFireModeStr() : " (1)");
 	strconcat(sizeof(text_to_show), text_to_show, *CStringTable().translate("st_mag_size_fire_mode"), temp_text);
 	m_textMagSizeFiremode.SetText(text_to_show);

@@ -47,7 +47,6 @@ bool is_quick_slot(u32 slot, PIItem item, CInventory *inv)
 
 #include "../Medkit.h"
 #include "../Antirad.h"
-#include "../weaponmagazinedwgrenade.h"
 #include "ui_af_params.h"
 void CUIInventoryWnd::ActivatePropertiesBox()
 {
@@ -63,7 +62,6 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	CCustomOutfit*				pOutfit				= smart_cast<CCustomOutfit*>			(CurrentIItem());
 	CWeapon*					pWeapon				= smart_cast<CWeapon*>					(CurrentIItem());
 	CWeaponMagazined*			pWeaponMag          = smart_cast<CWeaponMagazined*>			(CurrentIItem());
-	CWeaponMagazinedWGrenade*	pWeaponMagWGren		= smart_cast<CWeaponMagazinedWGrenade*>	(CurrentIItem());
 	CScope*						pScope				= smart_cast<CScope*>					(CurrentIItem());
 	CSilencer*					pSilencer			= smart_cast<CSilencer*>				(CurrentIItem());
 	CGrenadeLauncher*			pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>			(CurrentIItem());
@@ -172,7 +170,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 	{
 		if (pWeapon->IsGrenadeLauncherAttached())
 		{
-		    const char *switch_gl_text = pWeaponMagWGren->m_bGrenadeMode ? "st_deactivate_gl" : "st_activate_gl";
+			const char *switch_gl_text = pWeapon->GetGrenadeMode() ? "st_deactivate_gl" : "st_activate_gl";
 		    if (m_pInv->InSlot(pWeapon))
 			UIPropertiesBox.AddItem(switch_gl_text, NULL, INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE);
 		b_show = true;
@@ -231,7 +229,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 			}
 
 			if(b){
-				const char *unload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_unload_gl" : "st_unload") : "st_unload";
+				const char *unload_text = pWeapon->GetGrenadeMode() ? "st_unload_gl" : "st_unload";
 				UIPropertiesBox.AddItem(unload_text, NULL, INVENTORY_UNLOAD_MAGAZINE);
 				b_show			= true;
 			}

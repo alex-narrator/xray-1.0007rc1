@@ -695,7 +695,6 @@ bool CUICarBodyWnd::MoveItemsFromCell(CUICellItem* itm, bool b_all)
 #include "../Artifact.h"
 #include "../WarBelt.h"
 #include "../BackPack.h"
-#include "../weaponmagazinedwgrenade.h"
 #include "../string_table.h"
 void CUICarBodyWnd::ActivatePropertiesBox()
 {
@@ -704,7 +703,6 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	m_pUIPropertiesBox->RemoveAll();
 
 	auto pWeapon			= smart_cast<CWeaponMagazined*>			(CurrentIItem());
-	auto pWeaponMagWGren	= smart_cast<CWeaponMagazinedWGrenade*>	(CurrentIItem());
 	auto pEatableItem		= smart_cast<CEatableItem*>				(CurrentIItem());
 	auto pMedkit			= smart_cast<CMedkit*>					(CurrentIItem());
 	auto pAntirad			= smart_cast<CAntirad*>					(CurrentIItem());
@@ -763,7 +761,7 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 	{
 		if (pWeapon->IsGrenadeLauncherAttached())
 		{
-			const char *switch_gl_text = pWeaponMagWGren->m_bGrenadeMode ? "st_deactivate_gl" : "st_activate_gl";
+			const char *switch_gl_text = pWeapon->GetGrenadeMode() ? "st_deactivate_gl" : "st_activate_gl";
 			if (m_pOurObject->inventory().InSlot(pWeapon))
 				m_pUIPropertiesBox->AddItem(switch_gl_text, NULL, INVENTORY_SWITCH_GRENADE_LAUNCHER_MODE);
 			b_show = true;
@@ -821,7 +819,7 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 		}
 
 		if (b) {
-			const char *unload_text = pWeaponMagWGren ? (pWeaponMagWGren->m_bGrenadeMode ? "st_unload_gl" : "st_unload") : "st_unload";
+			const char *unload_text = pWeapon->GetGrenadeMode() ? "st_unload_gl" : "st_unload";
 			m_pUIPropertiesBox->AddItem(unload_text, NULL, INVENTORY_UNLOAD_MAGAZINE);
 			b_show = true;
 		}

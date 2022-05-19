@@ -106,8 +106,6 @@ CWeapon::CWeapon(LPCSTR name)
 	conditionDecreasePerShotSilencerKoef	= 1.f;
 	conditionDecreasePerShotSilencer		= 0.f;
 	//
-	m_bGrenadeMode = false;
-	//
 	m_cur_scope		= 0;
 	m_cur_silencer	= 0;
 	m_cur_glauncher = 0;
@@ -939,7 +937,7 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 			auto pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
 			if (pTorch && pTorch->m_bNightVisionOn)
 			{
-				if (IsScopeAttached() && !m_bGrenadeMode)
+				if (IsScopeAttached() && !GetGrenadeMode())
 				{
 					HUD().GetUI()->AddInfoMessage("cant_aim");
 					return false;
@@ -1439,7 +1437,7 @@ void CWeapon::OnZoomOut()
 {
 	if (H_Parent() && IsZoomed() && !IsRotatingToZoom() && m_bScopeDynamicZoom)
 	{
-		if (IsScopeAttached() && !m_bGrenadeMode)
+		if (IsScopeAttached() && !GetGrenadeMode())
 		{
 			m_fRTZoomFactor = m_fZoomFactor;//store current
 			clamp(m_fRTZoomFactor, m_fMinScopeZoomFactor, m_fScopeZoomFactor);

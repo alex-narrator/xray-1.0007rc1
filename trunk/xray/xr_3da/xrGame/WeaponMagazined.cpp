@@ -1422,7 +1422,7 @@ void CWeaponMagazined::OnZoomIn()
 		HUD_SOUND::StopSound(sndSightsDown);												//	
 		HUD_SOUND::StopSound(sndZoomOut);
 		bool b_hud_mode = (Level().CurrentEntity() == H_Parent());							//
-		if (IsScopeAttached() && !m_bGrenadeMode)
+		if (IsScopeAttached() && !GetGrenadeMode())
 		{
 			HUD_SOUND::PlaySound(sndZoomIn, H_Parent()->Position(), H_Parent(), b_hud_mode);
 
@@ -1459,7 +1459,7 @@ void CWeaponMagazined::OnZoomOut()
 	HUD_SOUND::StopSound(sndSightsDown);												//		
 	HUD_SOUND::StopSound(sndZoomIn);
 	bool b_hud_mode = (Level().CurrentEntity() == H_Parent());							//
-	if (IsScopeAttached() && !m_bGrenadeMode)
+	if (IsScopeAttached() && !GetGrenadeMode())
 	{
 		if (H_Parent())
 			HUD_SOUND::PlaySound(sndZoomOut, H_Parent()->Position(), H_Parent(), b_hud_mode);
@@ -1869,7 +1869,7 @@ void CWeaponMagazined::net_Relcase(CObject *object)
 
 void CWeaponMagazined::SwitchNightVision(bool vision_on, bool switch_sound)
 {
-	if (!m_bNightVisionEnabled || m_bGrenadeMode) return;
+	if (!m_bNightVisionEnabled || GetGrenadeMode()) return;
 
 	CActor *pA = smart_cast<CActor *>(H_Parent());
 	if (!pA)					return;
@@ -1920,7 +1920,7 @@ void CWeaponMagazined::UpdateSwitchNightVision()
 
 void CWeaponMagazined::SwitchNightVision()
 {
-	if (OnClient() || !m_bNightVisionEnabled || m_bGrenadeMode) return;
+	if (OnClient() || !m_bNightVisionEnabled || GetGrenadeMode()) return;
 	m_bNightVisionSwitchedOn = !m_bNightVisionSwitchedOn;
 	SwitchNightVision(!m_bNightVisionOn, true);
 }
