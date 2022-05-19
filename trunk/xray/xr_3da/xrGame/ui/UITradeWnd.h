@@ -96,6 +96,7 @@ protected:
 	PIItem				CurrentIItem				();
 	//
 	bool                MoveItemsFromCell			(CUICellItem* itm, bool b_all);  //переместить предмет/стак предметов
+	void				EatItem						();
 	//
 	bool                b_TakeAllActionKeyHolded;
 	//
@@ -110,4 +111,18 @@ protected:
 	void				BindDragDropListEvents		(CUIDragDropListEx* lst);
 
 	void				SendEvent_Item_Drop			(PIItem	pItem);
+
+	enum eInventorySndAction {
+		eInvSndOpen = 0,
+		eInvSndClose,
+		eInvProperties,
+		eInvDropItem,
+		eInvMoveItem,
+		eInvDetachAddon,
+		eInvItemUse,
+		eInvSndMax
+	};
+
+	ref_sound					sounds[eInvSndMax];
+	void						PlaySnd(eInventorySndAction a);
 };

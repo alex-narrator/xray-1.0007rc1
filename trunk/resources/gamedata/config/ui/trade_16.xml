@@ -90,5 +90,15 @@
 		<phrase x="230" y="0" font="graffiti22" r="240" g="215" b="185"></phrase>
 	</price_mt_static>
 
+	<action_sounds>
+		<snd_open>interface\inv_open</snd_open>
+		<snd_close>interface\inv_close</snd_close>
+		<snd_properties>interface\inv_properties</snd_properties>
+		<snd_drop_item>interface\inv_drop</snd_drop_item>
+		<snd_move_item>interface\inv_slot</snd_move_item>
+		<snd_detach_addon>interface\inv_detach_addon</snd_detach_addon>
+		<snd_item_use>interface\inv_slot</snd_item_use>
+	</action_sounds>
+
 </window>
 

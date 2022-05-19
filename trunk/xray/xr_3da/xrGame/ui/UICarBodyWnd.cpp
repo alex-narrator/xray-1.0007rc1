@@ -147,6 +147,23 @@ void CUICarBodyWnd::Init()
 
 	BindDragDropListEvents			(m_pUIOurBagList);
 	BindDragDropListEvents			(m_pUIOthersBagList);
+
+	//Load sounds
+	if (uiXml.NavigateToNode("action_sounds", 0))
+	{
+		XML_NODE* stored_root = uiXml.GetLocalRoot();
+		uiXml.SetLocalRoot(uiXml.NavigateToNode("action_sounds", 0));
+
+		::Sound->create(sounds[eInvSndOpen],		uiXml.Read("snd_open",			0, NULL), st_Effect, sg_SourceType);
+		::Sound->create(sounds[eInvSndClose],		uiXml.Read("snd_close",			0, NULL), st_Effect, sg_SourceType);
+		::Sound->create(sounds[eInvProperties],		uiXml.Read("snd_properties",	0, NULL), st_Effect, sg_SourceType);
+		::Sound->create(sounds[eInvDropItem],		uiXml.Read("snd_drop_item",		0, NULL), st_Effect, sg_SourceType);
+		::Sound->create(sounds[eInvMoveItem],		uiXml.Read("snd_move_item",		0, NULL), st_Effect, sg_SourceType);
+		::Sound->create(sounds[eInvDetachAddon],	uiXml.Read("snd_detach_addon",	0, NULL), st_Effect, sg_SourceType);
+		::Sound->create(sounds[eInvItemUse],		uiXml.Read("snd_item_use",		0, NULL), st_Effect, sg_SourceType);
+
+		uiXml.SetLocalRoot(stored_root);
+	}
 }
 
 void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryBox* pInvBox)
@@ -247,6 +264,7 @@ void CUICarBodyWnd::Hide()
 		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = false; //сбросим флаг перезарядки из рюкзака
 	}
     //
+	PlaySnd(eInvSndClose);
 }
 
 void CUICarBodyWnd::UpdateLists()
@@ -375,14 +393,17 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 			case INVENTORY_DETACH_SCOPE_ADDON:
 				{
 					pWeapon->Detach(pWeapon->GetScopeName().c_str(), true);
+					PlaySnd(eInvDetachAddon);
 				}break;
 			case INVENTORY_DETACH_SILENCER_ADDON:
 				{
 					pWeapon->Detach(pWeapon->GetSilencerName().c_str(), true);
+					PlaySnd(eInvDetachAddon);
 				}break;
 			case INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON:
 				{
 					pWeapon->Detach(pWeapon->GetGrenadeLauncherName().c_str(), true);
+					PlaySnd(eInvDetachAddon);
 				}break;
 			case INVENTORY_DROP_ACTION:
 				{
@@ -459,6 +480,7 @@ void CUICarBodyWnd::Show()
 		if (psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = true; //установим флаг перезарядки из рюкзака
 	}
 	//
+	PlaySnd(eInvSndOpen);
 }
 
 void CUICarBodyWnd::DisableAll()
@@ -521,8 +543,8 @@ void CUICarBodyWnd::TakeAll()
 			move_item		(m_pInventoryBox->ID(), tmp_id, itm->object().ID());
 //.			Actor()->callback(GameObject::eInvBoxItemTake)(m_pInventoryBox->lua_game_object(), itm->object().lua_game_object() );
 		}
-
 	}
+	PlaySnd(eInvMoveItem);
 }
 
 void CUICarBodyWnd::SendEvent_Item_Drop(PIItem	pItem)
@@ -554,15 +576,6 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 	}
 
 	CUIDragDropListEx* owner_list = ci->OwnerList();
-/*	u16 owner_id = 0;
-	if (owner_list == m_pUIOthersBagList)
-	{
-		owner_id = (m_pInventoryBox) ? m_pInventoryBox->ID() : smart_cast<CGameObject*>(m_pOthersObject)->ID();
-	}
-	else
-	{
-		owner_id = smart_cast<CGameObject*>(m_pOurObject)->ID();
-	}*/
 
 	if (b_all)
 	{
@@ -582,8 +595,7 @@ void CUICarBodyWnd::DropItemsfromCell(bool b_all)
 	owner_list->RemoveItem(ci, b_all);
 
 	SetCurrentItem(NULL);
-/*	InventoryUtilities::UpdateWeight(*m_pUIOurBagWnd, true);
-	InventoryUtilities::UpdateVolume(*m_pUIOurVolumeWnd, true);*/
+	PlaySnd(eInvDropItem);
 }
 
 #include "../xr_level_controller.h"
@@ -687,6 +699,7 @@ bool CUICarBodyWnd::MoveItemsFromCell(CUICellItem* itm, bool b_all)
 		else
 			move_item(m_pInventoryBox->ID(), tmp_id, itm->object().ID());
 	}
+	PlaySnd(eInvMoveItem);
 	return				true;
 }
 
@@ -768,21 +781,18 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 		}
 		if (pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
 		{
-			//m_pUIPropertiesBox->AddItem("st_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
 			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetGrenadeLauncherName(), "inv_name")));
 			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
 			b_show = true;
 		}
 		if (pWeapon->ScopeAttachable() && pWeapon->IsScopeAttached())
 		{
-			//m_pUIPropertiesBox->AddItem("st_detach_scope", NULL, INVENTORY_DETACH_SCOPE_ADDON);
 			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetScopeName(), "inv_name")));
 			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_SCOPE_ADDON);
 			b_show = true;
 		}
 		if (pWeapon->SilencerAttachable() && pWeapon->IsSilencerAttached())
 		{
-			//m_pUIPropertiesBox->AddItem("st_detach_silencer", NULL, INVENTORY_DETACH_SILENCER_ADDON);
 			strconcat(sizeof(temp), temp, *CStringTable().translate("st_detach_addon"), " ", *CStringTable().translate(pSettings->r_string(*pWeapon->GetSilencerName(), "inv_name")));
 			m_pUIPropertiesBox->AddItem(temp, NULL, INVENTORY_DETACH_SILENCER_ADDON);
 			b_show = true;
@@ -877,6 +887,7 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 		cursor_pos						= GetUICursor()->GetCursorPosition();
 		cursor_pos.sub					(vis_rect.lt);
 		m_pUIPropertiesBox->Show		(vis_rect, cursor_pos);
+		PlaySnd(eInvProperties);
 	}
 }
 
@@ -885,20 +896,12 @@ void CUICarBodyWnd::EatItem()
 	CActor *pActor				= smart_cast<CActor*>(Level().CurrentEntity());
 	if(!pActor)					return;
 
-/*	CUIDragDropListEx* owner_list		= CurrentItem()->OwnerList();
-	if(owner_list==m_pUIOthersBagList)
-	{
-		u16 owner_id				= (m_pInventoryBox)?m_pInventoryBox->ID():smart_cast<CGameObject*>(m_pOthersObject)->ID();
-
-		move_item(	owner_id, //from
-					Actor()->ID(), //to
-					CurrentIItem()->object().ID());
-	}*/
-
 	NET_Packet					P;
 	CGameObject::u_EventGen		(P, GEG_PLAYER_ITEM_EAT, Actor()->ID());
 	P.w_u16						(CurrentIItem()->object().ID());
 	CGameObject::u_EventSend	(P);
+
+	PlaySnd(eInvItemUse);
 
 	UpdateLists_delayed			();
 }
@@ -1033,4 +1036,11 @@ void CUICarBodyWnd::MoveItemWithContent(CUICellItem* itm, u32 slot)
 	}
 
 	if(itm) MoveItemsFromCell(itm, false);		
+	PlaySnd(eInvMoveItem);
+}
+
+void CUICarBodyWnd::PlaySnd(eInventorySndAction a)
+{
+	if (sounds[a]._handle())
+		sounds[a].play(NULL, sm_2D);
 }
