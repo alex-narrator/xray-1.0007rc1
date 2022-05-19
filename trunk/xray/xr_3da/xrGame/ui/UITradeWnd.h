@@ -114,7 +114,6 @@ protected:
 
 	enum eInventorySndAction {
 		eInvSndOpen = 0,
-		eInvSndClose,
 		eInvProperties,
 		eInvDropItem,
 		eInvMoveItem,

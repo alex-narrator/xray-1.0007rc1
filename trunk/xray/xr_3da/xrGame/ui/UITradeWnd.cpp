@@ -192,7 +192,6 @@ void CUITradeWnd::Init()
 		uiXml.SetLocalRoot(uiXml.NavigateToNode("action_sounds", 0));
 
 		::Sound->create(sounds[eInvSndOpen],		uiXml.Read("snd_open",			0, NULL), st_Effect, sg_SourceType);
-		::Sound->create(sounds[eInvSndClose],		uiXml.Read("snd_close",			0, NULL), st_Effect, sg_SourceType);
 		::Sound->create(sounds[eInvProperties],		uiXml.Read("snd_properties",	0, NULL), st_Effect, sg_SourceType);
 		::Sound->create(sounds[eInvDropItem],		uiXml.Read("snd_drop_item",		0, NULL), st_Effect, sg_SourceType);
 		::Sound->create(sounds[eInvMoveItem],		uiXml.Read("snd_move_item",		0, NULL), st_Effect, sg_SourceType);
@@ -415,7 +414,6 @@ void CUITradeWnd::Hide()
 	//
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if (pActor && psActorFlags.test(AF_AMMO_FROM_BELT)) pActor->inventory().m_bRuckAmmoPlacement = false; //сбросим флаг перезарядки из рюкзака
-	PlaySnd(eInvSndClose);
 }
 
 void CUITradeWnd::StartTrade()

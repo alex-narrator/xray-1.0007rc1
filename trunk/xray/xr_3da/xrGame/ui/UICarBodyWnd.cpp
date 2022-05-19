@@ -27,7 +27,6 @@
 #include "../script_game_object.h"
 #include "../BottleItem.h"
 #include "../WeaponKnife.h"
-#include "../smart_cast.h"
 
 #define				CAR_BODY_XML		"carbody_new.xml"
 #define				CARBODY_ITEM_XML	"carbody_item.xml"
@@ -36,7 +35,9 @@ void move_item (u16 from_id, u16 to_id, u16 what_id);
 
 CUICarBodyWnd::CUICarBodyWnd()
 {
-	m_pInventoryBox		= NULL;
+	m_pInventoryBox		= nullptr;
+	m_pOurObject		= nullptr;
+	m_pOthersObject		= nullptr;
 	Init				();
 	Hide				();
 	m_b_need_update		= false;
