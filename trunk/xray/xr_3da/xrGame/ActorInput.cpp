@@ -486,11 +486,13 @@ void CActor::ActorUse()
 		return;
 	}
 
-	
+
+	auto pEntityAliveWeLookingAt = smart_cast<CEntityAlive*>(m_pPersonWeLookingAt);
+	bool looking_at_alive_person = pEntityAliveWeLookingAt && pEntityAliveWeLookingAt->g_Alive();
 
 	if (m_pUsableObject)
 	{
-		if (m_pPersonWeLookingAt || inventory().IsFreeHands()) //чтобы можно было слышать просьбы убрать оружие при попытке поговорить со сталкерами с оружием в руках
+		if (looking_at_alive_person || inventory().IsFreeHands()) //чтобы можно было слышать просьбы убрать оружие при попытке поговорить со сталкерами с оружием в руках
 		{
 			inventory().TryToHideWeapon(true, false);
 			//
@@ -509,14 +511,9 @@ void CActor::ActorUse()
 	{
 		if(m_pPersonWeLookingAt)
 		{
-			CEntityAlive* pEntityAliveWeLookingAt = 
-				smart_cast<CEntityAlive*>(m_pPersonWeLookingAt);
-
-			VERIFY(pEntityAliveWeLookingAt);
-
 			if (GameID()==GAME_SINGLE)
 			{			
-				if(pEntityAliveWeLookingAt->g_Alive())
+				if (looking_at_alive_person)
 				{
 					TryToTalk();
 					return;
