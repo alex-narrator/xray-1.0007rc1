@@ -261,14 +261,10 @@ void CTorch::Switch	(bool light_on)
 		Actor()->callback(GameObject::eSwitchTorch)(light_on);
 	}
 	/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
-	bool bPlaySoundFirstPerson = (pA == Level().CurrentViewEntity());
-	if (m_switched_on)
+	if (pA)
 	{
-		HUD_SOUND::PlaySound(m_TorchOnSnd, pA->Position(), pA, bPlaySoundFirstPerson);
-	}
-	else
-	{
-		HUD_SOUND::PlaySound(m_TorchOffSnd, pA->Position(), pA, bPlaySoundFirstPerson);
+		bool bPlaySoundFirstPerson = (pA == Level().CurrentViewEntity());
+		HUD_SOUND::PlaySound(m_switched_on ? m_TorchOnSnd : m_TorchOffSnd, pA->Position(), pA, bPlaySoundFirstPerson);
 	}
 }
 
