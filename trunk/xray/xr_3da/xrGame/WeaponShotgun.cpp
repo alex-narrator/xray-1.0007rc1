@@ -38,7 +38,6 @@ void CWeaponShotgun::net_Destroy()
 void CWeaponShotgun::Load	(LPCSTR section)
 {
 	inherited::Load		(section);
-
 	// Звук и анимация для выстрела дуплетом
 	HUD_SOUND::LoadSound(section, "snd_shoot_duplet", sndShotBoth, m_eSoundShotBoth);
 	animGetEx(mhud_shot_boths, "anim_shoot_both");
@@ -61,7 +60,6 @@ void CWeaponShotgun::Load	(LPCSTR section)
 
 		animGetEx(mhud.mhud_shutter, pSettings->line_exist(hud_sect.c_str(), "anim_shutter") ? "anim_shutter" : "anim_reload");
 	};
-
 }
 
 
@@ -137,7 +135,7 @@ void CWeaponShotgun::OnShotBoth()
 	PlaySound			(sndShotBoth,get_LastFP());
 	
 	// Camera
-	AddShotEffector		();
+	AddShotEffector();
 	
 	// анимация дуплета
 	m_pHUD->animPlay			(random_anim(mhud_shot_boths),FALSE,this,GetState());
@@ -477,52 +475,3 @@ u8 CWeaponShotgun::AddCartridge		(u8 cnt)
 
 	return cnt;
 }
-
-/*BOOL	CWeaponShotgun::net_Spawn(CSE_Abstract* DC)
-{
-	BOOL bRes = inherited::net_Spawn(DC);
-
-	CSE_ALifeItemWeaponShotGun* _dc = smart_cast<CSE_ALifeItemWeaponShotGun*>(DC);
-	xr_vector<u8> ammo_ids = _dc->m_AmmoIDs;
-
-	for (u32 i = 0; i < ammo_ids.size(); i++)
-	{
-		u8 LocalAmmoType = ammo_ids[i];
-		if (i >= m_magazine.size()) continue;
-		CCartridge& l_cartridge = *(m_magazine.begin() + i);
-		if (LocalAmmoType == l_cartridge.m_LocalAmmoType) continue;
-		l_cartridge.Load(*m_ammoTypes[LocalAmmoType], LocalAmmoType);
-	}
-
-	return bRes;
-}
-
-void	CWeaponShotgun::net_Export	(NET_Packet& P)
-{
-	inherited::net_Export(P);	
-
-	P.w_u8(u8(m_magazine.size()));
-	for (u32 i = 0; i<m_magazine.size(); i++)
-	{
-		CCartridge& l_cartridge = *(m_magazine.begin() + i);
-		P.w_u8(l_cartridge.m_LocalAmmoType);
-	}
-}
-
-void	CWeaponShotgun::net_Import	(NET_Packet& P)
-{
-	inherited::net_Import(P);	
-
-	u8 AmmoCount = P.r_u8();
-	for (u32 i = 0; i<AmmoCount; i++)
-	{
-		u8 LocalAmmoType = P.r_u8();
-		if (i >= m_magazine.size()) continue;
-		CCartridge& l_cartridge = *(m_magazine.begin() + i);
-		if (LocalAmmoType == l_cartridge.m_LocalAmmoType) continue;
-#ifdef DEBUG
-		Msg("! %s reload to %s", *l_cartridge.m_ammoSect, *(m_ammoTypes[LocalAmmoType]));
-#endif
-		l_cartridge.Load(*(m_ammoTypes[LocalAmmoType]), LocalAmmoType);
-	}
-}*/

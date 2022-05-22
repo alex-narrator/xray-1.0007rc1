@@ -365,6 +365,8 @@ void CWeapon::Load(LPCSTR section)
 	m_fPDM_disp_accel_factor = READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_accel_factor", 1.0f);
 	m_fPDM_disp_crouch = READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_crouch", 1.0f);
 	m_fPDM_disp_crouch_no_acc = READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_crouch_no_acc", 1.0f);
+	//
+	camRecoilCompensation = !!READ_IF_EXISTS(pSettings, r_bool, section, "cam_recoil_compensation", false);
 	//  [8/2/2005]
 
 	fireDispersionConditionFactor = pSettings->r_float(section, "fire_dispersion_condition_factor");

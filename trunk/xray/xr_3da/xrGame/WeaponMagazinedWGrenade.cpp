@@ -757,7 +757,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle(u8 state)
 void CWeaponMagazinedWGrenade::PlayAnimShoot()
 {
 	VERIFY(GetState()==eFire || GetState()==eFire2);
-	if(this->m_bGrenadeMode)
+	if(m_bGrenadeMode)
 	{
 		//анимация стрельбы из подствольника
 		m_pHUD->animPlay(random_anim(mhud_shots_g),TRUE,this, GetState());
@@ -882,7 +882,7 @@ void CWeaponMagazinedWGrenade::switch2_Shutter()
 void CWeaponMagazinedWGrenade::PlayAnimShutter()
 {
 	VERIFY(GetState() == eShutter);
-	if (this->m_bGrenadeMode)
+	if (m_bGrenadeMode)
 	{
 		m_pHUD->animPlay(random_anim(mhud_shutter_g), TRUE, this, GetState());
 	}

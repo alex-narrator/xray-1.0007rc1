@@ -209,19 +209,15 @@ void CActor::on_weapon_shot_start		(CWeapon *weapon)
 	}
 	R_ASSERT						(effector);
 
+	bool use_recoil_compensation = pWM->camRecoilCompensation;//(pWM->GetCurrentFireMode() == 1);
+
 	if (pWM)
 	{
 		if (effector->IsSingleShot())
 			update_camera(effector);
 
-		if (pWM->GetCurrentFireMode() == 1)
-		{
-			effector->SetSingleShoot(TRUE);
-		}
-		else
-		{
-			effector->SetSingleShoot(FALSE);
-		}
+		effector->SetSingleShoot(use_recoil_compensation);
+
 	};
 
 	effector->SetRndSeed			(GetShotRndSeed());
@@ -230,7 +226,7 @@ void CActor::on_weapon_shot_start		(CWeapon *weapon)
 
 	if (pWM)
 	{
-		if (pWM->GetCurrentFireMode() != 1)
+		if (!use_recoil_compensation/*pWM->GetCurrentFireMode() != 1*/)
 		{
 			effector->SetActive(FALSE);
 			update_camera(effector);

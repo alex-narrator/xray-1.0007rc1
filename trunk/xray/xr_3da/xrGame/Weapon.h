@@ -376,6 +376,7 @@ public:
 	float					camDispertionFrac;
 	float					camMaxAngleHorz;
 	float					camStepAngleHorz;
+	bool					camRecoilCompensation;
 
 protected:
 	//фактор увеличения дисперсии при максимальной изношености
