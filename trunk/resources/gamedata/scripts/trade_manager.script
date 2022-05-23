@@ -1,0 +1,220 @@
+function abort( fmt, ... )
+	get_console():execute( string_format( "load ~error~: [trade_manager] %s", ( ... and string_format( fmt, ... )) or fmt ) )
+	get_console():execute( "load ~~~ Обнаружена ошибка. Описание ошибки смотрите выше. Игра остановлена." )
+	get_console():execute( "load ~~~ Пожалуйста, не надо сообщать об ошибке в строке 8." )
+	get_console():execute( "load ~~~ Какую-либо ценность имеют 10 строк ВЫШЕ." )
+	get_console():execute( "load ~~~ game aborted because error described 10 lines above" )
+	get_console():execute( "flush" )
+	local a ; a = 1/a; get_console():execute( "quit" )
+	exit()
+end
+
+
+function log( ... ) end
+-- function abort( ... ) _util.log( "trade_manager", ... ) end
+
+-- local parse_condlist1 = xr_logic.parse_condlist1
+local pick_section = xr_logic.pick_section_from_condlist
+
+local string_match, string_gfind = string.match, string.gfind
+local parse_infop = xr_logic.parse_infop
+
+
+function parse_condlist1( src )
+	local t, n = {}, 0
+	local s1, s2, s3, ic, is
+	for s in string_gfind( src, "%s*([^,]+)" ) do	-- разбиваем на разделенные запятыми части
+		-- Здесь s это набор info в {} и имя секции, на которую переключиться
+		ic, is = {}, {}	-- "+infop1 -infop2 +infop3 ..." -> { "infop_name" = true/false }
+
+		s1, s2, s3 = string_match( s, "([^{]*){([^}]+)}(.*)" )	-- Выделяем список info для проверки
+		if s2 then parse_infop( ic, s2 ); s = s1 .. s3 end
+
+		-- куда переключаемся, и какие info ставим/убираем, в произвольном порядке
+		s1, s2, s3 = string_match( s, "([^%%]*)%%([^%%]+)%%(.*)" )	-- список info для установки
+		if s2 then parse_infop( is, s2 ); s = s1 .. s3 end	-- s - имя секции
+
+		n = n + 1
+		t[n] = { ["section"] = string_match( s, "%s*(.*)" ), ["infop_check"] = ic, ["infop_set"] = is }
+	end
+	return t
+end
+
+local h24 = 24 -- час оновлення асортиментів у ігрових годинах
+local s24 = 3600 * h24
+local c_time = game.CTime()
+local actor = db.actor
+
+local t_data = {}
+local t_ini = {}
+
+function trade_init( npc, cfg )
+	local ini = t_ini[cfg]
+	if not ini then
+		ini = ini_file( cfg )
+		t_ini[cfg] = ini
+	end
+
+	local t = t_data[npc:id()]
+	if ( not t ) or ( t.cfg_ltx ~= cfg ) then
+		t = { ["cfg_ltx"] = cfg, ["config"] = ini, ["update_time"] = 0 }
+		t_data[npc:id()] = t
+	end
+
+	local s = ( ini and ini:section_exist( "trader" )
+		and ini:line_exist( "trader", "buy_condition" )
+		and ini:r_string( "trader", "buy_condition" ) )
+		or abort( "trade_init, invalid section: [trader], line: [buy_condition], file: %s (%s)",
+			cfg or "nil", npc:name() )
+	t.buy_condition = parse_condlist1( s )	-- коэфициенты покупки
+
+
+	s = ( ini:line_exist( "trader", "sell_condition" ) and ini:r_string( "trader", "sell_condition" ) )
+		or abort( "trade_init, invalid section: [trader], line: [sell_condition], in file: %s (%s)",
+			cfg, npc:name() )
+	t.sell_condition = parse_condlist1( s )	-- коэфициенты продажи
+	
+	-- наличие товара
+	s = ini:line_exist( "trader", "buy_supplies" ) and ini:r_string( "trader", "buy_supplies" )
+	if s then t.buy_supplies = parse_condlist1( s ) end
+	--log( "info", "trade_init, ok" )
+	-- if npc:clsid() == clsid.script_trader then
+	--	log( "info", "init: %s", npc:name() )
+	-- end
+
+end
+
+
+function update( npc )
+	local tt = t_data[npc:id()]
+	if ( tt.update_time or 0 ) >= time_global() then return end
+
+	tt.update_time = time_global() + 60000 + npc:id()	-- хреновая, но рандомизация
+
+	local str = pick_section( actor, npc, tt.buy_condition )
+	if tt.current_buy_condition ~= str then
+		npc:buy_condition( tt.config, str )
+		tt.current_buy_condition = str
+	end
+
+	str = pick_section( actor, npc, tt.sell_condition )
+	if tt.current_sell_condition ~= str then
+		npc:sell_condition( tt.config, str )
+		tt.current_sell_condition = str
+	end
+
+	if not tt.buy_supplies then return end
+
+	str = pick_section( actor, npc, tt.buy_supplies )
+	if ( tt.current_buy_supplies ~= str ) or ( not tt.resuply_time ) or tt.resuply_time < game.get_game_time() then
+		-- if npc:clsid() == clsid.script_trader then
+		--	log( "info", "csup: %s (%s)", tt.current_buy_supplies, npc:name() )
+		--	log( "info", "usup: %s (%s)", str, npc:name() )
+		-- end
+		-- log( "info", "res: %s (%s:%s)", tostring( tt.resuply_time ), time_global(), npc:name() )
+
+		npc:buy_supplies( tt.config, str )
+		tt.current_buy_supplies = str
+		c_time:setHMS( h24, 0, 0 )
+		tt.resuply_time = game.get_game_time() + c_time
+	end	
+end
+
+
+function save( npc, pk )
+	local tt = t_data[npc:id()]
+
+	if tt then pk:w_bool( true )
+	else pk:w_bool( false ); return
+	end
+
+	pk:w_stringZ( tt.cfg_ltx )
+
+	if tt.current_buy_condition then pk:w_stringZ( tt.current_buy_condition )
+	else pk:w_stringZ( "" )
+	end
+
+	if tt.current_sell_condition then pk:w_stringZ( tt.current_sell_condition )
+	else pk:w_stringZ( "" )
+	end
+
+	if tt.current_buy_supplies then pk:w_stringZ( tt.current_buy_supplies )
+	else pk:w_stringZ( "" )
+	end
+
+	local tg = time_global()
+
+	local tm = tt.update_time
+	if tm then
+		if tm >= tg then pk:w_s32( tm - tg )
+		else pk:w_s32( 0 )
+		end
+	else pk:w_s32( -1 )
+	end
+
+	tm = tt.resuply_time
+	if tm then
+		tm = tm:diffSec( game.get_game_time() )
+		if tm < 0 then pk:w_s32( 0 )
+		else pk:w_s32( tm )
+		end
+		-- if npc:clsid() == clsid.script_trader then
+		-- log( "info", "svres: %s (%s)", tostring( tm ), npc:name() )
+		-- end
+	else pk:w_s32( -1 )
+	end
+end
+
+
+function load( npc, pk )
+	if not pk:r_bool() then return end
+
+	local s = pk:r_stringZ()
+	local id, tt = npc:id(), { ["cfg_ltx"] = s }
+	t_data[id] = tt
+
+	local ini = t_ini[s]
+	if ini then tt.config = ini
+	else
+		ini = ini_file( s )
+		t_ini[s] = ini
+		tt.config = ini
+	end
+
+	s = pk:r_stringZ()
+	if s ~= "" then
+		tt.current_buy_condition = s
+		npc:buy_condition( tt.config, s )
+	end
+
+	s = pk:r_stringZ()
+	if s ~= "" then
+		tt.current_sell_condition = s
+		npc:sell_condition( tt.config, s )
+	end
+
+	s = pk:r_stringZ()
+	if s ~= "" then tt.current_buy_supplies = s end
+		-- if npc:clsid() == clsid.script_trader then
+		--	log( "info", "lsup: %s (%s)", s, npc:name() )
+		-- end
+
+	local tg = time_global()
+	s = pk:r_s32()
+	if s ~= -1 and s < 3600000 then tt.update_time = tg + s end
+
+	s = pk:r_s32()
+	if s ~= -1 and s < s24 then
+		-- if npc:clsid() == clsid.script_trader then
+		--	log( "info", "ldres: %s, ld_up: %s (%s:%s)", tostring( s ), tostring( tt.update_time ), time_global(), npc:name() )
+		-- end
+		c_time:setHMS( 0, 0, s )
+		tt.resuply_time = game.get_game_time() + c_time
+	end
+end
+
+
+function init() return true end
+
+
+-- log( "module", "ok" )
