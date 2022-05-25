@@ -25,13 +25,9 @@ void CPurchaseList::process	(CInifile &ini_file, LPCSTR section, CInventoryOwner
 	CInifile::SectCIt		E = S.Data.end();
 
 	auto trade_ini = &ini_file;
-	CInifile *config = nullptr;
 
-	config = (trade_ini->section_exist("trade")) ? trade_ini : pSettings;
-	min_deficit = READ_IF_EXISTS(config, r_float, "trade", "min_deficit_factor", 1.f);
-
-	config = (trade_ini->section_exist("trade")) ? trade_ini : pSettings;
-	max_deficit = READ_IF_EXISTS(config, r_float, "trade", "max_deficit_factor", 1.f);
+	min_deficit = READ_IF_EXISTS(trade_ini, r_float, "trader", "min_deficit_factor", READ_IF_EXISTS(pSettings, r_float, "trade", "min_deficit_factor", 1.f));
+	max_deficit = READ_IF_EXISTS(trade_ini, r_float, "trader", "max_deficit_factor", READ_IF_EXISTS(pSettings, r_float, "trade", "max_deficit_factor", 1.f));
 
 	for ( ; I != E; ++I) {
 		VERIFY3				((*I).second.size(),"PurchaseList : cannot handle lines in section without values",section);
@@ -73,5 +69,5 @@ void CPurchaseList::process	(const CGameObject &owner, const shared_str &name, c
 		);
 	m_deficits.insert(std::make_pair(name, deficit));
 
-//	Msg("~~ deficit [%.4f] for item [%s] (count [%d]|prob [%.4f]|item spawned [%d])", deficit, name.c_str(), count, probability, j);
+	Msg("~~ deficit [%.4f](min[%.4f]|max[%.4f]) for item [%s] (count [%d]|prob [%.4f]|item spawned [%d])", deficit, min_deficit, max_deficit, name.c_str(), count, probability, j);
 }

@@ -40,7 +40,7 @@ function parse_condlist1( src )
 	return t
 end
 
-local h24 = 24 -- час оновлення асортиментів у ігрових годинах
+local h24 = 1 -- час оновлення асортиментів у ігрових годинах
 local s24 = 3600 * h24
 local c_time = game.CTime()
 local actor = db.actor
@@ -86,6 +86,9 @@ end
 
 
 function update( npc )
+	--//не оновлюємо асортмент на очах у гравця
+--	if actor:is_talking() and npc:is_talking() then return end
+
 	local tt = t_data[npc:id()]
 	if ( tt.update_time or 0 ) >= time_global() then return end
 
@@ -211,6 +214,10 @@ function load( npc, pk )
 		c_time:setHMS( 0, 0, s )
 		tt.resuply_time = game.get_game_time() + c_time
 	end
+end
+
+function clear(npc)
+	t_data[npc:id()] = nil
 end
 
 

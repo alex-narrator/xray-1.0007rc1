@@ -128,6 +128,8 @@ function motivator_binder:net_destroy()
 	self.object:set_callback(callback.use_object, nil)
 
 	object_binder.net_destroy(self)
+	
+	trade_manager.clear(self.object)
 end
 
 function motivator_binder:clear_callbacks()
@@ -208,6 +210,7 @@ function motivator_binder:use_callback(obj, who)
 		if self.st.active_section then
 			xr_logic.issue_event(self.object, self.st[self.st.active_scheme], "use_callback", obj, who)
 		end
+		trade_manager.update(self.object)
 	else
 		if self.treasure_processed == false then
 			treasure_manager:get_treasure_manager():use(self.object)
@@ -236,11 +239,11 @@ function motivator_binder:update(delta)
 		if self.object:alive() then
 			self.st.state_mgr:update()
 			-- Апдейт торговли
-			if self.st.state_mgr.combat == false and
-			   self.st.state_mgr.alife == false
-			then
-				trade_manager.update(self.object)
-			end			
+			-- if self.st.state_mgr.combat == false and
+			   -- self.st.state_mgr.alife == false
+			-- then
+				-- trade_manager.update(self.object)
+			-- end			
 		else
 			self.st.state_mgr = nil
 		end
