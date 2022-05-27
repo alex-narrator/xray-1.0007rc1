@@ -86,9 +86,6 @@ end
 
 
 function update( npc )
-	--//не оновлюємо асортмент на очах у гравця
---	if actor:is_talking() and npc:is_talking() then return end
-
 	local tt = t_data[npc:id()]
 	if ( tt.update_time or 0 ) >= time_global() then return end
 
@@ -115,6 +112,9 @@ function update( npc )
 		--	log( "info", "usup: %s (%s)", str, npc:name() )
 		-- end
 		-- log( "info", "res: %s (%s:%s)", tostring( tt.resuply_time ), time_global(), npc:name() )
+
+			--//не оновлюємо асортмент на очах у гравця
+--	if actor:is_talking() and npc:is_talking() then return end
 
 		npc:buy_supplies( tt.config, str )
 		tt.current_buy_supplies = str

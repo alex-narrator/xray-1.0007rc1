@@ -47,9 +47,9 @@ function generic_object_binder:update(delta)
 --		self.object:name(), time_global())
 
 	-- Апдейт торговли
-	-- if self.object:clsid() == clsid.script_trader then
-		-- trade_manager.update(self.object)
-	-- end
+	if self.object:clsid() == clsid.script_trader then
+		trade_manager.update(self.object)
+	end
 
 	if self.object:alive() then
 		if self.object:is_talk_enabled() then
@@ -219,12 +219,5 @@ function generic_object_binder:load(reader)
 	xr_logic.load_obj(self.object, reader)
 	if self.object:clsid() == clsid.script_trader then
 		trade_manager.load(self.object, reader)
-	end
-end
-
-function generic_object_binder:use_callback(obj, who)
-	if self.object:alive() and self.object:clsid() == clsid.script_trader then
-		trade_manager.update(self.object)
-		get_console():execute( "load ~~~ bind_monster use_callback" )
 	end
 end

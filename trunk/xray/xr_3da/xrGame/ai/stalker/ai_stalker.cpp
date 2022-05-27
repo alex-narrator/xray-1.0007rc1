@@ -290,7 +290,7 @@ void CAI_Stalker::Die				(CObject* who)
 	//запретить использование слотов в инвенторе
 	inventory().SetSlotsUseful		(false);
 
-	if (inventory().GetActiveSlot() >= inventory().m_slots.size())
+/*	if (inventory().GetActiveSlot() >= inventory().m_slots.size())
 		return;
 
 	CInventoryItem					*active_item = inventory().m_slots[inventory().GetActiveSlot()].m_pIItem;
@@ -312,7 +312,7 @@ void CAI_Stalker::Die				(CObject* who)
 			u_EventGen				(packet,GE_DESTROY,(*I)->object().ID());
 			u_EventSend				(packet);
 		}
-	}
+	}*/
 }
 
 void CAI_Stalker::Load				(LPCSTR section)
