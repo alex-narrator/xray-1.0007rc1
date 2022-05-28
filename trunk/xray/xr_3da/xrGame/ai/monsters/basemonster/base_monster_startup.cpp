@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "../xr_3da/xrGame/StdAfx.h"
 #include "base_monster.h"
 #include "../../../ai_space.h"
 #include "../../../hit.h"
@@ -64,8 +65,9 @@ void CBaseMonster::Load(LPCSTR section)
 	m_melee_rotation_factor			= READ_IF_EXISTS(pSettings,r_float,section,"Melee_Rotation_Factor", 1.5f);
 	berserk_always					= READ_IF_EXISTS(!!pSettings,r_bool,section,"berserk_always", false);
 
-	m_fRequiredBladeSharpness		= READ_IF_EXISTS(pSettings, r_float, section, "required_blade_sharpness", 0.f);//condition ножа при котором все еще доступен обыск трупа монстра
-	m_uStabsToCutOff				= READ_IF_EXISTS(pSettings, r_u32, section, "stabs_to_cut_off",	0);	//кол-во ударов ножом для срезания части монстра (на неё умножим износ ножа за удар)
+	m_fRequiredBladeSharpness		= READ_IF_EXISTS(pSettings, r_float, section, "required_blade_sharpness", 0.f);
+	m_fSkinDensityK					= READ_IF_EXISTS(pSettings, r_float, section, "skin_density", 1.f);
+	clamp(m_fSkinDensityK, 1.f, m_fSkinDensityK);
 	//
 	m_uAffectHitPeriod				= READ_IF_EXISTS(pSettings, r_u32, section, "affect_period", 0);
 	m_fAffectDistance				= READ_IF_EXISTS(pSettings, r_float, section, "affect_distance", 0.f); 
