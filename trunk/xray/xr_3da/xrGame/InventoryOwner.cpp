@@ -45,6 +45,8 @@ CInventoryOwner::CInventoryOwner			()
 	m_known_info_registry		= xr_new<CInfoPortionWrapper>();
 	m_tmp_active_slot_num		= NO_ACTIVE_SLOT;
 	m_need_osoznanie_mode		= FALSE;
+	//
+	m_deficits.clear();
 }
 
 DLL_Pure *CInventoryOwner::_construct		()
@@ -178,6 +180,15 @@ void	CInventoryOwner::save	(NET_Packet &output_packet)
 	CharacterInfo().save(output_packet);
 	save_data	(m_game_name, output_packet);
 	save_data	(m_money,	output_packet);
+	//
+	save_data(m_deficits.size(), output_packet);
+	DEFICITS::const_iterator I = m_deficits.begin();
+	DEFICITS::const_iterator E = m_deficits.end();
+	for (; I != E; ++I)
+	{
+		save_data((*I).first.c_str(), output_packet);
+		save_data((*I).second, output_packet);
+	}
 }
 void	CInventoryOwner::load	(IReader &input_packet)
 {
@@ -192,6 +203,15 @@ void	CInventoryOwner::load	(IReader &input_packet)
 	CharacterInfo().load(input_packet);
 	load_data		(m_game_name, input_packet);
 	load_data		(m_money,	input_packet);
+	//
+	u32	deficits_size = input_packet.r_u32();
+	DEFICITS::value_type		pair;
+	for (u32 i = 0; i<deficits_size; ++i)
+	{
+		load_data(pair.first, input_packet);
+		load_data(pair.second, input_packet);
+		m_deficits.insert(pair);
+	}
 }
 
 
@@ -564,10 +584,12 @@ LPCSTR CInventoryOwner::trade_section			() const
 
 float CInventoryOwner::deficit_factor			(const shared_str &section) const
 {
-	if (!m_purchase_list)
+/*	if (!m_purchase_list)
 		return					(1.f);
 
-	return						(m_purchase_list->deficit(section));
+	return						(m_purchase_list->deficit(section));*/
+	Msg("deficit [%.4f] for item [%s] by trader [%s]", deficit(section), section.c_str(), Name());
+	return deficit(section);
 }
 
 void CInventoryOwner::buy_supplies				(CInifile &ini_file, LPCSTR section)
@@ -576,6 +598,9 @@ void CInventoryOwner::buy_supplies				(CInifile &ini_file, LPCSTR section)
 		m_purchase_list			= xr_new<CPurchaseList>();
 
 	m_purchase_list->process	(ini_file,section,*this);
+
+	m_deficits.clear();
+	m_deficits = m_purchase_list->deficits();
 }
 
 void CInventoryOwner::sell_useless_items		()
@@ -643,4 +668,13 @@ float CInventoryOwner::missile_throw_force		()
 bool CInventoryOwner::use_throw_randomness		()
 {
 	return						(true);
+}
+
+float CInventoryOwner::deficit(const shared_str &section) const
+{
+	DEFICITS::const_iterator	I = m_deficits.find(section);
+	if (I != m_deficits.end())
+		return					((*I).second);
+
+	return						(1.f);
 }

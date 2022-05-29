@@ -10,6 +10,7 @@
 #include "script_space_forward.h"
 #include "character_info.h"
 #include "inventory_space.h"
+#include "associative_vector.h"
 
 class CSE_Abstract;
 class CInventory;
@@ -111,6 +112,11 @@ protected:
 	bool				m_bAllowTrade;
 
 	u32					m_tmp_active_slot_num;
+	//
+	typedef associative_vector<shared_str, float>	DEFICITS;
+	DEFICITS				m_deficits;
+	float					deficit(const shared_str &section) const;
+	//
 	//////////////////////////////////////////////////////////////////////////
 	// сюжетная информация
 public:
