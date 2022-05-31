@@ -255,7 +255,8 @@ void CUIItemInfo::Update()
 	if (UICondProgresBar)
 	{
 		float cond = m_pInvItem->GetConditionToShow();
-		UICondProgresBar->Show(true);
+		if (!UICondProgresBar->IsShown())
+			UICondProgresBar->Show(true);
 		UICondProgresBar->SetProgressPos(cond*100.0f + 1.0f - EPS);
 	}
 
