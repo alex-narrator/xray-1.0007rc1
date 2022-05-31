@@ -227,14 +227,14 @@ void xrServer::Process_event	(NET_Packet& P, ClientID sender)
 		{			
 			SendTo(SV_Client->ID, P, net_flags(TRUE, TRUE));
 		}break;
-	case GEG_PLAYER_WEAPON_HIDE_STATE:
-		{
-			SendTo		(SV_Client->ID, P, net_flags(TRUE, TRUE));
-
-#	ifdef SLOW_VERIFY_ENTITIES
-			VERIFY					(verify_entities());
-#	endif
-		}break;
+//	case GEG_PLAYER_WEAPON_HIDE_STATE:
+//		{
+//			SendTo		(SV_Client->ID, P, net_flags(TRUE, TRUE));
+//
+//#	ifdef SLOW_VERIFY_ENTITIES
+//			VERIFY					(verify_entities());
+//#	endif
+//		}break;
 	case GEG_PLAYER_ACTIVATE_SLOT:
 	case GEG_PLAYER_ITEM_EAT:
 		{

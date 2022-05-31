@@ -218,7 +218,7 @@ bool CHudItem::Activate()
 void CHudItem::Deactivate() 
 {
 	Hide();
-	//OnHiddenItem (); //для плавного сокрытия оружия
+	OnHiddenItem (); //для плавного сокрытия оружия
 }
 
 // Получить индекс текущих координат худа

@@ -68,19 +68,20 @@ void CControllerPsyHit::activate()
 
 	set_sound_state					(ePrepare);
 }
-
+#include "../../../inventory.h"
 void CControllerPsyHit::deactivate()
 {
 	m_man->release_pure				(this);
 	m_man->unsubscribe				(this, ControlCom::eventAnimationEnd);
 
 	if (m_blocked) {
-		NET_Packet			P;
+		//NET_Packet			P;
 
-		Actor()->u_EventGen	(P, GEG_PLAYER_WEAPON_HIDE_STATE, Actor()->ID());
-		P.w_u32				(INV_STATE_BLOCK_ALL);
-		P.w_u8				(u8(false));
-		Actor()->u_EventSend(P);
+		//Actor()->u_EventGen	(P, GEG_PLAYER_WEAPON_HIDE_STATE, Actor()->ID());
+		//P.w_u32				(INV_STATE_BLOCK_ALL);
+		//P.w_u8				(u8(false));
+		//Actor()->u_EventSend(P);
+		Actor()->inventory().SetSlotsBlocked(INV_STATE_BLOCK_ALL, false);
 	}
 
 	set_sound_state					(eNone);
@@ -232,11 +233,12 @@ void CControllerPsyHit::death_glide_start()
 
 	set_sound_state					(eStart);
 
-	NET_Packet			P;
-	Actor()->u_EventGen	(P, GEG_PLAYER_WEAPON_HIDE_STATE, Actor()->ID());
-	P.w_u32				(INV_STATE_BLOCK_ALL);
-	P.w_u8				(u8(true));
-	Actor()->u_EventSend(P);
+	//NET_Packet			P;
+	//Actor()->u_EventGen	(P, GEG_PLAYER_WEAPON_HIDE_STATE, Actor()->ID());
+	//P.w_u32				(INV_STATE_BLOCK_ALL);
+	//P.w_u8				(u8(true));
+	//Actor()->u_EventSend(P);
+	Actor()->inventory().SetSlotsBlocked(INV_STATE_BLOCK_ALL, true);
 	
 	m_blocked			= true;
 
