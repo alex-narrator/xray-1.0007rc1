@@ -15,14 +15,14 @@ public:
 	typedef CSoundPlayer::CSoundCollectionParams					CSoundCollectionParams;
 	typedef CSoundPlayer::CSoundCollection							CSoundCollection;
 	typedef std::pair<CSoundCollectionParams,CSoundCollection*>		SOUND_COLLECTION_PAIR;
-	typedef xr_hashmap<CSoundCollectionParams, CSoundCollection*>	OBJECTS;
+	typedef xr_vector<SOUND_COLLECTION_PAIR>						OBJECTS;
 
 private:
 	OBJECTS								m_objects;
 
 public:
 	virtual								~CSoundCollectionStorage	();
-	CSoundCollection* object(const CSoundCollectionParams &params);
+			const SOUND_COLLECTION_PAIR	&object						(const CSoundCollectionParams &params);
 };
 
 extern CSoundCollectionStorage			*g_sound_collection_storage;
