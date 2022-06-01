@@ -263,6 +263,8 @@ public:
 
 	void			LoadZoomOffset(LPCSTR section, LPCSTR prefix);
 
+	bool			m_bAimReloading;
+
 	virtual float				Weight();
 
 public:

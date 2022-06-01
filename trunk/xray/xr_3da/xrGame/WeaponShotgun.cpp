@@ -321,7 +321,8 @@ void CWeaponShotgun::Reload()
 void CWeaponShotgun::TriStateReload()
 {
 	if( !HaveCartridgeInInventory(1) )return;
-	inherited::OnZoomOut();
+	if (!m_bAimReloading)
+		inherited::OnZoomOut();
 	m_sub_state			= eSubstateReloadBegin;
 	SwitchState			(eReload);
 }

@@ -463,6 +463,8 @@ void CWeapon::Load(LPCSTR section)
 	if (pSettings->line_exist(hud_sect, "zoom_hide_crosshair"))
 		m_bHideCrosshairInZoom = !!pSettings->r_bool(hud_sect, "zoom_hide_crosshair");
 
+	m_bAimReloading = READ_IF_EXISTS(pSettings, r_bool, section, "allow_aim_reloading", true);
+
 	//////////////////////////////////////////////////////////
 
 	m_bHasTracers = READ_IF_EXISTS(pSettings, r_bool, section, "tracers", true);
@@ -1206,7 +1208,8 @@ BOOL CWeapon::IsMisfire() const
 }
 void CWeapon::Reload()
 {
-	OnZoomOut();
+	if (!m_bAimReloading)
+		OnZoomOut();
 }
 
 bool CWeapon::IsGrenadeLauncherAttached() const
