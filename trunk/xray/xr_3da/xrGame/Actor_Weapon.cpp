@@ -16,6 +16,7 @@
 #include "Grenade.h"
 #include "game_base_space.h"
 #include "Artifact.h"
+#include "WeaponBinoculars.h"
 
 static const float VEL_MAX		= 10.f;
 static const float VEL_A_MAX	= 10.f;
@@ -63,26 +64,21 @@ void CActor::g_fireParams(const CHudItem* pHudItem, Fvector &fire_pos, Fvector &
 	fire_pos = Cameras().Pos();
 	fire_dir = Cameras().Dir();
 
-	const CMissile    *pMissile = smart_cast <const CMissile*> (pHudItem);
-	CWeaponMagazined*    wpn = smart_cast<CWeaponMagazined*>(pHudItem->item().cast_weapon());
+	auto pMissile	= smart_cast<const CMissile*>	(pHudItem);
+	auto pWeapon	= smart_cast<CWeaponMagazined*>	(pHudItem->item().cast_weapon());
+	auto pBinocular = smart_cast<CWeaponBinoculars*>(pWeapon);
+
 	if (pMissile)
 	{
 		Fvector offset;
 		XFORM().transform_dir(offset, m_vMissileOffset);
 		fire_pos.add(offset);
 	}
-	else if (wpn && psActorFlags.test(AF_BULLET_FROM_BARREL))
+	else if (pWeapon && !pBinocular && !pWeapon->IsZoomed() && psActorFlags.test(AF_BULLET_FROM_BARREL))
 	{
-		fire_pos.set(wpn->get_LastFP());
-		if (active_cam() == eacFreeLook)
-			fire_dir.set(wpn->get_LastFD());
-		else
-		{
-			Fvector        pos;
-			pos.mad(Device.vCameraPosition, Device.vCameraDirection, HUD().GetCurrentRayQuery().range);    //точка куда стреляем
-			fire_dir.sub(pos, fire_pos).normalize();
-		}
-		fire_pos.mad(fire_dir, -1.0f);    //для того чтобы пули не летели через стену.
+		fire_dir.set(pWeapon->get_LastFD());
+		fire_pos.set(pWeapon->get_LastFP());
+		fire_pos.mad(fire_dir, -0.5f); //не стріляємо крізь стіни
 	}
 }
 
@@ -113,7 +109,7 @@ void CActor::SetWeaponHideState (u32 State, bool bSet)
 		//P.w_u32		(State);
 		//P.w_u8		(u8(bSet));
 		//u_EventSend	(P);
-		this->inventory().SetSlotsBlocked(State, bSet);
+		this->inventory().SetSlotsBlocked((u16)State, bSet);
 	};
 }
 static	u16 BestWeaponSlots [] = {

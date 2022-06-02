@@ -23,9 +23,12 @@
 
 #include "string_table.h"
 #include "entity_alive.h"
+#include "Actor.h"
 
 #include "inventory_item.h"
 #include "inventory.h"
+#include "HudItem.h"
+#include "Missile.h"
 
 u32 C_ON_ENEMY		D3DCOLOR_XRGB(0xff,0,0);
 u32 C_ON_NEUTRAL	D3DCOLOR_XRGB(0xff,0xff,0x80);
@@ -101,10 +104,17 @@ ICF static BOOL pick_trace_callback(collide::rq_result& result, LPVOID params)
 
 void CHUDTarget::CursorOnFrame ()
 {
+	CActor* Actor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (!Actor)	return;
+
 	Fvector				p1,dir;
 
 	p1					= Device.vCameraPosition;
 	dir					= Device.vCameraDirection;
+
+	auto pWeapon = smart_cast<CHudItem*>(Actor->inventory().ActiveItem());
+	if (pWeapon && !smart_cast<CMissile*>(pWeapon))
+		Actor->g_fireParams(pWeapon, p1, dir);
 	
 	// Render cursor
 	if(Level().CurrentEntity()){
@@ -126,13 +136,23 @@ void CHUDTarget::Render()
 {
 	VERIFY		(g_bRendering);
 
-	CObject*	O		= Level().CurrentEntity();
+/*	CObject*	O		= Level().CurrentEntity();
 	if (0==O)	return;
 	CEntity*	E		= smart_cast<CEntity*>(O);
 	if (0==E)	return;
 
 	Fvector p1				= Device.vCameraPosition;
+	Fvector dir				= Device.vCameraDirection;*/
+
+	CActor* Actor = smart_cast<CActor*>(Level().CurrentEntity());
+	if (!Actor)	return;
+
+	Fvector p1				= Device.vCameraPosition;
 	Fvector dir				= Device.vCameraDirection;
+
+	auto pWeapon = smart_cast<CHudItem*>(Actor->inventory().ActiveItem());
+	if (pWeapon && !smart_cast<CMissile*>(pWeapon))
+		Actor->g_fireParams(pWeapon, p1, dir);
 	
 	// Render cursor
 	u32 C				= C_DEFAULT;
