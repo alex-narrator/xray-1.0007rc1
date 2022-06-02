@@ -310,6 +310,8 @@ void CUIInventoryWnd::Init()
 	::Sound->create						(sounds[eInvAttachAddon],	uiXml.Read("snd_attach_addon",	0,	NULL),st_Effect,sg_SourceType);
 	::Sound->create						(sounds[eInvDetachAddon],	uiXml.Read("snd_detach_addon",	0,	NULL),st_Effect,sg_SourceType);
 	::Sound->create						(sounds[eInvItemUse],		uiXml.Read("snd_item_use",		0,	NULL),st_Effect,sg_SourceType);
+	::Sound->create						(sounds[eInvMagLoad],		uiXml.Read("snd_mag_load",		0,	NULL),st_Effect, sg_SourceType);
+	::Sound->create						(sounds[eInvMagUnload],		uiXml.Read("snd_mag_unload",	0,	NULL),st_Effect, sg_SourceType);
 
 	uiXml.SetLocalRoot					(stored_root);
 }

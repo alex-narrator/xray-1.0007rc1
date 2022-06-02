@@ -197,6 +197,8 @@ void CUITradeWnd::Init()
 		::Sound->create(sounds[eInvMoveItem],		uiXml.Read("snd_move_item",		0, NULL), st_Effect, sg_SourceType);
 		::Sound->create(sounds[eInvDetachAddon],	uiXml.Read("snd_detach_addon",	0, NULL), st_Effect, sg_SourceType);
 		::Sound->create(sounds[eInvItemUse],		uiXml.Read("snd_item_use",		0, NULL), st_Effect, sg_SourceType);
+		::Sound->create(sounds[eInvMagLoad],		uiXml.Read("snd_mag_load",		0, NULL), st_Effect, sg_SourceType);
+		::Sound->create(sounds[eInvMagUnload],		uiXml.Read("snd_mag_unload",	0, NULL), st_Effect, sg_SourceType);
 
 		uiXml.SetLocalRoot(stored_root);
 	}
@@ -304,12 +306,14 @@ void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 			{
 				pAmmo->ReloadBox((LPCSTR)m_pUIPropertiesBox->GetClickedItem()->GetData());
 				SetCurrentItem(NULL);
+				PlaySnd(eInvMagLoad);
 				UpdateLists(e1st);
 			}break;
 			case INVENTORY_UNLOAD_AMMO_BOX:
 			{
 				pAmmo->UnloadBox();
 				SetCurrentItem(NULL);
+				PlaySnd(eInvMagUnload);
 			}break;
 			case INVENTORY_DETACH_SCOPE_ADDON:
 			{

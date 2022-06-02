@@ -507,12 +507,14 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked	()
 			//Msg("load %s to %s", (LPCSTR)UIPropertiesBox.GetClickedItem()->GetData(), pAmmo->cNameSect().c_str());
 			pAmmo->ReloadBox((LPCSTR)UIPropertiesBox.GetClickedItem()->GetData());
 			SetCurrentItem(NULL);
+			PlaySnd(eInvMagLoad);
 			m_b_need_reinit = true;
 			}break;
 		case INVENTORY_UNLOAD_AMMO_BOX:
 			{
 			pAmmo->UnloadBox();
 			SetCurrentItem(NULL);
+			PlaySnd(eInvMagUnload);
 			}break;
 		}
 	}

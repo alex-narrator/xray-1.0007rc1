@@ -108,6 +108,8 @@
 		<snd_move_item>interface\inv_slot</snd_move_item>
 		<snd_detach_addon>interface\inv_detach_addon</snd_detach_addon>
 		<snd_item_use>interface\inv_slot</snd_item_use>
+		<snd_mag_load>interface\inv_properties</snd_mag_load>
+		<snd_mag_unload>interface\inv_properties</snd_mag_unload>
 	</action_sounds>
 
 </window>
