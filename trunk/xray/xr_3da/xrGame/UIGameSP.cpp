@@ -18,6 +18,7 @@
 #include "ui/UITalkWnd.h"
 #include "ui/UICarBodyWnd.h"
 #include "ui/UIMessageBox.h"
+#include "ui\UIMainIngameWnd.h"
 
 #include "../../build_config_defines.h"
 
@@ -85,6 +86,8 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	
 	if(!pActor)								return false;
 	if( pActor && !pActor->g_Alive() )		return false;
+
+	if (g_bHudAdjustMode) return false;
 
 	switch ( get_binded_action(dik) )
 	{

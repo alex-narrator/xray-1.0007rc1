@@ -399,9 +399,9 @@ void CUIMainIngameWnd::Draw()
 	if (IsHUDElementAllowed(ePDA)) UIZoneMap->Render(); //не рисум миникарту если ПДА нет в слоте и не нажата кнопка -- UI_LOCK_PDA_WITHOUT_PDA_IN_SLOT
 
 	RenderQuickInfos();
-#ifdef DEBUG
+//#ifdef DEBUG
 	draw_adjust_mode			();
-#endif
+//#endif
 }
 
 bool CUIMainIngameWnd::IsHUDElementAllowed(EHUDElement element)
@@ -1611,10 +1611,10 @@ void test_draw	()
 	}
 */
 }
-
+#endif
 void CUIMainIngameWnd::draw_adjust_mode()
 {
-	if (g_bHudAdjustMode&&m_pWeapon) //draw firePoint,ShellPoint etc
+	if (g_bHudAdjustMode && m_pWeapon) //draw firePoint,ShellPoint etc
 	{
 		CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
 		if(!pActor)
@@ -1683,7 +1683,7 @@ void CUIMainIngameWnd::draw_adjust_mode()
 		}
 	}
 }
-#endif
+
 
 
 #ifdef INV_QUICK_SLOT_PANEL

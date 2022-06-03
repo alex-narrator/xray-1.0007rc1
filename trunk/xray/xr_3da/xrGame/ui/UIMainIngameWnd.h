@@ -249,9 +249,9 @@ public:
 	void				SetPickUpItem	(CInventoryItem* PickUpItem);
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
-#ifdef DEBUG
+//#ifdef DEBUG
 	void				draw_adjust_mode					();
-#endif
+//#endif
 };
 
 add_to_type_list(CUIMainIngameWnd)

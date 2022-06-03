@@ -13,6 +13,7 @@
 #include "Car.h"
 #include "HudManager.h"
 #include "UIGameSP.h"
+#include "ui\UIMainIngameWnd.h"
 #include "inventory.h"
 #include "level.h"
 #include "game_cl_base.h"
@@ -52,6 +53,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 
 //	if (conditions().IsSleeping())	return;
 	if (IsTalking())	return;
+	if (g_bHudAdjustMode) return;
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
 		
 	switch (cmd)
@@ -351,6 +353,7 @@ void CActor::IR_OnKeyboardHold(int cmd)
 //	if (conditions().IsSleeping())				return;
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
 	if (IsTalking())							return;
+	if (g_bHudAdjustMode) return;
 
 	if(m_holder)
 	{
