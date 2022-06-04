@@ -30,6 +30,9 @@ public:
 	//вероятность осечки
 	float		m_misfireProbability;
 
+	RStringVec	m_ExplodeParticles;
+	ALife::EHitType			m_eHitType;
+
 	virtual float					Weight();
 };
 

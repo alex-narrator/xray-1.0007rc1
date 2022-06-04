@@ -70,6 +70,17 @@ void CCartridge::Load(LPCSTR section, u8 LocalAmmoType)
 	VERIFY	(u16(-1)!=bullet_material_idx);
 	VERIFY	(fWallmarkSize>0);
 
+	if (pSettings->line_exist(m_ammoSect, "explode_particles")) {
+		LPCSTR explode_particles = pSettings->r_string(m_ammoSect, "explode_particles");
+		int cnt = _GetItemCount(explode_particles);
+		xr_string tmp;
+		for (int k = 0; k<cnt; ++k)
+			m_ExplodeParticles.push_back(_GetItem(explode_particles, k, tmp));
+	}
+
+	LPCSTR	hit_type = READ_IF_EXISTS(pSettings, r_string, m_ammoSect, "hit_type", "fire_wound");
+	m_eHitType = ALife::g_tfString2HitType(hit_type);  // поддержка произвольного хита
+
 	m_InvShortName			= CStringTable().translate( pSettings->r_string(m_ammoSect, "inv_name_short"));
 }
 

@@ -482,9 +482,11 @@ void CShootingObject::FireBullet(const Fvector& pos,
 		l_fHitPower=fvHitPower[egdMaster];
 	}
 
+	auto hit_type = pSettings->line_exist(cartridge.m_ammoSect, "hit_type") ? cartridge.m_eHitType : m_eHitType;
+
 	Level().BulletManager().AddBullet(	pos, dir, m_fStartBulletSpeed, l_fHitPower, 
 										fHitImpulse, parent_id, weapon_id, 
-										m_eHitType, fireDistance, cartridge, send_hit, aim_bullet);
+										hit_type, fireDistance, cartridge, send_hit, aim_bullet);
 }
 
 void CShootingObject::FireStart	()
